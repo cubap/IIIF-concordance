@@ -857,6 +857,7 @@
                         //Always default to the master list, which was the first list created for the canvas.  That way, the annotation lists associated with the master are still supported.
                         var masterList = annoList[0];
                         lines = masterList.resources;
+                        currentList = masterList;
                         $.each(annoList, function(){
                             if(this.proj !== undefined && this.proj === theProjectID){
                                 //These are the lines we want to draw
