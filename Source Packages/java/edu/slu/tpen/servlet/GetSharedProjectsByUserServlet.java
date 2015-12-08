@@ -47,14 +47,16 @@ public class GetSharedProjectsByUserServlet extends HttpServlet {
             ps.setInt(1, uid);
             ResultSet rs = ps.executeQuery();
             JSONArray ja = new JSONArray();
+            JSONObject jp = new JSONObject();
             while(rs.next()){
                 JSONObject jo = new JSONObject();
                 jo.element("id", rs.getInt("id")+"");
                 jo.element("name", rs.getString("name"));
                 ja.add(jo);
             }
+            jp.element("projects", ja);
             PrintWriter out = response.getWriter();
-            out.print(ja);
+            out.print(jp);
         } catch (SQLException ex) {
             Logger.getLogger(GetSharedProjectsByUserServlet.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
