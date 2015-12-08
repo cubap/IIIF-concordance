@@ -530,15 +530,15 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>LoginHookServlet</servlet-name>
-        <servlet-class>/loginHook</servlet-class>
+        <url-pattern>/loginHook</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>GetSharedProjectsByUserServlet</servlet-name>
-        <servlet-class>/getSharedProjectsByUser</servlet-class>
+        <url-pattern>/getSharedProjectsByUser</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>LogoutHookServlet</servlet-name>
-        <servlet-class>/logoutHook</servlet-class>
+        <url-pattern>/logoutHook</url-pattern>
     </servlet-mapping>
     <!-- tpen webservices for newberry ends -->
     <session-config>
