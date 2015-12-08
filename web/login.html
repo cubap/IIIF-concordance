@@ -104,30 +104,26 @@ and open the template in the editor.
         var userName = $('#uname').val();
         var password = $('#password').val();
         if(userName !== undefined && userName !== "" && password !== undefined && password !== ""){
-            $("#loginsuccess").show();
             var url = "login";
             var params = {"uname":userName, "password":password};
             $.post(url, params, function(){
                 //This callback function is now never reached, even though login is successful. BH, 12/7
-                //$("#loginfail").hide();  
-                //$("#loginsuccess").show();
-            },"json");
+                
+            })
+            .done(function(){
+                console.log("login success");
+                $("#loginfail").hide();  
+                $("#loginsuccess").show();
+            })
+            .fail(function(){
+                console.log("login fail");
+                $("#loginfail").show();  
+                $("#loginsuccess").hide();
+            });
         }
         else{
             alert('You must enter a user name (E-mail) and password!');
-        }
-//                error: function(jqXHR,error, errorThrown) {  
-//                    if(jqXHR.status && jqXHR.status==204){
-//                         alert("Missing username and password"); 
-//                    }
-//                    else if (jqXHR.status && jqXHR.status==401) {
-//                        alert("Missing username or password"); 
-//                    }
-//                    else{
-//                        alert('Something went wrong: '+jqXHR.status);
-//                    }
-//               }
-              
+        }            
     }
     
     function registerNewUser(){

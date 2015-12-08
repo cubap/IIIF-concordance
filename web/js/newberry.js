@@ -905,19 +905,6 @@
             }
             
         }
-//        else if (canvasObj.otherContent && canvasObj.otherContent.length > 0){ //This is an annotation list, we need to get the anno lines
-//            var canvasAnnoList = canvasObj.otherContent[0];
-////            console.log("Lines are in anno list");
-//            
-//            else{
-//                
-//            }
-//        }
-//        else{
-//            //ERROR! Malformed canvas object.  
-//            console.log("No lines found for draw");
-//            update = false;
-//        }
     }
     
     function linesToScreen(lines){
