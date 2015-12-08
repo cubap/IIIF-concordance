@@ -7,7 +7,6 @@ package edu.slu.tpen.servlet;
 
 import edu.slu.tpen.servlet.util.EncryptUtil;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.URLDecoder;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -29,8 +28,8 @@ import textdisplay.DatabaseWrapper;
  *
  * @author hanyan
  */
-@WebServlet(name = "loginHookServlet", urlPatterns = {"/loginHookServlet"})
-public class loginHookServlet extends HttpServlet {
+@WebServlet(name = "LoginHookServlet", urlPatterns = {"/loginHook"})
+public class LoginHookServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -60,7 +59,7 @@ public class loginHookServlet extends HttpServlet {
                     }
                 }
             }
-            String query = "select * from user where email = ?";
+            String query = "select * from users where email = ?";
             Connection j = null;
             PreparedStatement ps=null;
             j = DatabaseWrapper.getConnection();
@@ -76,13 +75,13 @@ public class loginHookServlet extends HttpServlet {
             if(uid != 0){
                 HttpSession session = request.getSession();
                 session.setAttribute("UID", uid);
+                session.setAttribute("role", vals.get("role"));
             }else{
-                String insertUser = "insert into user (email, role, username) values (?,?,?)";
+                String insertUser = "insert into users (uname, email) values (?,?)";
                 j = DatabaseWrapper.getConnection();
                 ps = j.prepareStatement(insertUser, Statement.RETURN_GENERATED_KEYS);
-                ps.setString(1, vals.get("email") + "");
-                ps.setInt(2, Integer.parseInt(vals.get("role")+""));
-                ps.setString(3, vals.get("username") + "");
+                ps.setString(1, vals.get("username") + "");
+                ps.setString(2, vals.get("email") + "");
                 ps.executeUpdate();
                 ResultSet gk = ps.getGeneratedKeys();
                 int newUID = -1;
@@ -92,8 +91,9 @@ public class loginHookServlet extends HttpServlet {
                     session.setAttribute("UID", newUID);
                 }
             }
+            response.sendRedirect((String)vals.get("redirect_uri"));
         } catch (Exception ex) {
-            Logger.getLogger(loginHookServlet.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LoginHookServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

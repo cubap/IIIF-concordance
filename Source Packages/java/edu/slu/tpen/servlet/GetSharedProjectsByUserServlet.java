@@ -26,7 +26,7 @@ import textdisplay.DatabaseWrapper;
  * Retrieve all a user's shared projects. 
  * @author hanyan
  */
-@WebServlet(name = "GetSharedProjectsByUserServlet", urlPatterns = {"/GetSharedProjectsByUserServlet"})
+@WebServlet(name = "GetSharedProjectsByUserServlet", urlPatterns = {"/getSharedProjectsByUser"})
 public class GetSharedProjectsByUserServlet extends HttpServlet {
 
     /**
