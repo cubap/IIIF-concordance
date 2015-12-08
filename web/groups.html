@@ -65,7 +65,7 @@ and open the template in the editor.
             //TODO
             //need UID from new user created. onclick='promoteUserToAdmin(UID);'
             $('#editProjectMembers').append("<li><a class='promoteUser' title='Promote this user to Group Leader' onclick='promoteUserToAdmin("+data+")' > + </a>\n\
-             <span>" + uname + "</span>&nbsp;&nbsp;<span class='removeUser' onclick=\"removeUserFromProject('"+uname+"',$(this).parent());\">Remove member</span></li>");
+             <span>" + uname + "</span>&nbsp;&nbsp;<a class='removeUser' onclick=\"removeUserFromProject('"+uname+"',$(this).parent());\">Remove member</a></li>");
         });
 //        if(jqXHR.status && jqXHR.status==401){
 //                     alert("You must be logged in and be the admin of this project"); 
