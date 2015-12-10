@@ -68,7 +68,7 @@ public class LoginHookServlet extends HttpServlet {
             ResultSet rs = ps.executeQuery();
             int uid = 0;
             while(rs.next()){
-                uid = rs.getInt("id");
+                uid = rs.getInt("UID");
             }
             DatabaseWrapper.closeDBConnection(j);
             DatabaseWrapper.closePreparedStatement(ps);
