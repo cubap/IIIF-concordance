@@ -75,9 +75,9 @@
   </target>
 
   <target name="package" depends="compile">
-    <war destfile="${buildDir}/${ivy.module}.war" webxml="WebContent/WEB-INF/web.xml">
-      <classes dir="WebContent/WEB-INF/classes" />
-      <fileset dir="WebContent">
+    <war destfile="${buildDir}/${ivy.module}.war" webxml="web/WEB-INF/web.xml">
+      <classes dir="web/WEB-INF/classes" />
+      <fileset dir="web">
         <exclude name="WEB-INF/web.xml" />
       </fileset>
     </war>
