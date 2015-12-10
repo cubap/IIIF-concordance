@@ -34,8 +34,13 @@
     <property name="buildDir" value="build" />
     <property name="web.src" value="web" />
     <property name="web.dest" value="/var/lib/tomcat8/webapps/tpen" />
+    <property name="dependent.libs" value="lib/" />
+
     <path id="compile.classpath">
       <fileset dir="web/WEB-INF/lib">
+        <include name="*.jar"/>
+      </fileset>
+      <fileset dir="${dependent.libs}">
         <include name="*.jar"/>
       </fileset>
     </path>
