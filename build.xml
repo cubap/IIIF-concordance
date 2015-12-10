@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project name="t-pen-newberry" basedir="." default="deploy"
+<project name="t-pen-newberry" basedir="Source\ Packages/java" default="deploy"
   xmlns:ivy="antlib:org.apache.ivy.ant">
   
   <!-- IVY INSTALL -->
@@ -31,8 +31,7 @@
     </presetdef>
     <property name="sourceDir" value="src" />
     <property name="outputDir" value="WebContent/WEB-INF/classes" />
-    <property name="buildDir" value="build" />
-    <property name="versionfile" value="src/version.properties"/>
+    <property name="buildDir" value="build" />s
     <property name="web.src" value="WebContent" />
     <property name="web.dest" value="/var/lib/tomcat8/webapps/tpen" />
     <property name="dependent.libs" value="lib/" />
@@ -64,7 +63,6 @@
     <javac srcdir="${sourceDir}" destdir="${outputDir}">
       <classpath refid="compile.classpath" />
     </javac>
-    <copy file="${versionfile}" todir="${outputDir}"/>
   </target>
   
   <!-- DEPLOY or PACKAGE -->
