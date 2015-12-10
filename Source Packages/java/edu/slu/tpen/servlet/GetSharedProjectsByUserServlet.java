@@ -39,12 +39,12 @@ public class GetSharedProjectsByUserServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) {
-        Integer uid = Integer.parseInt(request.getParameter("uid"));
-        String query = "select p.id, p.name from groupmembers as gm, groups as g, project as p where gm.UID=? and g.GID=gm.GID and p.grp=g.GID";
+        String uName = request.getParameter("username");
+        String query = "select p.id, p.name from groupmembers as gm, groups as g, project as p, users as u where gm.UID = u.UID and g.GID=gm.GID and p.grp=g.GID AND u.Uname = ?";
         Connection conn = DatabaseWrapper.getConnection();
         try {
             PreparedStatement ps = conn.prepareStatement(query);
-            ps.setInt(1, uid);
+            ps.setString(1, uName);
             ResultSet rs = ps.executeQuery();
             JSONArray ja = new JSONArray();
             JSONObject jp = new JSONObject();
