@@ -26,6 +26,7 @@ public class CreateCanvasListUtil {
         canvasList.element("forkFromID", "");
         canvasList.element("resources", new JSONArray());
         canvasList.element("proj", projectID);
+        canvasList.element("testing", "testing");
         return canvasList;
     }
 }

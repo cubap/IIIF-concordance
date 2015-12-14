@@ -1017,7 +1017,7 @@ function getActiveProjectMetadata(currentProjectID){
             users=JSON.parse(users);
             $.each(users,function(){
                 var leaderTag = "";
-                var removeUser = "<span class='removeUser' onclick=\"removeUserFromProject('"+this.Uname+"', $(this).parent());\">Remove member</span>";
+                var removeUser = "<a class='removeUser' onclick=\"removeUserFromProject('"+this.Uname+"', $(this).parent());\">Remove member</a>";
                 var promoteUser = "<a class='promoteUser' title='Promote this user to Group Leader' onclick='promoteUserToAdmin("+this.UID+");' > + </a>";
                 if(this.UID == currentUser.uid){
                     isMember = true;

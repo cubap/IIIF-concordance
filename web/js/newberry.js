@@ -517,6 +517,7 @@
                                                     annoLists.push(this.otherContent[0]);
                                                 }
                                                 else{
+                                                    console.log("push empty 1");
                                                     annoLists.push("empty");
                                                 }
                                             }
@@ -587,6 +588,7 @@
                                         annoLists.push(this.otherContent[0]);
                                     }
                                     else{
+                                        console.log("push empty 2");
                                         annoLists.push("empty");
                                     }
                                 }
@@ -656,6 +658,7 @@
                                                             annoLists.push(this.otherContent[0]);
                                                         }
                                                         else{
+                                                            console.log("push empty 3");
                                                             annoLists.push("empty");
                                                         }
                                                     }
@@ -728,6 +731,7 @@
                                                 annoLists.push(this.otherContent[0]);
                                             }
                                             else{
+                                                console.log("push empty 4");
                                                 annoLists.push("empty");
                                             }
                                         }
@@ -890,9 +894,10 @@
                             $("#parsingBtn").css("box-shadow", "0px 0px 6px 5px yellow");
                         }
                     }
-                    else{ // couldnt get list
-                        console.log("couldnt find a list");
-                        annoLists[currentFolio -1 ] = "empty";
+                    else{ // couldnt get list.  one should always exist, even if empty.  We will say no list and changes will be stored locally to the canvas.
+                        console.log("couldnt find a list...set to empty");
+                        //annoLists[currentFolio -1 ] = "empty"; //This wil avoid all updates.
+                        annoLists[currentFolio -1 ] = "noList";
                         $("#noLineWarning").show();
                         $('#transcriptionCanvas').css('height', $("#imgBottom img").height() + "px");
                         $('.lineColIndicatorArea').css('height', $("#imgBottom img").height() + "px");
@@ -905,19 +910,6 @@
             }
             
         }
-//        else if (canvasObj.otherContent && canvasObj.otherContent.length > 0){ //This is an annotation list, we need to get the anno lines
-//            var canvasAnnoList = canvasObj.otherContent[0];
-////            console.log("Lines are in anno list");
-//            
-//            else{
-//                
-//            }
-//        }
-//        else{
-//            //ERROR! Malformed canvas object.  
-//            console.log("No lines found for draw");
-//            update = false;
-//        }
     }
     
     function linesToScreen(lines){
@@ -1053,7 +1045,7 @@
                 thisContent = "Enter a line transcription";
             }
                 
-                var newAnno = $('<div id="transcriptlet_'+counter+'" col="'+col+'" colLineNum="'+colCounter+'" lineID="'+counter+'" lineServerID="'+lineID+'" class="transcriptlet" data-answer="' + thisContent + '"><textarea>'+thisContent+'</textarea></div>');
+                var newAnno = $('<div id="transcriptlet_'+counter+'" col="'+col+'" colLineNum="'+colCounter+'" lineID="'+counter+'" lineserverid="'+lineID+'" class="transcriptlet" data-answer="' + thisContent + '"><textarea>'+thisContent+'</textarea></div>');
                 var left = parseFloat(XYWHarray[0]) / (10 * ratio);
                 var top = parseFloat(XYWHarray[1]) / 10;
                 var width = parseFloat(XYWHarray[2]) / (10 * ratio);
@@ -1069,9 +1061,9 @@
                 colCounter+=1;
                 $("#transcriptletArea").append(newAnno);
                 
-                var lineColumnIndicator = $("<div pair='"+col+""+colCounter+"' lineID='"+counter+"' class='lineColIndicator' style='left:"+left+"%; top:"+top+"%; width:"+width+"%; height:"+height+"%;'><div class\n\
+                var lineColumnIndicator = $("<div pair='"+col+""+colCounter+"' lineserverid='"+lineID+"' lineID='"+counter+"' class='lineColIndicator' style='left:"+left+"%; top:"+top+"%; width:"+width+"%; height:"+height+"%;'><div class\n\
                 ='lineColOnLine' >"+col+""+colCounter+"</div></div>");
-                var fullPageLineColumnIndicator = $("<div pair='"+col+""+colCounter+"' lineID='"+counter+"' class='lineColIndicator fullP'\n\
+                var fullPageLineColumnIndicator = $("<div pair='"+col+""+colCounter+"' lineserverid='"+lineID+"' lineID='"+counter+"' class='lineColIndicator fullP'\n\
                 onclick=\"updatePresentation($('#transcriptlet_"+(parseInt(counter)-1)+"'));\" style='left:"+left+"%; top:"+top+"%; width:"+width+"%; height:"+height+"%;'><div class\n\
                 ='lineColOnLine' >"+col+""+colCounter+"</div></div>"); //TODO add click event to update presentation
                 //Make sure the col/line pair sits vertically in the middle of the outlined line.  
@@ -3309,11 +3301,14 @@ console.log("NEW LINE LEFT: " + newLineLeft);
      function removeColumnTranscriptlets(lines, recurse){
         var index = -1;
         var currentAnnoList = annoLists[currentFolio -1];
-        
+        console.log("removing transcriptlets from this list");
+        console.log(currentAnnoList);
          if(currentAnnoList !== "noList" && currentAnnoList !== "empty"){ // if it IIIF, we need to update the list
             if(currentAnnoList.indexOf("/annoList/5") > -1){
               for(var l=lines.length-1; l>=0; l--){
                   var theLine = $(lines[l]);
+                  console.log("remove this line");
+                  console.log(theLine);
                   $.each(annoListTester.resources, function(){
                         index++;
                         if(this["@id"] == theLine.attr("lineserverid")){
@@ -3373,13 +3368,29 @@ console.log("NEW LINE LEFT: " + newLineLeft);
                                         destroyPage();
                                     }
                                     else{
-                                        cleanupTranscriptlets(true);
+                                        cleanupTranscriptlets(false);
                                     }
                                     
                                 });
                             }
                         }
                     });
+                }
+         }
+         else{
+             //It was not a part of the list, but we can still cleanup the transcriptlets from the interface.  This could happen when a object is fed to the 
+             //transcription textarea who instead of using an annotation list used the resources[] field to store anno objects directly with the canvas.  
+             //These changes will not save, they are purely UI manipulation.  An improper, view only object has been fed to the interface at this point, so this is intentional.
+             console.log("no list was found associated with the canvas, but we still want to remove the lines from the interface.");
+             for(var l=lines.length-1; l>=0; l--){
+                  var theLine = $(lines[l]);
+                  console.log("remove this line2");
+                  console.log(theLine);
+                  theLine.remove();
+                  var lineID = theLine.attr("lineserverid");
+                  $(".trascriptlet[lineserverid='"+lineID+"']").remove(); //remove the transcriptlet
+                  $(".lineColIndicator[lineserverid='"+lineID+"']").remove(); //Remove the line representing the transcriptlet
+                  $(".previewLineNumber[lineserverid='"+lineID+"']").parent().remove(); //Remove the line in text preview of transcription.
                 }
          }
          
