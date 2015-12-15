@@ -107,7 +107,6 @@ and open the template in the editor.
             var url = "login";
             var params = {"uname":userName, "password":password};
             $.post(url, params, function(){
-                //This callback function is now never reached, even though login is successful. BH, 12/7
                 
             })
             .done(function(){
@@ -116,7 +115,6 @@ and open the template in the editor.
                 $("#loginsuccess").show();
             })
             .fail(function(){
-                console.log("login fail");
                 $("#loginfail").show();  
                 $("#loginsuccess").hide();
             });

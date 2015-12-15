@@ -1158,15 +1158,15 @@
     function createBryan(){
         var newobj = {
             "@context" : "http://www.shared-canvas.org/ns/context.json",
-            "@id" : "t-pen.org/TPEN/Tradamus+Simple/manifest.json",
+            "@id" : "t-pen.org/TPEN/Testing4/manifest.json",
             "@type" : "sc:Manifest",
-            "label" : "Testing 4",
+            "label" : "Testing4",
             "sequences" : [{
-              "@id" : "http://t-pen.org/Tradamus+Simple/sequence/normal",
+              "@id" : "http://t-pen.org/Testing4/sequence/normal",
               "@type" : "sc:Sequence",
               "label" : "Current Page Order",
               "canvases" : [{
-                "@id":"http://t-pen.org/Tradamus+Simple/canvas/100r",
+                "@id":"http://t-pen.org/Testing4/canvas/100r",
                 "@type" : "sc:Canvas",
                 "label" : "100r",
                 "height" : 1000,
@@ -1180,10 +1180,10 @@
                               "@type":"dctypes:Image",
                               "format":"image/jpeg"
                           },
-                          "on":"http://t-pen.org/Tradamus+Simple/canvas/100r"
+                          "on":"http://t-pen.org/Testing4/canvas/100r"
                 }],
               }, {
-                "@id" : "http://t-pen.org/Tradamus+Simple/canvas/100v",
+                "@id" : "http://t-pen.org/Testing4/canvas/100v",
                 "@type" : "sc:Canvas",
                 "label" : "100v",
                 "height" : 1000,
@@ -1197,10 +1197,10 @@
                               "@type":"dctypes:Image",
                               "format":"image/jpeg"
                           },
-                          "on":"http://t-pen.org/Tradamus+Simple/canvas/100v"
+                          "on":"http://t-pen.org/Testing4/canvas/100v"
                 }]
               }, {
-                "@id" : "http://t-pen.org/Tradamus+Simple/canvas/101r",
+                "@id" : "http://t-pen.org/Testing4/canvas/101r",
                 "@type" : "sc:Canvas",
                 "label" : "101r",
                 "height" : 1000,
@@ -1214,14 +1214,14 @@
                               "@type":"dctypes:Image",
                               "format":"image/jpeg"
                           },
-                          "on":"http://t-pen.org/Tradamus+Simple/canvas/101r"
+                          "on":"http://t-pen.org/Testing4/canvas/101r"
                 }]
               }]
             }]
           };
           var manifest = JSON.stringify(newobj);
           var city = "STL,MO";
-          var title = "BRYANS TEST 4";
+          var title = "BTESTING4";
           var params = {"city":city, "title":title, "scmanifest":manifest};
           var url = "createProject";
           $.post(url, params)
