@@ -853,11 +853,14 @@
                 annoLists[currentFolio -1 ] = annoListTester["@id"];
             }
             else{
-            console.log("get annos for draw for canvas "+canvasObj["@id"]);
                 var annosURL = "getAnno";
-                var properties = {"@type": "sc:AnnotationList", "on" : canvasObj["@id"]};
+                var onValue = canvasObj["@id"];
+                onValue = onValue.replace("http://t-pen.org/TPEN/",""); //be rid of SERVERURL attached so that on property matches in anno store. TODO:FIX
+                console.log("get annos for draw for canvas "+onValue);
+                var properties = {"@type": "sc:AnnotationList", "on" : onValue};
                 var paramOBJ = {"content": JSON.stringify(properties)};
                 $.post(annosURL, paramOBJ, function(annoList){
+                    console.log("found annoLists");
                     annoList = JSON.parse(annoList);
                     console.log(annoList);
                     var found = false;
@@ -869,7 +872,7 @@
                         currentList = masterList;
                         $.each(annoList, function(){
                             console.log("does "+this.proj+" == "+theProjectID)
-                            if(this.proj !== undefined && this.proj === theProjectID){
+                            if(this.proj !== undefined && this.proj == theProjectID){
                                 //These are the lines we want to draw
                                 console.log("Lines we wanna draw");
                                 lines = this.resources;
