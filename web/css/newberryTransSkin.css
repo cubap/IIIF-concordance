@@ -887,7 +887,7 @@ label {width:auto;padding: 0;float: none;}/*fixme should not have to overwrite*/
 
 #lineColControls{
     width: 151px;
-    height: 48px;
+    height: 67px;
     background-color: #808080;
     position: relative;
     display: inline-block;

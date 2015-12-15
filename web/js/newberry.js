@@ -2705,6 +2705,15 @@ function toggleLineMarkers(){
         $.each($(".lineColOnLine"),function(){$(this).css("line-height", $(this).height()+"px");});
     }
 }   
+function toggleLineCol(){
+    if($('.lineColOnLine:first').is(":visible")){ 
+        $('.lineColOnLine').hide();
+    }
+    else{
+        $('.lineColOnLine').show();
+        $.each($(".lineColOnLine"),function(){$(this).css("line-height", $(this).height()+"px");});
+    }
+}
 //saves/updates all available transcriptlets.
 // function saveTransLines(fromParse){
 //        if(fromParse == "parsing"){
