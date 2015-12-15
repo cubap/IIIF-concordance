@@ -1204,9 +1204,9 @@ function getActiveProjectMetadata(currentProjectID){
 
 
 
-function deleteProject(){
+function deleteProject(projID){
     var url = "delProject";
-    var params = {projectID:currentProjectID};
+    var params = {projectID:projID};
     $.post(url, params);
 }
 
@@ -1230,6 +1230,7 @@ function getUserProjects(projectID, userID, username){
                 else{
                     $('#projectList').append("<li>\n\
                     <a title=\"" + projectName + "\" class=\"tpenButton projectTitle\" href='project.html?projectID="+projectID+"'> "+projectName+" </a>\n\
+                    <span style='z-index:1000; cursor:pointer;' title=\"delete project\" class=\"delete ui-icon ui-icon-closethick right\" onclick=\"deleteProject("+projectID+");\"></span>\n\
                     </li>");
             //<span style='z-index:1000; cursor:pointer;' title=\"delete project\" class=\"delete ui-icon ui-icon-closethick right\" onclick=\"deleteProject();\"></span>
                 }

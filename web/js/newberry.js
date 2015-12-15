@@ -370,6 +370,7 @@
                                     found = true;
                                     if(this.resources.length > 0){
                                         lines = annoList[0].resources;
+                                        
                                     }
                                  }
                              });
@@ -480,6 +481,7 @@
             currentFolio = 1;
             if($.isNumeric(userTranscription)){ //The user can put the project ID in directly and a call will be made to newberry proper to grab it.
                 projectID = userTranscription;
+                theProjectID = projectID;
                 var url = "getProjectTPENServlet?projectID="+projectID;
                 $.ajax({
                     url: url,
@@ -493,8 +495,9 @@
                             var getURLfromThis = activeProject.ls_ms;
                             getURLfromThis = JSON.parse(getURLfromThis);
                             url  = getURLfromThis[1].archive; //This is the manifest inside the project data
-//                            console.log("data is here: "+getURLfromThis[1].archive);
+                            console.log("manifest is here: "+getURLfromThis[1].archive);
                             if(url.indexOf("http") < 0){ //Then this is a newberry created newberry project
+                                console.log("IT IS NEWBERRY, create the project/projectID url to get it.");
                                 //create the newberry url
                                 url = "project/"+projectID;
                             }
@@ -620,6 +623,7 @@
                         else{
                             localProject = true; //Well, probably anyway.  I forsee this being an issue like with t-pen.
                             projectID = parseInt(userTranscription.substring(userTranscription.lastIndexOf('/project/')+9));
+                            theProjectID = projectID;
                         }
                     }
                     else{
@@ -849,12 +853,13 @@
                 annoLists[currentFolio -1 ] = annoListTester["@id"];
             }
             else{
-            console.log("get annos for draw");
+            console.log("get annos for draw for canvas "+canvasObj["@id"]);
                 var annosURL = "getAnno";
                 var properties = {"@type": "sc:AnnotationList", "on" : canvasObj["@id"]};
                 var paramOBJ = {"content": JSON.stringify(properties)};
                 $.post(annosURL, paramOBJ, function(annoList){
                     annoList = JSON.parse(annoList);
+                    console.log(annoList);
                     var found = false;
                     var currentList = {};
                     if(annoList.length > 0){
@@ -863,14 +868,18 @@
                         lines = masterList.resources;
                         currentList = masterList;
                         $.each(annoList, function(){
+                            console.log("does "+this.proj+" == "+theProjectID)
                             if(this.proj !== undefined && this.proj === theProjectID){
                                 //These are the lines we want to draw
+                                console.log("Lines we wanna draw");
                                 lines = this.resources;
                                 found = true;
                                 currentList = this;
+                                annoLists[currentFolio -1] = this["@id"];
                             }
                             else{
                                 //It is an annotation list for this canvas in a different project.
+                                console.log("Anno list for this canvas but different project.  ");
                             }
                         });
                         if(!found){
@@ -879,12 +888,10 @@
                         if(lines.length > 0){
                             console.log("Got lines to draw");
                             console.log(lines);
-                            annoLists[currentFolio -1 ] = currentList["@id"];
                             linesToScreen(lines);
                         }
                         else{ //list has no lines
                             console.log("no lines in what we got");
-                            annoLists[currentFolio -1 ] = currentList["@id"];
                             $("#noLineWarning").show();
                             $('#transcriptionCanvas').css('height', $("#imgBottom img").height() + "px");
                             $('.lineColIndicatorArea').css('height', $("#imgBottom img").height() + "px");
@@ -897,7 +904,7 @@
                     else{ // couldnt get list.  one should always exist, even if empty.  We will say no list and changes will be stored locally to the canvas.
                         console.log("couldnt find a list...set to empty");
                         //annoLists[currentFolio -1 ] = "empty"; //This wil avoid all updates.
-                        annoLists[currentFolio -1 ] = "noList";
+                        annoLists[currentFolio -1 ] = "empty";
                         $("#noLineWarning").show();
                         $('#transcriptionCanvas').css('height', $("#imgBottom img").height() + "px");
                         $('.lineColIndicatorArea').css('height', $("#imgBottom img").height() + "px");
@@ -1678,7 +1685,8 @@
             "left":"0px"
         });
         
-        $("#transcriptionTemplate").css("width", "64%");
+        $("#transcriptionTemplate").css("max-width", "57%");
+        //the width and max-width here may need to be played with a bit.
         $("#transcriptionTemplate").resizable({
               disabled:false,
               minWidth: window.innerWidth / 2,
@@ -1827,6 +1835,7 @@
         $("#transcriptionCanvas").css("width", "100%");
         $("#transcriptionCanvas").css("height", "auto");
         $("#transcriptionTemplate").css("width", "100%");
+        $("#transcriptionTemplate").css("max-width", "100%");
         $("#transcriptionTemplate").css("height", "auto");
         $("#transcriptionTemplate").css("display", "block");
         $('.lineColIndicatorArea').show();
@@ -2784,7 +2793,8 @@ function toggleLineMarkers(){
               "cnt:chars" : currentLineText
             },
             "on" : onCanvas+"#xywh="+lineString,
-            "otherContent" : []
+            "otherContent" : [],
+            "testing":"testing"
         };
         
 //        TODO:  This is the real anno store update.  get it right. 
@@ -2861,7 +2871,14 @@ function toggleLineMarkers(){
     
     function saveNewLine(lineBefore, newLine){
         var theURL = window.location.href;
-        var projID = theURL.substring(theURL.indexOf("projectID=")+10);
+        var projID = -1;
+        if(theURL.indexOf("projectID") === -1){
+            projID = theProjectID;
+        }
+        else{
+            projID = theURL.substring(theURL.indexOf("projectID=")+10);
+        }
+        
         var beforeIndex = -1;
         if(lineBefore !== undefined && lineBefore !== null){
             beforeIndex = parseInt(lineBefore.attr("linenum"));
@@ -2903,7 +2920,9 @@ console.log("NEW LINE LEFT: " + newLineLeft);
                   "@type" : "cnt:ContentAsText",
                   "cnt:chars" : currentLineText
                 },
-                "on" : lineString
+                "on" : lineString,
+                "otherContent":[],
+                "testing":"testing"
             }
         ;
         var url = "saveNewTransLineServlet";
@@ -2927,23 +2946,22 @@ console.log("NEW LINE LEFT: " + newLineLeft);
                 var currentAnnoList = annoLists[currentFolio - 1];
                 if(currentAnnoList !== "noList" && currentAnnoList !== "empty"){ // if it IIIF, we need to update the list
     //                console.log("Not no list and not empty");
-                    if(currentAnnoList.indexOf("/annoList/5") > -1){
-    //                    console.log("line saved...set anno list to tester and update")
-                        currentAnnoList = annoListTester;
-                        if(beforeIndex == -1){
-                            $(".newColumn").attr({
-                                "lineserverid" : dbLine["@id"],
-                                "linenum" : $(".parsing").length
-                            }).removeClass("newColumn");
-                            annoListTester.resources.push(dbLine);
-                        }
-                        else{
-                            annoListTester.resources.splice(beforeIndex + 1, 0, dbLine);
-                            updateLine(lineBefore);
-                        }
-
-                    }
-                    else{
+//                    if(currentAnnoList.indexOf("/annoList/5") > -1){
+//    //                    console.log("line saved...set anno list to tester and update")
+//                        currentAnnoList = annoListTester;
+//                        if(beforeIndex == -1){
+//                            $(".newColumn").attr({
+//                                "lineserverid" : dbLine["@id"],
+//                                "linenum" : $(".parsing").length
+//                            }).removeClass("newColumn");
+//                            annoListTester.resources.push(dbLine);
+//                        }
+//                        else{
+//                            annoListTester.resources.splice(beforeIndex + 1, 0, dbLine);
+//                            updateLine(lineBefore);
+//                        }
+//
+//                    }
     //                    console.log("line saved...update the list it belongs to");
                         var annosURL = "getAnno";
                         var properties = {"@id": currentAnnoList};
@@ -2980,9 +2998,9 @@ console.log("NEW LINE LEFT: " + newLineLeft);
                                 }
                             });
                         });
-                    }
+                    
                 }
-                else if(currentAnnoList == "empty"){
+                else if(currentAnnoList == "empty"){ //empty as in no list in otherContent
                 //make a new list for it.    //Annotation lists need to be connected to a project, so we are adding that property in.  We should find a proper vocabulary for it through IIIF (like metadata)
                     var newAnnoList = 
                         {
@@ -2993,7 +3011,8 @@ console.log("NEW LINE LEFT: " + newLineLeft);
                             "permission" : 0,
                             "forkFromID" : "",
                             "resources" : [],
-                            "proj" : projID
+                            "proj" : projID,
+                            "testing":"testing"
                         };
                     var url2 = "saveNewTransLineServlet";
                     var params2 = {"content": JSON.stringify(newAnnoList)};
@@ -3024,8 +3043,9 @@ console.log("NEW LINE LEFT: " + newLineLeft);
 
                     });
                 }
-                else if(currentAnnoList == "noList"){ //If it is classic T-PEN, we need to update canvas resources
-    //                console.log("NO list.  This is probably not newberry")
+                else if(currentAnnoList == "noList"){ //noList means there was no otherContent field with the canvas.  this is an invalid object.  its possible annos are directly
+                    //in resoucres[] for the canvas.  this is classic T-PEN.
+                    console.log("NO list.  This is probably not newberry.  beforeindex="+beforeIndex);
                     if(beforeIndex == -1){ //New line vs new column
                         $(".newColumn").attr({
                             "lineserverid" : dbLine["@id"],
@@ -3041,8 +3061,6 @@ console.log("NEW LINE LEFT: " + newLineLeft);
                     //should we write to the DB here?  This would be in support of old data.  
                 }
                 cleanupTranscriptlets(true);
-
-                //buildTranscriptlet...do not need to do this part since we rebuild when we go fullscreen, but heres where and how. 
                 } 
             });
         }
@@ -3381,15 +3399,16 @@ console.log("NEW LINE LEFT: " + newLineLeft);
              //It was not a part of the list, but we can still cleanup the transcriptlets from the interface.  This could happen when a object is fed to the 
              //transcription textarea who instead of using an annotation list used the resources[] field to store anno objects directly with the canvas.  
              //These changes will not save, they are purely UI manipulation.  An improper, view only object has been fed to the interface at this point, so this is intentional.
-             console.log("no list was found associated with the canvas, but we still want to remove the lines from the interface.");
              for(var l=lines.length-1; l>=0; l--){
                   var theLine = $(lines[l]);
-                  console.log("remove this line2");
-                  console.log(theLine);
                   theLine.remove();
                   var lineID = theLine.attr("lineserverid");
-                  $(".trascriptlet[lineserverid='"+lineID+"']").remove(); //remove the transcriptlet
+                  console.log("remove this line: "+lineID);
+                  console.log("remove tramscriptlets");
+                  $(".transcriptlet[lineserverid='"+lineID+"']").remove(); //remove the transcriptlet
+                  console.log("remove trans drawn lines");
                   $(".lineColIndicator[lineserverid='"+lineID+"']").remove(); //Remove the line representing the transcriptlet
+                  console.log("remov preview line");
                   $(".previewLineNumber[lineserverid='"+lineID+"']").parent().remove(); //Remove the line in text preview of transcription.
                 }
          }
