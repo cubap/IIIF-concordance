@@ -2932,6 +2932,8 @@ console.log("NEW LINE LEFT: " + newLineLeft);
         if(onCanvas !== undefined && onCanvas !== ""){
             $.post(url, params, function(data){
                {
+                   console.log("saved new line");
+                   console.log(data);
                    data=JSON.parse(data);
     //            console.log("line saved");
                 //var newLineID = data["@id"];
@@ -3002,7 +3004,8 @@ console.log("NEW LINE LEFT: " + newLineLeft);
                 }
                 else if(currentAnnoList == "empty"){ //empty as in no list in otherContent
                 //make a new list for it.    //Annotation lists need to be connected to a project, so we are adding that property in.  We should find a proper vocabulary for it through IIIF (like metadata)
-                    var newAnnoList = 
+                      console.log("gotta make a new list");
+                      var newAnnoList = 
                         {
                             "@type" : "sc:AnnotationList",
                             "on" : onCanvas,

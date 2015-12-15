@@ -145,7 +145,7 @@ body{
       z-index:2;
     }
 
-    #imgTop,#imgBottom {
+    #imgTop,#imgBottom{
       display:block;
       height:35%;
       overflow:hidden;
