@@ -1170,7 +1170,7 @@
             "@context" : "http://www.shared-canvas.org/ns/context.json",
             "@id" : "t-pen.org/TPEN/Testing4/manifest.json",
             "@type" : "sc:Manifest",
-            "label" : "Testing4",
+            "label" : "Encoding Test",
             "sequences" : [{
               "@id" : "http://t-pen.org/Testing4/sequence/normal",
               "@type" : "sc:Sequence",
@@ -1231,7 +1231,7 @@
           };
           var manifest = JSON.stringify(newobj);
           var city = "STL,MO";
-          var title = "BTESTING4";
+          var title = "Encoding Test & Stuff";
           var params = {"city":city, "title":title, "scmanifest":manifest};
           var url = "createProject";
           $.post(url, params)

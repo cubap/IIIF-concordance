@@ -856,6 +856,7 @@
                 var annosURL = "getAnno";
                 var onValue = canvasObj["@id"];
                 onValue = onValue.replace("http://t-pen.org/TPEN/",""); //be rid of SERVERURL attached so that on property matches in anno store. TODO:FIX
+                onValue = encodeURIComponent(onValue);
                 console.log("get annos for draw for canvas "+onValue);
                 var properties = {"@type": "sc:AnnotationList", "on" : onValue};
                 var paramOBJ = {"content": JSON.stringify(properties)};
