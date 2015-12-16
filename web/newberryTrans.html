@@ -422,6 +422,15 @@
 </html>
 <script>
     var theProjectID = -1;
+    window.onresize = function(event) {
+        var newHeight = $("#imgBottom img").height();
+        console.log("window resize.  New height: "+newHeight+"px");
+        $("#transcriptionCanvas").css("height",newHeight+"px");
+        $(".lineColIndicatorArea").css("height",newHeight+"px");
+        $.each($(".lineColOnLine"),function(){
+              $(this).css("line-height", $(this).height()+"px");
+          });
+    };
     $(document).ready(function(){
         //check if logged in
         var user = "";
