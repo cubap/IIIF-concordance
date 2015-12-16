@@ -24,9 +24,124 @@
           "width" : 1579
         },
         "on" : "http://t-pen.org/Tradamus+Simple/canvas/100r"
-        } 
-      ],
-      "otherContent" : []
+      }, {
+        "@id" : "http://t-pen.org/Tradamus+Simple/line/101083800",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "ape nota trinitas al-"
+        },
+        "on" : "http://t-pen.org/Tradamus+Simple/canvas/100r#xywh=148,26,409,105"
+      }, {
+        "@id" : "http://t-pen.org/Tradamus+Simple/line/101599264",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : ""
+        },
+        "on" : "http://t-pen.org/Tradamus+Simple/canvas/100r#xywh=148,140,409,32"
+      }, {
+        "@id" : "http://t-pen.org/Tradamus+Simple/line/101599263",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : ""
+        },
+        "on" : "http://t-pen.org/Tradamus+Simple/canvas/100r#xywh=148,172,409,28"
+      }, {
+        "@id" : "http://t-pen.org/Tradamus+Simple/line/101599262",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : ""
+        },
+        "on" : "http://t-pen.org/Tradamus+Simple/canvas/100r#xywh=148,200,409,31"
+      }, {
+        "@id" : "http://t-pen.org/Tradamus+Simple/line/101599261",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : ""
+        },
+        "on" : "http://t-pen.org/Tradamus+Simple/canvas/100r#xywh=148,231,409,48"
+      }, {
+        "@id" : "http://t-pen.org/Tradamus+Simple/line/101599260",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : ""
+        },
+        "on" : "http://t-pen.org/Tradamus+Simple/canvas/100r#xywh=148,279,409,33"
+      }, {
+        "@id" : "http://t-pen.org/Tradamus+Simple/line/101599259",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : ""
+        },
+        "on" : "http://t-pen.org/Tradamus+Simple/canvas/100r#xywh=148,312,409,32"
+      }, {
+        "@id" : "http://t-pen.org/Tradamus+Simple/line/101599258",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : ""
+        },
+        "on" : "http://t-pen.org/Tradamus+Simple/canvas/100r#xywh=148,344,409,33"
+      }, {
+        "@id" : "http://t-pen.org/Tradamus+Simple/line/101083801",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "tralalalal lalaal alala"
+        },
+        "on" : "http://t-pen.org/Tradamus+Simple/canvas/100r#xywh=148,377,409,34"
+      }, {
+        "@id" : "http://t-pen.org/Tradamus+Simple/line/101083802",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "uia tibi gloria et laus e"
+        },
+        "on" : "http://t-pen.org/Tradamus+Simple/canvas/100r#xywh=148,411,409,29"
+      }, {
+        "@id" : "http://t-pen.org/Tradamus+Simple/line/101083803",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "tralalalal lalaal alala"
+        },
+        "on" : "http://t-pen.org/Tradamus+Simple/canvas/100r#xywh=148,440,409,29"
+      }, {
+        "@id" : "http://t-pen.org/Tradamus+Simple/line/101083839",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "trua Benedictus sitirus"
+        },
+        "on" : "http://t-pen.org/Tradamus+Simple/canvas/100r#xywh=148,469,409,30"
+      }, {
+        "@id" : "http://t-pen.org/Tradamus+Simple/line/101083804",
+        "@type" : "oa:Annotation",
+        "motivation" : "sc:painting",
+        "resource" : {
+          "@type" : "cnt:ContentAsText",
+          "cnt:chars" : "tralalalal lalaal alala"
+        },
+        "on" : "http://t-pen.org/Tradamus+Simple/canvas/100r#xywh=148,499,409,115"
+      } ]
     }, {
       "@id" : "http://t-pen.org/Tradamus+Simple/canvas/100v",
       "@type" : "sc:Canvas",
