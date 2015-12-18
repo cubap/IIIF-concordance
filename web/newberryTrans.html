@@ -413,7 +413,7 @@
     var theProjectID = -1;
     window.onresize = function(event) {
         var newHeight = $("#imgBottom img").height();
-        console.log("window resize.  New height: "+newHeight+"px");
+        //console.log("window resize.  New height: "+newHeight+"px");
         $("#transcriptionCanvas").css("height",newHeight+"px");
         $(".lineColIndicatorArea").css("height",newHeight+"px");
         $.each($(".lineColOnLine"),function(){
@@ -510,7 +510,7 @@
 
         $('#transcriptionFile').on("change", function(event){
             //start spinny?
-            //console.log("change");
+            ////console.log("change");
             var selectedFile = event.target.files[0];
             var reader = new FileReader();
             var result = $('#transcriptionText')
@@ -546,13 +546,13 @@
                 //back out
                 if ((event.which === 109) || (event.which === 189) || (event.which === 173) ){ //173  = - in firefox
                     zoomMultiplier -= .4;
-                    console.log('ZOOM MULTIPLIER: '+zoomMultiplier);
+                    //console.log('ZOOM MULTIPLIER: '+zoomMultiplier);
                     $(document).mousemove();
                 }
                 //ease in
                 else if ((event.which === 107) || (event.which === 187) || (event.which === 61)){ // 61 = + in firefox
                     zoomMultiplier += .4;
-                    console.log('ZOOM MULTIPLIER: '+zoomMultiplier);
+                    //console.log('ZOOM MULTIPLIER: '+zoomMultiplier);
                     $(document).mousemove();
                 }
                 //esc
@@ -571,17 +571,17 @@
                 }
                 else {
                   //stop magnifying?
-                 //console.log(event.which+' DOWN');
+                 ////console.log(event.which+' DOWN');
                 }
             }
             else if (event.which == 18 || event.altKey){
-               // console.log('ALT KEY');
+               // //console.log('ALT KEY');
                var lineForEditing = $(".activeLine");
                lineForEditing.resizable()
             }
             else if (event.which === 27){
                 //Esc during any active tool means stop the tool.  In this case, our only worry is moving the image around.  We may add others later. 
-                //console.log("ESC DOWN");
+                ////console.log("ESC DOWN");
                 $("#imgTop, #imgBottom").unbind();
                 $("#imgTop").css("cursor", "default");
                 $("#imgBottom").css("cursor", "default");
@@ -593,7 +593,7 @@
                 }
             }
             else{
-                //console.log(event.which+" DOWN");
+                ////console.log(event.which+" DOWN");
             }
             })
             .keyup(function(event){
@@ -603,7 +603,7 @@
                     //unShiftInterface();
                 }
                 else{
-                   // console.log(event.which+' UP');
+                   // //console.log(event.which+' UP');
                 }
             });
             
@@ -631,7 +631,7 @@
                 
                 $("#confirmParsingInst").slideUp();
                 var thisID = $(this).attr("id");
-                //console.log(thisID+ " needs to slide up if it is open")
+                ////console.log(thisID+ " needs to slide up if it is open")
                 if (!$("#"+thisID+"Inst").is(":visible")) {
                     $(".actions").not($("#"+thisID+"Inst")).slideUp();
                     $("#"+thisID+"Inst").slideDown();
@@ -723,7 +723,7 @@
                 var thisLineW = parseFloat(thisLine.attr("linewidth")) * (newW / originalW);
                 thisLine.attr("linewidth", thisLineW);
                 //$(".transcriptlet[lineserverid='" + thisLineID + "']").attr("linewidth", thisLineW);
-                console.log("update line with ID: "+thisLineID);
+                //console.log("update line with ID: "+thisLineID);
                 updateLine(thisLine);       
                 $("#progress").html("Line Saved").delay(3000).fadeOut(1000);
                 $("#lineResizing").delay(3000).fadeOut(1000);
@@ -771,14 +771,14 @@
         if (thisID == "createColumn"){
             var isCreating = true;
             adjustColumn(event);
-            //console.log("New or reparse column");
+            ////console.log("New or reparse column");
             //Parsing.removeRuler();
             var offset = $('#imgTop').offset();
             var point = {};
             var deltaPoint = {x:0,y:0};
             $("#imgTop").bind({
                 mousedown: function(event){
-                   // console.log("NEWCOLUMN");
+                   // //console.log("NEWCOLUMN");
                     if ((event.target.className.indexOf("transcriptionImage") === -1 )){//|| !$("#createColumn").hasClass("ui-state-active")
                         isCreating = false;
                         return true;
@@ -971,7 +971,7 @@
             });
         } 
         else {
-            console.log("NOt the current page.")
+            //console.log("NOt the current page.")
             //var saveLine = $(line).parent(".previewLine");
             //if (saveLine.find(".previewSave").size() == 0)
                 //saveLine.prepend("<div class='right ui-state-default ui-corner-all previewSave' onclick='remoteSave(this,"+focusLineID+","+focusFolio+");'>Save Changes</div>");
@@ -1090,8 +1090,8 @@
     function applyRuler(line){
         //if ($("#addLines").hasClass('ui-state-active')||$("#removeLines").hasClass('ui-state-active'))
             //var sRCbkp = selectRulerColor; //select Ruler Color backup
-           // console.log("RULER");
-            //console.log(line);
+           // //console.log("RULER");
+            ////console.log(line);
             $("#imageTip").html("Add a Line");
             if(!isAddingLines){
                 if (line.attr("lineleft") == line.next("div").attr("lineleft")) {
@@ -1143,12 +1143,12 @@
     
     function lineChange(e,event){
         if(isAddingLines){
-            console.log("SPLIT LINE");
+            //console.log("SPLIT LINE");
             splitLine(e,event);
         }
         else{
             //mrege the line you clicked with the line below.  Delete the line below and grow this line by that lines height.  
-            console.log("Merge / Remove line")
+            //console.log("Merge / Remove line")
             removeLine(e);
         }
         

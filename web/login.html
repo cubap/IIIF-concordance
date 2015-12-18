@@ -96,7 +96,7 @@ and open the template in the editor.
         var testObj = {"attribution": "Provided by Harvard University", "structures": [], "label": "MS Typ 41. Houghton Library, Harvard University. Chronique du monde depuis la cr\u00e9ation, et des rois de France et d'Angleterre, jusqu'\u00e0 l'an 1461 : manuscript, [ca. 1461]", "sequences": [{"canvases": [{"label": "41", "width": 6251, "images": [{"resource": {"service": {"profile": "http://library.stanford.edu/iiif/image-api/1.1/conformance.html#level1", "@id": "http://ids.lib.harvard.edu/ids/iiif/48530377"}, "format": "image/jpeg", "height": 109517, "width": 6251, "@id": "http://ids.lib.harvard.edu/ids/iiif/48530377/full/full/full/native", "@type": "dcterms:Image"}, "on": "http://oculus-dev.harvardx.harvard.edu/manifests/drs:48309543/canvas/canvas-48530377.json", "motivation": "sc:painting", "@id": "http://oculus-dev.harvardx.harvard.edu/manifests/drs:48309543/annotation/anno-48530377.json", "@type": "oa:Annotation"}], "height": 109517, "@id": "http://oculus-dev.harvardx.harvard.edu/manifests/drs:48309543/canvas/canvas-48530377.json", "@type": "sc:Canvas"}], "viewingDirection": "left-to-right", "@id": "http://oculus-dev.harvardx.harvard.edu/manifests/drs:48309543/sequence/normal.json", "@type": "sc:Sequence", "viewingHint": "paged"}], "@context": "http://www.shared-canvas.org/ns/context.json", "@id": "http://oculus-dev.harvardx.harvard.edu/manifests/drs:48309543", "@type": "sc:Manifest", "seeAlso": "http://hollisclassic.harvard.edu/F?func=find-c&CCL_TERM=sys=9520434"}
         var params = {"scmanifest": JSON.stringify(testObj)};
         $.post(url, params, function(data){
-            console.log(data);
+            //console.log(data);
         });
     }
     function userLogin(){
@@ -110,7 +110,7 @@ and open the template in the editor.
                 
             })
             .done(function(){
-                console.log("login success");
+                //console.log("login success");
                 $("#loginfail").hide();  
                 $("#loginsuccess").show();
             })

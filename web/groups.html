@@ -58,8 +58,8 @@ and open the template in the editor.
         }
         var params = {"projectID":currentProjectID, "uname":uname, "fname":fname, "lname":lname};
         $.post(url,params,function(data){
-            console.log("add user done.  return the user id to use for pagination function");
-            console.log(data);
+            //console.log("add user done.  return the user id to use for pagination function");
+            //console.log(data);
             $('#projectMembers').append("<li userID='TODO'><span class='userFname'>"+fname+" </span><span class='userLname'>"+lname+" </span><span style='margin-left:5px;' class='userEmail'>("+uname+")</span></li>"); 
             //reference groups.html to find this html element.
             //TODO
@@ -102,8 +102,8 @@ and open the template in the editor.
         var url= "delUserFromProject";
         var params = {"uname":username, "projectID":currentProjectID};
         $.post(url, params, function(){
-            console.log("make sure to remove ");
-            console.log($elem);
+            //console.log("make sure to remove ");
+            //console.log($elem);
             $elem.remove();
         });
 //        if(jqXHR.status && jqXHR.status==401){
