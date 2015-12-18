@@ -65,16 +65,16 @@ public class ProjectServlet extends HttpServlet {
                 Project proj = new Project(projID);
                 if (proj.getProjectID() > 0) {
                 if (new Group(proj.getGroupID()).isMember(uid)) {
-                    if (checkModified(req, proj)) {
-                       resp.setContentType("application/ld+json; charset=UTF-8");
-                       resp.getWriter().write(new JsonLDExporter(proj, new User(uid)).export());
-                       resp.setStatus(HttpServletResponse.SC_OK);
-                    } else {
-                       resp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-                    }
-                } else {
+                  if (checkModified(req, proj)) {
+                     resp.setContentType("application/ld+json; charset=UTF-8");
+                     resp.getWriter().write(new JsonLDExporter(proj, new User(uid)).export());
+                     resp.setStatus(HttpServletResponse.SC_OK);
+                  } else {
+                     resp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+                  }
+               } else {
                   resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-                }
+               }
             } else {
                resp.sendError(HttpServletResponse.SC_NOT_FOUND);
             }

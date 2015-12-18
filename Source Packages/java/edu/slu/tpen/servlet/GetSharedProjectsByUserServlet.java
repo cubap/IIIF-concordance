@@ -13,14 +13,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import textdisplay.DatabaseWrapper;
+import user.Group;
 
 /**
  * Retrieve all a user's shared projects. 
@@ -40,11 +43,12 @@ public class GetSharedProjectsByUserServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) {
         String uName = request.getParameter("username");
-        String query = "select p.id, p.name from groupmembers as gm, groups as g, project as p, users as u where gm.UID = u.UID and g.GID=gm.GID and p.grp=g.GID AND u.Uname = ?";
+        String query = "select p.id, p.name from groupmembers as gm, groups as g, project as p, users as u where gm.UID = u.UID and g.GID=gm.GID and p.grp=g.GID AND u.Uname = ? AND gm.role = ?";
         Connection conn = DatabaseWrapper.getConnection();
         try {
             PreparedStatement ps = conn.prepareStatement(query);
             ps.setString(1, uName);
+            ps.setString(2, Group.roles.Contributor.toString());
             ResultSet rs = ps.executeQuery();
             JSONArray ja = new JSONArray();
             JSONObject jp = new JSONObject();

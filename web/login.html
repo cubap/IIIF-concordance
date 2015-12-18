@@ -8,10 +8,10 @@ and open the template in the editor.
     <head>
         <title>LOGIN</title>
         <meta charset="UTF-8">
-        <link type="text/css" href="../newberry/css/custom-theme/jQuery.css" rel="Stylesheet" />
+        <link type="text/css" href="css/custom-theme/jQuery.css" rel="Stylesheet" />
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js"></script>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.js"></script> 
-        <script type="text/javascript" src="../newberry/js/newberry.js"></script>
+        <script type="text/javascript" src="js/newberry.js"></script>
     </head>
     <style>
         #bypassLogin{
@@ -100,7 +100,6 @@ and open the template in the editor.
         });
     }
     function userLogin(){
-        //$("#loginfail").show();
         var userName = $('#uname').val();
         var password = $('#password').val();
         if(userName !== undefined && userName !== "" && password !== undefined && password !== ""){

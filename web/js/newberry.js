@@ -17,7 +17,6 @@
     var colorThisTime = "#FFFFFF";
     var annoLists = [];
     var loggedInUser = false;
-    //var basePath = window.location.protocol + "//" + window.location.host;
     
     var annoListTester = 
             {
@@ -304,7 +303,7 @@
     }
     
 //    function getProjectTools(projectID){
-//        var url = "http://localhost:8080/newberry/getProjectTPENServlet?projectID="+projectID;
+//        var url = "http://localhost:8080/getProjectTPENServlet?projectID="+projectID;
 //        $.ajax({
 //            url: url,
 //            type:"GET",
@@ -489,10 +488,10 @@
                         projectTools = JSON.parse(projectTools);
                         var count = 0;
                         var url  = "";                      
-                        if(activeProject.ls_ms[1] !== undefined){
+                        if(activeProject.ls_ms[0] !== undefined){
                             var getURLfromThis = activeProject.ls_ms;
                             getURLfromThis = JSON.parse(getURLfromThis);
-                            url  = getURLfromThis[1].archive; //This is the manifest inside the project data
+                            url  = getURLfromThis[0].archive; //This is the manifest inside the project data
 //                            console.log("data is here: "+getURLfromThis[1].archive);
                             if(url.indexOf("http") < 0){ //Then this is a newberry created newberry project
                                 //create the newberry url
@@ -634,10 +633,10 @@
                                 projectTools = JSON.parse(projectTools);
                                 var count = 0;
                                 var url  = "";
-                                if(activeProject.ls_ms[1] !== undefined){
+                                if(activeProject.ls_ms[0] !== undefined){
                                     var getURLfromThis = activeProject.ls_ms;
                                     getURLfromThis = JSON.parse(getURLfromThis);
-                                    url  = getURLfromThis[1].archive;
+                                    url  = getURLfromThis[0].archive;
                                     $.ajax({
                                         url: url,
                                         success: function(projectData){
@@ -809,7 +808,7 @@
             //ERROR!  Malformed canvas object.  
         }
 ////        $('.transcriptionImage').error(function(){
-////            $(this).attr('src', basePath+"/images/missingImage.png");
+////            $(this).attr('src', "images/missingImage.png");
 ////        });
         $(".previewText").removeClass("currentPage");
 //        console.log("Lines To Add Current Page TO");
@@ -1389,7 +1388,7 @@
     };
     
      function startMoveImg(){
-        $("#imgTop, #imgBottom").css("cursor", "url("+"images/open_grab.png),auto");
+        $("#imgTop, #imgBottom").css("cursor", "url(images/open_grab.png),auto");
         $("#imgTop,#imgBottom").mousedown(function(event){moveImg(event);});
     }
     
@@ -1413,7 +1412,7 @@
         event.preventDefault();
 //        $(dragHelper).appendTo("body");
         $("#imgTop img,#imgBottom img,#imgTop .lineColIndicatorArea, #imgBottom .lineColIndicatorArea, #bookmark").addClass('noTransition');
-        $("#imgTop, #imgBottom").css("cursor", "url("+"images/close_grab.png),auto" );
+        $("#imgTop, #imgBottom").css("cursor", "url(images/close_grab.png),auto" );
         $(document)
         .disableSelection()
         .mousemove(function(event){
@@ -1447,7 +1446,7 @@
         .mouseup(function(){
             $("#dragHelper").remove();
             $("#imgTop img,#imgBottom img,#imgTop .lineColIndicatorArea, #imgBottom .lineColIndicatorArea, #bookmark").removeClass('noTransition');
-            if(!isMagnifying)$("#imgTop, #imgBottom").css("cursor", "url("+"images/open_grab.png),auto");
+            if(!isMagnifying)$("#imgTop, #imgBottom").css("cursor", "url(images/open_grab.png),auto");
             $(document)
             .enableSelection()
             .unbind("mousemove");
@@ -2694,7 +2693,7 @@ function toggleLineMarkers(){
 //            $('.parsing').each(function(){
 //                var currentLineServerID = $(this).attr('lineServerID');
 //                var currentLineText = $(this).find('textarea').val();
-//                var url = "http://localhost:8080/newberry/updateLine?text="+currentLineText+"&projectID="+projectID+"&line="+currentLineServerID;
+//                var url = "http://localhost:8080/updateLine?text="+currentLineText+"&projectID="+projectID+"&line="+currentLineServerID;
 //                var updateRequest = new XMLHttpRequest();
 //                updateRequest.open("POST", url, true);
 //      //          updateRequest.setRequestHeader("Access-Control-Allow-Origin", "Access-Control-Allow_Origin:*");
@@ -2705,7 +2704,7 @@ function toggleLineMarkers(){
 //            $('.transcriptlet').each(function(){
 //                var currentLineServerID = $(this).attr('lineServerID');
 //                var currentLineText = $(this).find('textarea').val();
-//                var url = "http://localhost:8080/newberry/updateLine?text="+currentLineText+"&projectID="+projectID+"&line="+currentLineServerID;
+//                var url = "http://localhost:8080/updateLine?text="+currentLineText+"&projectID="+projectID+"&line="+currentLineServerID;
 //                var updateRequest = new XMLHttpRequest();
 //                updateRequest.open("POST", url, true);
 //      //          updateRequest.setRequestHeader("Access-Control-Allow-Origin", "Access-Control-Allow_Origin:*");
@@ -2783,7 +2782,7 @@ function toggleLineMarkers(){
         };
         
 //        TODO:  This is the real anno store update.  get it right. 
-//        var url = "http://localhost:8080/newberry/updateTransLineServlet";
+//        var url = "http://localhost:8080/updateTransLineServlet";
 //        var params = {"content":""};
 //        params.content = dbLine;
 //        params = JSON.stringify(params);
@@ -2855,8 +2854,6 @@ function toggleLineMarkers(){
     
     
     function saveNewLine(lineBefore, newLine){
-        var theURL = window.location.href;
-        var projID = theURL.substring(theURL.indexOf("projectID=")+10);
         var beforeIndex = -1;
         if(lineBefore !== undefined && lineBefore !== null){
             beforeIndex = parseInt(lineBefore.attr("linenum"));
@@ -2978,7 +2975,8 @@ console.log("NEW LINE LEFT: " + newLineLeft);
                     }
                 }
                 else if(currentAnnoList == "empty"){
-                //make a new list for it.    //Annotation lists need to be connected to a project, so we are adding that property in.  We should find a proper vocabulary for it through IIIF (like metadata)
+                //make a new list for it.
+    //            console.log("Anno list was empty, making a new list for it");
                     var newAnnoList = 
                         {
                             "@type" : "sc:AnnotationList",
@@ -2987,8 +2985,7 @@ console.log("NEW LINE LEFT: " + newLineLeft);
                             "version" : 1,
                             "permission" : 0,
                             "forkFromID" : "",
-                            "resources" : [],
-                            "proj" : projID
+                            "resources" : []
                         };
                     var url2 = "saveNewTransLineServlet";
                     var params2 = {"content": JSON.stringify(newAnnoList)};

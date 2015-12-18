@@ -234,14 +234,14 @@ and open the template in the editor.
         var content = "testedUPDATE";
         var selector = "x=51,y=51,w=101,h=201";
         var title = "updatedTITLE";
-        var resource = "http://165.134.241.141/T-PEN/imageResize?folioNum=13186850&height=2000"; //image url
+        var resource = "imageResize?folioNum=13186850&height=2000"; //image url
         var resourceType = "image"; //image
         var outerRelative = "projectID:4351, folio:13186850"; //folio it belongs to.  Need to also have projectID so that this entry will be unique. 
         //var addedTime = "";
         //var fontColor = "black";
         //var fontType = "";
         var permission = 1;
-        var url = "http://165.134.241.141/T-PEN/updateTransLineServlet";
+        var url = "updateTransLineServlet";
         var params = {"objectID":objectID, "namespace":namespace, "content":content, "selector":selector, "title":title,
             "resource":resource, "resourceType":resourceType, "outerRelative":outerRelative, "permission":permission};
         $.post(url, params);
@@ -252,14 +252,14 @@ and open the template in the editor.
         var content = "tested";
 //        var selector = "x=5,y=50,w=100,h=200";
         var title = "title";
-        var resource = "http://165.134.241.141/T-PEN/imageResize?folioNum=13186850&height=2000"; //image url
+        var resource = "imageResize?folioNum=13186850&height=2000"; //image url
         var resourceType = "image"; //image
 //        var outerRelative = "projectID:4351, folio:13186850"; //folio it belongs to.  Need to also have projectID so that this entry will be unique. 
 //        var addedTime = "";
         //var fontColor = "black";
        // var fontType = "";
         var permission = 2;
-        var url = "http://165.134.241.141/T-PEN/saveNewTransLineServlet";
+        var url = "saveNewTransLineServlet";
 //        var params = {"namespace":namespace, "content":content, "selector":selector, "title":title, 
 //            "resource":resource, "resourceType":resourceType, "outerRelative":outerRelative, "permission":permission};
         var params = {"namespace":namespace, "content":content, "title":title, 
@@ -331,7 +331,7 @@ and open the template in the editor.
                 projectID = userTranscription;
                 //Put a header in saying it is cross origin and who I am.
                 var projectRequest = new XMLHttpRequest();
-                var url = "http://165.134.241.141/T-PEN/project/"+userTranscription;
+                var url = "project/"+userTranscription;
                 $.ajax({
                     url: url,
                     success: function(projectData){
@@ -635,7 +635,7 @@ and open the template in the editor.
         $('.transcriptlet').each(function(){
             var currentLineServerID = $(this).attr('lineServerID');
             var currentLineText = $(this).find('textarea').val();
-            var url = "http://165.134.241.141/T-PEN/updateLine?text="+currentLineText+"&projectID="+projectID+"&line="+currentLineServerID;
+            var url = "updateLine?text="+currentLineText+"&projectID="+projectID+"&line="+currentLineServerID;
             var updateRequest = new XMLHttpRequest();
             updateRequest.open("POST", url, true);
   //          updateRequest.setRequestHeader("Access-Control-Allow-Origin", "Access-Control-Allow_Origin:*");
@@ -651,7 +651,7 @@ and open the template in the editor.
           var nextID = parseFloat(focusItem[1].attr('lineID')) + 1;
           var currentLineServerID = focusItem[1].attr("lineServerID");
           var currentLineText = focusItem[1].find('textarea').val(); //.val() does not work.
-          var url = "http://165.134.241.141/T-PEN/updateLine?text="+currentLineText+"&projectID="+projectID+"&line="+currentLineServerID;
+          var url = "updateLine?text="+currentLineText+"&projectID="+projectID+"&line="+currentLineServerID;
           var updateRequest = new XMLHttpRequest();
           updateRequest.open("POST", url, true);
 //          updateRequest.setRequestHeader("Access-Control-Allow-Origin", "Access-Control-Allow_Origin:*");

@@ -14,23 +14,13 @@
  */
 package edu.slu.tpen.servlet;
 
-import edu.slu.tpen.servlet.util.CreateCanvasListUtil;
 import edu.slu.util.ServletUtils;
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.sql.Connection;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-import textdisplay.Folio;
 import textdisplay.PartnerProject;
 import textdisplay.Project;
 
@@ -48,72 +38,31 @@ public class CopyProjectForPracticerServlet extends HttpServlet {
      * @param uID
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int result = 0;
-        if(null != request.getParameter("projectID")){
+        String result = "";
+        int uID = ServletUtils.getUID(request, response);
+        if(null != request.getParameter("projectID") && uID != -1){
             Integer projectID = Integer.parseInt(request.getParameter("projectID"));
-            if(null != request.getParameter("uID")){
-                Integer uID = Integer.parseInt(request.getParameter("uID"));
-                try {
-                    //find original project and copy to a new project. 
-                    Project templateProject = new Project(projectID);
-                    Connection conn = ServletUtils.getDBConnection();
-                    conn.setAutoCommit(false);
-                    //in this method, it copies everything about the project.
-                    if(null != templateProject.getProjectName())
-                    {
-                        Project thisProject = new Project(templateProject.copyProjectWithoutTranscription(conn, uID));
-                        //set partener project. It is to make a connection on switch board. 
-                        thisProject.setAssociatedPartnerProject(projectID);
-                        PartnerProject theTemplate = new PartnerProject(projectID);
-                        thisProject.copyButtonsFromProject(conn, theTemplate.getTemplateProject());
-                        thisProject.copyHotkeysFromProject(conn, theTemplate.getTemplateProject());
-                        conn.commit();
-                        Folio[] folios = thisProject.getFolios();
-                        if(null != folios && folios.length > 0)
-                        {
-                            for(int i = 0; i < folios.length; i++)
-                            {
-                                Folio folio = folios[i];
-                                //create canvas list for original canvas
-                                JSONObject canvasList = CreateCanvasListUtil.createEmptyCanvasList(templateProject.getProjectName(), thisProject.getProjectID(), folio.getPageName());
-                                URL postUrl = new URL(Constant.ANNOTATION_SERVER_ADDR + "/anno/saveNewAnnotation.action");
-                                HttpURLConnection uc = (HttpURLConnection) postUrl.openConnection();
-                                uc.setDoInput(true);
-                                uc.setDoOutput(true);
-                                uc.setRequestMethod("POST");
-                                uc.setUseCaches(false);
-                                uc.setInstanceFollowRedirects(true);
-                                uc.addRequestProperty("content-type", "application/x-www-form-urlencoded");
-                                uc.connect();
-                                DataOutputStream dataOut = new DataOutputStream(uc.getOutputStream());
-                                dataOut.writeBytes("content=" + URLEncoder.encode(canvasList.toString(), "utf-8"));
-                                dataOut.flush();
-                                dataOut.close();
-                                BufferedReader reader = new BufferedReader(new InputStreamReader(uc.getInputStream(),"utf-8"));
-//                                String line="";
-//                                StringBuilder sb = new StringBuilder();
-//                                System.out.println("=============================");  
-//                                System.out.println("Contents of post request");  
-//                                System.out.println("=============================");  
-//                                while ((line = reader.readLine()) != null){  
-//                                    //line = new String(line.getBytes(), "utf-8");  
-//                                    System.out.println(line);
-//                                    sb.append(line);
-//                                }
-//                                System.out.println("=============================");  
-//                                System.out.println("Contents of post request ends");  
-//                                System.out.println("=============================");  
-                                reader.close();
-                                uc.disconnect();
-                            }
-                        }
-                    }
-                } catch(Exception e){
-                    e.printStackTrace();
-                }
+        
+            try {
+                //find original project and copy to a new project. 
+                Project templateProject = new Project(projectID);
+                Connection conn = ServletUtils.getDBConnection();
+                conn.setAutoCommit(false);
+                //in this method, it copies everything about the project. 
+                Project thisProject = new Project(templateProject.copyProjectWithoutTranscription(conn, uID));
+                //set partener project. It is to make a connection on switch board. 
+                thisProject.setAssociatedPartnerProject(projectID);
+                PartnerProject theTemplate = new PartnerProject(projectID);
+                thisProject.copyButtonsFromProject(conn, theTemplate.getTemplateProject());
+                thisProject.copyHotkeysFromProject(conn, theTemplate.getTemplateProject());
+                conn.commit();
+                String propVal = textdisplay.Folio.getRbTok("CREATE_PROJECT_RETURN_DOMAIN"); 
+                result = propVal + "/project/" + thisProject.getProjectID();
+            } catch(Exception e){
+                e.printStackTrace();
             }
         }else{
-            result = response.SC_FORBIDDEN;
+            result = "" + response.SC_FORBIDDEN;
         }
         response.getWriter().print(result);
     }

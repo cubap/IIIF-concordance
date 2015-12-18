@@ -61,6 +61,12 @@ public class GetProjectTPENServlet extends HttpServlet {
    @Override
    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int uid = getUID(request, response);
+        boolean isTPENAdmin = false;
+        try {
+        	isTPENAdmin = (new User(uid)).isAdmin();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
         PrintWriter out = response.getWriter();
         response.setContentType("application/ld+json; charset=UTF-8");
         Gson gson = new Gson();
@@ -74,7 +80,7 @@ public class GetProjectTPENServlet extends HttpServlet {
                 if (proj.getProjectID() > 0) {
                     Group group = new Group(proj.getGroupID());
                     System.out.println("group Id ===== " + proj.getGroupID() + " is member " + group.isMember(uid));
-                    if (group.isMember(uid)) {
+                    if (group.isMember(uid) || isTPENAdmin) {
                         if (checkModified(request, proj)) {
                             jsonMap.put("project", gson.toJson(proj));
                             System.out.println("project json ====== " + gson.toJson(proj));

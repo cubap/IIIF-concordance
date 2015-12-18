@@ -15,14 +15,9 @@
 
 package edu.slu.tpen.servlet;
 
-import edu.slu.tpen.servlet.util.CreateCanvasListUtil;
 import edu.slu.util.ServletUtils;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -139,23 +134,7 @@ public class CreateProjectServlet extends HttpServlet {
                 Folio[] array_folios = new Folio[ls_folios_keys.size()];
                 if(ls_folios_keys.size() > 0){
                     for(int i = 0; i < ls_folios_keys.size(); i++){
-                        Folio folio = new Folio(ls_folios_keys.get(i));
-                        array_folios[i] = folio;
-                        //create canvas list for original canvas
-                        JSONObject canvasList = CreateCanvasListUtil.createEmptyCanvasList(newProject.getProjectName(), newProject.getProjectID(), folio.getPageName());
-                        URL postUrl = new URL(Constant.ANNOTATION_SERVER_ADDR + "/anno/saveNewAnnotation.action");
-                        HttpURLConnection uc = (HttpURLConnection) postUrl.openConnection();
-                        uc.setDoInput(true);
-                        uc.setDoOutput(true);
-                        uc.setRequestMethod("POST");
-                        uc.setUseCaches(false);
-                        uc.setInstanceFollowRedirects(true);
-                        uc.addRequestProperty("content-type", "application/x-www-form-urlencoded");
-                        uc.connect();
-                        DataOutputStream dataOut = new DataOutputStream(uc.getOutputStream());
-                        dataOut.writeBytes("content=" + URLEncoder.encode(canvasList.toString(), "utf-8"));
-                        dataOut.flush();
-                        dataOut.close();
+                        array_folios[i] = new Folio(ls_folios_keys.get(i));
                     }
                 }
                 newProject.setFolios(conn, array_folios);

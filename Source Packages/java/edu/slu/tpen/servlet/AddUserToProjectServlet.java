@@ -50,7 +50,7 @@ public class AddUserToProjectServlet extends HttpServlet {
                         if (g.isAdmin(thisUser.getUID())) {
                             User newUser = new User(request.getParameter("uname"));
                             g.addMember(newUser.getUID());
-                            response.getWriter().print(newUser.getUID());
+                            response.getWriter().print("success");
                         }else{
                             //if user is not admin, return unauthorized. 
                             response.getWriter().print(response.SC_UNAUTHORIZED);
@@ -61,7 +61,7 @@ public class AddUserToProjectServlet extends HttpServlet {
                         if (g.isAdmin(thisUser.getUID())) {
                             User newUser = new User(request.getParameter("uname"));
                             g.addMember(newUser.getUID());
-                            response.getWriter().print(newUser.getUID());
+                            response.getWriter().print("success");
                         }else{
                             //if user is not admin, return unauthorized. 
                             response.getWriter().print(response.SC_UNAUTHORIZED);
@@ -72,7 +72,7 @@ public class AddUserToProjectServlet extends HttpServlet {
                         if (g.isAdmin(thisUser.getUID())) {
                             User newUser = new User(request.getParameter("uname"));
                             g.addMember(newUser.getUID());
-                            response.getWriter().print(newUser.getUID());
+                            response.getWriter().print("success");
                         }else{
                             //if user is not admin, return unauthorized. 
                             response.getWriter().print(response.SC_UNAUTHORIZED);
@@ -96,7 +96,7 @@ public class AddUserToProjectServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        this.doPost(req, resp); //To change body of generated methods, choose Tools | Templates.
+        super.doGet(req, resp); //To change body of generated methods, choose Tools | Templates.
     }
     
 }
