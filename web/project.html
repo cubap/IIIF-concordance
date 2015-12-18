@@ -1204,10 +1204,13 @@ function getActiveProjectMetadata(currentProjectID){
 
 
 
-function deleteProject(projID){
+function deleteProject(projID, elem){
     var url = "delProject";
     var params = {projectID:projID};
-    $.post(url, params);
+    $.post(url, params)
+            .done(function(){
+                $("#projectList").children("li[projectID='"+projID+"']").remove();
+    });
 }
 
 function getUserProjects(projectID, userID, username){
@@ -1228,7 +1231,7 @@ function getUserProjects(projectID, userID, username){
                     $('#projectList').append("<li><a title=\"" + projectName + "\" class=\"tpenButton projectTitle\" href='project.html?projectID="+projectID+"'>"+projectName+"</a></li>");
                 }
                 else{
-                    $('#projectList').append("<li>\n\
+                    $('#projectList').append("<li projectID='"+projectID+"'>\n\
                     <a title=\"" + projectName + "\" class=\"tpenButton projectTitle\" href='project.html?projectID="+projectID+"'> "+projectName+" </a>\n\
                     <span style='z-index:1000; cursor:pointer;' title=\"delete project\" class=\"delete ui-icon ui-icon-closethick right\" onclick=\"deleteProject("+projectID+");\"></span>\n\
                     </li>");
