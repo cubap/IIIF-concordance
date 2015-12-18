@@ -15,6 +15,7 @@
         #topTrim{
             position: relative;
             display: block;
+            width: 100%;
         }
         #topTrim span{
             display: inline-block;
@@ -22,31 +23,7 @@
         }
     </style>
     <body>
-        <div class="instructions">
-            <p>
-                The area below accepts a local project ID number, a project or IIIF manifest url, or a valid T-PEN or IIIF manifest JSON object as valid input.  It will then load a manifest
-                to the interface for you to interact with the transcription tool.  You can click 'correct parsing' to edit the line parsings.  
-                You can click the forward and backwards button in the transcription
-                workspace to move through the lines on the current page or the pages in the manifest.  You can use the same arrows at the very top next to the 
-                'jump to page' module to do this as well.  You can also select the specific page you want to jump to.  
-                The split page tools allow you to place something next to your transcription interface.  You can view other pages in the manifest or tools from outside sources
-                (like dictionaries or an abbreviation list).  Try them out.  If you get stuck or want to load a new manifest, refresh the page.  
-            </p>
-            <p>
-                Once you have decided what to put into the area, click 'Load Transcription' to have the input created into the transcription interface.  
-            </p>
-        </div>
-        
-        <div id="setTranscriptionObjectArea">
-            <textarea id="transcriptionText"></textarea>
-<!--            <input type="file" id="transcriptionFile" required="true" multiple="false" onclick="resetTranscription();" />-->
-        </div>
-        
-        <button id="loadBtn" class="hideme" onclick="loadTranscription();"> Load Transcription </button> 
-        <!--<input type="button" value="Enter A New Transcription Object" class="hideme" onclick='resetTranscription();'/>-->
-        
-        <div id="transcriptionTemplate">
-            <div class="topTrim">
+        <div class="topTrim">
                         <span class="trimSection">TITLE:<span id="trimTitle"></span></span>
                         <span class="trimSection">PAGE: <span id="trimPage"></span></span>
                         <span class="trimSection">
@@ -64,7 +41,30 @@
                         <span class="trimSection">Help</span>
                         <span class="trimSection">Contact</span>
             </div>
-<!--            <input type="button" class="save&exit" style="position: absolute; right:23%;" value="Save & Exit" />-->
+        <div class="instructions">
+            <p>
+                The area below accepts a local project ID number, a project or IIIF manifest url, or a valid T-PEN or IIIF manifest JSON object as valid input.  It will then load a manifest
+                to the interface for you to interact with the transcription tool.  You can click 'correct parsing' to edit the line parsings.  
+                You can click the forward and backwards button in the transcription
+                workspace to move through the lines on the current page or the pages in the manifest.  You can use the same arrows at the very top next to the 
+                'jump to page' module to do this as well.  You can also select the specific page you want to jump to.  
+                The split page tools allow you to place something next to your transcription interface.  You can view other pages in the manifest or tools from outside sources
+                (like dictionaries or an abbreviation list).  Try them out.  If you get stuck or want to load a new manifest, refresh the page.  
+            </p>
+            <p>
+                Once you have decided what to put into the area, click 'Load Transcription' to have the input created into the transcription interface.  
+            </p>
+        </div>
+        
+        <div id="setTranscriptionObjectArea">
+            <textarea id="transcriptionText"></textarea>
+        </div>
+        
+        <button id="loadBtn" class="hideme" onclick="loadTranscription();"> Load Transcription </button> 
+        <button id="loadBtn" class="hideme" onclick="createBryan();"> TEST CREATION </button>
+        
+        <div id="transcriptionTemplate">
+            
             <div id="transcriptionCanvas">
                 <div id="magnifyTools">
                     <div onclick="$('.magnifyTool').toggle();">Magnify</div>
@@ -78,7 +78,6 @@
                 <div id="imgTop">
                   <img class="transcriptionImage"/>
                   <div class="lineColIndicatorArea">
-<!--                      <div id="bookmark"></div>-->
                   </div>
                 </div>
               <div id="transWorkspace">
@@ -104,7 +103,8 @@
                     <!-- make some space happen here -->
                     <div title="Control Drawn Line Settings" id="lineColControls">
                         <div>Number Control</div>
-                        <span>Line #s</span><input type="checkbox" onchange="toggleLineMarkers();" checked="checked">
+                        <span>Lines</span><input type="checkbox" onchange="toggleLineMarkers();" checked="checked">
+                        <span>Line #s</span><input type="checkbox" onchange="toggleLineCol();" checked="checked"><br>
                         <button id="markerColors" onclick="markerColors();">Line Color</button>
                     </div>
                      <button class="magnifyBtn" style="margin-left:2%" magnifyImg="trans" title="Magnify Transcription Image" >Magnify</button> <!--Page event on the listener for this class in js.-->
@@ -153,14 +153,7 @@
                 <img class="transcriptionImage" />
                 <div class="lineColIndicatorArea"></div>
               </div><br>
-            </div><!--
-<!--            <div title="Return to fullscreen transcription" id="fullScreenBtn">
-                <span class="left ui-icon ui-icon-carat-1-e"></span>
-                <span class="left ui-icon ui-icon-carat-1-e"></span>
-                <span class="left ui-icon ui-icon-carat-1-e"></span>
-                <span class="left ui-icon ui-icon-carat-1-e"></span>
-                <span class="left ui-icon ui-icon-carat-1-e"></span>
-            </div>-->
+            </div>
         </div>
          <div id="parsingSplit" class="split" >
                 <button class="fullScreenTrans">Full Screen Transcription</button>
@@ -418,6 +411,15 @@
 </html>
 <script>
     var theProjectID = -1;
+    window.onresize = function(event) {
+        var newHeight = $("#imgBottom img").height();
+        //console.log("window resize.  New height: "+newHeight+"px");
+        $("#transcriptionCanvas").css("height",newHeight+"px");
+        $(".lineColIndicatorArea").css("height",newHeight+"px");
+        $.each($(".lineColOnLine"),function(){
+              $(this).css("line-height", $(this).height()+"px");
+          });
+    };
     $(document).ready(function(){
         //check if logged in
         var user = "";
@@ -508,7 +510,7 @@
 
         $('#transcriptionFile').on("change", function(event){
             //start spinny?
-            //console.log("change");
+            ////console.log("change");
             var selectedFile = event.target.files[0];
             var reader = new FileReader();
             var result = $('#transcriptionText')
@@ -544,13 +546,13 @@
                 //back out
                 if ((event.which === 109) || (event.which === 189) || (event.which === 173) ){ //173  = - in firefox
                     zoomMultiplier -= .4;
-                    console.log('ZOOM MULTIPLIER: '+zoomMultiplier);
+                    //console.log('ZOOM MULTIPLIER: '+zoomMultiplier);
                     $(document).mousemove();
                 }
                 //ease in
                 else if ((event.which === 107) || (event.which === 187) || (event.which === 61)){ // 61 = + in firefox
                     zoomMultiplier += .4;
-                    console.log('ZOOM MULTIPLIER: '+zoomMultiplier);
+                    //console.log('ZOOM MULTIPLIER: '+zoomMultiplier);
                     $(document).mousemove();
                 }
                 //esc
@@ -569,17 +571,17 @@
                 }
                 else {
                   //stop magnifying?
-                 //console.log(event.which+' DOWN');
+                 ////console.log(event.which+' DOWN');
                 }
             }
             else if (event.which == 18 || event.altKey){
-               // console.log('ALT KEY');
+               // //console.log('ALT KEY');
                var lineForEditing = $(".activeLine");
                lineForEditing.resizable()
             }
             else if (event.which === 27){
                 //Esc during any active tool means stop the tool.  In this case, our only worry is moving the image around.  We may add others later. 
-                //console.log("ESC DOWN");
+                ////console.log("ESC DOWN");
                 $("#imgTop, #imgBottom").unbind();
                 $("#imgTop").css("cursor", "default");
                 $("#imgBottom").css("cursor", "default");
@@ -591,7 +593,7 @@
                 }
             }
             else{
-                //console.log(event.which+" DOWN");
+                ////console.log(event.which+" DOWN");
             }
             })
             .keyup(function(event){
@@ -601,7 +603,7 @@
                     //unShiftInterface();
                 }
                 else{
-                   // console.log(event.which+' UP');
+                   // //console.log(event.which+' UP');
                 }
             });
             
@@ -629,7 +631,7 @@
                 
                 $("#confirmParsingInst").slideUp();
                 var thisID = $(this).attr("id");
-                //console.log(thisID+ " needs to slide up if it is open")
+                ////console.log(thisID+ " needs to slide up if it is open")
                 if (!$("#"+thisID+"Inst").is(":visible")) {
                     $(".actions").not($("#"+thisID+"Inst")).slideUp();
                     $("#"+thisID+"Inst").slideDown();
@@ -721,7 +723,7 @@
                 var thisLineW = parseFloat(thisLine.attr("linewidth")) * (newW / originalW);
                 thisLine.attr("linewidth", thisLineW);
                 //$(".transcriptlet[lineserverid='" + thisLineID + "']").attr("linewidth", thisLineW);
-                console.log("update line with ID: "+thisLineID);
+                //console.log("update line with ID: "+thisLineID);
                 updateLine(thisLine);       
                 $("#progress").html("Line Saved").delay(3000).fadeOut(1000);
                 $("#lineResizing").delay(3000).fadeOut(1000);
@@ -769,14 +771,14 @@
         if (thisID == "createColumn"){
             var isCreating = true;
             adjustColumn(event);
-            //console.log("New or reparse column");
+            ////console.log("New or reparse column");
             //Parsing.removeRuler();
             var offset = $('#imgTop').offset();
             var point = {};
             var deltaPoint = {x:0,y:0};
             $("#imgTop").bind({
                 mousedown: function(event){
-                   // console.log("NEWCOLUMN");
+                   // //console.log("NEWCOLUMN");
                     if ((event.target.className.indexOf("transcriptionImage") === -1 )){//|| !$("#createColumn").hasClass("ui-state-active")
                         isCreating = false;
                         return true;
@@ -969,7 +971,7 @@
             });
         } 
         else {
-            console.log("NOt the current page.")
+            //console.log("NOt the current page.")
             //var saveLine = $(line).parent(".previewLine");
             //if (saveLine.find(".previewSave").size() == 0)
                 //saveLine.prepend("<div class='right ui-state-default ui-corner-all previewSave' onclick='remoteSave(this,"+focusLineID+","+focusFolio+");'>Save Changes</div>");
@@ -1088,8 +1090,8 @@
     function applyRuler(line){
         //if ($("#addLines").hasClass('ui-state-active')||$("#removeLines").hasClass('ui-state-active'))
             //var sRCbkp = selectRulerColor; //select Ruler Color backup
-           // console.log("RULER");
-            //console.log(line);
+           // //console.log("RULER");
+            ////console.log(line);
             $("#imageTip").html("Add a Line");
             if(!isAddingLines){
                 if (line.attr("lineleft") == line.next("div").attr("lineleft")) {
@@ -1141,16 +1143,20 @@
     
     function lineChange(e,event){
         if(isAddingLines){
-            console.log("SPLIT LINE");
+            //console.log("SPLIT LINE");
             splitLine(e,event);
         }
         else{
             //mrege the line you clicked with the line below.  Delete the line below and grow this line by that lines height.  
-            console.log("Merge / Remove line")
+            //console.log("Merge / Remove line")
             removeLine(e);
         }
         
     }
+    
+    
+    
+
     
     
 </script>

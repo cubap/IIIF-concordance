@@ -84,7 +84,7 @@ body{
     height: auto;
     width: 100%;
     position: relative;
-    display: block;
+    display: inline-block;
 /*    margin-top:35px;*/
 }
     
@@ -145,13 +145,14 @@ body{
       z-index:2;
     }
 
-    #imgTop,#imgBottom {
+    #imgTop,#imgBottom{
       display:block;
       height:35%;
       overflow:hidden;
       position:relative;
       width:100%;
       z-index:1;
+      max-width: 100%;
     }
 
     #imgBottom {
@@ -167,6 +168,7 @@ body{
         width:100%; /* or 100% ?*/
         max-height: none !important; 
         z-index:inherit;
+        max-width: 100%;
     }
 
     #transWorkspace {
@@ -885,7 +887,7 @@ label {width:auto;padding: 0;float: none;}/*fixme should not have to overwrite*/
 
 #lineColControls{
     width: 151px;
-    height: 48px;
+    height: 67px;
     background-color: #808080;
     position: relative;
     display: inline-block;
@@ -954,7 +956,7 @@ p{
     z-index:10; 
     position: absolute;
     border:1px solid white;
-    font-size:20px;
+    font-size:.8em;
     color:white;
     transition: box-shadow 2s;
 }
@@ -966,7 +968,7 @@ p{
 .lineColOnLine{
     position: absolute;
     right: 0px;
-    border-left:1px solid white;
+    border-left:1px solid rgba(255,255,255,.2);
     padding: 0px 8px;
     height:100%
 }

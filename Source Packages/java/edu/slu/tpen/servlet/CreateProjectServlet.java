@@ -12,12 +12,18 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-
 package edu.slu.tpen.servlet;
 
+import edu.slu.tpen.servlet.util.CreateCanvasListUtil;
 import edu.slu.util.ServletUtils;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -37,7 +43,8 @@ import textdisplay.Project;
 import user.Group;
 
 /**
- * Create a manuscript, folio and project for New Berry. 
+ * Create a manuscript, folio and project for New Berry.
+ *
  * @author hanyan
  */
 public class CreateProjectServlet extends HttpServlet {
@@ -53,9 +60,10 @@ public class CreateProjectServlet extends HttpServlet {
 //        super.doGet(request, response); //To change body of generated methods, choose Tools | Templates.
         this.doPost(request, response);
     }
-    
+
     /**
-     * Create manuscript, folio and project using given json data. 
+     * Create manuscript, folio and project using given json data.
+     *
      * @param repository (optional)
      * @param archive (optional)
      * @param city (optional)
@@ -66,15 +74,18 @@ public class CreateProjectServlet extends HttpServlet {
      */
     public String creatManuscriptFolioProject(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        /*if(null != request.getSession().getAttribute("UID")){
+         UID = (Integer) request.getSession().getAttribute("UID");
+         }*/
         try {
             //receive parameters.
-            String repository="newBerry";
-            String archive="";
-            String city="unknown";
-            String collection="unknown";
+            String repository = "newBerry";
+            String archive = "";
+            String city = "unknown";
+            String collection = "unknown";
 
             city = request.getParameter("city");
-            if(null == city){
+            if (null == city) {
                 city = "fromWebService";
             }
             textdisplay.Manuscript m = null;
@@ -83,25 +94,26 @@ public class CreateProjectServlet extends HttpServlet {
 //            String [] seperatedURLs = urls.split(";");
 //            String names = request.getParameter("names");
 //            String [] seperatedNames = names.split(",");
+
             String str_manifest = request.getParameter("scmanifest");
             List<Integer> ls_folios_keys = new ArrayList();
-            if(null != str_manifest){
+            if (null != str_manifest) {
                 JSONObject jo = JSONObject.fromObject(str_manifest);
                 archive = jo.getString("@id");
                 //create a manuscript
-                m=new textdisplay.Manuscript("newBerry", archive, city, city, -999);
+                m = new textdisplay.Manuscript("newBerry", archive, city, city, -999);
                 JSONArray sequences = (JSONArray) jo.get("sequences");
                 List<String> ls_pageNames = new LinkedList();
-                for(int i = 0; i < sequences.size(); i++){
+                for (int i = 0; i < sequences.size(); i++) {
                     JSONObject inSequences = (JSONObject) sequences.get(i);
                     JSONArray canvases = inSequences.getJSONArray("canvases");
-                    if(null != canvases && canvases.size() > 0){
-                        for(int j = 0; j < canvases.size(); j ++){
+                    if (null != canvases && canvases.size() > 0) {
+                        for (int j = 0; j < canvases.size(); j++) {
                             JSONObject canvas = canvases.getJSONObject(j);
                             ls_pageNames.add(canvas.getString("label"));
                             JSONArray images = canvas.getJSONArray("images");
-                            if(null != images && images.size() > 0){
-                                for(int n = 0; n < images.size(); n++){
+                            if (null != images && images.size() > 0) {
+                                for (int n = 0; n < images.size(); n++) {
                                     JSONObject image = images.getJSONObject(n);
                                     JSONObject resource = image.getJSONObject("resource");
                                     String imageName = resource.getString("@id");
@@ -112,18 +124,18 @@ public class CreateProjectServlet extends HttpServlet {
                         }
                     }
                 }
-                
-            }else{
+
+            } else {
                 return "You need a manifest to create a project.";
             }
-            
+
             //create a project
             int UID = 0;
             /*if(null != request.getSession().getAttribute("UID")){
-                UID = (Integer) request.getSession().getAttribute("UID");
-            }*/
+             UID = (Integer) request.getSession().getAttribute("UID");
+             }*/
             UID = ServletUtils.getUID(request, response);
-            String tmpProjName = m.getShelfMark()+" project";
+            String tmpProjName = m.getShelfMark() + " project";
             if (request.getParameter("title") != null) {
                 tmpProjName = request.getParameter("title");
             }
@@ -132,9 +144,41 @@ public class CreateProjectServlet extends HttpServlet {
                 Group newgroup = new Group(conn, tmpProjName, UID);
                 Project newProject = new Project(conn, tmpProjName, newgroup.getGroupID());
                 Folio[] array_folios = new Folio[ls_folios_keys.size()];
-                if(ls_folios_keys.size() > 0){
-                    for(int i = 0; i < ls_folios_keys.size(); i++){
-                        array_folios[i] = new Folio(ls_folios_keys.get(i));
+                if (ls_folios_keys.size() > 0) {
+                    for (int i = 0; i < ls_folios_keys.size(); i++) {
+                        Folio folio = new Folio(ls_folios_keys.get(i));
+                        array_folios[i] = folio;
+                        //create canvas list for original canvas
+                        JSONObject canvasList = CreateCanvasListUtil.createEmptyCanvasList(newProject.getProjectName(), newProject.getProjectID(), folio.getPageName());
+                        URL postUrl = new URL(Constant.ANNOTATION_SERVER_ADDR + "/anno/saveNewAnnotation.action");
+                        HttpURLConnection uc = (HttpURLConnection) postUrl.openConnection();
+                        uc.setDoInput(true);
+                        uc.setDoOutput(true);
+                        uc.setRequestMethod("POST");
+                        uc.setUseCaches(false);
+                        uc.setInstanceFollowRedirects(true);
+                        uc.addRequestProperty("content-type", "application/x-www-form-urlencoded");
+                        uc.connect();
+                        DataOutputStream dataOut = new DataOutputStream(uc.getOutputStream());
+                        dataOut.writeBytes("content=" + URLEncoder.encode(canvasList.toString(), "utf-8"));
+                        dataOut.flush();
+                        dataOut.close();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(uc.getInputStream(), "utf-8"));
+//                      String line="";
+//                      StringBuilder sb = new StringBuilder();
+//                      System.out.println("=============================");  
+//                      System.out.println("Contents of post request");  
+//                      System.out.println("=============================");  
+//                      while ((line = reader.readLine()) != null){  
+//                      line = new String(line.getBytes(), "utf-8");  
+//                           System.out.println(line);
+//                           sb.append(line);
+//                      }
+//                      System.out.println("=============================");  
+//                      System.out.println("Contents of post request ends");  
+//                      System.out.println("=============================");  
+                        reader.close();
+                        uc.disconnect();
                     }
                 }
                 newProject.setFolios(conn, array_folios);
@@ -150,5 +194,5 @@ public class CreateProjectServlet extends HttpServlet {
         }
         return "500";
     }
-    
+
 }

@@ -62,7 +62,7 @@ public class JsonLDExporter {
       Folio[] folios = proj.getFolios();
 
       try {
-         String projName = Folio.getRbTok("SERVERURL") + URLEncoder.encode(proj.getProjectName(), "UTF-8");
+         String projName = Folio.getRbTok("SERVERURL") + proj.getProjectName();
          manifestData = new LinkedHashMap<>();
          manifestData.put("@context", "http://www.shared-canvas.org/ns/context.json");
          manifestData.put("@id", projName + "/manifest.json");
