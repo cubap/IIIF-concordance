@@ -1482,14 +1482,14 @@
             $(".showMe").hide();
             //$("#pageJump").attr("onclick", "togglePageJump();")
             var pageJumpIcons = $("#pageJump").parent().find("i");
-            pageJumpIcons[0].setAttribute('onclick', 'firstFolio();');
-            pageJumpIcons[1].setAttribute('onclick', 'previousFolio();');
-            pageJumpIcons[2].setAttribute('onclick', 'nextFolio();');
-            pageJumpIcons[3].setAttribute('onclick', 'lastFolio();');
-            $("#prevCanvas").attr("onclick", "previousFolio();");
-            $("#nextCanvas").attr("onclick", "nextFolio();");
+            pageJumpIcons[0].setAttribute('onclick', 'firstFolio("parsing");');
+            pageJumpIcons[1].setAttribute('onclick', 'previousFolio("parsing");');
+            pageJumpIcons[2].setAttribute('onclick', 'nextFolio("parsing");');
+            pageJumpIcons[3].setAttribute('onclick', 'lastFolio("parsing");');
+            $("#prevCanvas").attr("onclick", "previousFolio('parsing');");
+            $("#nextCanvas").attr("onclick", "nextFolio('parsing');");
             $("#pageJump").siblings().css("color", "white");
-            $("#pageJump").removeAttr("disabled");
+            //$("#pageJump").removeAttr("disabled");
         }
         
     
@@ -1652,7 +1652,7 @@
 //        imgTopOriginalTop = $("#imgTop img").css("top");
         originalCanvasHeight = $("#transcriptionCanvas").height();
         originalCanvasWidth = $("#transcriptionCanvas").width();
-        $("#pageJump").attr("disabled", "disabled");
+        //$("#pageJump").attr("disabled", "disabled");
          var pageJumpIcons = $("#pageJump").parent().children("i");
             pageJumpIcons[0].setAttribute('onclick', '');
             pageJumpIcons[1].setAttribute('onclick', '');
