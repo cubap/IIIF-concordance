@@ -1154,6 +1154,84 @@
         
     }
     
+    function createBryan(){
+        var newobj = {
+            "@context" : "http://www.shared-canvas.org/ns/context.json",
+            "@id" : "t-pen.org/TPEN/Testing4/manifest.json",
+            "@type" : "sc:Manifest",
+            "label" : "Encoding Test",
+            "sequences" : [{
+              "@id" : "http://t-pen.org/Testing4/sequence/normal",
+              "@type" : "sc:Sequence",
+              "label" : "Current Page Order",
+              "canvases" : [{
+                "@id":"http://t-pen.org/Testing4/canvas/100r",
+                "@type" : "sc:Canvas",
+                "label" : "100r",
+                "height" : 1000,
+                "width" : 667,
+                "resources" : [],
+                "images":[{
+                          "@type":"oa:Annotation",
+                          "motivation":"sc:painting",
+                          "resource":{
+                              "@id":"http://norman.hrc.utexas.edu/graphics/mswaste/160 h612e 617/160_h612e_617_001.jpg",
+                              "@type":"dctypes:Image",
+                              "format":"image/jpeg"
+                          },
+                          "on":"http://t-pen.org/Testing4/canvas/100r"
+                }],
+              }, {
+                "@id" : "http://t-pen.org/Testing4/canvas/100v",
+                "@type" : "sc:Canvas",
+                "label" : "100v",
+                "height" : 1000,
+                "width" : 667,
+                "resources" : [],
+                "images":[{
+                          "@type":"oa:Annotation",
+                          "motivation":"sc:painting",
+                          "resource":{
+                              "@id":"http://norman.hrc.utexas.edu/graphics/mswaste/br 65 d62 l3 1502/br_65_d62_l3_1502_001.jpg",
+                              "@type":"dctypes:Image",
+                              "format":"image/jpeg"
+                          },
+                          "on":"http://t-pen.org/Testing4/canvas/100v"
+                }]
+              }, {
+                "@id" : "http://t-pen.org/Testing4/canvas/101r",
+                "@type" : "sc:Canvas",
+                "label" : "101r",
+                "height" : 1000,
+                "width" : 667,
+                "resources" : [ ],
+                "images":[{
+                          "@type":"oa:Annotation",
+                          "motivation":"sc:painting",
+                          "resource":{
+                              "@id":"http://norman.hrc.utexas.edu/graphics/mswaste/br 332 a83 1526/br_332_a83_1526_001.jpg",
+                              "@type":"dctypes:Image",
+                              "format":"image/jpeg"
+                          },
+                          "on":"http://t-pen.org/Testing4/canvas/101r"
+                }]
+              }]
+            }]
+          };
+          var manifest = JSON.stringify(newobj);
+          var city = "STL,MO";
+          var title = "Encoding Test & Stuff";
+          var params = {"city":city, "title":title, "scmanifest":manifest};
+          var url = "createProject";
+          $.post(url, params)
+          .done(function(){
+            console.log("CREATED");
+          })
+          .fail(function(){
+            console.log("FAILED");
+          });
+    }
+    
     
     
 
