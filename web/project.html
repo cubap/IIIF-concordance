@@ -808,8 +808,8 @@ function getPreloadInformation(){
         type: "GET",
         dataType: "json",
         success: function(data){
-            console.log('CURRENT USER INFORMATION: ');
-            console.log(data);
+            //console.log('CURRENT USER INFORMATION: ');
+            //console.log(data);
             currentUser = data;
             if(data.uname && data.uname !== ""){
                 loggedInUser = true;
@@ -992,20 +992,20 @@ function populateEditableChars(specialCharacters){
 
 function getActiveProjectMetadata(currentProjectID){
     var isPublicProject = false;
-    console.log("GET METADATA");
+    //console.log("GET METADATA");
     //Check if is public project and set this variable.
     var url = "getProjectTPENServlet?projectID="+currentProjectID;
     $.ajax({
         url: url,
         type:"GET",
         success: function(activeProject){
-            console.log("ACTIVE PROJECT INFORMATION");
-            console.log(activeProject);
+            //console.log("ACTIVE PROJECT INFORMATION");
+            //console.log(activeProject);
             var leader = activeProject.ls_leader;
             
             leader = JSON.parse(leader);
-            console.log('ADMIN CHECK');
-            console.log(leader[0].UID+"=="+currentUser.uid+"?");
+            //console.log('ADMIN CHECK');
+            //console.log(leader[0].UID+"=="+currentUser.uid+"?");
             if(leader[0].UID == currentUser.uid){
                 userIsProjectAdmin = true;
                 $('.mustBeAdmin').show();
@@ -1090,8 +1090,8 @@ function getActiveProjectMetadata(currentProjectID){
             
             var projectInformation = activeProject.metadata;
             projectInformation = JSON.parse(projectInformation);
-            console.log("get project information");
-            console.log(projectInformation);
+            //console.log("get project information");
+            //console.log(projectInformation);
             var projectTitle = projectInformation.title;
             var projectSubtitle = projectInformation.subtitle;
             var msIdentifier = projectInformation.msIdentifier;
@@ -1168,8 +1168,8 @@ function getActiveProjectMetadata(currentProjectID){
             var projectToolList = activeProject.projectTool;
             projectToolList = JSON.parse(projectToolList);
             $.each(projectToolList, function(){
-                console.log("tool");
-                console.log(this);
+                //console.log("tool");
+                //console.log(this);
                 var toolLabel = this.name;
                 var toolURL = this.url;
                 var toolID = this.id;
@@ -1180,13 +1180,13 @@ function getActiveProjectMetadata(currentProjectID){
                      
             var projectManuscriptMetadata = activeProject.ls_ms;
             projectManuscriptMetadata = JSON.parse(projectManuscriptMetadata);
-            console.log("MANUSCRIPT METADATA");
-            console.log(projectManuscriptMetadata[0]);
+            //console.log("MANUSCRIPT METADATA");
+            //console.log(projectManuscriptMetadata[0]);
             $('#linebreakNotice').html("Preview limited to first "+projectManuscriptMetadata[0].linebreakCharacterLimit+" characters.");            
             getUserProjects(currentProjectID, currentUser.uid, currentUser.uname);
         },
         error: function(jqXHR,error, errorThrown) {  
-            console.log("there was an error");
+            //console.log("there was an error");
             if(jqXHR.status && jqXHR.status==400){
                  alert(jqXHR.responseText); 
             }
@@ -1204,10 +1204,13 @@ function getActiveProjectMetadata(currentProjectID){
 
 
 
-function deleteProject(projID){
+function deleteProject(projID, elem){
     var url = "delProject";
     var params = {projectID:projID};
-    $.post(url, params);
+    $.post(url, params)
+            .done(function(){
+                $("#projectList").children("li[projectID='"+projID+"']").remove();
+    });
 }
 
 function getUserProjects(projectID, userID, username){
@@ -1223,12 +1226,12 @@ function getUserProjects(projectID, userID, username){
                 projectName = this.name;
                 var projectID = this.id;
                 projectID = projectID.replace("projects/", "");
-                console.log('User is admin: '+userIsProjectAdmin)
+                //console.log('User is admin: '+userIsProjectAdmin)
                 if(!userIsProjectAdmin){
                     $('#projectList').append("<li><a title=\"" + projectName + "\" class=\"tpenButton projectTitle\" href='project.html?projectID="+projectID+"'>"+projectName+"</a></li>");
                 }
                 else{
-                    $('#projectList').append("<li>\n\
+                    $('#projectList').append("<li projectID='"+projectID+"'>\n\
                     <a title=\"" + projectName + "\" class=\"tpenButton projectTitle\" href='project.html?projectID="+projectID+"'> "+projectName+" </a>\n\
                     <span style='z-index:1000; cursor:pointer;' title=\"delete project\" class=\"delete ui-icon ui-icon-closethick right\" onclick=\"deleteProject("+projectID+");\"></span>\n\
                     </li>");
