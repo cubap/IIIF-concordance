@@ -76,7 +76,7 @@ public class CopyProjectForPracticerServlet extends HttpServlet {
                                 Folio folio = folios[i];
                                 //create canvas list for original canvas
                                 JSONObject canvasList = CreateCanvasListUtil.createEmptyCanvasList(templateProject.getProjectName(), thisProject.getProjectID(), folio.getPageName());
-                                URL postUrl = new URL(Constant.ANNOTATION_SERVER_ADDR + "/anno/saveNewAnnotation.action");
+                                URL postUrl = new URL(Constant.ANNOTATION_SERVER_ADDR + "/anno/getAnnotationByProperties.action");
                                 HttpURLConnection uc = (HttpURLConnection) postUrl.openConnection();
                                 uc.setDoInput(true);
                                 uc.setDoOutput(true);
