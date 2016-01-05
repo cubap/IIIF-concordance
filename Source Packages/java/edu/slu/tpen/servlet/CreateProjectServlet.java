@@ -14,7 +14,7 @@
  */
 package edu.slu.tpen.servlet;
 
-import edu.slu.tpen.servlet.util.CreateCanvasListUtil;
+import edu.slu.tpen.servlet.util.CreateAnnoListUtil;
 import edu.slu.util.ServletUtils;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
