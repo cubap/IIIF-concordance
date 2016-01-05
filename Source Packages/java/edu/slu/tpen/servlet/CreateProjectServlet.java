@@ -14,7 +14,7 @@
  */
 package edu.slu.tpen.servlet;
 
-import edu.slu.tpen.servlet.util.CreateCanvasListUtil;
+import edu.slu.tpen.servlet.util.CreateAnnoListUtil;
 import edu.slu.util.ServletUtils;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -148,8 +148,8 @@ public class CreateProjectServlet extends HttpServlet {
                     for (int i = 0; i < ls_folios_keys.size(); i++) {
                         Folio folio = new Folio(ls_folios_keys.get(i));
                         array_folios[i] = folio;
-                        //create canvas list for original canvas
-                        JSONObject canvasList = CreateCanvasListUtil.createEmptyCanvasList(newProject.getProjectName(), newProject.getProjectID(), folio.getPageName());
+                        //create anno list for original canvas
+                        JSONObject annoList = CreateAnnoListUtil.createEmptyAnnoList(newProject.getProjectName(), newProject.getProjectID(), folio.getPageName(), new JSONArray());
                         URL postUrl = new URL(Constant.ANNOTATION_SERVER_ADDR + "/anno/saveNewAnnotation.action");
                         HttpURLConnection uc = (HttpURLConnection) postUrl.openConnection();
                         uc.setDoInput(true);
@@ -160,7 +160,7 @@ public class CreateProjectServlet extends HttpServlet {
                         uc.addRequestProperty("content-type", "application/x-www-form-urlencoded");
                         uc.connect();
                         DataOutputStream dataOut = new DataOutputStream(uc.getOutputStream());
-                        dataOut.writeBytes("content=" + URLEncoder.encode(canvasList.toString(), "utf-8"));
+                        dataOut.writeBytes("content=" + URLEncoder.encode(annoList.toString(), "utf-8"));
                         dataOut.flush();
                         dataOut.close();
                         BufferedReader reader = new BufferedReader(new InputStreamReader(uc.getInputStream(), "utf-8"));

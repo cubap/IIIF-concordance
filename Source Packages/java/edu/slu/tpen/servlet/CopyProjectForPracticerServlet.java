@@ -14,7 +14,7 @@
  */
 package edu.slu.tpen.servlet;
 
-import edu.slu.tpen.servlet.util.CreateCanvasListUtil;
+import edu.slu.tpen.servlet.util.CreateAnnoListUtil;
 import edu.slu.util.ServletUtils;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -75,7 +75,7 @@ public class CopyProjectForPracticerServlet extends HttpServlet {
                             {
                                 Folio folio = folios[i];
                                 //create canvas list for original canvas
-                                JSONObject canvasList = CreateCanvasListUtil.createEmptyCanvasList(templateProject.getProjectName(), thisProject.getProjectID(), folio.getPageName());
+                                JSONObject annoList = CreateAnnoListUtil.createEmptyAnnoList(templateProject.getProjectName(), thisProject.getProjectID(), folio.getPageName(), new JSONArray());
                                 URL postUrl = new URL(Constant.ANNOTATION_SERVER_ADDR + "/anno/getAnnotationByProperties.action");
                                 HttpURLConnection uc = (HttpURLConnection) postUrl.openConnection();
                                 uc.setDoInput(true);
@@ -86,7 +86,7 @@ public class CopyProjectForPracticerServlet extends HttpServlet {
                                 uc.addRequestProperty("content-type", "application/x-www-form-urlencoded");
                                 uc.connect();
                                 DataOutputStream dataOut = new DataOutputStream(uc.getOutputStream());
-                                dataOut.writeBytes("content=" + URLEncoder.encode(canvasList.toString(), "utf-8"));
+                                dataOut.writeBytes("content=" + URLEncoder.encode(annoList.toString(), "utf-8"));
                                 dataOut.flush();
                                 dataOut.close();
                                 BufferedReader reader = new BufferedReader(new InputStreamReader(uc.getInputStream(),"utf-8"));
