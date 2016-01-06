@@ -26,6 +26,7 @@
         <div class="topTrim">
             <span class="trimSection">TITLE:<span id="trimTitle"></span></span>
             <span class="trimSection">PAGE: <span id="trimPage"></span></span>
+            <span class="trimSection">USER: <span id="trimCurrentUser"></span></span>
             <span class="trimSection">
                 <i onclick="firstFolio();" title="First Folio">&#8606;</i>
                 <i onclick="previousFolio();" title="Previous Folio">&#8676;</i>
@@ -35,12 +36,10 @@
                 <i onclick="nextFolio();" title="Next Folio">&#8677;</i>
                 <i onclick="lastFolio();" title="Last Folio">&#8608;</i>
             </span>
-            <span class="trimSection">Manage Tools</span>
-            <span class="trimSection">LAST EDITED: <span id="trimLastEdit"></span></span>
-            <span class="trimSection">USER: <span id="trimCurrentUser"></span></span>
-            <span class="trimSection">Help</span>
-            <span class="trimSection">Contact</span>
+<!--            <span class="trimSection">Help</span> -->
+            <span class="trimSection"><a href="https://paleography.library.utoronto.ca/contact" target="_blank">Contact</a></span> 
         </div>
+
         <div class="instructions">
             <p>
                 The area below accepts a local project ID number, a project or IIIF manifest url, or a valid T-PEN or IIIF manifest JSON object as valid input.  It will then load a manifest
@@ -81,7 +80,7 @@
                   </div>
                 </div>
               <div id="transWorkspace">
-                  <div title="Slide Workspace" class="workspaceHandle slideHandleLeft"><i class="handl"></i></div><div title="Slide Workspace" class="workspaceHandle slideHandleRight"><i class="handl"></i></div>
+                <div title="Slide Workspace" class="workspaceHandle slideHandleLeft"><i class="handl"></i></div><div title="Slide Workspace" class="workspaceHandle slideHandleRight"><i class="handl"></i></div>
                 <div id="captions"><div id="captionsText"></div></div>
                 <div id="pageControls">
                     <div id="pageLabel">Page</div>
@@ -92,7 +91,7 @@
                     <div id="lineLabel">Line</div>
                     <button id="prevLine" title="Previous Line" onclick="previousTranscriptlet();">prev</button><button id="nextLine" title="Next Line" onclick="nextTranscriptlet();">next</button>
                 </div>
-                <div id="lineCol"><div title="Previous Line" id="prevColLine"></div><div title="Current Line" id="currentColLine"></div></div>
+                <div id="lineCol"><div title="Previous Line" id="prevColLine"></div><div title="Current Line" id="currentColLine"></div></div><br>
                 <div id="bottomButtons">
                     <select id="charactersPopin" class="specialCharacters"  title="Special Characters" >
                         <option id="activeCharacters" >Characters</option> <!-- onclick="toggleCharacters();" -->
@@ -101,29 +100,7 @@
                         <option id="activeTags">XML Tags</option> <!-- onclick="toggleTags();" -->
                     </select>
                     <!-- make some space happen here -->
-                    <div title="Control Drawn Line Settings" id="lineColControls">
-                        <div>Number Control</div>
-                        <span>Lines</span><input type="checkbox" onchange="toggleLineMarkers();" checked="checked">
-                        <span>Line #s</span><input type="checkbox" onchange="toggleLineCol();" checked="checked"><br>
-                        <button id="markerColors" onclick="markerColors();">Line Color</button>
-                    </div>
-                     <button class="magnifyBtn" style="margin-left:2%" magnifyImg="trans" title="Magnify Transcription Image" >Magnify</button> <!--Page event on the listener for this class in js.-->
-                     <button title="Move Transcription Image" onclick="startMoveImg();">Move Img</button>
-                     <div id="imageTools" style="width: 201px;">
-                         <div id="activeImageTool" onclick="$('.imgTool').fadeToggle(400);" ><span>Image Tools</span> <i style="right:0;">&#9660;</i></div> <!--  -->
-<!--                        <div class="imgTool">Brightness/Contrast</div>-->
-                            <button class="imgTool" onclick="toggleFilter('grayscale');">Grayscale</button><br>
-                            <button class="imgTool" onclick="toggleFilter('invert');">Invert</button>
-                            <div id="imageToolSliders" class="imgTool">
-                                Brightness
-                                <div id="brightnessSlider"></div>
-                                Contrast
-                                <div id="contrastSlider"></div>
-                            </div>
-                     </div>
-                     <button id="parsingBtn" title="Correct Page Parsing" onclick="hideWorkspaceForParsing();" >Correct Parsing</button> <!--Page event on the listener for this class in js.--> 
-                     <button id="linebreakBtn">Linebreak</button><!--TODO-->
-                     <select id="splitScreenTools" > <!-- onclick="$('.splitTool').fadeToggle(400);" -->
+                                         <select id="splitScreenTools" > <!-- onclick="$('.splitTool').fadeToggle(400);" -->
                          <option id="activeSplitTool" >Split Page Tools</option> 
                          <option splitter='essay' class="splitTool" >Background Essay</option>
                          <option splitter='partialTrans' class="splitTool" >Partial Transcriptions</option>
@@ -145,8 +122,33 @@
                          <option splitter='fullPage' class="splitTool"  >View Full Page</option>
                          <option splitter='compare' class="splitTool" >Compare Page</option>
                          <!--<option splitter='facing' class="splitTool" >Facing Page</option>-->
-                     </select>                     
-                    
+                     </select>  
+                     <button class="magnifyBtn" magnifyImg="trans" title="Magnify Transcription Image" >Magnify</button> <!--Page event on the listener for this class in js.-->
+                     <button title="Move Transcription Image" onclick="startMoveImg();">Move Img</button>
+
+                     <button id="parsingBtn" title="Correct Page Parsing" onclick="hideWorkspaceForParsing();" >Correct Parsing</button> <!--Page event on the listener for this class in js.--> 
+                     <!--<button id="linebreakBtn">Linebreak</button>TODO-->
+                   
+                    <div title="Control Drawn Line Settings" id="lineColControls">
+                        <div>Number Control</div>
+                        <span>Lines</span><input type="checkbox" onchange="toggleLineMarkers();" checked="checked">
+                        <span>Line #s</span><input type="checkbox" onchange="toggleLineCol();" checked="checked"><br>
+                        <button id="markerColors" onclick="markerColors();">Line Color</button>
+                    </div>
+                </div>
+                <div id="imageTools" style="width: 201px;">
+                    <div id="activeImageTool" onclick="toggleImgTools();" ><span>Image Tools</span> <i>&#9660;</i></div> <!--  -->
+    <!--                        <div class="imgTool">Brightness/Contrast</div>-->
+                       <div class="toolWrap">
+                            <button class="imgTool" onclick="toggleFilter('grayscale');">Grayscale</button><br>
+                            <button class="imgTool" onclick="toggleFilter('invert');">Invert</button>
+                            <div id="imageToolSliders" class="imgTool">
+                                Brightness
+                                <div id="brightnessSlider"></div>
+                                Contrast
+                                <div id="contrastSlider"></div>
+                            </div>
+                       </div>
                 </div>
               </div>
               <div id="imgBottom">
