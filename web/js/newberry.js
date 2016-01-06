@@ -3578,3 +3578,16 @@ function scrubFolios(){
         }
         });
 }
+
+function toggleImgTools(){
+    if($("#imageTools").attr("class")!==undefined && $("#imageTools").attr("class").indexOf("activeTools") > -1){
+        $('.toolWrap').hide();
+        $("#imageTools").removeClass("activeTools");
+        $("#activeImageTool").children("i").css("transform", "rotate(180deg)");
+    }
+    else{
+        $("#imageTools").addClass("activeTools");
+        $('.toolWrap').show();
+        $("#activeImageTool").children("i").css("transform", "");
+    }
+}
