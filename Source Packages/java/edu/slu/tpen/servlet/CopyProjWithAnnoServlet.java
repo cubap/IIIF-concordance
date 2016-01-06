@@ -16,6 +16,7 @@ package edu.slu.tpen.servlet;
 
 import edu.slu.tpen.servlet.util.CreateAnnoListUtil;
 import edu.slu.util.ServletUtils;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -24,10 +25,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.sql.Connection;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import textdisplay.Folio;
@@ -48,7 +51,7 @@ public class CopyProjWithAnnoServlet extends HttpServlet {
      * @param uID
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int result = 0;
+    	String result = "";
         if(null != request.getParameter("projectID")){
             Integer projectID = Integer.parseInt(request.getParameter("projectID"));
             if(null != request.getParameter("uID")){
@@ -184,7 +187,7 @@ System.out.println("on: " + Folio.getRbTok("SERVERURL") + templateProject.getPro
                                             ucCopyAnno.disconnect();
                                             JSONObject copyAnnoReturnVal = JSONObject.fromObject(sbCopyAnno.toString());
                                             String copyAnnoNewAID = copyAnnoReturnVal.getString("@id");
-                                            result++;
+                                            //result++;
                                             resource.remove("@id");
                                             resource.element("@id", copyAnnoNewAID);
                                         }
@@ -223,13 +226,15 @@ System.out.println("on: " + Folio.getRbTok("SERVERURL") + templateProject.getPro
                                 }
                             }
                         }
+                        String propVal = textdisplay.Folio.getRbTok("CREATE_PROJECT_RETURN_DOMAIN"); 
+                        result = propVal + "/project/" + thisProject.getProjectID();
                     }
                 } catch(Exception e){
                     e.printStackTrace();
                 }
             }
         }else{
-            result = response.SC_FORBIDDEN;
+        	result = "" + response.SC_FORBIDDEN;
         }
         response.getWriter().print(result);
     }
