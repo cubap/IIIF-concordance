@@ -550,7 +550,7 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>copyProjWithAnnoServlet</servlet-name>
-        <url-pattern>/copyProjWithAnnoServlet</url-pattern>
+        <url-pattern>/copyProjectWithAnnotations</url-pattern>
     </servlet-mapping>
     <!-- tpen webservices for newberry ends -->
     <session-config>
