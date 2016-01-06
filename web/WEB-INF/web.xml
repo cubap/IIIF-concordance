@@ -440,6 +440,10 @@
         <servlet-name>LogoutHookServlet</servlet-name>
         <servlet-class>edu.slu.tpen.servlet.LogoutHookServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>copyProjWithAnnoServlet</servlet-name>
+        <servlet-class>edu.slu.tpen.servlet.CopyProjWithAnnoServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>imageParsing</servlet-name>
         <url-pattern>/imageParsing</url-pattern>
@@ -543,6 +547,10 @@
     <servlet-mapping>
         <servlet-name>LogoutHookServlet</servlet-name>
         <url-pattern>/logoutHook</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>copyProjWithAnnoServlet</servlet-name>
+        <url-pattern>/copyProjWithAnnoServlet</url-pattern>
     </servlet-mapping>
     <!-- tpen webservices for newberry ends -->
     <session-config>

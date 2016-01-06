@@ -636,8 +636,8 @@ public class Project {
       //if (containsUserUploadedManuscript()) {
       //   throw new Exception("Cannot copy a project with user uploaded images!");
       //}
-      Group g = new Group(conn, "Copy of " + projectName, leaderUID);
-      Project p = new Project(conn, "Copy of " + projectName, g.getGroupID());
+      Group g = new Group(conn, projectName, leaderUID);
+      Project p = new Project(conn, projectName, g.getGroupID());
       p.setFolios(conn, getFolios());
       p.copyButtonsFromProject(conn, this);
       p.copyHotkeysFromProject(conn, this);
@@ -676,7 +676,7 @@ public class Project {
       //if (containsUserUploadedManuscript()) {
       //   throw new Exception("Cannot copy a project with user uploaded images!");
       //}
-      Group g = new Group(conn, "Copy of " + projectName, leaderUID);
+      Group g = new Group(conn, projectName, leaderUID);
       int groupID = this.getGroupID();
       //find group leaders from template group, and if they are not in the new group, add them into new group. 
       Group templateGroup = new Group(groupID);
@@ -687,7 +687,7 @@ public class Project {
         }
       }
       
-      Project p = new Project(conn, "Copy of " + projectName, g.getGroupID());
+      Project p = new Project(conn, projectName, g.getGroupID());
       p.setFolios(conn, getFolios());
       p.copyButtonsFromProject(conn, this);
       p.copyHotkeysFromProject(conn, this);

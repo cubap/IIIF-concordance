@@ -24,23 +24,23 @@
     </style>
     <body>
         <div class="topTrim">
-                        <span class="trimSection">TITLE:<span id="trimTitle"></span></span>
-                        <span class="trimSection">PAGE: <span id="trimPage"></span></span>
-                        <span class="trimSection">
-                            <i onclick="firstFolio();" title="First Folio">&#8606;</i>
-                            <i onclick="previousFolio();" title="Previous Folio">&#8676;</i>
-                            <select id="pageJump">
-                                <option id="activePage" folioNum="0">Jump to Page</option>
-                            </select>
-                            <i onclick="nextFolio();" title="Next Folio">&#8677;</i>
-                            <i onclick="lastFolio();" title="Last Folio">&#8608;</i>
-                        </span>
-                        <span class="trimSection">Manage Tools</span>
-                        <span class="trimSection">LAST EDITED: <span id="trimLastEdit"></span></span>
-                        <span class="trimSection">USER: <span id="trimCurrentUser"></span></span>
-                        <span class="trimSection">Help</span>
-                        <span class="trimSection">Contact</span>
-            </div>
+            <span class="trimSection">TITLE:<span id="trimTitle"></span></span>
+            <span class="trimSection">PAGE: <span id="trimPage"></span></span>
+            <span class="trimSection">
+                <i onclick="firstFolio();" title="First Folio">&#8606;</i>
+                <i onclick="previousFolio();" title="Previous Folio">&#8676;</i>
+                <select id="pageJump">
+                    <option id="activePage" folioNum="0">Jump to Page</option>
+                </select>
+                <i onclick="nextFolio();" title="Next Folio">&#8677;</i>
+                <i onclick="lastFolio();" title="Last Folio">&#8608;</i>
+            </span>
+            <span class="trimSection">Manage Tools</span>
+            <span class="trimSection">LAST EDITED: <span id="trimLastEdit"></span></span>
+            <span class="trimSection">USER: <span id="trimCurrentUser"></span></span>
+            <span class="trimSection">Help</span>
+            <span class="trimSection">Contact</span>
+        </div>
         <div class="instructions">
             <p>
                 The area below accepts a local project ID number, a project or IIIF manifest url, or a valid T-PEN or IIIF manifest JSON object as valid input.  It will then load a manifest
@@ -1152,6 +1152,84 @@
             removeLine(e);
         }
         
+    }
+    
+    function createBryan(){
+        var newobj = {
+            "@context" : "http://www.shared-canvas.org/ns/context.json",
+            "@id" : "t-pen.org/TPEN/Testing4/manifest.json",
+            "@type" : "sc:Manifest",
+            "label" : "Encoding Test",
+            "sequences" : [{
+              "@id" : "http://t-pen.org/Testing4/sequence/normal",
+              "@type" : "sc:Sequence",
+              "label" : "Current Page Order",
+              "canvases" : [{
+                "@id":"http://t-pen.org/Testing4/canvas/100r",
+                "@type" : "sc:Canvas",
+                "label" : "100r",
+                "height" : 1000,
+                "width" : 667,
+                "resources" : [],
+                "images":[{
+                          "@type":"oa:Annotation",
+                          "motivation":"sc:painting",
+                          "resource":{
+                              "@id":"http://norman.hrc.utexas.edu/graphics/mswaste/160 h612e 617/160_h612e_617_001.jpg",
+                              "@type":"dctypes:Image",
+                              "format":"image/jpeg"
+                          },
+                          "on":"http://t-pen.org/Testing4/canvas/100r"
+                }],
+              }, {
+                "@id" : "http://t-pen.org/Testing4/canvas/100v",
+                "@type" : "sc:Canvas",
+                "label" : "100v",
+                "height" : 1000,
+                "width" : 667,
+                "resources" : [],
+                "images":[{
+                          "@type":"oa:Annotation",
+                          "motivation":"sc:painting",
+                          "resource":{
+                              "@id":"http://norman.hrc.utexas.edu/graphics/mswaste/br 65 d62 l3 1502/br_65_d62_l3_1502_001.jpg",
+                              "@type":"dctypes:Image",
+                              "format":"image/jpeg"
+                          },
+                          "on":"http://t-pen.org/Testing4/canvas/100v"
+                }]
+              }, {
+                "@id" : "http://t-pen.org/Testing4/canvas/101r",
+                "@type" : "sc:Canvas",
+                "label" : "101r",
+                "height" : 1000,
+                "width" : 667,
+                "resources" : [ ],
+                "images":[{
+                          "@type":"oa:Annotation",
+                          "motivation":"sc:painting",
+                          "resource":{
+                              "@id":"http://norman.hrc.utexas.edu/graphics/mswaste/br 332 a83 1526/br_332_a83_1526_001.jpg",
+                              "@type":"dctypes:Image",
+                              "format":"image/jpeg"
+                          },
+                          "on":"http://t-pen.org/Testing4/canvas/101r"
+                }]
+              }]
+            }]
+          };
+          var manifest = JSON.stringify(newobj);
+          var city = "STL,MO";
+          var title = "Encoding Test & Stuff";
+          var params = {"city":city, "title":title, "scmanifest":manifest};
+          var url = "createProject";
+          $.post(url, params)
+          .done(function(){
+            console.log("CREATED");
+          })
+          .fail(function(){
+            console.log("FAILED");
+          });
     }
     
     
