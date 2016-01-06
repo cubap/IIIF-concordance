@@ -53,43 +53,43 @@ public class CopyProjectForPracticerServlet extends HttpServlet {
         if(null != request.getParameter("projectID") && uID != -1){
             Integer projectID = Integer.parseInt(request.getParameter("projectID"));
 
-                try {
-                    //find original project and copy to a new project. 
-                    Project templateProject = new Project(projectID);
-                    Connection conn = ServletUtils.getDBConnection();
-                    conn.setAutoCommit(false);
-                    //in this method, it copies everything about the project.
-                    if(null != templateProject.getProjectName())
+            try {
+                //find original project and copy to a new project. 
+                Project templateProject = new Project(projectID);
+                Connection conn = ServletUtils.getDBConnection();
+                conn.setAutoCommit(false);
+                //in this method, it copies everything about the project.
+                if(null != templateProject.getProjectName())
+                {
+                    Project thisProject = new Project(templateProject.copyProjectWithoutTranscription(conn, uID));
+                    //set partener project. It is to make a connection on switch board. 
+                    thisProject.setAssociatedPartnerProject(projectID);
+                    PartnerProject theTemplate = new PartnerProject(projectID);
+                    thisProject.copyButtonsFromProject(conn, theTemplate.getTemplateProject());
+                    thisProject.copyHotkeysFromProject(conn, theTemplate.getTemplateProject());
+                    conn.commit();
+                    Folio[] folios = thisProject.getFolios();
+                    if(null != folios && folios.length > 0)
                     {
-                        Project thisProject = new Project(templateProject.copyProjectWithoutTranscription(conn, uID));
-                        //set partener project. It is to make a connection on switch board. 
-                        thisProject.setAssociatedPartnerProject(projectID);
-                        PartnerProject theTemplate = new PartnerProject(projectID);
-                        thisProject.copyButtonsFromProject(conn, theTemplate.getTemplateProject());
-                        thisProject.copyHotkeysFromProject(conn, theTemplate.getTemplateProject());
-                        conn.commit();
-                        Folio[] folios = thisProject.getFolios();
-                        if(null != folios && folios.length > 0)
+                        for(int i = 0; i < folios.length; i++)
                         {
-                            for(int i = 0; i < folios.length; i++)
-                            {
-                                Folio folio = folios[i];
-                                //create canvas list for original canvas
-                                JSONObject annoList = CreateAnnoListUtil.createEmptyAnnoList(templateProject.getProjectName(), thisProject.getProjectID(), folio.getPageName(), new JSONArray());
-                                URL postUrl = new URL(Constant.ANNOTATION_SERVER_ADDR + "/anno/getAnnotationByProperties.action");
-                                HttpURLConnection uc = (HttpURLConnection) postUrl.openConnection();
-                                uc.setDoInput(true);
-                                uc.setDoOutput(true);
-                                uc.setRequestMethod("POST");
-                                uc.setUseCaches(false);
-                                uc.setInstanceFollowRedirects(true);
-                                uc.addRequestProperty("content-type", "application/x-www-form-urlencoded");
-                                uc.connect();
-                                DataOutputStream dataOut = new DataOutputStream(uc.getOutputStream());
-                                dataOut.writeBytes("content=" + URLEncoder.encode(annoList.toString(), "utf-8"));
-                                dataOut.flush();
-                                dataOut.close();
-                                BufferedReader reader = new BufferedReader(new InputStreamReader(uc.getInputStream(),"utf-8"));
+                            Folio folio = folios[i];
+                            //create canvas list for original canvas
+                            JSONObject annoList = CreateAnnoListUtil.createEmptyAnnoList(templateProject.getProjectName(), thisProject.getProjectID(), folio.getPageName(), new JSONArray());
+                            URL postUrl = new URL(Constant.ANNOTATION_SERVER_ADDR + "/anno/getAnnotationByProperties.action");
+                            HttpURLConnection uc = (HttpURLConnection) postUrl.openConnection();
+                            uc.setDoInput(true);
+                            uc.setDoOutput(true);
+                            uc.setRequestMethod("POST");
+                            uc.setUseCaches(false);
+                            uc.setInstanceFollowRedirects(true);
+                            uc.addRequestProperty("content-type", "application/x-www-form-urlencoded");
+                            uc.connect();
+                            DataOutputStream dataOut = new DataOutputStream(uc.getOutputStream());
+                            dataOut.writeBytes("content=" + URLEncoder.encode(annoList.toString(), "utf-8"));
+                            dataOut.flush();
+                            dataOut.close();
+                            BufferedReader reader = new BufferedReader(new InputStreamReader(uc.getInputStream(),"utf-8"));
 //                                String line="";
 //                                StringBuilder sb = new StringBuilder();
 //                                System.out.println("=============================");  
@@ -103,16 +103,16 @@ public class CopyProjectForPracticerServlet extends HttpServlet {
 //                                System.out.println("=============================");  
 //                                System.out.println("Contents of post request ends");  
 //                                System.out.println("=============================");  
-                                reader.close();
-                                uc.disconnect();
-                            }
+                            reader.close();
+                            uc.disconnect();
                         }
-                        String propVal = textdisplay.Folio.getRbTok("CREATE_PROJECT_RETURN_DOMAIN"); 
-                        result = propVal + "/project/" + thisProject.getProjectID();
                     }
-                } catch(Exception e){
-                    e.printStackTrace();
+                    String propVal = textdisplay.Folio.getRbTok("CREATE_PROJECT_RETURN_DOMAIN"); 
+                    result = propVal + "/project/" + thisProject.getProjectID();
                 }
+            } catch(Exception e){
+                e.printStackTrace();
+            }
         }else{
             result = "" + response.SC_FORBIDDEN;
         }
