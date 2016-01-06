@@ -3,3 +3,5 @@ build.xml
 build/
 src/version.properties
 WebContent/WEB-INF/classes/
+.project
+.classpath
