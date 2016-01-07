@@ -31,6 +31,7 @@
     </presetdef>
     <property name="sourceDir" value="./Source Packages/java" />
     <property name="outputDir" value="web/WEB-INF/classes" />
+    <property name="versionfile" value="./Source Packages/java/version.properties"/>
     <property name="buildDir" value="build" />
     <property name="web.src" value="web" />
     <property name="web.dest" value="/var/lib/tomcat8/webapps/tpen" />
@@ -64,6 +65,7 @@
     <javac srcdir="${sourceDir}" destdir="${outputDir}">
       <classpath refid="compile.classpath" />
     </javac>
+    <copy file="${versionfile}" todir="${outputDir}" failonerror="false" />
   </target>
   
   <!-- DEPLOY or PACKAGE -->
