@@ -433,7 +433,7 @@
             else{
                 var keyVal = thisChar.key;
                 var position2 = parseInt(thisChar.position);
-                var newCharacter = "<option onclick=\"addchar('&#"+keyVal+";');\" class='character'>&#"+keyVal+";</option>";
+                var newCharacter = "<option class='character'>&#"+keyVal+";</option>";  // onclick=\"addchar('&#"+keyVal+";');\" 
                 if(position2-1 >= 0 && (position2-1) < specialCharacters.length){
                     speCharactersInOrder[position2-1] = newCharacter; 
                 }
@@ -2564,17 +2564,19 @@
     
     function addchar(theChar, closingTag)
     {
+        console.log("Add Char Called");
         var closeTag = (closingTag == undefined) ? "" : closingTag;
         var e = focusItem[1].find('textarea')[0];
         if(e!=null) {
             //Data.makeUnsaved();
-            return this.setCursorPosition(e,this.insertAtCursor(e,theChar,closeTag));
+            return setCursorPosition(e,insertAtCursor(e,theChar,closeTag));
         }
         return false;
     }
     
     function setCursorPosition(e, position)
     {
+        console.log("set cursor pos.");
         var pos = position;
         var wrapped = false;
         if (pos.toString().indexOf("wrapped") == 0) {
@@ -2596,6 +2598,7 @@
     }
     
     function insertAtCursor (myField, myValue, closingTag) {
+        console.log("insert at cursor");
         var closeTag = (closingTag == undefined) ? "" : unescape(closingTag);
         //IE support
         if (document.selection) {
@@ -3588,6 +3591,7 @@ function toggleImgTools(){
     else{
         $("#imageTools").addClass("activeTools");
         $('.toolWrap').show();
-        $("#activeImageTool").children("i").css("transform", "");
+        console.log("0deg");
+        $("#activeImageTool").children("i").css("transform", "rotate(0deg)");
     }
 }

@@ -191,10 +191,13 @@ body{
         position: relative;
         background-color: #E7E8E9;
         color: #002a5c;
-        width: 78.1%;
-        left: 109px;
-        padding: 7px 11px;
+        width: 73.5%;
+        left: 113px;
         position: relative;
+        border: 1px solid #002a5c;
+        padding-left: 7px;
+        padding-top: 7px;
+        padding-bottom: 7px;
     }
    
     /*
@@ -288,16 +291,15 @@ body{
 }*/
 
 
-#bottomButtons{
+.bottomButtons{
     position: relative;
     width: auto;
     height: auto;
     top: -5px;
     display: inline-block;
-    padding-right: 20px;
 }
 
-#bottomButtons select{
+.bottomButtons select{
     margin: 0px 3px;
     height: 35px;
     background: white;
@@ -307,6 +309,9 @@ body{
     text-transform: none;
     font-size: 15px;
     color: black;
+}
+.bottomButtons:last-child{
+    padding-left:20px;
 }
 #transcriptletArea{
     display: inline-block;
@@ -348,22 +353,25 @@ body{
     position: relative;
     height: 30px;
     width: 30px;
-    border: 1px solid #D14836;
+    border: 3px outset #D14836;
     text-align: center;
     line-height: 30px;
     display:block;
     cursor: default;
     color: #002a5c;
+    font-weight: bold;
+    font-size: 11pt;
 }
+
 #prevColLine{
     background-color: #FFF;
     right: -7px;
-    top: 32px;
+    top: 36px;
 }
 #currentColLine{
-    background-color: #808080;
+    background-color: #BFBFBF;
     right: -7px;
-    top: 44px;
+    top: 46px;
 }
 #zoomDiv {
     display: none;
@@ -658,7 +666,6 @@ label {width:auto;padding: 0;float: none;}/*fixme should not have to overwrite*/
 }
 #splitScreenTools{
     position: relative;
-    height: auto;
     border: 2px solid #000;
     background-color: white;
     display: inline-table;
@@ -679,26 +686,28 @@ label {width:auto;padding: 0;float: none;}/*fixme should not have to overwrite*/
 }
 #imageTools{
     height: 31px;
-    background-color: white;
+    background-color: #BFBFBF;
     display: inline-block;
     color: black;
     text-align: center;
     position: absolute;
-    bottom: 12px;
+    bottom: -13px;
     z-index: 3;
     transition: height 1s;
     border: 2px solid black;
     margin-left: 6px; 
+    color: rgba(0,42,92,1);
 }
 #charactersPopin, #xmlTagPopin{
   position: relative;
-  height: auto;
-  border: 2px solid #000;
-  background-color: #D14836;
-  display: inline-table;
-  color: #FFF;
-  text-align:center;
-  top: 2px;
+    /* height: auto; */
+    border: 2px solid #000;
+    /* background-color: #D14836; */
+    display: inline-table;
+    /* color: #FFF; */
+    text-align: center;
+    top: 2px;
+    /* padding: 4px 0px;
   /*padding: 4px 0px;*/
 }
 #xmlTagPopin option, #charactersPopin option{
@@ -733,7 +742,10 @@ label {width:auto;padding: 0;float: none;}/*fixme should not have to overwrite*/
     background-color: white;
     cursor: default;
     position: relative;
-    top: 4px;
+    top: 0px;
+    color: black !important;
+    height: 23px;
+    line-height: 23px;
 }
 #activeImageTool i {
     right:0; 
@@ -748,7 +760,7 @@ label {width:auto;padding: 0;float: none;}/*fixme should not have to overwrite*/
 .imgTool{
     cursor: pointer;
     border: 1px solid black;
-    padding: 4px 0px;
+    padding: 4px 3px;
     margin: 4px 0px;
 }
 #imageToolSliders{
@@ -833,9 +845,11 @@ label {width:auto;padding: 0;float: none;}/*fixme should not have to overwrite*/
     width : 100%;
     height:32px;
     cursor:default;
+    min-width: 1160px;
+    white-space: nowrap;
 }
 .trimSection{
-    font-size: 9pt;
+    font-size: 10pt;
     color: #FFF;
     border-right: 3px solid #D14836;
     text-align: center;
@@ -848,11 +862,17 @@ label {width:auto;padding: 0;float: none;}/*fixme should not have to overwrite*/
     height: 30px;
     line-height: 30px;
     display: inline-block;
+    width: 18%;
+    transition: color 0.5s ease;
+    letter-spacing: .5px;
 }
-/*.trimSection:first-child{
-  min-width:165px;
-  max-width: 200px;
+.trimSection:hover, .trimSection a:hover{
+    color: #e21635;
 }
+.trimSection:last-child{
+  border-right: transparent;
+}
+/*
 .trimSection:nth-child(3){
   min-width:300px;
   max-width: 301px;
@@ -889,13 +909,14 @@ label {width:auto;padding: 0;float: none;}/*fixme should not have to overwrite*/
 
 #lineControls{
     width: 104px;
-    height: 71px;
-    background-color: #808080;
+    height: 67px;
+    background-color: #BFBFBF;
     position: relative;
     display: inline-block;
-    left: 6px;
-    top: -18px; 
-    text-align:center;
+    left: 8px;
+    top: -16px;
+    text-align: center;
+    border: 2px outset #002a5c;
 }
 #prevCanvas, #prevLine{
     margin-right: 3px;
@@ -909,24 +930,39 @@ label {width:auto;padding: 0;float: none;}/*fixme should not have to overwrite*/
 #pageControls{
     position: relative;
     width:104px;
-    height:71px;
-    background-color: gray;
+    height:67px;
+    background-color: #BFBFBF;
     display: inline-block;
     text-align:center;
-    top:-18px;
-    left:4px;
+    top:-16px;
+    left:3px;
+    border: 2px outset #002a5c;
 }
-
+.linehdr{
+    color: #002a5c;
+    font-size: 11pt;
+    cursor: default;
+}
 #lineColControls{
     width: 151px;
-    height: 67px;
-    background-color: #808080;
+    height: 72px;
+    background-color: #BFBFBF;
     position: relative;
     display: inline-block;
     text-align: center;
     font-size: 10pt;
-    top: 0px;
+    top: -4px;
     padding: 3px;
+    border: 2px outset #002a5c
+}
+#lineColControls input[type="checkbox"]{
+/*    height: 16px;
+    width: 16px;
+    color: #002a5c;
+    background-color:white;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;*/
 }
 #lineControls i, #pageControls i{
     display: inline-table;
@@ -1019,17 +1055,24 @@ p{
 .activeTools{
     height: 202px !important;
 }
-.ui-widget-content{
+#imageTools .ui-widget-content{
     border: 1px solid black !important;
     color: black;
-    background: white !important;
+    background: rgba(0,42,92, .5) !important;
 }
-.ui-widget-header{
-    background: white !important;
+#imageTools .ui-widget-header{
+   background: rgba(0,42,92, .5) !important;
+}
+#imageTools .ui-slider-horizontal .ui-slider-handle {
+    background: #002a5c;
+    border: 1px solid black;
 }
 a{
     text-decoration: none !important;
     color: white;
+}
+.jump{
+    min-width: 305px;
 }
 /*.topTrim{
     background-color: #d14836 !important;

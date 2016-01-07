@@ -27,7 +27,7 @@
             <span class="trimSection">TITLE:<span id="trimTitle"></span></span>
             <span class="trimSection">PAGE: <span id="trimPage"></span></span>
             <span class="trimSection">USER: <span id="trimCurrentUser"></span></span>
-            <span class="trimSection">
+            <span class="trimSection jump">
                 <i onclick="firstFolio();" title="First Folio">&#8606;</i>
                 <i onclick="previousFolio();" title="Previous Folio">&#8676;</i>
                 <select id="pageJump">
@@ -92,7 +92,7 @@
                     <button id="prevLine" title="Previous Line" onclick="previousTranscriptlet();">prev</button><button id="nextLine" title="Next Line" onclick="nextTranscriptlet();">next</button>
                 </div>
                 <div id="lineCol"><div title="Previous Line" id="prevColLine"></div><div title="Current Line" id="currentColLine"></div></div><br>
-                <div id="bottomButtons">
+                <div class="bottomButtons">
                     <select id="charactersPopin" class="specialCharacters"  title="Special Characters" >
                         <option id="activeCharacters" >Characters</option> <!-- onclick="toggleCharacters();" -->
                     </select>
@@ -123,33 +123,36 @@
                          <option splitter='compare' class="splitTool" >Compare Page</option>
                          <!--<option splitter='facing' class="splitTool" >Facing Page</option>-->
                      </select>  
+                </div>
+                <div class="bottomButtons" style="width: 201px; top:-4px;">
+                    <div id="imageTools" style="width: 201px;">
+                        <div id="activeImageTool" onclick="toggleImgTools();" ><span>Image Tools</span> <i>&#9660;</i></div> <!--  -->
+        <!--                        <div class="imgTool">Brightness/Contrast</div>-->
+                           <div class="toolWrap">
+                                <button class="imgTool" onclick="toggleFilter('grayscale');">Grayscale</button><br>
+                                <button class="imgTool" onclick="toggleFilter('invert');">Invert</button>
+                                <div id="imageToolSliders" class="imgTool">
+                                    Brightness
+                                    <div id="brightnessSlider"></div>
+                                    Contrast
+                                    <div id="contrastSlider"></div>
+                                </div>
+                           </div>
+                    </div>
+                </div>
+                <div class="bottomButtons">
                      <button class="magnifyBtn" magnifyImg="trans" title="Magnify Transcription Image" >Magnify</button> <!--Page event on the listener for this class in js.-->
                      <button title="Move Transcription Image" onclick="startMoveImg();">Move Img</button>
-
                      <button id="parsingBtn" title="Correct Page Parsing" onclick="hideWorkspaceForParsing();" >Correct Parsing</button> <!--Page event on the listener for this class in js.--> 
                      <!--<button id="linebreakBtn">Linebreak</button>TODO-->
-                   
-                    <div title="Control Drawn Line Settings" id="lineColControls">
-                        <div>Number Control</div>
-                        <span>Lines</span><input type="checkbox" onchange="toggleLineMarkers();" checked="checked">
-                        <span>Line #s</span><input type="checkbox" onchange="toggleLineCol();" checked="checked"><br>
+                    <div  id="lineColControls">
+                        <div title="Control Drawn Line Settings" class="linehdr">Line Control</div>
+                        <span title="Toggle Entire Lines" class="linehdr">Lines</span><input title="Toggle Lines" type="checkbox" onchange="toggleLineMarkers();" checked="checked">
+                        <span title="Toggle Lines' Indicator" class="linehdr">Line #s</span><input type="checkbox" onchange="toggleLineCol();" checked="checked"><br>
                         <button id="markerColors" onclick="markerColors();">Line Color</button>
                     </div>
                 </div>
-                <div id="imageTools" style="width: 201px;">
-                    <div id="activeImageTool" onclick="toggleImgTools();" ><span>Image Tools</span> <i>&#9660;</i></div> <!--  -->
-    <!--                        <div class="imgTool">Brightness/Contrast</div>-->
-                       <div class="toolWrap">
-                            <button class="imgTool" onclick="toggleFilter('grayscale');">Grayscale</button><br>
-                            <button class="imgTool" onclick="toggleFilter('invert');">Invert</button>
-                            <div id="imageToolSliders" class="imgTool">
-                                Brightness
-                                <div id="brightnessSlider"></div>
-                                Contrast
-                                <div id="contrastSlider"></div>
-                            </div>
-                       </div>
-                </div>
+
               </div>
               <div id="imgBottom">
                 <img class="transcriptionImage" />
@@ -297,7 +300,7 @@
         
             <div id="groupSplit" class="split">
                 <button class="fullScreenTrans">Full Screen Transcription</button>
-                <iframe src="https://paleography.library.utoronto.ca/content/group-work?response_type=embed"></iframe>
+                <iframe src="https://groups.google.com/forum/#!forum/french-renaissance-paleography"></iframe>
             </div>
         
             <div id="abbrevSplit" class="split" >
@@ -527,6 +530,16 @@
 
         $(".fullScreenTrans").click(function(){
             fullPage();
+        });
+        
+        $("#charactersPopin").on("change", function(event){
+            var val = $("#charactersPopin").val();
+            addchar(val, "");
+        });
+        
+        $("#xmlTagPopin").on("change", function(event){
+            var val = $("#xmlTagPopin").val();
+            addchar(val, "");
         });
 
         $(".magnifyBtn").click(function(event){
