@@ -855,7 +855,7 @@
                 },
                 mouseup:    function(event){
                     event.preventDefault();
-                    if (!isCreating || !$("#createColumn").hasClass("ui-state-active")){
+                    if (!isCreating){ //|| !$("#createColumn").hasClass("ui-state-active"
                         $('#imgTop').unbind('mousemove');
                         return true;
                     }
