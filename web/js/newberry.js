@@ -1756,8 +1756,8 @@
 //                }
             },1200);
             $("#noLineWarning").hide();
-            $("#ctrlColumns").click();
-            $("#ctrlLines").click();
+//            $("#ctrlColumns").click();
+//            $("#ctrlLines").click();
     };
     
     /** 

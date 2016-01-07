@@ -395,7 +395,41 @@ body{
     position: absolute;
 }
 
+
+
+
 /* Fix parsing page */
+
+/* outer wrapper for column control and line control */
+.actions{
+    margin: 10px 6px;
+    padding: 6px 2px 2px;
+    overflow: visible;
+    z-index: 1;
+    border: 2px solid #002a5c;
+    transition: max-height 1s ease;
+}
+/* Inner sections of column control and line control */
+.startHide{
+    max-height: 0px;
+    overflow: hidden;
+    transition: max-height 1s ease;
+}
+.tpenButton{
+    font-weight: bold;
+}
+#ctrlColumns, #ctrlLines, .tpenButton{
+    cursor: pointer;
+}
+
+.tpenButton{
+    color: #002a5c;
+}
+
+
+
+
+
 /*#parsingSplit {max-width:600px; min-width: 350px;position: relative; z-index: 9;}*/
 #parsingSplit{background-color: white;}
 #parsingDiv, #linebreakDiv {height:100%; padding: 4px;overflow: auto;width:auto;}
@@ -403,12 +437,12 @@ body{
 #columnOptions > span, #allColumnOptions > span {width: 50%;}
 .parsingColumn {background-image: url('css/custom-theme/images/ui-bg_layered-circles_50_618797_13x13.png');background-attachment: scroll;background-repeat: repeat;position: absolute;border-style: solid; border-width: 2px;border-color: black;z-index: 3;opacity:.3;}
 .parsingColumnSelected {background-image: url('css/custom-theme/images/ui-bg_layered-circles_50_ffc6b9_13x13.png') !important;border-color: red !important;opacity:.5 !important;cursor:url("css/custom-theme/images/deleteDiv.png"),url("css/custom-theme/images/deleteDiv.cur"),auto !important;} /* Visual selection for deleting columns */
-.actions > div {position:relative;z-index: 10;margin: 4px;}
+/*.actions > div {position:relative;z-index: 10;margin: 4px;}
 .actions{
     margin:10px 6px;background: url(images/linen.png);padding:6px 2px 2px;overflow: visible;z-index: 1; border: 1px solid #A68329;
     -moz-box-shadow: -1px 1px 2px black;
     -webkit-box-shadow: -1px 1px 2px black; 
-    box-shadow:-1px 1px 2px black;}
+    box-shadow:-1px 1px 2px black;}*/
 label {width:auto;padding: 0;float: none;}/*fixme should not have to overwrite*/
 #linebreakText {clear:left;width:auto;max-height:120px;height:40%;overflow: auto;background: white fixed repeat; border: 2px inset #FFDB7F;margin-bottom:4px;position:relative;}
 #linebreakSplit {width: 350px;}
@@ -492,12 +526,12 @@ iframe {background: url('images/linen.png') white scroll repeat; position: relat
 #columnOptions > span, #allColumnOptions > span {width: 50%;}
 .parsingColumn {background-image: url('css/custom-theme/images/ui-bg_layered-circles_50_618797_13x13.png');background-attachment: scroll;background-repeat: repeat;position: absolute;border-style: solid; border-width: 2px;border-color: black;z-index: 3;opacity:.3;}
 .parsingColumnSelected {background-image: url('css/custom-theme/images/ui-bg_layered-circles_50_ffc6b9_13x13.png') !important;border-color: red !important;opacity:.5 !important;cursor:url("css/custom-theme/images/deleteDiv.png"),url("css/custom-theme/images/deleteDiv.cur"),auto !important;} /* Visual selection for deleting columns */
-.actions > div {position:relative;z-index: 10;margin: 4px;}
+/*.actions > div {position:relative;z-index: 10;margin: 4px;}
 .actions{
     margin:10px 6px;background: url(images/linen.png);padding:6px 2px 2px;overflow: visible;z-index: 1; border: 1px solid #A68329;
     -moz-box-shadow: -1px 1px 2px black;
     -webkit-box-shadow: -1px 1px 2px black; 
-    box-shadow:-1px 1px 2px black;}
+    box-shadow:-1px 1px 2px black;}*/
 label {width:auto;padding: 0;float: none;}/*fixme should not have to overwrite*/
 #linebreakText {clear:left;width:auto;max-height:120px;height:40%;overflow: auto;background: white fixed repeat; border: 2px inset #FFDB7F;margin-bottom:4px;position:relative;}
 #linebreakSplit {width: 350px;}

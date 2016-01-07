@@ -167,16 +167,15 @@
                 </div>
                 <div id="parsingDiv" class="">
                     <div id="parseOptions">
-                        <h4 class="clear-left">Tool Options</h4>
+                        <h4 style="margin-left: 8px;" class="clear-left">Tool Options</h4>
                         <p> You cannot move pages while you are working on parsing.  Save your work and click 'Full Screen Transcription' to be able to move around the pages. </p>
 <!--                        <span id="backToTranscribing" class="tpenButton" onclick="$('#fullScreenBtn').click();"><span class="ui-icon ui-icon-arrowreturn-1-w left"></span>Return to Transcribing</span>-->
-                        <span id="ctrlColumns" class="tpenButton" title="Make adjustments at the column level"><span class='ui-icon ui-icon-carat-1-e left'></span>Column Controls</span>
-                        <div id="ctrlColumnsInst" class="actions ui-corner-all">
-                            <h4 class="clear-left">Column Controls</h4>
-                            <div class="accordion">
-                                <p class="loud">Create, destroy, adjust, or reparse columns.</p>
+                        <div id="ctrlColumnsInst" class="actions">
+                            <h4 id="ctrlColumns" title="Make adjustments at the column level" class="clear-left">Column Controls</h4>
+                            <div class="accordion startHide">
+                                <!--<p class="loud">Create, destroy, adjust, or reparse columns.</p>-->
                                 <span id="createColumn" class="tpenButton" title="Create new columns by clicking and dragging">Adjust or Create Columns</span>
-                                <div id="createColumnInst">
+                                <div class="startHide" id="createColumnInst">
                                     <dl>
                                         <dt>New Column:</dt>
                                         <dd>Click and drag to place</dd>
@@ -187,37 +186,36 @@
                                     <span class="ui-state-error-text"><span class="inline ui-icon ui-icon-alert"></span>New column dimensions will overwrite some <acronym title="Custom heights will be retained, but the width will be uniform.">custom line settings</acronym>.</span></p>
                                 </div>
                                 <span id="destroyColumn" class="tpenButton" title="Remove an entire column and its data with a click">Destroy Columns</span>
-                                <div id="destroyColumnInst">
+                                <div class="startHide" id="destroyColumnInst">
                                     <p class="">Click a column to remove all lines and transcription data it contains from the project.</p>
                                     <span class="ui-state-error-text"><span class="inline ui-icon ui-icon-alert"></span>This is a destructive process and cannot be undone.</span></p>
                                 </div>
                                 <span id="clearColumns" class="tpenButton" title="Clear the page, removing all transcription information">Clear Page</span>
-                                <div id="clearColumnsInst">
+                                <div class="startHide" id="clearColumnsInst">
                                     <p class="">Click to clear the page, removing all transcription information.</p>
                                     <span class="destroyPage" class="tpenButton ui-state-error" title="Destroy all columns on this page"><span class="left ui-icon ui-icon-circle-close"></span>Destroy All Data</span>
                                     <p class="small"><span class="ui-state-error-text"><span class="inline ui-icon ui-icon-alert"></span>This is a destructive process and cannot be undone.</span><br />
                                         <span class="inline ui-icon ui-icon-info"></span>If you load a page without any parsing information, automatic parsing will occur.<br />
-                                        <span class="inline ui-icon ui-icon-check"></span>You will be warned before destroying any <acronym title="Text, markup, and notes saved for lines on this page.">transcription information</acronym>.
+                                        <!--<span class="inline ui-icon ui-icon-check"></span>You will be warned before destroying any <acronym title="Text, markup, and notes saved for lines on this page.">transcription information</acronym>.-->
                                      </p>
                                 </div>
                                 <span id="reparseColumns" class="tpenButton" title="Reparse all columns, removing any associated lines">Reparse All Columns</span>
-                                <div id="reparseColumnsInst">
+                                <div class="startHide" id="reparseColumnsInst">
                                     <p class="">Click to remove all transcription data and lines from this page, automatically parsing based on the columns shown.</p>
                                     <span id="reparseColumn" class="tpenButton ui-state-error" title="Reparse all columns on this page"><span class="left ui-icon ui-icon-refresh"></span>Submit for Reparsing</span>
                                     <p class="small"><span class="inline ui-icon ui-icon-trash"></span>Destroy all manual changes with the alternative <span id="reparsePage" class="loud caps">Reparse Entire Page</span>.<br />
-                                    <span class="inline ui-icon ui-icon-check"></span>You will be warned before destroying any <acronym title="Text, markup, and notes saved for lines on this page.">transcription information</acronym>.<br />
+                                    <!--<span class="inline ui-icon ui-icon-check"></span>You will be warned before destroying any <acronym title="Text, markup, and notes saved for lines on this page.">transcription information</acronym>.<br />-->
                                     <span class="inline ui-icon ui-icon-info"></span>Make any adjustments to your columns before resubmitting.<br />
                                     <span class="ui-state-error-text"><span class="inline ui-icon ui-icon-alert"></span>This is a destructive process and cannot be undone.</span></p>
                                 </div>
                             </div>
                         </div>
-                        <span id="ctrlLines" class="tpenButton" title="Make adjustments at the line level"><span class='ui-icon ui-icon-carat-1-e left'></span>Line Controls</span>
-                        <div id="ctrlLinesInst" class="actions ui-corner-all">
-                            <h4 class="clear-left">Line Controls</h4>
-                            <div class="accordion">
-                                <p class="loud">Make adjustments to the way lines are defined within the columns</p>
+                        <div id="ctrlLinesInst" class="actions">
+                            <h4 id="ctrlLines" title="Make adjustments at the line level" class="clear-left">Line Controls</h4>
+                            <div class="accordion startHide">
+                                <!--<p class="loud">Make adjustments to the way lines are defined within the columns</p>-->
                                 <span id="addLines" class="tpenButton" title="Split lines to create new ones in a column">Add Lines</span>
-                                <div id="addLinesInst">
+                                <div class="startHide" id="addLinesInst">
                                     <p class="">Click within the shaded area to define the bottom of the new line.</p>
                                     <p class="small"><span class="inline ui-icon ui-icon-check"></span>This method retains all your <acronym title="Text, markup, and notes saved for lines within this column will remain attached.">transcription information</acronym>.<br />
                                     <span><span class="inline ui-icon ui-icon-info"></span>Any <acronym title="text, markup, and notes">transcription information</acronym> will remain with the line above where you click.</span><br />
@@ -227,19 +225,19 @@
                                         <div id="sampleRuler"></div>
                                         <label for="black"><input id="black" CHECKED type="radio" value="black" name="rulerColor"/>Black</label>
                                         <label for="white"><input id="white" type="radio" value="white" name="rulerColor"/>White</label>
-                                        <input onchange="Parsing.customRulerColor();" id="customColor" tabindex="-1" type="radio" value=customColor name="rulerColor"/>
-                                        <input style="width:80px;" title="Type the name of any valid HTML color or code. If the code is invalid, a default color will be shown." type="text" id="customRuler" onkeyup="Parsing.customRulerColor();" placeholder="transparent" value="transparent"/>
+                                        <input onchange="customRulerColor();" id="customColor" tabindex="-1" type="radio" value=customColor name="rulerColor"/>
+                                        <input style="width:80px;" title="Type the name of any valid HTML color or code. If the code is invalid, a default color will be shown." type="text" id="customRuler" onkeyup="customRulerColor();" placeholder="transparent" value="transparent"/>
                                     </div>                  
                                 </div>
                                 <span id="removeLines" class="tpenButton" title="Merge two lines or remove the last line from a column">Delete/Merge Lines</span>
-                                <div id="removeLinesInst">
+                                <div class="startHide" id="removeLinesInst">
                                     <p class="">Click within the shaded area to merge the highlighted lines or delete the last line of a column.</p>
                                     <p class="small"><span class="inline ui-icon ui-icon-info"></span>This method combines your <acronym title="Text, markup, and notes saved for lines within this column will remain attached.">transcription information</acronym> into the new line.<br />
                                     <span class="ui-state-error-text"><span class="inline ui-icon ui-icon-alert"></span>Deleting lines also removes any associated <acronym title="text, markup, and notes">transcription information</acronym>.</span> <br />
                                     <span><span class="inline ui-icon ui-icon-info"></span>To add a line, use the <span class="ui-button loud" onclick="$('#addLines').click();" title="Click to use the Add Lines option">Add Lines</span> option.</span></p>
                                 </div>
                                 <span id="adjustLines" class="tpenButton" title="Simple adjustments to individual lines">Adjust Lines</span>                       
-                                <div id="adjustLinesInst">
+                                <div class="startHide" id="adjustLinesInst">
                                     <p class="">Click and drag the right side of the line to contain the line accurately.</p>
                                     <p class="small"><span class="inline ui-icon ui-icon-check"></span>This method retains all your <acronym title="Text, markup, and notes saved for each line will remain attached.">transcription information</acronym>.<br />
                                     <span><span class="inline ui-icon ui-icon-info"></span>Only the right boundary can be moved in this tool.</span><br />
@@ -629,37 +627,64 @@
                 if(isFullscreen)isUnadjusted = true;
                 isFullscreen = false;
                 hideWorkspaceForParsing();
-                $(".actions").hide();
+                //$(".actions").hide();
                 $("#confirmParsingInst").show();
                 $("#parsingBtn").css("box-shadow", "");
             });
             
             $(".workspaceHandle").mousedown(function(event){moveWorkspace(event);})
             .css("cursor","n-resize");
+    
+            $(".accordion").children("span").click(function(){
+                    var next = $(this).next();
+                    $(".accordion").children("div").css("max-height", "0px");
+                    if(next.css("max-height") === "0px"){
+                        next.css("max-height", "200px");
+                    }
+                    else{
+                        next.next().css("max-height", "0px");
+                    }
+                });
             
-            $("#parseOptions").children("span").click(function(event){
+            $("#parseOptions").children(".actions").click(function(event){
+                
+                if($(event.target).attr("class").indexOf("accordion") > -1 || $(event.target).attr("class").indexOf("startHide") > -1
+                    || $(event.target).attr("class").indexOf("tpenButton") > -1 || $(event.target).attr("class").indexOf("loud") > -1
+                    || event.target.tagName === "P" ||$(event.target).attr("class").indexOf("destroyPage") > -1 ||$(event.target).attr("class").indexOf("errortext") > -1
+                    || $(event.target).attr("class").indexOf("tpenButton") > -1){ //ignore this if one of the children or text was clicked. 
+                    return false;
+                }
                 $("#imgTop").unbind();
                 $(".parsing").removeClass("adjustable");
                 $(".parsing").unbind('mousemove');
                 $("#ruler1").hide();
                 $("#ruler2").hide();
                 
-                $("#confirmParsingInst").slideUp();
+                //$("#confirmParsingInst").slideUp();
                 var thisID = $(this).attr("id");
-                ////console.log(thisID+ " needs to slide up if it is open")
-                if (!$("#"+thisID+"Inst").is(":visible")) {
-                    $(".actions").not($("#"+thisID+"Inst")).slideUp();
-                    $("#"+thisID+"Inst").slideDown();
+                
+                if(thisID === "ctrlColumnsInst"){
+                    $("#ctrlLinesInst").find(".accordion").css("max-height", "0px");
+                }
+                else if (thisID === "ctrlLinesInst"){
+                    $("#ctrlColumnsInst").find(".accordion").css("max-height", "0px");
+                }
+                
+                if($(this).find(".accordion").css("max-height") === "0px"){
+                    $(this).find(".accordion").css("max-height", "350px");
                 }
                 else{
-                    $("#"+thisID+"Inst").slideUp();
+                    $(this).find(".accordion").css("max-height", "0px");
                 }
-                $(".accordion").children("div").slideUp().end()
-                    .children("span").removeClass("ui-state-active").children(".ui-icon-triangle-1-s").switchClass("ui-icon-triangle-1-s","ui-icon-triangle-1-e");
-                $(this).addClass("ui-state-active")
-                    .children(".ui-icon-carat-1-e").switchClass("ui-icon-carat-1-e","ui-icon-carat-1-s").end()
-                    .siblings("span").removeClass("ui-state-active")
-                    .children(".ui-icon-carat-1-s").switchClass("ui-icon-carat-1-s","ui-icon-carat-1-e");
+                ////console.log(thisID+ " needs to slide up if it is open")
+//                if (!$("#"+thisID+"Inst").is(":visible")) {
+//                    $(".actions").not($("#"+thisID+"Inst")).slideUp();
+//                    $("#"+thisID+"Inst").slideDown();
+//                }
+//                else{
+//                    $("#"+thisID+"Inst").slideUp();
+//                }
+                
                 if (thisID == "backToTranscribing"){
               // restore events on .lines
                     $("#imgTop").children(".line").css({
@@ -668,17 +693,13 @@
                     });
                     return true;
                 }
-                else if (thisID == "ctrlLines") {
-                    //writeLines($("#imgTop img"));
+                else if (thisID == "ctrlLinesInst") {
                     $("#imgTop").children(".line").addClass("parsing").removeClass("line");
                     $(".parsing").css("z-index", "5");
                     $(".parsingColumn").remove();
                     
-                    
-                    //restore events on .line ?
-
                 }
-                else if (thisID == "ctrlColumns") {
+                else if (thisID == "ctrlColumnsInst") {
                     $(".parsing").unbind();
                     linesToColumns();
                 };
@@ -784,6 +805,7 @@
             
         }
         if (thisID == "createColumn"){
+            $(".parsingColumn").removeClass("parsingColumnSelected");
             var isCreating = true;
             adjustColumn(event);
             ////console.log("New or reparse column");
@@ -924,6 +946,7 @@
             }
         if (thisID === "reparseColumns") {
                 //load the adjustment tool and then show the reparsing instructions
+                $(".parsingColumn").removeClass("parsingColumnSelected");
                 var columnSet = $(".parsingColumn");
                 $("#reparseColumn").html('<span class="left ui-icon ui-icon-refresh"></span>Submit '+columnSet.size()+' for Reparsing');
                 $("#reparseColumn").bind('click', function(){
