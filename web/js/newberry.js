@@ -424,8 +424,7 @@
                                  if(this.proj !== undefined && this.proj == theProjectID){
                                     found = true;
                                     if(this.resources.length > 0){
-                                        lines = annoList[0].resources;
-                                        
+                                        lines = this.resources;
                                     }
                                  }
                              });
@@ -941,6 +940,7 @@
                         var masterList = annoList[0];
                         lines = masterList.resources;
                         currentList = masterList;
+                        annoLists[currentFolio -1] = masterList["@id"];
                         $.each(annoList, function(){
                             //console.log("does "+this.proj+" == "+theProjectID)
                             if(this.proj !== undefined && this.proj == theProjectID){
@@ -952,6 +952,7 @@
                                 annoLists[currentFolio -1] = this["@id"];
                             }
                             else{
+                                
                                 //It is an annotation list for this canvas in a different project.
                                 //console.log("Anno list for this canvas but different project.  ");
                             }
