@@ -187,7 +187,7 @@
                                     <div class="startHide" id="createColumnInst">
                                         <dl>
                                             <dt>New Column:</dt>
-                                            <dd>Click and drag to place</dd>
+                                            <dd>Click and drag to place</dd><br>
                                             <dt>Adjustments:</dt>
                                             <dd>Drag the edges of an existing column</dd>
                                         </dl>
@@ -673,6 +673,8 @@
                 //$("#confirmParsingInst").slideUp();
                 var thisID = $(this).attr("id");
                 if (thisID == "createColumn" || thisID == "destroyColumn" || thisID=="clearColumns") {
+                    $("#ctrlColumnsInst").find(".activeParsingTool").css("display", "inline-table");
+                    $("#ctrlLinesInst").find(".activeParsingTool").hide();
                     $(".parsing").unbind();
                     linesToColumns();
                     
@@ -824,6 +826,8 @@
                     }
                 }
                 else if (thisID == "addLines" || thisID == "removeLines" || thisID == "adjustLines") {
+                    $("#ctrlColumnsInst").find(".activeParsingTool").hide();
+                    $("#ctrlLinesInst").find(".activeParsingTool").css("display", "inline-table");
                     $("#imgTop").children(".line").addClass("parsing").removeClass("line");
                     $(".parsing").css("z-index", "5");
                     $(".parsingColumn").remove();
