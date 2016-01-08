@@ -21,8 +21,13 @@
             display: inline-block;
             border-right: 2px solid black;
         }
+        
     </style>
     <body>
+        <div class="pageTurnCover">
+            <div class="turnMsg">Please wait while we load the page...</div>
+            <div class="turnLoader"><img src="../newberry/images/loading2.gif" /></div>
+        </div>
         <div class="topTrim">
             <span class="trimSection">TITLE:<span id="trimTitle"></span></span>
             <span class="trimSection">PAGE: <span id="trimPage"></span></span>
@@ -167,83 +172,90 @@
                 </div>
                 <div id="parsingDiv" class="">
                     <div id="parseOptions">
-                        <h4 style="margin-left: 8px;" class="clear-left">Tool Options</h4>
-                        <p> You cannot move pages while you are working on parsing.  Save your work and click 'Full Screen Transcription' to be able to move around the pages. </p>
+                        <h4 style="margin-left: 8px;" class="clear-left">Line Parsing</h4>
+                        <p> You cannot change the page while you are working on parsing.  Save your work and click 'Full Screen Transcription' to be able to move around the pages. </p>
 <!--                        <span id="backToTranscribing" class="tpenButton" onclick="$('#fullScreenBtn').click();"><span class="ui-icon ui-icon-arrowreturn-1-w left"></span>Return to Transcribing</span>-->
                         <div id="ctrlColumnsInst" class="actions">
                             <h4 id="ctrlColumns" title="Make adjustments at the column level" class="clear-left">Column Controls</h4>
-                            <div class="accordion startHide">
                                 <!--<p class="loud">Create, destroy, adjust, or reparse columns.</p>-->
-                                <span id="createColumn" class="tpenButton" title="Create new columns by clicking and dragging">Adjust or Create Columns</span>
-                                <div class="startHide" id="createColumnInst">
-                                    <dl>
-                                        <dt>New Column:</dt>
-                                        <dd>Click and drag to place</dd>
-                                        <dt>Adjustments:</dt>
-                                        <dd>Drag the edges of an existing column</dd>
-                                    </dl>
-                                    <p class="small"><span class="inline ui-icon ui-icon-check"></span>This method does not destroy any <acronym title="Text, markup, and notes saved for lines within this column will remain attached.">transcription information</acronym>.<br />
-                                    <span class="ui-state-error-text"><span class="inline ui-icon ui-icon-alert"></span>New column dimensions will overwrite some <acronym title="Custom heights will be retained, but the width will be uniform.">custom line settings</acronym>.</span></p>
+                                <div class="parsingToolButtons">
+                                    <span id="createColumn" class="tpenButton" title="Create new columns by clicking and dragging" show="createColumnInst">Adjust or Create Columns</span>
+                                    <span id="destroyColumn" class="tpenButton" title="Remove an entire column and its data with a click" show="destroyColumnInst">Destroy Columns</span>
+                                    <span id="clearColumns" class="tpenButton" title="Clear the page, removing all transcription information" show="clearColumnsInst">Clear Page</span>
                                 </div>
-                                <span id="destroyColumn" class="tpenButton" title="Remove an entire column and its data with a click">Destroy Columns</span>
-                                <div class="startHide" id="destroyColumnInst">
-                                    <p class="">Click a column to remove all lines and transcription data it contains from the project.</p>
-                                    <span class="ui-state-error-text"><span class="inline ui-icon ui-icon-alert"></span>This is a destructive process and cannot be undone.</span></p>
+                                <div class="activeParsingTool">
+                                    <div class="startHide" id="createColumnInst">
+                                        <dl>
+                                            <dt>New Column:</dt>
+                                            <dd>Click and drag to place</dd>
+                                            <dt>Adjustments:</dt>
+                                            <dd>Drag the edges of an existing column</dd>
+                                        </dl>
+                                        <p class="small"><span class="inline ui-icon ui-icon-check"></span>This method does not destroy any <acronym title="Text, markup, and notes saved for lines within this column will remain attached.">transcription information</acronym>.<br />
+                                        <!--<span class="ui-state-error-text"><span class="inline ui-icon ui-icon-alert"></span>New column dimensions will overwrite some <acronym title="Custom heights will be retained, but the width will be uniform.">custom line settings</acronym>.</span></p>-->
+                                    </div>
+                                    <div class="startHide" id="destroyColumnInst">
+                                        <p class="">Click a column to remove all lines and transcription data it contains from the project.</p>
+                                        <span class="ui-state-error-text"><span class="inline ui-icon ui-icon-alert"></span>This is a destructive process and cannot be undone.</span></p>
+                                    </div>
+                                    <div class="startHide" id="clearColumnsInst">
+                                        <p class="">Click to clear the page, removing all transcription information.</p>
+                                        <span class="destroyPage" class="tpenButton ui-state-error" title="Destroy all columns on this page"><span class="left ui-icon ui-icon-circle-close"></span>Destroy All Data</span>
+                                        <p class="small"><span class="ui-state-error-text"><span class="inline ui-icon ui-icon-alert"></span>This is a destructive process and cannot be undone.</span><br />
+                                            <!--<span class="inline ui-icon ui-icon-info"></span>If you load a page without any parsing information, automatic parsing will occur.<br />-->
+                                            <!--<span class="inline ui-icon ui-icon-check"></span>You will be warned before destroying any <acronym title="Text, markup, and notes saved for lines on this page.">transcription information</acronym>.-->
+                                         </p>
+                                    </div>
                                 </div>
-                                <span id="clearColumns" class="tpenButton" title="Clear the page, removing all transcription information">Clear Page</span>
-                                <div class="startHide" id="clearColumnsInst">
-                                    <p class="">Click to clear the page, removing all transcription information.</p>
-                                    <span class="destroyPage" class="tpenButton ui-state-error" title="Destroy all columns on this page"><span class="left ui-icon ui-icon-circle-close"></span>Destroy All Data</span>
-                                    <p class="small"><span class="ui-state-error-text"><span class="inline ui-icon ui-icon-alert"></span>This is a destructive process and cannot be undone.</span><br />
-                                        <span class="inline ui-icon ui-icon-info"></span>If you load a page without any parsing information, automatic parsing will occur.<br />
-                                        <!--<span class="inline ui-icon ui-icon-check"></span>You will be warned before destroying any <acronym title="Text, markup, and notes saved for lines on this page.">transcription information</acronym>.-->
-                                     </p>
-                                </div>
-                                <span id="reparseColumns" class="tpenButton" title="Reparse all columns, removing any associated lines">Reparse All Columns</span>
+                                
+                                
+<!--                                <span id="reparseColumns" class="tpenButton" title="Reparse all columns, removing any associated lines">Reparse All Columns</span>
                                 <div class="startHide" id="reparseColumnsInst">
                                     <p class="">Click to remove all transcription data and lines from this page, automatically parsing based on the columns shown.</p>
                                     <span id="reparseColumn" class="tpenButton ui-state-error" title="Reparse all columns on this page"><span class="left ui-icon ui-icon-refresh"></span>Submit for Reparsing</span>
                                     <p class="small"><span class="inline ui-icon ui-icon-trash"></span>Destroy all manual changes with the alternative <span id="reparsePage" class="loud caps">Reparse Entire Page</span>.<br />
-                                    <!--<span class="inline ui-icon ui-icon-check"></span>You will be warned before destroying any <acronym title="Text, markup, and notes saved for lines on this page.">transcription information</acronym>.<br />-->
+                                    <span class="inline ui-icon ui-icon-check"></span>You will be warned before destroying any <acronym title="Text, markup, and notes saved for lines on this page.">transcription information</acronym>.<br />
                                     <span class="inline ui-icon ui-icon-info"></span>Make any adjustments to your columns before resubmitting.<br />
                                     <span class="ui-state-error-text"><span class="inline ui-icon ui-icon-alert"></span>This is a destructive process and cannot be undone.</span></p>
-                                </div>
-                            </div>
+                                </div>-->
                         </div>
                         <div id="ctrlLinesInst" class="actions">
                             <h4 id="ctrlLines" title="Make adjustments at the line level" class="clear-left">Line Controls</h4>
-                            <div class="accordion startHide">
                                 <!--<p class="loud">Make adjustments to the way lines are defined within the columns</p>-->
-                                <span id="addLines" class="tpenButton" title="Split lines to create new ones in a column">Add Lines</span>
-                                <div class="startHide" id="addLinesInst">
-                                    <p class="">Click within the shaded area to define the bottom of the new line.</p>
-                                    <p class="small"><span class="inline ui-icon ui-icon-check"></span>This method retains all your <acronym title="Text, markup, and notes saved for lines within this column will remain attached.">transcription information</acronym>.<br />
-                                    <span><span class="inline ui-icon ui-icon-info"></span>Any <acronym title="text, markup, and notes">transcription information</acronym> will remain with the line above where you click.</span><br />
-                                    <span><span class="inline ui-icon ui-icon-info"></span>To add a line outside of the defined columns, <span class="ui-button loud" onclick="$('#ctrlColumns').click();$('#createColumn').click();" title="Click to use the Create a Column option">Create a Column</span>.</span></p>
-                                    <div align="center">
-                                        <p class="clear-left">Trouble seeing the ruler? Change the color below.</p>
-                                        <div id="sampleRuler"></div>
-                                        <label for="black"><input id="black" CHECKED type="radio" value="black" name="rulerColor"/>Black</label>
-                                        <label for="white"><input id="white" type="radio" value="white" name="rulerColor"/>White</label>
-                                        <input onchange="customRulerColor();" id="customColor" tabindex="-1" type="radio" value=customColor name="rulerColor"/>
-                                        <input style="width:80px;" title="Type the name of any valid HTML color or code. If the code is invalid, a default color will be shown." type="text" id="customRuler" onkeyup="customRulerColor();" placeholder="transparent" value="transparent"/>
-                                    </div>                  
+                                <div class="parsingToolButtons">
+                                    <span id="addLines" class="tpenButton" title="Split lines to create new ones in a column" show="addLinesInst">Add Lines</span>
+                                    <span id="removeLines" class="tpenButton" title="Merge two lines or remove the last line from a column" show="removeLinesInst">Delete/Merge Lines</span>
+                                    <span id="adjustLines" class="tpenButton" title="Simple adjustments to individual lines" show="addLinesInst" show="adjustLinesInst">Adjust Lines</span>                       
                                 </div>
-                                <span id="removeLines" class="tpenButton" title="Merge two lines or remove the last line from a column">Delete/Merge Lines</span>
-                                <div class="startHide" id="removeLinesInst">
-                                    <p class="">Click within the shaded area to merge the highlighted lines or delete the last line of a column.</p>
-                                    <p class="small"><span class="inline ui-icon ui-icon-info"></span>This method combines your <acronym title="Text, markup, and notes saved for lines within this column will remain attached.">transcription information</acronym> into the new line.<br />
-                                    <span class="ui-state-error-text"><span class="inline ui-icon ui-icon-alert"></span>Deleting lines also removes any associated <acronym title="text, markup, and notes">transcription information</acronym>.</span> <br />
-                                    <span><span class="inline ui-icon ui-icon-info"></span>To add a line, use the <span class="ui-button loud" onclick="$('#addLines').click();" title="Click to use the Add Lines option">Add Lines</span> option.</span></p>
+                                <div class="activeParsingTool">
+                                    <div class="startHide" id="addLinesInst">
+                                        <p class="">Click within the shaded area to define the bottom of the new line.</p>
+                                        <p class="small"><span class="inline ui-icon ui-icon-check"></span>This method retains all your <acronym title="Text, markup, and notes saved for lines within this column will remain attached.">transcription information</acronym>.<br />
+                                        <span><span class="inline ui-icon ui-icon-info"></span>Any <acronym title="text, markup, and notes">transcription information</acronym> will remain with the line above where you click.</span><br />
+                                        <span><span class="inline ui-icon ui-icon-info"></span>To add a line outside of the defined columns, <span class="ui-button loud" onclick="$('#ctrlColumns').click();$('#createColumn').click();" title="Click to use the Create a Column option">Create a Column</span>.</span></p>
+                                        <div align="center">
+                                            <p class="clear-left">Trouble seeing the ruler? Change the color below.</p>
+                                            <div id="sampleRuler"></div>
+                                            <label for="black"><input onclick="rulerColor('black');" CHECKED type="radio" value="black" name="rulerColor"/>Black</label>
+                                            <label for="white"><input onclick='rulerColor("white");' id="white" type="radio" value="white" name="rulerColor"/>White</label>
+                                            <input style="width:80px;" title="Type the name of any valid HTML color or code. If the code is invalid, a default color will be shown." type="text" id="customRuler" onkeyup="rulerColor('custom');" placeholder="transparent" value="transparent"/>
+                                        </div>                  
+                                    </div>
+                                    <div class="startHide" id="removeLinesInst">
+                                        <p class="">Click within the shaded area to merge the highlighted lines or delete the last line of a column.</p>
+                                        <p class="small"><span class="inline ui-icon ui-icon-info"></span>This method combines your <acronym title="Text, markup, and notes saved for lines within this column will remain attached.">transcription information</acronym> into the new line.<br />
+                                        <span class="ui-state-error-text"><span class="inline ui-icon ui-icon-alert"></span>If a line is removed, so in the information associated <acronym title="text, markup, and notes">with it</acronym>.</span> <br />
+                                        <span><span class="inline ui-icon ui-icon-info"></span>To add a line, use the <span class="ui-button loud" onclick="$('#addLines').click();" title="Click to use the Add Lines option">Add Lines</span> option.</span></p>
+                                    </div>
+                                    <div class="startHide" id="adjustLinesInst">
+                                        <p class="">Click and drag the right side of the line to contain the line accurately.</p>
+                                        <p class="small"><span class="inline ui-icon ui-icon-check"></span>This method retains all your <acronym title="Text, markup, and notes saved for each line will remain attached.">transcription information</acronym>.<br />
+                                        <span><span class="inline ui-icon ui-icon-info"></span>Only the right boundary can be moved in this tool.</span><br />
+                                        <span><span class="inline ui-icon ui-icon-info"></span>Make precise, individual changes in the transcription view on the currently selected line.  
+                                            Hold the ALT key and drag the right side of a line to resize it.  While holding the ALT key
+                                        press the left and right arrows to 'bump' the line.</span></p>
+                                    </div>
                                 </div>
-                                <span id="adjustLines" class="tpenButton" title="Simple adjustments to individual lines">Adjust Lines</span>                       
-                                <div class="startHide" id="adjustLinesInst">
-                                    <p class="">Click and drag the right side of the line to contain the line accurately.</p>
-                                    <p class="small"><span class="inline ui-icon ui-icon-check"></span>This method retains all your <acronym title="Text, markup, and notes saved for each line will remain attached.">transcription information</acronym>.<br />
-                                    <span><span class="inline ui-icon ui-icon-info"></span>Only the right boundary can be moved in this tool.</span><br />
-                                    <span><span class="inline ui-icon ui-icon-info"></span>Make precise, individual changes in the <acronym title="Hold ALT while transcribing to resize the line width and height precisely.">transcription view</acronym>.</span></p>
-                                </div>
-                            </div>
                         </div>
 <!--                        <div id="confirmParsingInst">
                             <h4 class="clear-left">Confirm Parsing</h4>
@@ -589,8 +601,19 @@
             }
             else if (event.which == 18 || event.altKey){
                // //console.log('ALT KEY');
+               console.log("Trans Line Editing");
                var lineForEditing = $(".activeLine");
-               lineForEditing.resizable()
+               lineForEditing.resizable();
+               //alt + arrows will bump active line left and right
+               if(event.which == 37 && (event.altKey||event.which == 18)){
+                   //left
+                   bumpLine("left", lineForEditing);
+                   
+               }
+               else if (event.which == 39 && (event.altKey||event.which == 18)){
+                   //right
+                   bumpLine("right", lineForEditing);
+               }
             }
             else if (event.which === 27){
                 //Esc during any active tool means stop the tool.  In this case, our only worry is moving the image around.  We may add others later. 
@@ -610,6 +633,7 @@
             }
             })
             .keyup(function(event){
+                stopWaitingForArrows();
                 if(event.which == 18 || event.altKey){
                     $("#imgTop,#imgBottom,.workpaceHandle").unbind().css("cursor", "default");
                     //restoreTransition();
@@ -635,16 +659,256 @@
             $(".workspaceHandle").mousedown(function(event){moveWorkspace(event);})
             .css("cursor","n-resize");
     
-            $(".accordion").children("span").click(function(){
-                    var next = $(this).next();
-                    $(".accordion").children("div").css("max-height", "0px");
-                    if(next.css("max-height") === "0px"){
-                        next.css("max-height", "200px");
+            $(".parsingToolButtons").children("span").click(function(){
+                $(".startHide").fadeOut(800);
+                var show = $(this).attr("show");
+                $(".startHide").hide();
+                $("#"+show).fadeIn(800);
+                $("#imgTop").unbind();
+                $(".parsing").removeClass("adjustable");
+                $(".parsing").unbind('mousemove');
+                $("#ruler1").hide();
+                $("#ruler2").hide();
+                
+                //$("#confirmParsingInst").slideUp();
+                var thisID = $(this).attr("id");
+                if (thisID == "createColumn" || thisID == "destroyColumn" || thisID=="clearColumns") {
+                    $(".parsing").unbind();
+                    linesToColumns();
+                    
+                    if (thisID == "createColumn"){
+                        $.each($(".parsingColumn"), function(){
+                            $(this).removeClass("parsingColumnSelected");
+                        });
+
+                        var isCreating = true;
+                        adjustColumn(event);
+                        ////console.log("New or reparse column");
+                        //Parsing.removeRuler();
+                        var offset = $('#imgTop').offset();
+                        var point = {};
+                        var deltaPoint = {x:0,y:0};
+                        $("#imgTop").bind({
+                                mousedown: function(event){
+                                   // //console.log("NEWCOLUMN");
+                                    if ((event.target.className.indexOf("transcriptionImage") === -1 )){//|| !$("#createColumn").hasClass("ui-state-active")
+                                        isCreating = false;
+                                        return true;
+                                    }
+                                    else{
+                                        event.preventDefault();
+                                        var newCol = "<div id='newCol' class='parsingColumn ui-resizable' style='z-index:1000; background-color: yellow;'></div>";
+                                        point = {x:event.pageX - offset.left,y:event.pageY - offset.top};
+                                        $(newCol).insertBefore($("#imgTop img")).css({
+                                            'position'  : 'absolute',
+                                            'top': point.y,
+                                            'left': point.x,
+                                            'min-width' : "5px",
+                                            'min-height': "5px"
+                                        });
+                                    }
+
+                                },
+                                mousemove:  function(event){
+                                    event.preventDefault();
+                                    deltaPoint = {
+                                        x: event.pageX-point.x,
+                                        y: event.pageY-(point.y)
+                                    };
+                                    if (deltaPoint.x < 0) {
+                                      // right to left drawing
+                                      $("#newCol").css("left", point.x + deltaPoint.x);
+                                    }
+                                    if (deltaPoint.y < 0) {
+                                      // bottom to top drawing
+                                      $("#newCol").css("top", point.y  + deltaPoint.y);
+                                    }
+                                    $("#newCol").css({
+                                      "width": Math.abs(deltaPoint.x),
+                                      "height": Math.abs(deltaPoint.y) - 25 //header (.topTrim)
+                                    });
+                                },
+                                mouseup:    function(event){
+                                    event.preventDefault();
+                                    if (!isCreating){ //|| !$("#createColumn").hasClass("ui-state-active"
+                                        $('#imgTop').unbind('mousemove');
+                                        return true;
+                                    }
+                                    var $newCol = $("#newCol");
+                //                    if($newCol.height() < 5 && $newCol.width < 5){
+                //                        $newCol.remove();
+                //                        $('#imgTop').unbind('mousemove');
+                //                        return true;
+                //                    }
+                                    var colRatio = $("#imgTop").height() / $("#imgTop").width();
+                                    $newCol.attr({
+                                        "lineserverid"   : "-1",
+                                        "newline"       : true,
+                                        "newcol"        : true,
+                                        "linetop"       : parseFloat($newCol.css("top")) / $("#imgTop").height() * 100,
+                                        "lineleft"      : parseFloat($newCol.css("left")) / $("#imgTop").width() * 100,
+                                        "linewidth"     : $newCol.width() / $("#imgTop").width() * 100,
+                                        "lineheight"    : $newCol.height() / $("#imgTop").height() * 100,
+                                        "id"            : "",
+                                        "hastranscription": false
+                                    });
+                                    $newCol.css("background-color","transparent");
+                                    // Prevent tiny columns on accident
+                                    if (parseInt($newCol.attr('linewidth'))+parseInt($newCol.attr('lineheight')) < 12) {
+                                        $newCol.remove();
+                                        return true;
+                                    }
+                                    isAddingLines = true;
+                                    var newY = parseFloat($newCol.css("top")) / $("#imgTop").height() * 100;
+                                    var newX = parseFloat($newCol.css("left")) / $("#imgTop").width() * 100;
+                                    var newH = $newCol.height() / $("#imgTop").height()* 100;
+                                    var newW = $newCol.width() / $("#imgTop").width() * 100;
+
+                                    //The column is now a line, so put that into the UI and save it to the DB.  
+                                    var columnIsLine =$(
+                                    "<div class='parsing newColumn' style='\n\
+                                        top:"+newY+"%; \n\
+                                        left:"+newX+"%; \n\
+                                        height:"+newH+"%; \n\
+                                        width:"+newW+"%; \n\
+                                        z-index : -10;\n\
+                                        ' lineserverid=''\n\
+                                        linetop='"+newY+"'\n\
+                                        lineleft='"+newX+"'\n\
+                                        lineheight='"+newH+"'\n\
+                                        linewidth='"+newW+"'>\n\
+                                    </div>");
+                                    if(isCreating){
+                                        saveNewLine(null,columnIsLine);
+                                        $("#imgTop").append(columnIsLine);
+                                    }
+                                    adjustColumn(); //Do this so that the new column is adjustable.       
+                                    $("#createColumn").ajaxStop(function(){
+                                        $(this).click()
+                                        .unbind("ajaxStop");
+                                        isCreating = false;
+                                    });
+                                    $('#imgTop').unbind('mousemove');
+                                }
+
+                        });
                     }
-                    else{
-                        next.next().css("max-height", "0px");
+                    if (thisID === "destroyColumn") {
+                      //prep for column adjustment
+                      $.each($(".parsingColumn"), function(){
+                            $(this).removeClass("parsingColumnSelected");
+                        });
+                      $(".parsingColumn").bind({
+                        mouseenter: function() {
+                          $(this).addClass("parsingColumnSelected");
+                        },
+                        mouseleave: function() {
+                          $(this).removeClass("parsingColumnSelected");
+                        },
+                        click: function() {
+                          removeColumn($(this));
+                          $(this).hide("blind", 250, function() {
+                            $("#destroyColumnInst").slideUp();
+                            $("#destroyColumn").removeClass("ui-state-active");
+                          });
+                        }
+                      });
                     }
-                });
+                    if (thisID === "clearColumns") {
+                            //prep for column adjustment
+                            var columnSet = $(".parsingColumn");
+                            columnSet.addClass("parsingColumnSelected");
+                            var columnText = (columnSet.size() === 1) ? "Destroy This Column" : "Destroy "+columnSet.size()+" Columns";
+                            $(".destroyPage").html('<span class="left ui-icon ui-icon-circle-close"></span>'+columnText+'')
+                            .bind('click', function(){destroyPage();})
+                    }
+                }
+                else if (thisID == "addLines" || thisID == "removeLines" || thisID == "adjustLines") {
+                    $("#imgTop").children(".line").addClass("parsing").removeClass("line");
+                    $(".parsing").css("z-index", "5");
+                    $(".parsingColumn").remove();
+                    if (thisID == "adjustLines") {
+                        //prep for adjustment
+                        $("#ruler1").hide();
+                        $("#ruler2").hide();
+                        var thisLineID = -1;
+                        var originalW = 1;
+                        var thisLine;
+                        //writeLines($("#imgTop img"));
+                        $(".parsing").addClass("adjustable").removeClass("line");
+                        if($(".adjustable").hasClass("ui-resizable")){
+                          $(".adjustable").has(".ui-resizable").resizable("enable");
+                        } 
+                        else {
+                          $(".adjustable").resizable({
+                            handles: "e",
+                            containment: 'parent',
+                            start: function(event, ui) {
+                              originalW = ui.originalSize.width;
+                              newW = ui.size.width;
+                              $("#progress").html("Resizing Line").fadeIn();
+                              $("#lineResizing").show();
+                              $("#originalLine").html(originalW);
+                              $("#newLine").html(Math.round(100 * (newW / originalW)));
+                              $("#sidebar").fadeIn();
+                              thisLine = $(".ui-resizable-resizing");
+                            },
+                            resize: function(event, ui) {
+                              newW = ui.size.width;
+                              $("#newLine").html(Math.round(100 * (newW / originalW)));
+                            },
+                            stop: function(event, ui) {
+                              $("#progress").html("Line Resized - Saving...");
+                              var thisLineID = thisLine.attr("lineserverid");
+                              var thisLineW = parseFloat(thisLine.attr("linewidth")) * (newW / originalW);
+                              thisLine.attr("linewidth", thisLineW);
+                              //$(".transcriptlet[lineserverid='" + thisLineID + "']").attr("linewidth", thisLineW);
+                              //console.log("update line with ID: "+thisLineID);
+                              updateLine(thisLine);       
+                              $("#progress").html("Line Saved").delay(3000).fadeOut(1000);
+                              $("#lineResizing").delay(3000).fadeOut(1000);
+                            }
+                          });
+                        }
+                    }
+                    if (thisID == "addLines"){
+                        //writeLines($("#imgTop img"));
+                        isAddingLines = true;
+                        $("#imgTop").children(".line").addClass("parsing").removeClass("line");
+                        $('.parsing').unbind();
+                        $(".parsing").bind({
+                            mouseenter: function(){
+                                applyRuler($(this));
+                            },
+                            mouseleave: function(){
+                                removeRuler($(this));
+                            },
+                            click: function(event){
+                                lineChange($(this), event);
+                            }
+                        });
+
+                    }
+                    if (thisID == "removeLines"){
+                        //prep for column adjustment
+                        //writeLines($("#imgTop img"));
+                        isAddingLines = false;
+                        $(".parsing").unbind();
+                        $(".parsing").bind({
+                            mouseenter: function(){
+                                applyRuler($(this));
+                            },
+                            mouseleave: function(){
+                                removeRuler($(this));
+                            },
+                            click: function(event){
+                                lineChange($(this), event);
+                            }
+                        });
+                        $("#imgTop").children(".line").addClass("parsing").removeClass("line");
+                    }
+                };
+            });
             
             $("#parseOptions").children(".actions").click(function(event){
                 
@@ -654,55 +918,7 @@
                     || $(event.target).attr("class").indexOf("tpenButton") > -1){ //ignore this if one of the children or text was clicked. 
                     return false;
                 }
-                $("#imgTop").unbind();
-                $(".parsing").removeClass("adjustable");
-                $(".parsing").unbind('mousemove');
-                $("#ruler1").hide();
-                $("#ruler2").hide();
                 
-                //$("#confirmParsingInst").slideUp();
-                var thisID = $(this).attr("id");
-                
-                if(thisID === "ctrlColumnsInst"){
-                    $("#ctrlLinesInst").find(".accordion").css("max-height", "0px");
-                }
-                else if (thisID === "ctrlLinesInst"){
-                    $("#ctrlColumnsInst").find(".accordion").css("max-height", "0px");
-                }
-                
-                if($(this).find(".accordion").css("max-height") === "0px"){
-                    $(this).find(".accordion").css("max-height", "350px");
-                }
-                else{
-                    $(this).find(".accordion").css("max-height", "0px");
-                }
-                ////console.log(thisID+ " needs to slide up if it is open")
-//                if (!$("#"+thisID+"Inst").is(":visible")) {
-//                    $(".actions").not($("#"+thisID+"Inst")).slideUp();
-//                    $("#"+thisID+"Inst").slideDown();
-//                }
-//                else{
-//                    $("#"+thisID+"Inst").slideUp();
-//                }
-                
-                if (thisID == "backToTranscribing"){
-              // restore events on .lines
-                    $("#imgTop").children(".line").css({
-                      'pointer-events': '',
-                      'z-index': ''
-                    });
-                    return true;
-                }
-                else if (thisID == "ctrlLinesInst") {
-                    $("#imgTop").children(".line").addClass("parsing").removeClass("line");
-                    $(".parsing").css("z-index", "5");
-                    $(".parsingColumn").remove();
-                    
-                }
-                else if (thisID == "ctrlColumnsInst") {
-                    $(".parsing").unbind();
-                    linesToColumns();
-                };
             });
         
         $(".accordion").children("span")
@@ -725,225 +941,9 @@
                 .children(".ui-icon-triangle-1-s").switchClass("ui-icon-triangle-1-s","ui-icon-triangle-1-e");          
             $(this).next("div").slideDown();
         }
-        if (thisID == "adjustLines") {
-          //prep for adjustment
-          var thisLineID = -1;
-          var originalW = 1;
-          var thisLine;
-          //writeLines($("#imgTop img"));
-          $(".parsing").addClass("adjustable").removeClass("line");
-          if($(".adjustable").hasClass("ui-resizable")){
-            $(".adjustable").has(".ui-resizable").resizable("enable");
-          } 
-          else {
-            $(".adjustable").resizable({
-              handles: "e",
-              containment: 'parent',
-              start: function(event, ui) {
-                originalW = ui.originalSize.width;
-                newW = ui.size.width;
-                $("#progress").html("Resizing Line").fadeIn();
-                $("#lineResizing").show();
-                $("#originalLine").html(originalW);
-                $("#newLine").html(Math.round(100 * (newW / originalW)));
-                $("#sidebar").fadeIn();
-                thisLine = $(".ui-resizable-resizing");
-              },
-              resize: function(event, ui) {
-                newW = ui.size.width;
-                $("#newLine").html(Math.round(100 * (newW / originalW)));
-              },
-              stop: function(event, ui) {
-                $("#progress").html("Line Resized - Saving...");
-                var thisLineID = thisLine.attr("lineserverid");
-                var thisLineW = parseFloat(thisLine.attr("linewidth")) * (newW / originalW);
-                thisLine.attr("linewidth", thisLineW);
-                //$(".transcriptlet[lineserverid='" + thisLineID + "']").attr("linewidth", thisLineW);
-                //console.log("update line with ID: "+thisLineID);
-                updateLine(thisLine);       
-                $("#progress").html("Line Saved").delay(3000).fadeOut(1000);
-                $("#lineResizing").delay(3000).fadeOut(1000);
-              }
-            });
-          }
-        }
-        if (thisID == "addLines"){
-            //writeLines($("#imgTop img"));
-            isAddingLines = true;
-            $("#imgTop").children(".line").addClass("parsing").removeClass("line");
-            $('.parsing').unbind();
-            $(".parsing").bind({
-                mouseenter: function(){
-                    applyRuler($(this));
-                },
-                mouseleave: function(){
-                    removeRuler($(this));
-                },
-                click: function(event){
-                    lineChange($(this), event);
-                }
-            });
-            
-        }
-        if (thisID == "removeLines"){
-            //prep for column adjustment
-            //writeLines($("#imgTop img"));
-            isAddingLines = false;
-            $(".parsing").unbind();
-            $(".parsing").bind({
-                mouseenter: function(){
-                    applyRuler($(this));
-                },
-                mouseleave: function(){
-                    removeRuler($(this));
-                },
-                click: function(event){
-                    lineChange($(this), event);
-                }
-            });
-            $("#imgTop").children(".line").addClass("parsing").removeClass("line");
-            
-        }
-        if (thisID == "createColumn"){
-            $(".parsingColumn").removeClass("parsingColumnSelected");
-            var isCreating = true;
-            adjustColumn(event);
-            ////console.log("New or reparse column");
-            //Parsing.removeRuler();
-            var offset = $('#imgTop').offset();
-            var point = {};
-            var deltaPoint = {x:0,y:0};
-            $("#imgTop").bind({
-                mousedown: function(event){
-                   // //console.log("NEWCOLUMN");
-                    if ((event.target.className.indexOf("transcriptionImage") === -1 )){//|| !$("#createColumn").hasClass("ui-state-active")
-                        isCreating = false;
-                        return true;
-                    }
-                    else{
-                        event.preventDefault();
-                        var newCol = "<div id='newCol' class='parsingColumn ui-resizable' style='z-index:1000; background-color: yellow;'></div>";
-                        point = {x:event.pageX - offset.left,y:event.pageY - offset.top};
-                        $(newCol).insertBefore($("#imgTop img")).css({
-                            'position'  : 'absolute',
-                            'top': point.y,
-                            'left': point.x,
-                            'min-width' : "5px",
-                            'min-height': "5px"
-                        });
-                    }
-                    
-                },
-                mousemove:  function(event){
-                    event.preventDefault();
-                    deltaPoint = {
-                        x: event.pageX-point.x,
-                        y: event.pageY-(point.y)
-                    };
-                    if (deltaPoint.x < 0) {
-                      // right to left drawing
-                      $("#newCol").css("left", point.x + deltaPoint.x);
-                    }
-                    if (deltaPoint.y < 0) {
-                      // bottom to top drawing
-                      $("#newCol").css("top", point.y  + deltaPoint.y);
-                    }
-                    $("#newCol").css({
-                      "width": Math.abs(deltaPoint.x),
-                      "height": Math.abs(deltaPoint.y) - 25 //header (.topTrim)
-                    });
-                },
-                mouseup:    function(event){
-                    event.preventDefault();
-                    if (!isCreating){ //|| !$("#createColumn").hasClass("ui-state-active"
-                        $('#imgTop').unbind('mousemove');
-                        return true;
-                    }
-                    var $newCol = $("#newCol");
-//                    if($newCol.height() < 5 && $newCol.width < 5){
-//                        $newCol.remove();
-//                        $('#imgTop').unbind('mousemove');
-//                        return true;
-//                    }
-                    var colRatio = $("#imgTop").height() / $("#imgTop").width();
-                    $newCol.attr({
-                        "lineserverid"   : "-1",
-                        "newline"       : true,
-                        "newcol"        : true,
-                        "linetop"       : parseFloat($newCol.css("top")) / $("#imgTop").height() * 100,
-                        "lineleft"      : parseFloat($newCol.css("left")) / $("#imgTop").width() * 100,
-                        "linewidth"     : $newCol.width() / $("#imgTop").width() * 100,
-                        "lineheight"    : $newCol.height() / $("#imgTop").height() * 100,
-                        "id"            : "",
-                        "hastranscription": false
-                    });
-                    $newCol.css("background-color","transparent");
-                    // Prevent tiny columns on accident
-                    if (parseInt($newCol.attr('linewidth'))+parseInt($newCol.attr('lineheight')) < 12) {
-                        $newCol.remove();
-                        return true;
-                    }
-                    isAddingLines = true;
-                    var newY = parseFloat($newCol.css("top")) / $("#imgTop").height() * 100;
-                    var newX = parseFloat($newCol.css("left")) / $("#imgTop").width() * 100;
-                    var newH = $newCol.height() / $("#imgTop").height()* 100;
-                    var newW = $newCol.width() / $("#imgTop").width() * 100;
-                                 
-                    //The column is now a line, so put that into the UI and save it to the DB.  
-                    var columnIsLine =$(
-                    "<div class='parsing newColumn' style='\n\
-                        top:"+newY+"%; \n\
-                        left:"+newX+"%; \n\
-                        height:"+newH+"%; \n\
-                        width:"+newW+"%; \n\
-                        z-index : -10;\n\
-                        ' lineserverid=''\n\
-                        linetop='"+newY+"'\n\
-                        lineleft='"+newX+"'\n\
-                        lineheight='"+newH+"'\n\
-                        linewidth='"+newW+"'>\n\
-                    </div>");
-                    if(isCreating){
-                        saveNewLine(null,columnIsLine);
-                        $("#imgTop").append(columnIsLine);
-                    }
-                    adjustColumn(); //Do this so that the new column is adjustable.       
-                    $("#createColumn").ajaxStop(function(){
-                        $(this).click()
-                        .unbind("ajaxStop");
-                        isCreating = false;
-                    });
-                    $('#imgTop').unbind('mousemove');
-                }
-                   
-                });
-        }
-        if (thisID === "destroyColumn") {
-          //prep for column adjustment
-          $(".parsingColumn").bind({
-            mouseenter: function() {
-              $(this).addClass("parsingColumnSelected");
-            },
-            mouseleave: function() {
-              $(this).removeClass("parsingColumnSelected");
-            },
-            click: function() {
-              removeColumn($(this));
-              $(this).hide("blind", 250, function() {
-                $("#destroyColumnInst").slideUp();
-                $("#destroyColumn").removeClass("ui-state-active");
-              });
-            }
-          });
-        }
-        if (thisID === "clearColumns") {
-                //prep for column adjustment
-                var columnSet = $(".parsingColumn");
-                columnSet.addClass("parsingColumnSelected");
-                var columnText = (columnSet.size() === 1) ? "Destroy This Column" : "Destroy "+columnSet.size()+" Columns";
-                $(".destroyPage").html('<span class="left ui-icon ui-icon-circle-close"></span>'+columnText+'')
-                .bind('click', function(){destroyPage();})
-            }
+        
+        
+        
         if (thisID === "reparseColumns") {
                 //load the adjustment tool and then show the reparsing instructions
                 $(".parsingColumn").removeClass("parsingColumnSelected");
@@ -991,6 +991,39 @@
             scrollToCurrentPage();
         });
     });
+    
+    function bumpLine(direction, activeLine){
+        var id = activeLine.attr("lineserverid");
+        if(direction === "left"){
+            var currentLineLeft = activeLine.css("left");
+            currentLineLeft = parseFloat(currentLineLeft);
+            var newLineLeft = 0.0;
+            if (currentLineLeft > .5){
+                currentLineLeft -= .5;
+            }   
+            else{ //no negative left value
+                currentLineLeft = 0.0;
+            }
+           newLineLeft = currentLineLeft;
+           currentLineLeft = "%"+currentLineLeft;
+        }
+        else if (direction === "right"){
+            var currentLineLeft = activeLine.css("left");
+            currentLineLeft = parseFloat(currentLineLeft);
+            if (currentLineLeft < 99.5){ //no left values greater than 100
+                currentLineLeft += .5;
+            }   
+            else{
+                currentLineLeft = 100.0;
+            }
+           newLineLeft = currentLineLeft;
+           currentLineLeft = "%"+currentLineLeft;
+        }
+        $(".transcriptlet[lineserverid='"+id+"']").attr("lineleft", newLineLeft);
+        activeLine.css("left", currentLineLeft);
+        updateLine($(".transcriptlet[lineserverid='"+id+"']"), "no");
+       
+    }
     
     function edit(line){
         var focusLineID = $(line).siblings(".previewLineNumber").attr("lineserverid");
@@ -1124,6 +1157,35 @@
           filterObjectTop.className = filterObjectTop.className+=" "+thisFilter;
           filterObjectBottom.className = filterObjectBottom.className+=" "+thisFilter;
         }
+    }
+    function validTextColour(stringToTest) {
+        //Alter the following conditions according to your need.
+        if (stringToTest === "") { return false; }
+        if (stringToTest === "inherit") { return false; }
+        if (stringToTest === "transparent") { return true; }
+
+        var image = document.createElement("img");
+        image.style.color = "rgb(0, 0, 0)";
+        image.style.color = stringToTest;
+        if (image.style.color !== "rgb(0, 0, 0)") { return true; }
+        image.style.color = "rgb(255, 255, 255)";
+        image.style.color = stringToTest;
+        return image.style.color !== "rgb(255, 255, 255)";
+    }
+    function rulerColor(color){
+        if(color==="custom"){
+            color=$("#customRuler").val();
+            if(validTextColor(color)){
+                
+            }
+            else{
+                color = "red";
+            }
+            
+        }
+        $("#ruler1").css("color", color).css("background", color);
+        $("#ruler2").css("color", color).css("background", color);
+        $("#sampleRuler").css("color", color).css("background", color);
     }
     function applyRuler(line){
         //if ($("#addLines").hasClass('ui-state-active')||$("#removeLines").hasClass('ui-state-active'))

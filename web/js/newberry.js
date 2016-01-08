@@ -221,38 +221,93 @@
             "on" : "http://t-pen.org/Tradamus+Simple/canvas/100r"
         }
     
-    function firstFolio(){
+    function firstFolio(parsing){
         if(parseInt(currentFolio) !== 1){
-            focusItem = [null,null];
-            currentFolio = 1;
-            loadTranscriptionCanvas(transcriptionFolios[0]);
+            if(parsing === "parsing"){
+                $(".pageTurnCover").show();
+                fullPage();
+                focusItem = [null,null];
+                currentFolio = 1;
+                loadTranscriptionCanvas(transcriptionFolios[0]);
+                setTimeout(function(){
+                hideWorkspaceForParsing();
+                    $(".pageTurnCover").fadeOut(1500);
+                }, 800);
+            }
+            else{
+                focusItem = [null,null];
+                currentFolio = 1;
+                loadTranscriptionCanvas(transcriptionFolios[0]);
+            }
+            
+            
         }
     }
     
-    function lastFolio(){
+    function lastFolio(parsing){
         var lastFolio = transcriptionFolios.length;
         if(parseInt(currentFolio) !== parseInt(lastFolio)){
-            focusItem = [null,null];
-            currentFolio = lastFolio;
-            loadTranscriptionCanvas(transcriptionFolios[lastFolio-1]);
+            if(parsing === "parsing"){
+                $(".pageTurnCover").show();
+                fullPage();
+                focusItem = [null,null];
+                currentFolio = lastFolio;
+                loadTranscriptionCanvas(transcriptionFolios[lastFolio-1]);
+                setTimeout(function(){
+                    hideWorkspaceForParsing();
+                    $(".pageTurnCover").fadeOut(1500);
+                }, 800);
+            }
+            else{
+                focusItem = [null,null];
+                currentFolio = lastFolio;
+                loadTranscriptionCanvas(transcriptionFolios[lastFolio-1]);
+            }
         }
     }
-    function previousFolio(){
+    function previousFolio(parsing){
         if(parseInt(currentFolio) > 1){
-            focusItem = [null, null];
-            currentFolio -= 1;
-            loadTranscriptionCanvas(transcriptionFolios[currentFolio - 1]);
+            if(parsing === "parsing"){
+                $(".pageTurnCover").show();
+                fullPage();
+                focusItem = [null, null];
+                currentFolio -= 1;
+                loadTranscriptionCanvas(transcriptionFolios[currentFolio - 1]);
+                setTimeout(function(){
+                    hideWorkspaceForParsing();
+                    $(".pageTurnCover").fadeOut(1500);
+                }, 800);
+            }
+            else{
+                focusItem = [null, null];
+                currentFolio -= 1;
+                loadTranscriptionCanvas(transcriptionFolios[currentFolio - 1]);
+            }
         }
         else{
             //console.log("BUGGER");
         }
     }
     
-    function nextFolio(){
+    function nextFolio(parsing){
         if(parseInt(currentFolio) !== transcriptionFolios.length){
-            focusItem = [null, null];  
-            currentFolio += 1;
-            loadTranscriptionCanvas(transcriptionFolios[currentFolio-1]);
+            if(parsing === "parsing"){
+                $(".pageTurnCover").show();
+                fullPage();
+                focusItem = [null, null];  
+                currentFolio += 1;
+                loadTranscriptionCanvas(transcriptionFolios[currentFolio-1]);
+                setTimeout(function(){
+                    hideWorkspaceForParsing();
+                    $(".pageTurnCover").fadeOut(1500);
+                }, 800);
+            }
+            else{
+                focusItem = [null, null];  
+                currentFolio += 1;
+                loadTranscriptionCanvas(transcriptionFolios[currentFolio-1]);
+            }
+            
         }
         else{
             //console.log("BOOGER");
@@ -548,7 +603,7 @@
                                          alert(jqXHR.responseText); 
                                     }
                                     else{
-                                        alert("Something went wrong");
+                                        alert("Something went wrong. Could not get the project. 1");
                                     }
                                }
                             });
@@ -572,7 +627,15 @@
                         });
                         populateSpecialCharacters(activeProject.projectButtons);
                         populateXML(activeProject.xml);
-                    }
+                    },
+                    error: function(jqXHR,error, errorThrown) {  
+                            if(jqXHR.status && jqXHR.status==400){
+                                 alert(jqXHR.responseText); 
+                            }
+                            else{
+                                alert("Something went wrong. Could not get the project. 2");
+                            }
+                       }
                 });
                 }
                 else if(isJSON(userTranscription)){
@@ -688,7 +751,7 @@
                                                  alert(jqXHR.responseText); 
                                             }
                                             else{
-                                                alert("Something went wrong");
+                                                alert("Something went wrong 2");
                                             }
                                        }
                                 });
@@ -712,7 +775,15 @@
                             });
                             populateSpecialCharacters(activeProject.projectButtons);
                             populateXML(activeProject.xml);
-                        }
+                        },
+                        error: function(jqXHR,error, errorThrown) {  
+                                    if(jqXHR.status && jqXHR.status==400){
+                                         alert(jqXHR.responseText); 
+                                    }
+                                    else{
+                                        alert("Something went wrong. Could not get the project. 4");
+                                    }
+                               }
                     });
                     }
                     else{ //it is not a local project, so just grab the url that was input and request the manifst. 
@@ -762,7 +833,7 @@
                                      alert(jqXHR.responseText); 
                                 }
                                 else{
-                                    alert("Something went wrong");
+                                    alert("Something went wrong 5");
                                 }
                            }
                         });
@@ -917,8 +988,7 @@
                         $("#parsingBtn").css("box-shadow", "0px 0px 6px 5px yellow");
                     }
                 });
-            }
-            
+            }  
         }
     }
     
@@ -1654,10 +1724,10 @@
         originalCanvasWidth = $("#transcriptionCanvas").width();
         $("#pageJump").attr("disabled", "disabled");
          var pageJumpIcons = $("#pageJump").parent().children("i");
-            pageJumpIcons[0].setAttribute('onclick', '');
-            pageJumpIcons[1].setAttribute('onclick', '');
-            pageJumpIcons[2].setAttribute('onclick', '');
-            pageJumpIcons[3].setAttribute('onclick', '');
+            pageJumpIcons[0].setAttribute('onclick', 'firstFolio("parsing");');
+            pageJumpIcons[1].setAttribute('onclick', 'previousFolio("parsing");');
+            pageJumpIcons[2].setAttribute('onclick', 'nextFolio("parsing");');
+            pageJumpIcons[3].setAttribute('onclick', 'lastFolio("parsing");');
         $("#prevCanvas").attr("onclick", "");
         $("#nextCanvas").attr("onclick", "");
         
@@ -2097,10 +2167,10 @@
         //$("#transcriptionCanvas").css("height" , $("#imgTop img").height());
         $("#pageJump").attr("disabled", "disabled");
          var pageJumpIcons = $("#pageJump").parent().children("i");
-            pageJumpIcons[0].setAttribute('onclick', '');
-            pageJumpIcons[1].setAttribute('onclick', '');
-            pageJumpIcons[2].setAttribute('onclick', '');
-            pageJumpIcons[3].setAttribute('onclick', '');
+            pageJumpIcons[0].setAttribute('onclick', 'firstFolio("parsing");');
+            pageJumpIcons[1].setAttribute('onclick', 'previousFolio("parsing");');
+            pageJumpIcons[2].setAttribute('onclick', 'nextFolio("parsing");');
+            pageJumpIcons[3].setAttribute('onclick', 'lastFolio("parsing");');
         $("#prevCanvas").attr("onclick", "");
         $("#nextCanvas").attr("onclick", "");
     }
@@ -2825,7 +2895,8 @@ function toggleLineCol(){
                       "cnt:chars" : currentLineText
                     },
                     "on" : onCanvas+"#xywh="+lineString,
-                    "otherContent" : []
+                    "otherContent" : [],
+                    "forProject": "TPEN_NL"
                 };
                 
                 var index = - 1;
@@ -2901,7 +2972,8 @@ function toggleLineCol(){
               "cnt:chars" : currentLineText
             },
             "on" : onCanvas+"#xywh="+lineString,
-            "otherContent" : []
+            "otherContent" : [],
+            "forProject": "TPEN_NL"
         };
         
 //        TODO:  This is the real anno store update.  get it right. 
@@ -3024,6 +3096,7 @@ function toggleLineCol(){
                 },
                 "on" : lineString,
                 "otherContent":[],
+                "forProject": "TPEN_NL"
             }
         ;
         var url = "saveNewTransLineServlet";
@@ -3115,7 +3188,7 @@ function toggleLineCol(){
                             "permission" : 0,
                             "forkFromID" : "",
                             "resources" : [],
-                            "proj" : projID,
+                            "proj" : projID
                         };
                     var url2 = "saveNewTransLineServlet";
                     var params2 = {"content": JSON.stringify(newAnnoList)};

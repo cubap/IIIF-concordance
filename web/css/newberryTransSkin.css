@@ -8,6 +8,30 @@ and open the template in the editor.
     Author     : bhaberbe
 */
 
+.pageTurnCover{
+    display: none;
+    height: 1000px;
+    width: 100%;
+    top: 33px;
+    background-color: white;
+    position: absolute;
+    z-index: 6;
+}
+.turnLoader{
+    width: 100%;
+    text-align: center;
+}
+.turnLoader img{
+    width: 263px;
+}
+.turnMsg{
+    font-size: 16pt;
+    color: #002a5c;
+    margin-bottom: 50px;
+    width: 100%;
+    margin-top: 33px;
+    text-align: center;
+}
 .promoteUser{
     font-weight: bold;
     font-size: 117%;
@@ -253,14 +277,11 @@ body{
        height:auto;
        width:auto;
        font-size: 14px;
-       color:red;
+       color:#e21635; //or #002a5c
        margin-bottom:10px;
        display: none;
    }
    
-   /* Newberry Specific */
-
-
 
 .slideHandleLeft{
     position: absolute;
@@ -411,24 +432,42 @@ body{
 }
 /* Inner sections of column control and line control */
 .startHide{
-    max-height: 0px;
+    display: none;
+    /*max-height: 0px;*/
     overflow: hidden;
-    transition: max-height 1s ease;
+    transition: display 1s ease;
+    height: auto;
+}
+.actions .startHide{
+    border: 2px solid red;
+    color: #002a5c;
 }
 .tpenButton{
     font-weight: bold;
+    color:white;
+    border-radius: 4px;
+    padding-bottom: 4px;
+    padding-left: 6px;
+    padding-right: 6px;
+    padding-top: 4px;
+    height: 35px;
+    background-clip: border-box;
+    background-origin: padding-box;
+    cursor: pointer;
+    background-color: #272727;
+    border: none;
+    display: block;
+    line-height: 35px;
+}
+.parsingToolButtons .tpenButton{
+    display: block;
+    margin-bottom: 5px;
+    max-width: 208px;
+    text-align: center;
 }
 #ctrlColumns, #ctrlLines, .tpenButton{
     cursor: pointer;
 }
-
-.tpenButton{
-    color: #002a5c;
-}
-
-
-
-
 
 /*#parsingSplit {max-width:600px; min-width: 350px;position: relative; z-index: 9;}*/
 #parsingSplit{background-color: white;}
@@ -1107,6 +1146,15 @@ a{
 }
 .jump{
     min-width: 305px;
+}
+.parsingToolButtons{
+    max-width: 25%;
+    display: inline-block;
+}
+.activeParsingTool{
+    max-width: 74%;
+    display: inline-block;
+    border: 1px solid black;
 }
 /*.topTrim{
     background-color: #d14836 !important;
