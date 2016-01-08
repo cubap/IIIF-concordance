@@ -905,13 +905,14 @@ DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `Uname` varchar(255) CHARACTER SET latin1 NOT NULL,
   `UID` int(11) NOT NULL AUTO_INCREMENT,
-  `pass` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `pass` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'DRUPAL_LOGIN',
   `lname` varchar(512) CHARACTER SET latin1 NOT NULL DEFAULT 'new',
   `fname` varchar(512) CHARACTER SET latin1 NOT NULL DEFAULT 'new',
-  `openID` text CHARACTER SET latin1 NOT NULL,
+  `openID` varchar(1024) CHARACTER SET latin1 NOT NULL DEFAULT 'DRUPAL_LOGIN',
   `accepted` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `hasAccepted` int(11) DEFAULT '0',
   `lastActive` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `email` varchar(254) COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`UID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=639 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
