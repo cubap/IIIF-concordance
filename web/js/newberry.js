@@ -222,6 +222,7 @@
         }
     
     function firstFolio(parsing){
+        currentFolio = parseInt(currentFolio);
         if(parseInt(currentFolio) !== 1){
             if(parsing === "parsing"){
                 $(".pageTurnCover").show();
@@ -245,6 +246,7 @@
     }
     
     function lastFolio(parsing){
+        currentFolio = parseInt(currentFolio);
         var lastFolio = transcriptionFolios.length;
         if(parseInt(currentFolio) !== parseInt(lastFolio)){
             if(parsing === "parsing"){
@@ -266,6 +268,7 @@
         }
     }
     function previousFolio(parsing){
+        currentFolio = parseInt(currentFolio);
         if(parseInt(currentFolio) > 1){
             if(parsing === "parsing"){
                 $(".pageTurnCover").show();
@@ -290,6 +293,7 @@
     }
     
     function nextFolio(parsing){
+        currentFolio = parseInt(currentFolio);
         if(parseInt(currentFolio) !== transcriptionFolios.length){
             if(parsing === "parsing"){
                 $(".pageTurnCover").show();
@@ -903,7 +907,7 @@
      */
     function drawLinesToCanvas(canvasObj, rebuild){
         var lines = [];
-        
+        currentFolio = parseInt(currentFolio);
         //console.log("Draw lines");
 //        //console.log(canvasObj);
         if(canvasObj.resources !== undefined && canvasObj.resources.length > 0){
@@ -941,9 +945,10 @@
                         lines = masterList.resources;
                         currentList = masterList;
                         annoLists[currentFolio -1] = masterList["@id"];
+                        console.log("Anno lists before...");
+                        console.log(annoLists);
                         $.each(annoList, function(){
-                            //console.log("does "+this.proj+" == "+theProjectID)
-                            if(this.proj !== undefined && this.proj == theProjectID){
+                            if(this.proj !== undefined && this.proj!=="" && this.proj == theProjectID){;
                                 //These are the lines we want to draw
                                 //console.log("Lines we wanna draw");
                                 lines = this.resources;
@@ -978,7 +983,6 @@
                     }
                     else{ // couldnt get list.  one should always exist, even if empty.  We will say no list and changes will be stored locally to the canvas.
                         //console.log("couldnt find a list...set to empty");
-                        //annoLists[currentFolio -1 ] = "empty"; //This wil avoid all updates.
                         annoLists[currentFolio -1 ] = "empty";
                         $("#noLineWarning").show();
                         $('#transcriptionCanvas').css('height', $("#imgBottom img").height() + "px");
@@ -2846,6 +2850,7 @@ function toggleLineCol(){
     function columnUpdate(linesInColumn){
         //console.log("Doing batch update from column resize")
         var onCanvas = $("#transcriptionCanvas").attr("canvasid");
+        currentFolio = parseInt(currentFolio);
         var currentAnnoListID = annoLists[currentFolio - 1];
         var currentAnnoListResources = [];
         var lineTop, lineLeft, lineWidth, lineHeight = 0;
@@ -2921,6 +2926,7 @@ function toggleLineCol(){
             //console.log(currentAnnoListResources);
             $.post(url, params, function(data){
                 //console.log("list updated with new resources array");
+                currentFolio = parseInt(currentFolio);
                 annoLists[currentFolio - 1]= currentAnnoListID;
             });
             
@@ -2931,6 +2937,7 @@ function toggleLineCol(){
     
     function updateLine(line, cleanup){
         var onCanvas = $("#transcriptionCanvas").attr("canvasid");
+        currentFolio = parseInt(currentFolio);
         var currentAnnoListID = annoLists[currentFolio - 1];
         var currentAnnoList = "";
         var lineTop, lineLeft, lineWidth, lineHeight = 0;
@@ -2993,6 +3000,7 @@ function toggleLineCol(){
                     index++;
                     if(this["@id"] == currentLineServerID){
                         annoListTester.resources[index] = dbLine;
+                        currentFolio = parseInt(currentFolio);
                         annoLists[currentFolio - 1]= "hello/annoList/5";
                     }
                 });
@@ -3020,6 +3028,7 @@ function toggleLineCol(){
                             $.post(url, params, function(data){
                                 //console.log("list updated");
                                 //console.log(currentAnnoList.resources)
+                                currentFolio = parseInt(currentFolio);
                                 annoLists[currentFolio - 1]= annoListID;
                             });
                         }
@@ -3031,6 +3040,7 @@ function toggleLineCol(){
            //cannot update and empty list
         }
         else if(currentAnnoList == "noList"){ //If it is classic T-PEN, we need to update canvas resources
+            currentFolio = parseInt(currentFolio);
             $.each(transcriptionFolios[currentFolio - 1].resources, function(){
                 index++;
                 if(this["@id"] == currentLineServerID){
@@ -3120,6 +3130,7 @@ function toggleLineCol(){
                     "endid" : dbLine["@id"],
                     "newcol":false
                 });
+                currentFolio = parseInt(currentFolio);
                 var currentAnnoList = annoLists[currentFolio - 1];
                 if(currentAnnoList !== "noList" && currentAnnoList !== "empty"){ // if it IIIF, we need to update the list
     //                //console.log("Not no list and not empty");
@@ -3160,6 +3171,7 @@ function toggleLineCol(){
                                 //splice it in
                                 currentAnnoList.resources.splice(beforeIndex + 1, 0, dbLine);
                             }
+                            currentFolio = parseInt(currentFolio);
                             transcriptionFolios[currentFolio - 1].otherContent[0] = annoListID;
                             annoLists[currentFolio - 1] = annoListID;
                             //Write back to db to update list
@@ -3198,6 +3210,7 @@ function toggleLineCol(){
                         data=JSON.parse(data);
                         var newAnnoListCopy = newAnnoList;
                         newAnnoListCopy["@id"] = data["@id"];
+                        currentFolio = parseInt(currentFolio);
                         annoLists[currentFolio - 1] = newAnnoListCopy["@id"];
                         transcriptionFolios[currentFolio - 1].otherContent[0] = newAnnoListCopy["@id"];
                         
@@ -3230,9 +3243,11 @@ function toggleLineCol(){
                             "endid" : dbLine["@id"],
                             "linenum" : $(".parsing").length
                         }).removeClass("newColumn");
+                        currentFolio = parseInt(currentFolio);
                         transcriptionFolios[currentFolio - 1].resources.push(dbLine);
                     }
                     else{
+                        currentFolio = parseInt(currentFolio);
                         transcriptionFolios[currentFolio - 1].resources.splice(beforeIndex + 1, 0, dbLine);
                     }
                     //should we write to the DB here?  This would be in support of old data.  
@@ -3432,6 +3447,7 @@ function toggleLineCol(){
 //        $("div[pair='"+pair+"']").remove();        
 
         var index = -1;
+        currentFolio = parseInt(currentFolio);
         var currentAnnoList = annoLists[currentFolio -1];
         
          if(currentAnnoList !== "noList" && currentAnnoList !== "empty"){ // if it IIIF, we need to update the list
@@ -3467,6 +3483,7 @@ function toggleLineCol(){
                                 var params = {"content":JSON.stringify(paramObj)};
                                 $.post(url, params, function(data){
                                     //console.log("update from delete finished");
+                                    currentFolio = parseInt(currentFolio);
                                     annoLists[currentFolio - 1] = annoListID;
                                 });
                                 //update forreal
@@ -3479,6 +3496,7 @@ function toggleLineCol(){
             //There is no anno list assosiated with this anno.  This is an error.
         }
         else{ //If it is classic T-PEN, we need to update canvas resources
+            currentFolio = parseInt(currentFolio);
             $.each(transcriptionFolios[currentFolio - 1].resources, function(){
                 index++;
                 if(this["@id"] == lineid){
@@ -3495,6 +3513,7 @@ function toggleLineCol(){
      
      function removeColumnTranscriptlets(lines, recurse){
         var index = -1;
+        currentFolio = parseInt(currentFolio);
         var currentAnnoList = annoLists[currentFolio -1];
         //console.log("removing transcriptlets from this list");
         //console.log(currentAnnoList);
@@ -3619,6 +3638,7 @@ function toggleLineCol(){
               $("#parsingSplit").find('.fullScreenTrans').unbind();
               $("#parsingSplit").find('.fullScreenTrans').bind("click", function(){
                 fullPage(); 
+                currentFolio = parseInt(currentFolio);
                 drawLinesToCanvas(transcriptionFolios[currentFolio-1], true);
               });
           }
