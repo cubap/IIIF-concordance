@@ -31,7 +31,6 @@
         <div class="topTrim">
             <span class="trimSection">TITLE:<span id="trimTitle"></span></span>
             <span class="trimSection">PAGE: <span id="trimPage"></span></span>
-            <span class="trimSection">USER: <span id="trimCurrentUser"></span></span>
             <span class="trimSection jump">
                 <i onclick="firstFolio();" title="First Folio">&#8606;</i>
                 <i onclick="previousFolio();" title="Previous Folio">&#8676;</i>
@@ -41,6 +40,7 @@
                 <i onclick="nextFolio();" title="Next Folio">&#8677;</i>
                 <i onclick="lastFolio();" title="Last Folio">&#8608;</i>
             </span>
+            <span class="trimSection">USER: <span id="trimCurrentUser"></span></span>
 <!--            <span class="trimSection">Help</span> -->
             <span class="trimSection"><a href="https://paleography.library.utoronto.ca/contact" target="_blank">Contact</a></span> 
         </div>
@@ -65,7 +65,7 @@
         </div>
         
         <button id="loadBtn" class="hideme" onclick="loadTranscription();"> Load Transcription </button> 
-        <button id="loadBtn" class="hideme" onclick="createBryan();"> TEST CREATION </button>
+        <!--<button id="loadBtn" class="hideme" onclick="createBryan();"> TEST CREATION </button>-->
         
         <div id="transcriptionTemplate">
             
@@ -104,8 +104,7 @@
                     <select id="xmlTagPopin" class="xmlTags" title="Custom XML Tags">
                         <option id="activeTags">XML Tags</option> <!-- onclick="toggleTags();" -->
                     </select>
-                    <!-- make some space happen here -->
-                                         <select id="splitScreenTools" > <!-- onclick="$('.splitTool').fadeToggle(400);" -->
+                    <select id="splitScreenTools" > <!-- onclick="$('.splitTool').fadeToggle(400);" -->
                          <option id="activeSplitTool" >Split Page Tools</option> 
                          <option splitter='essay' class="splitTool" >Background Essay</option>
                          <option splitter='partialTrans' class="splitTool" >Partial Transcriptions</option>
@@ -132,7 +131,6 @@
                 <div class="bottomButtons" style="width: 201px; top:-4px;">
                     <div id="imageTools" style="width: 201px;">
                         <div id="activeImageTool" onclick="toggleImgTools();" ><span>Image Tools</span> <i>&#9660;</i></div> <!--  -->
-        <!--                        <div class="imgTool">Brightness/Contrast</div>-->
                            <div class="toolWrap">
                                 <button class="imgTool" onclick="toggleFilter('grayscale');">Grayscale</button><br>
                                 <button class="imgTool" onclick="toggleFilter('invert');">Invert</button>
@@ -168,13 +166,12 @@
          <div id="parsingSplit" class="split" >
                 <button class="fullScreenTrans">Full Screen Transcription</button>
                 <div class="toolLinks">
-                <!--tool buttons for parsing        -->
+                <!-- tool buttons for parsing -->
                 </div>
                 <div id="parsingDiv" class="">
                     <div id="parseOptions">
                         <h4 style="margin-left: 8px;" class="clear-left">Line Parsing</h4>
                         <p> You cannot change the page while you are working on parsing.  Save your work and click 'Full Screen Transcription' to be able to move around the pages. </p>
-<!--                        <span id="backToTranscribing" class="tpenButton" onclick="$('#fullScreenBtn').click();"><span class="ui-icon ui-icon-arrowreturn-1-w left"></span>Return to Transcribing</span>-->
                         <div id="ctrlColumnsInst" class="actions">
                             <h4 id="ctrlColumns" title="Make adjustments at the column level" class="clear-left">Column Controls</h4>
                                 <!--<p class="loud">Create, destroy, adjust, or reparse columns.</p>-->
@@ -192,7 +189,6 @@
                                             <dd>Drag the edges of an existing column</dd>
                                         </dl>
                                         <p class="small"><span class="inline ui-icon ui-icon-check"></span>This method does not destroy any <acronym title="Text, markup, and notes saved for lines within this column will remain attached.">transcription information</acronym>.<br />
-                                        <!--<span class="ui-state-error-text"><span class="inline ui-icon ui-icon-alert"></span>New column dimensions will overwrite some <acronym title="Custom heights will be retained, but the width will be uniform.">custom line settings</acronym>.</span></p>-->
                                     </div>
                                     <div class="startHide" id="destroyColumnInst">
                                         <p class="">Click a column to remove all lines and transcription data it contains from the project.</p>
@@ -202,14 +198,12 @@
                                         <p class="">Click to clear the page, removing all transcription information.</p>
                                         <span class="destroyPage" class="tpenButton ui-state-error" title="Destroy all columns on this page"><span class="left ui-icon ui-icon-circle-close"></span>Destroy All Data</span>
                                         <p class="small"><span class="ui-state-error-text"><span class="inline ui-icon ui-icon-alert"></span>This is a destructive process and cannot be undone.</span><br />
-                                            <!--<span class="inline ui-icon ui-icon-info"></span>If you load a page without any parsing information, automatic parsing will occur.<br />-->
-                                            <!--<span class="inline ui-icon ui-icon-check"></span>You will be warned before destroying any <acronym title="Text, markup, and notes saved for lines on this page.">transcription information</acronym>.-->
                                          </p>
                                     </div>
                                 </div>
                                 
-                                
-<!--                                <span id="reparseColumns" class="tpenButton" title="Reparse all columns, removing any associated lines">Reparse All Columns</span>
+<!--  Deactivated for now.                              
+                                <span id="reparseColumns" class="tpenButton" title="Reparse all columns, removing any associated lines">Reparse All Columns</span>
                                 <div class="startHide" id="reparseColumnsInst">
                                     <p class="">Click to remove all transcription data and lines from this page, automatically parsing based on the columns shown.</p>
                                     <span id="reparseColumn" class="tpenButton ui-state-error" title="Reparse all columns on this page"><span class="left ui-icon ui-icon-refresh"></span>Submit for Reparsing</span>
@@ -217,7 +211,8 @@
                                     <span class="inline ui-icon ui-icon-check"></span>You will be warned before destroying any <acronym title="Text, markup, and notes saved for lines on this page.">transcription information</acronym>.<br />
                                     <span class="inline ui-icon ui-icon-info"></span>Make any adjustments to your columns before resubmitting.<br />
                                     <span class="ui-state-error-text"><span class="inline ui-icon ui-icon-alert"></span>This is a destructive process and cannot be undone.</span></p>
-                                </div>-->
+                                </div>
+-->
                         </div>
                         <div id="ctrlLinesInst" class="actions">
                             <h4 id="ctrlLines" title="Make adjustments at the line level" class="clear-left">Line Controls</h4>
@@ -257,14 +252,6 @@
                                     </div>
                                 </div>
                         </div>
-<!--                        <div id="confirmParsingInst">
-                            <h4 class="clear-left">Confirm Parsing</h4>
-                            <div>
-                                <p class="">Return to transcribing after confirming that image parsing is correct. If the automatic parsing is not accurate, use the options above to make corrections.</p>
-                                <p class="small"><span class="inline ui-icon ui-icon-check"></span>This will not be required once you have saved transcription data on this page.<br />
-                                <span class="ui-state-error-text"><span class="inline ui-icon ui-icon-alert"></span>Changes made here affect all group members on this project.</span></p>
-                            </div>
-                        </div>-->
                     </div>
                 </div>
                 <div id="sidebar">
@@ -342,7 +329,8 @@
            <div id="linebreakSplit" class="ui-widget ui-widget-content split">
                <button class="fullScreenTrans">Full Screen Transcription</button>
                 <h3>Linebreak Existing Transcription (In Development)</h3>
-<!--                <div>
+<!--TODO : FIXME                
+                <div>
                     This project has text stored for linebreaking:
                     <div id="linebreakText">
                         <span id="lbText"></span>
@@ -366,7 +354,6 @@
                </div>-->
            </div>
             <div id="compareSplit" class="split">
-                <!--Load up a mirador instance with the manifest as its content.  Make one of the selections be the current active canvas in the transcription window-->
                 <div class="toolLinks">      
                     <select id="compareJump">
                         <option folioNum="0">Compare To</option>
@@ -385,15 +372,17 @@
                     <button class="showMe" onclick="restoreWorkspace();">Show Workspace</button>    
                     <button class="hideMe" style="position: relative;" onclick="hideWorkspaceToSeeImage();" >Hide Workspace</button>          
                 </div> 
-<!--                <div class="toolLinks">
+<!--   TODO : FIXME             
+                <div class="toolLinks">
                     <a class="exitPage" id="exportLink" href=""><span class="right ui-icon ui-icon-disk"></span>Export Transcription</a>
                     <a id="previewNotes"><span class="right ui-icon ui-icon-note"></span>Show Notes</a>
-                </div>-->
+                </div>
+-->
                 <div id="previewDiv">
 
                 </div>
             </div>
-            <div id="fullPageSplit" class="split">  <!--this one will also handle the compare page -->
+            <div id="fullPageSplit" class="split">  
                 <div class="toolLinks">      
                     <button class="fullScreenTrans">Full Screen Transcription</button>
                     <button class="showMe" onclick="restoreWorkspace();">Show Workspace</button>    
@@ -401,9 +390,7 @@
                     <button class="magnifyBtn" style="position: relative;" magnifyImg="full" >Magnify</button>
                 </div>
                 <div id="fullPageSplitCanvas"><img id="fullPageImg" src="" /></div>
-                
-                 <!--<div id="miradorInstance"></div>-->
-            </div>
+                            </div>
             <div id="essaySplit" class="split iTool">
                 <button class="fullScreenTrans">Full Screen Transcription</button>
                 <iframe id="contextualEssay" src="https://paleography.library.utoronto.ca/content/background-essays?response_type=embed">
@@ -428,7 +415,6 @@
     var theProjectID = -1;
     window.onresize = function(event) {
         var newHeight = $("#imgBottom img").height();
-        //console.log("window resize.  New height: "+newHeight+"px");
         $("#transcriptionCanvas").css("height",newHeight+"px");
         $(".lineColIndicatorArea").css("height",newHeight+"px");
         $.each($(".lineColOnLine"),function(){
@@ -523,9 +509,7 @@
             splitPage(event,b);     
         });
 
-        $('#transcriptionFile').on("change", function(event){
-            //start spinny?
-            ////console.log("change");
+        $('#transcriptionFile').on("change", function(event){;
             var selectedFile = event.target.files[0];
             var reader = new FileReader();
             var result = $('#transcriptionText')
@@ -533,7 +517,6 @@
               var fileContent = event.target.result;
               result.html(fileContent);
               $('#transcriptionTemplate').hide();
-              // stop spinny?
             };
             reader.readAsText(selectedFile);
         });
@@ -571,13 +554,11 @@
                 //back out
                 if ((event.which === 109) || (event.which === 189) || (event.which === 173) ){ //173  = - in firefox
                     zoomMultiplier -= .4;
-                    //console.log('ZOOM MULTIPLIER: '+zoomMultiplier);
                     $(document).mousemove();
                 }
                 //ease in
                 else if ((event.which === 107) || (event.which === 187) || (event.which === 61)){ // 61 = + in firefox
                     zoomMultiplier += .4;
-                    //console.log('ZOOM MULTIPLIER: '+zoomMultiplier);
                     $(document).mousemove();
                 }
                 //esc
@@ -595,13 +576,11 @@
                     restoreWorkspace();
                 }
                 else {
-                  //stop magnifying?
-                 ////console.log(event.which+' DOWN');
+
                 }
             }
             else if (event.which == 18 || event.altKey){
                // //console.log('ALT KEY');
-               console.log("Trans Line Editing");
                var lineForEditing = $(".activeLine");
                lineForEditing.resizable();
                //alt + arrows will bump active line left and right
@@ -644,14 +623,11 @@
                 }
             });
             
-            //Various button clicks I need to implement
             $("#parsingBtn").click(function(){
                 liveTool = "parsing";
-        //        Interaction.activateToolBtn(this);
                 if(isFullscreen)isUnadjusted = true;
                 isFullscreen = false;
                 hideWorkspaceForParsing();
-                //$(".actions").hide();
                 $("#confirmParsingInst").show();
                 $("#parsingBtn").css("box-shadow", "");
             });
@@ -670,9 +646,10 @@
                 $("#ruler1").hide();
                 $("#ruler2").hide();
                 
-                //$("#confirmParsingInst").slideUp();
                 var thisID = $(this).attr("id");
                 if (thisID == "createColumn" || thisID == "destroyColumn" || thisID=="clearColumns") {
+                    $("#addLines").removeClass("active");
+                    $("#removeLines").removeClass("active");
                     $("#ctrlColumnsInst").find(".activeParsingTool").css("display", "inline-table");
                     $("#ctrlLinesInst").find(".activeParsingTool").hide();
                     $(".parsing").unbind();
@@ -686,7 +663,6 @@
                         var isCreating = true;
                         adjustColumn(event);
                         ////console.log("New or reparse column");
-                        //Parsing.removeRuler();
                         var offset = $('#imgTop').offset();
                         var point = {};
                         var deltaPoint = {x:0,y:0};
@@ -732,16 +708,12 @@
                                 },
                                 mouseup:    function(event){
                                     event.preventDefault();
-                                    if (!isCreating){ //|| !$("#createColumn").hasClass("ui-state-active"
+                                    if (!isCreating){
                                         $('#imgTop').unbind('mousemove');
                                         return true;
                                     }
                                     var $newCol = $("#newCol");
-                //                    if($newCol.height() < 5 && $newCol.width < 5){
-                //                        $newCol.remove();
-                //                        $('#imgTop').unbind('mousemove');
-                //                        return true;
-                //                    }
+
                                     var colRatio = $("#imgTop").height() / $("#imgTop").width();
                                     $newCol.attr({
                                         "lineserverid"   : "-1",
@@ -832,6 +804,8 @@
                     $(".parsing").css("z-index", "5");
                     $(".parsingColumn").remove();
                     if (thisID == "adjustLines") {
+                        $("#addLines").removeClass("active");
+                        $("#removeLines").removeClass("active");
                         //prep for adjustment
                         $("#ruler1").hide();
                         $("#ruler2").hide();
@@ -866,7 +840,6 @@
                               var thisLineID = thisLine.attr("lineserverid");
                               var thisLineW = parseFloat(thisLine.attr("linewidth")) * (newW / originalW);
                               thisLine.attr("linewidth", thisLineW);
-                              //$(".transcriptlet[lineserverid='" + thisLineID + "']").attr("linewidth", thisLineW);
                               //console.log("update line with ID: "+thisLineID);
                               updateLine(thisLine);       
                               $("#progress").html("Line Saved").delay(3000).fadeOut(1000);
@@ -877,6 +850,8 @@
                     }
                     if (thisID == "addLines"){
                         //writeLines($("#imgTop img"));
+                        $("#addLines").addClass("active");
+                        $("#removeLines").removeClass("active");
                         isAddingLines = true;
                         $("#imgTop").children(".line").addClass("parsing").removeClass("line");
                         $('.parsing').unbind();
@@ -894,6 +869,8 @@
 
                     }
                     if (thisID == "removeLines"){
+                        $("#removeLines").addClass("active");
+                        $("#addLines").removeClass("active");
                         //prep for column adjustment
                         //writeLines($("#imgTop img"));
                         isAddingLines = false;
@@ -913,17 +890,7 @@
                     }
                 };
             });
-            
-            $("#parseOptions").children(".actions").click(function(event){
-                
-                if($(event.target).attr("class").indexOf("accordion") > -1 || $(event.target).attr("class").indexOf("startHide") > -1
-                    || $(event.target).attr("class").indexOf("tpenButton") > -1 || $(event.target).attr("class").indexOf("loud") > -1
-                    || event.target.tagName === "P" ||$(event.target).attr("class").indexOf("destroyPage") > -1 ||$(event.target).attr("class").indexOf("errortext") > -1
-                    || $(event.target).attr("class").indexOf("tpenButton") > -1){ //ignore this if one of the children or text was clicked. 
-                    return false;
-                }
-                
-            });
+           
         
         $(".accordion").children("span")
         .append("<span class='ui-icon ui-icon-triangle-1-e left'></span>")
@@ -1047,9 +1014,6 @@
         } 
         else {
             //console.log("NOt the current page.")
-            //var saveLine = $(line).parent(".previewLine");
-            //if (saveLine.find(".previewSave").size() == 0)
-                //saveLine.prepend("<div class='right ui-state-default ui-corner-all previewSave' onclick='remoteSave(this,"+focusLineID+","+focusFolio+");'>Save Changes</div>");
         }
     }
     
@@ -1192,10 +1156,7 @@
         $("#sampleRuler").css("color", color).css("background", color);
     }
     function applyRuler(line){
-        //if ($("#addLines").hasClass('ui-state-active')||$("#removeLines").hasClass('ui-state-active'))
             //var sRCbkp = selectRulerColor; //select Ruler Color backup
-           // //console.log("RULER");
-            ////console.log(line);
             $("#imageTip").html("Add a Line");
             if(!isAddingLines){
                 if (line.attr("lineleft") == line.next("div").attr("lineleft")) {
@@ -1258,83 +1219,85 @@
         
     }
     
-    function createBryan(){
-        var newobj = {
-            "@context" : "http://www.shared-canvas.org/ns/context.json",
-            "@id" : "t-pen.org/TPEN/Testing4/manifest.json",
-            "@type" : "sc:Manifest",
-            "label" : "Encoding Test",
-            "sequences" : [{
-              "@id" : "http://t-pen.org/Testing4/sequence/normal",
-              "@type" : "sc:Sequence",
-              "label" : "Current Page Order",
-              "canvases" : [{
-                "@id":"http://t-pen.org/Testing4/canvas/100r",
-                "@type" : "sc:Canvas",
-                "label" : "100r",
-                "height" : 1000,
-                "width" : 667,
-                "resources" : [],
-                "images":[{
-                          "@type":"oa:Annotation",
-                          "motivation":"sc:painting",
-                          "resource":{
-                              "@id":"http://norman.hrc.utexas.edu/graphics/mswaste/160 h612e 617/160_h612e_617_001.jpg",
-                              "@type":"dctypes:Image",
-                              "format":"image/jpeg"
-                          },
-                          "on":"http://t-pen.org/Testing4/canvas/100r"
-                }],
-              }, {
-                "@id" : "http://t-pen.org/Testing4/canvas/100v",
-                "@type" : "sc:Canvas",
-                "label" : "100v",
-                "height" : 1000,
-                "width" : 667,
-                "resources" : [],
-                "images":[{
-                          "@type":"oa:Annotation",
-                          "motivation":"sc:painting",
-                          "resource":{
-                              "@id":"http://norman.hrc.utexas.edu/graphics/mswaste/br 65 d62 l3 1502/br_65_d62_l3_1502_001.jpg",
-                              "@type":"dctypes:Image",
-                              "format":"image/jpeg"
-                          },
-                          "on":"http://t-pen.org/Testing4/canvas/100v"
-                }]
-              }, {
-                "@id" : "http://t-pen.org/Testing4/canvas/101r",
-                "@type" : "sc:Canvas",
-                "label" : "101r",
-                "height" : 1000,
-                "width" : 667,
-                "resources" : [ ],
-                "images":[{
-                          "@type":"oa:Annotation",
-                          "motivation":"sc:painting",
-                          "resource":{
-                              "@id":"http://norman.hrc.utexas.edu/graphics/mswaste/br 332 a83 1526/br_332_a83_1526_001.jpg",
-                              "@type":"dctypes:Image",
-                              "format":"image/jpeg"
-                          },
-                          "on":"http://t-pen.org/Testing4/canvas/101r"
-                }]
-              }]
-            }]
-          };
-          var manifest = JSON.stringify(newobj);
-          var city = "STL,MO";
-          var title = "Encoding Test & Stuff";
-          var params = {"city":city, "title":title, "scmanifest":manifest};
-          var url = "createProject";
-          $.post(url, params)
-          .done(function(){
-            console.log("CREATED");
-          })
-          .fail(function(){
-            console.log("FAILED");
-          });
-    }
+    /* Used to test the create function and create a simple project, one that is easily copied. */
+    
+//    function createBryan(){
+//        var newobj = {
+//            "@context" : "http://www.shared-canvas.org/ns/context.json",
+//            "@id" : "t-pen.org/TPEN/Testing4/manifest.json",
+//            "@type" : "sc:Manifest",
+//            "label" : "Encoding Test",
+//            "sequences" : [{
+//              "@id" : "http://t-pen.org/Testing4/sequence/normal",
+//              "@type" : "sc:Sequence",
+//              "label" : "Current Page Order",
+//              "canvases" : [{
+//                "@id":"http://t-pen.org/Testing4/canvas/100r",
+//                "@type" : "sc:Canvas",
+//                "label" : "100r",
+//                "height" : 1000,
+//                "width" : 667,
+//                "resources" : [],
+//                "images":[{
+//                          "@type":"oa:Annotation",
+//                          "motivation":"sc:painting",
+//                          "resource":{
+//                              "@id":"http://norman.hrc.utexas.edu/graphics/mswaste/160 h612e 617/160_h612e_617_001.jpg",
+//                              "@type":"dctypes:Image",
+//                              "format":"image/jpeg"
+//                          },
+//                          "on":"http://t-pen.org/Testing4/canvas/100r"
+//                }],
+//              }, {
+//                "@id" : "http://t-pen.org/Testing4/canvas/100v",
+//                "@type" : "sc:Canvas",
+//                "label" : "100v",
+//                "height" : 1000,
+//                "width" : 667,
+//                "resources" : [],
+//                "images":[{
+//                          "@type":"oa:Annotation",
+//                          "motivation":"sc:painting",
+//                          "resource":{
+//                              "@id":"http://norman.hrc.utexas.edu/graphics/mswaste/br 65 d62 l3 1502/br_65_d62_l3_1502_001.jpg",
+//                              "@type":"dctypes:Image",
+//                              "format":"image/jpeg"
+//                          },
+//                          "on":"http://t-pen.org/Testing4/canvas/100v"
+//                }]
+//              }, {
+//                "@id" : "http://t-pen.org/Testing4/canvas/101r",
+//                "@type" : "sc:Canvas",
+//                "label" : "101r",
+//                "height" : 1000,
+//                "width" : 667,
+//                "resources" : [ ],
+//                "images":[{
+//                          "@type":"oa:Annotation",
+//                          "motivation":"sc:painting",
+//                          "resource":{
+//                              "@id":"http://norman.hrc.utexas.edu/graphics/mswaste/br 332 a83 1526/br_332_a83_1526_001.jpg",
+//                              "@type":"dctypes:Image",
+//                              "format":"image/jpeg"
+//                          },
+//                          "on":"http://t-pen.org/Testing4/canvas/101r"
+//                }]
+//              }]
+//            }]
+//          };
+//          var manifest = JSON.stringify(newobj);
+//          var city = "STL,MO";
+//          var title = "Encoding Test & Stuff";
+//          var params = {"city":city, "title":title, "scmanifest":manifest};
+//          var url = "createProject";
+//          $.post(url, params)
+//          .done(function(){
+//            console.log("CREATED");
+//          })
+//          .fail(function(){
+//            console.log("FAILED");
+//          });
+//    }
     
     
     

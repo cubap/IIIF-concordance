@@ -325,7 +325,6 @@
     function isJSON(str) {
         var r = true;
         if(typeof str === "object"){
-            //console.log('str is an object');
             r = true;
         }
         else{
@@ -334,7 +333,6 @@
                 r=true;
             } 
             catch (e) {
-               //console.log('str could not be parsed: '+e);
                r = false;
             }
         }
@@ -344,23 +342,9 @@
 
     function resetTranscription(){
         window.location.reload();
-//        transcriptionCanvases = [];
-//        focusItem = [null,null];
-//        transcriptionFile = "";
-//        transcriptionObject = {};
-//        projectID = 0;
-//        //console.log('NEW RESET CODE!');
-//        $('#setTranscriptionObjectArea').show();
-//        $('#transcriptionText').html("");
-//        $('#transcriptionTemplate').hide();
-//        $('#bookmark').css({left:"-600%", height:"0px"});
-//        $('#imgTop').css('height', '0px');
-//        $('#captions').empty();
-//        $('.transcriptionImage').attr('src', '');
-//        $('.transcriptlet').remove();
-//       
-//        //console.log('Reset Ran');
+
     }
+    /* The tools for newberry are hard set in the html page, no need for this function. */
     
 //    function getProjectTools(projectID){
 //        var url = "http://localhost:8080/newberry/getProjectTPENServlet?projectID="+projectID;
@@ -388,6 +372,7 @@
 //        });
 //    }
     
+    /* Populate the split page for Text Preview.  These are the transcription lines' text. */
     function createPreviewPages(){  
         $(".previewPage").remove();
         var noLines = true;
@@ -500,7 +485,6 @@
         }
         $.each(speCharactersInOrder, function(){
             var button1 = $(''+this);
-//            //console.log(button1);
             $(".specialCharacters").append(button1);
         });
 
@@ -524,7 +508,6 @@
         }
         $.each(tagsInOrder, function(){
             var button2 = $(''+this);
-//            //console.log(button2);
             $(".xmlTags").append(button2);
         }); 
     }
@@ -555,7 +538,6 @@
                             url  = getURLfromThis[1].archive; //This is the manifest inside the project data
                             //console.log("manifest is here: "+getURLfromThis[1].archive);
                             if(url.indexOf("http") < 0){ //Then this is a newberry created newberry project
-                                //console.log("IT IS NEWBERRY, create the project/projectID url to get it.");
                                 //create the newberry url
                                 url = "project/"+projectID;
                             }
@@ -856,9 +838,10 @@
         var noLines = true;
         var canvasAnnoList = "";
         
-        $("#imgTop, #imgBottom").css("height", "200px");
-        $("#imgTop img, #imgBottom img").css("height", "200px");
-        $('.transcriptionImage').attr('src', "../images/loading.gif"); //background loader
+        $("#imgTop, #imgBottom").css("height", "400px");
+        $("#imgTop img, #imgBottom img").css("height", "400px");
+        $("#imgTop img, #imgBottom img").css("width", "auto");
+        $('.transcriptionImage').attr('src', "../newberry/images/loading2.gif"); //background loader if there is a hang time waiting for image
         $('.lineColIndicator').remove();
         $(".transcriptlet").remove();
         var pageTitle = canvasObj.label;
@@ -870,32 +853,44 @@
 
         if(canvasObj.images[0].resource['@id'] !== undefined && canvasObj.images[0].resource['@id'] !== ""){ //Only one image
             $("#imgTop, #imgTop img, #imgBottom img, #imgBottom, #transcriptionCanvas").css("height", "auto");
-            $('.transcriptionImage').attr('src', canvasObj.images[0].resource['@id'].replace('amp;',''));
-            $("#fullPageImg").attr("src", canvasObj.images[0].resource['@id'].replace('amp;',''));
-            //Fix the bug of the images height not being set because the img load didnt happen quick enough.  Made a load callback that has worked thus far. 
-            $("#imgTop img").one("load",function() {
-                $("#imgBottom").css("height", "inherit");
-//                //console.log("Top image height: "+ $(this).height());
-                originalCanvasHeight2 = $("#imgTop img").height();
-                originalCanvasWidth2 = $("#imgTop img").width();
-                //console.log(originalCanvasWidth2 + " / " +originalCanvasHeight2+" is the ratio when canvas is loaded");
-                //console.log(originalCanvasWidth2 / originalCanvasHeight2);
-                drawLinesToCanvas(canvasObj, false);
-                $("#transcriptionCanvas").attr("canvasid", canvasObj["@id"]);
-                $("#transcriptionCanvas").attr("annoList", canvasAnnoList);
-                
-//                //console.log("Set OH and OW 2: " + originalCanvasHeight2, originalCanvasWidth2);
-              });
+            
+            var image = new Image();
+            $(image)
+                    .on("load",function() {
+                        $("#imgTop img, #imgBottom img").css("width", "100%");
+                        $("#imgBottom").css("height", "inherit");
+                        originalCanvasHeight2 = $("#imgTop img").height();
+                        originalCanvasWidth2 = $("#imgTop img").width();
+                        $('.transcriptionImage').attr('src', canvasObj.images[0].resource['@id'].replace('amp;',''));
+                        $("#fullPageImg").attr("src", canvasObj.images[0].resource['@id'].replace('amp;',''));
+                        drawLinesToCanvas(canvasObj, false);
+                        $("#transcriptionCanvas").attr("canvasid", canvasObj["@id"]);
+                        $("#transcriptionCanvas").attr("annoList", canvasAnnoList);
+                        
+                    })
+                    .on("error", function(){
+                        var image2 = new Image();
+                        $(image2)
+                        .on("load", function(){
+                            $("#imgTop img, #imgBottom img").css("width", "100%");
+                            $('.transcriptionImage').attr('src', "../newberry/images/missingImage.png");
+                            $("#fullPageImg").attr("src", "../newberry/images/missingImage.png");
+                            $('#transcriptionCanvas').css('height', $("#imgBottom img").height() + "px");
+                            $('.lineColIndicatorArea').css('height', $("#imgBottom img").height() + "px");
+                            $("#imgTop").css("height", "0%");
+                            $("#imgBottom img").css("top", "0px");
+                            $("#imgBottom").css("height", "inherit");     
+                        })
+                        .attr("src", "../newberry/images/missingImage.png")
+                    })
+                    .attr("src", canvasObj.images[0].resource['@id'].replace('amp;',''));
         }
         else{
+             $('.transcriptionImage').attr('src',"../newberry/images/missingImage.png");
+             alert("The canvas is malformed.  No 'images' field in canvas object or images:[0]['@id'] does not exist.  Cannot draw lines.");
             //ERROR!  Malformed canvas object.  
         }
-////        $('.transcriptionImage').error(function(){
-////            $(this).attr('src', basePath+"/images/missingImage.png");
-////        });
         $(".previewText").removeClass("currentPage");
-//        //console.log("Lines To Add Current Page TO");
-//        //console.log($(".previewPage:eq("+currentFolio+")").find(".previewLine"));
         $.each($("#previewDiv").children(".previewPage:eq("+(parseInt(currentFolio)-1)+")").find(".previewLine"),function(){
             $(this).find('.previewText').addClass("currentPage");
         });
@@ -929,7 +924,6 @@
             else{
                 var annosURL = "getAnno";
                 var onValue = canvasObj["@id"];
-                //onValue = encodeURIComponent(onValue);
                 //console.log("get annos for draw for canvas "+onValue);
                 var properties = {"@type": "sc:AnnotationList", "on" : onValue};
                 var paramOBJ = {"content": JSON.stringify(properties)};
@@ -945,8 +939,6 @@
                         lines = masterList.resources;
                         currentList = masterList;
                         annoLists[currentFolio -1] = masterList["@id"];
-                        console.log("Anno lists before...");
-                        console.log(annoLists);
                         $.each(annoList, function(){
                             if(this.proj !== undefined && this.proj!=="" && this.proj == theProjectID){;
                                 //These are the lines we want to draw
@@ -957,7 +949,6 @@
                                 annoLists[currentFolio -1] = this["@id"];
                             }
                             else{
-                                
                                 //It is an annotation list for this canvas in a different project.
                                 //console.log("Anno list for this canvas but different project.  ");
                             }
@@ -967,7 +958,6 @@
                         }
                         if(lines.length > 0){
                             //console.log("Got lines to draw");
-                            //console.log(lines);
                             linesToScreen(lines);
                         }
                         else{ //list has no lines
@@ -982,7 +972,6 @@
                         }
                     }
                     else{ // couldnt get list.  one should always exist, even if empty.  We will say no list and changes will be stored locally to the canvas.
-                        //console.log("couldnt find a list...set to empty");
                         annoLists[currentFolio -1 ] = "empty";
                         $("#noLineWarning").show();
                         $('#transcriptionCanvas').css('height', $("#imgBottom img").height() + "px");
@@ -998,8 +987,6 @@
     }
     
     function linesToScreen(lines){
-//        //console.log("here are the lines");
-//        //console.log(lines);
         var letterIndex = 0;
         var letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         letters = letters.split("");
@@ -1035,7 +1022,6 @@
             }
             else{
                 //ERROR.  malformed line.
-                //console.log("f1");
                 update = false;
             }
             if(line["@id"] !== undefined && line["@id"]!=="" ){ //&& line['@id'].indexOf('annotationstore/annotation') >=0
@@ -1043,7 +1029,6 @@
             }
             else{
                 //ERROR.  Malformed line. 
-                //console.log("f2");
                 update = false;
             }
             thisContent = "";
@@ -1076,7 +1061,6 @@
                                  */
                                 x = lastLineX;
                                 numberArray[0] = x;
-                                //console.log(i+": last line x "+lastLineX+", this line x "+x);
                             }
                             else{
                                 letterIndex++;
@@ -1084,7 +1068,6 @@
                                 colCounter = 0; //Reset line counter so that when the column changes the line# restarts?
                             }
                         }
-//                        //console.log(lastLineWidth +" < "+w+"?");
                         if(lastLineWidth < w){
                             if(w - lastLineWidth <= 5){ //within 5 pixels...
                                 
@@ -1096,7 +1079,6 @@
                                  */
                                 w = lastLineWidth;
                                 numberArray[2] = w;
-                                //console.log(i+": last line w "+lastLineWidth+", this line w "+w);
                             }
                         }
                         y = numberArray[1];
@@ -1106,19 +1088,16 @@
                     }
                     else{
                         //ERROR! Malformed line
-                        //console.log("f3");
                         update = false;
                     }
                 }
                 else{
                     //ERROR! Malformed line
-                    //console.log("f4");
                     update = false;
                 }
             }
             else{
                 //ERROR!  Malformed line.
-                //console.log("f5");
                 update = false;
             }
             
@@ -1235,9 +1214,6 @@
           var imgTopHeight = (previousLine + currentLineHeight)+1.5; // obscure behind workspace.
           var topImgPositionPercent = ((previousLine - currentLineTop)*100)/imgTopHeight;
           var topImgPositionPx = (previousLine - currentLineTop)*bottomImageHeight/100;
-//          //console.log("WHY IS TOP OFF?  "+currentLineTop+" + "+imgTopHeight/100+" X "+topImgPositionPercent);
-//          //console.log(currentLineTop+" + "+(imgTopHeight/100)*topImgPositionPercent);
-//          //console.log(currentLineTop + ((imgTopHeight/100)*topImgPositionPercent));
 //          var bookmarkTop = (currentLineTop + ((imgTopHeight/100)*topImgPositionPercent));
           var bottomImgPositionPercent = -(currentLineTop + currentLineHeight);
           var bottomImgPositionPx = -(currentLineTop+currentLineHeight)*bottomImageHeight / 100;
@@ -1297,7 +1273,6 @@
             top: positions.topImgPositionPx + "px",
             left: "0px"
           },250);
-//          //console.log("Top line/col indicator");
          $("#imgTop .lineColIndicatorArea").animate({
             top: positions.topImgPositionPx + "px",
             left: "0px"
@@ -1318,8 +1293,6 @@
             top: positions.bottomImgPositionPx  + "px",
             left: "0px"
           },250);
-//            imgBottomOriginal = $("#imgBottom img").css("top");
-//            imgTopOriginalTop = $("#imgTop img").css("top");
           if($('.activeLine').hasClass('linesHidden')){
               $('.activeLine').hide();
           }
@@ -1781,10 +1754,6 @@
                   var splitWidth = window.innerWidth - (width+35) + "px";
                   $(".split img").css("max-width", splitWidth);
                   $(".split:visible").css("width", splitWidth);
-                  //make sure image containers grow with image.
-//                  //console.log("Full page split should have height "+$("#fullPageImg").height());
-                  //$('#fullPageSplit').css('height', $("#fullPageImg").height() + 'px');
-                  //$('#compareSplit').css('height', $("#compareSplit img").height() + 'px');
               },
               stop: function(event, ui){;
                   //$(".lineColIndicator .lineColOnLine").css("line-height", $(this).height()+"px");
@@ -1792,7 +1761,8 @@
             });
         
         $("#transWorkspace,#imgBottom").hide();
-        // Safari DEBUG to include min-height
+        $("#noLineWarning").hide();
+        /* Depricated
             ResizeTopImg = window.setTimeout(function(){
                 $("#imgTop, #imgTop img").height($(window).innerHeight()); 
                 $("#imgTop img").css("width" , "auto");
@@ -1809,7 +1779,6 @@
                 //in here we can control what interface loads up.  writeLines draws lines onto the new full size transcription image.
                 $('.lineColIndicatorArea').hide();
                 writeLines($("#imgTop img"));
-                //$("#imgTop").children(".line").addClass("parsing").removeClass("line");
                 //$("#bookmark").css("left","-9999px");
                 var firstLine = $(".parsing").filter(":first");
                 //if ($.browser.opera) firstLine += 2;
@@ -1830,7 +1799,8 @@
 //                  
 //                }
             },1200);
-            $("#noLineWarning").hide();
+         */
+            
 //            $("#ctrlColumns").click();
 //            $("#ctrlLines").click();
     };
@@ -1851,8 +1821,6 @@
             setOfLines[index] = makeOverlayDiv($(this),originalX, count);
         });
         imgToParse.parent().append($(setOfLines.join("")));
-//        $(".parsing").attr('onmouseenter','applyRuler($(this));').attr('onmouseleave', 'removeRuler($(this))');
-//        $(".parsing").attr('onclick', 'lineChange($(this), event);');
     }
     
     function makeOverlayDiv(thisLine,originalX, cnt){
@@ -1882,13 +1850,7 @@
         return lineOverlay;
     }
 
-    function fullPage(){
-//        window.clearInterval(ParsingInterval);
-//        window.clearInterval(WaitToFocus);
-//        window.clearInterval(ResizeTopImg);
-//        if ($(event.target).hasClass('ui-resizable-handle')) {
-//            return false;
-//        }
+    function fullPage(){;
         if ($("#overlay").is(":visible")) {
             $("#overlay").click();
             return false;
@@ -2573,7 +2535,7 @@
      */
     function clickedLine(e,event) {
         if ($(e).hasClass("parsing")){
-            if ($("#addLines").hasClass('ui-state-active')||$("#removeLines").hasClass('ui-state-active')){
+            if ($("#addLines").hasClass('active')||$("#removeLines").hasClass('active')){
                 lineChange(e,event);
             }
         }
@@ -2744,12 +2706,8 @@ function togglePageJump(){
 function pageJump(folio){
     var folioNum = parseInt($("#pageJump").find('option:selected').attr("folioNum")); //1,2,3...
     var canvasToJumpTo = folioNum - 1; //0,1,2...
-//    //console.log(currentFolio, folioNum);
-//    //console.log(canvasToJumpTo);
     if(currentFolio !== folioNum && canvasToJumpTo >= 0){ //make sure the default option was not selected and that we are not jumping to the current folio 
-        //focusItem = [null, null];
         currentFolio = folioNum;
-        //fullPage();// If we go from parsing it must go full page.  Disabled for now in the UI.  
         loadTranscriptionCanvas(transcriptionFolios[canvasToJumpTo]);
     }
     else{
@@ -2842,8 +2800,6 @@ function toggleLineCol(){
         if(startLineID !== endLineID){ //push the last line, so long as it was also not the first line
             linesToUpdate.push($(".parsing[lineserverid='"+endLineID+"']")); //push last line
         }
-        //console.log("column line update from resizing left or right.");
-        //console.log(linesToUpdate);
         columnUpdate(linesToUpdate);  
     }
     
@@ -2942,17 +2898,7 @@ function toggleLineCol(){
         var currentAnnoList = "";
         var lineTop, lineLeft, lineWidth, lineHeight = 0;
         var ratio = originalCanvasWidth2 / originalCanvasHeight2; 
-        
-//        lineTop = (parseFloat(line.attr("linetop"))/100) * originalCanvasHeight2;
-//        lineLeft = (parseFloat(line.attr("lineleft"))/100) * originalCanvasWidth2;
-//        lineWidth = (parseFloat(line.attr("linewidth"))/100) * originalCanvasWidth2;
-//        lineHeight = (parseFloat(line.attr("lineheight"))/100) * originalCanvasHeight2;
 
-//        //console.log("Inversion function");
-//        //console.log(line.attr("lineleft")+ " * (10 * "+ratio+")");
-//        //console.log(line.attr("linetop")+ " * 10)");
-//        //console.log(line.attr("linewidth")+ " * (10 * "+ratio+")");
-//        //console.log(line.attr("lineleft")+ " * 10 ");
         lineTop = parseFloat(line.attr("linetop")) * 10 ;
         lineLeft = parseFloat(line.attr("lineleft")) * (10*ratio);
         lineWidth = parseFloat(line.attr("linewidth")) * (10*ratio);
@@ -2966,8 +2912,6 @@ function toggleLineCol(){
               
         line.css("width", line.attr("linewidth") + "%");
         var lineString = lineLeft+","+lineTop+","+lineWidth+","+lineHeight;
-        //console.log("Get id of line to update");
-        //console.log(line.attr('lineserverid'));
         var currentLineServerID = line.attr('lineserverid');
         var currentLineText = $(".transcriptlet[lineserverid='"+currentLineServerID+"']").find("textarea").val();
         var dbLine = 
@@ -2983,15 +2927,7 @@ function toggleLineCol(){
             "otherContent" : [],
             "forProject": "TPEN_NL"
         };
-        
-//        TODO:  This is the real anno store update.  get it right. 
-//        var url = "http://localhost:8080/newberry/updateTransLineServlet";
-//        var params = {"content":""};
-//        params.content = dbLine;
-//        params = JSON.stringify(params);
-//        $.post(url,params, function(data){
-//            //console.log(data)
-//        });
+
         var index = -1;
         
         if(currentAnnoListID !== "noList" && currentAnnoListID !== "empty"){ // if it IIIF, we need to update the list
@@ -3070,8 +3006,6 @@ function toggleLineCol(){
         }
         var onCanvas = $("#transcriptionCanvas").attr("canvasid");
         var newLineTop, newLineLeft, newLineWidth, newLineHeight = 0;
-        //console.log(originalCanvasWidth2 + " / " +originalCanvasHeight2+" is the ratio");
-        //console.log(originalCanvasWidth2 / originalCanvasHeight2);
         var ratio = originalCanvasWidth2 / originalCanvasHeight2; 
         newLineTop = parseFloat(newLine.attr("linetop"));
         newLineLeft = parseFloat(newLine.attr("lineleft"));
@@ -3088,12 +3022,7 @@ function toggleLineCol(){
         newLineLeft = Math.round(newLineLeft,0);
         newLineWidth = Math.round(newLineWidth,0);
         newLineHeight = Math.round(newLineHeight,0);
-        
-//        //console.log("Converted and rounded new line xywh");
-//        //console.log(newLineLeft, newLineTop, newLineWidth, newLineHeight)
-//console.log("NEW LINE HEIGHT: " + newLineHeight);
-//console.log("NEW LINE LEFT: " + newLineLeft);
-        
+               
         var lineString = onCanvas + "#xywh=" +newLineLeft+","+newLineTop+","+newLineWidth+","+newLineHeight;
         var currentLineText = "";
         var dbLine = 
@@ -3119,38 +3048,17 @@ function toggleLineCol(){
                {
                    //console.log("saved new line");
                    //console.log(data);
-                   data=JSON.parse(data);
-    //            //console.log("line saved");
-                //var newLineID = data["@id"];
-                //dbLine["@id"] = data;
-                dbLine["@id"] = data["@id"];
-                newLine.attr("lineserverid", data["@id"]);
-                $("div[newcol='"+true+"']").attr({
-                    "startid" : dbLine["@id"],
-                    "endid" : dbLine["@id"],
-                    "newcol":false
-                });
-                currentFolio = parseInt(currentFolio);
-                var currentAnnoList = annoLists[currentFolio - 1];
-                if(currentAnnoList !== "noList" && currentAnnoList !== "empty"){ // if it IIIF, we need to update the list
-    //                //console.log("Not no list and not empty");
-//                    if(currentAnnoList.indexOf("/annoList/5") > -1){
-//    //                    //console.log("line saved...set anno list to tester and update")
-//                        currentAnnoList = annoListTester;
-//                        if(beforeIndex == -1){
-//                            $(".newColumn").attr({
-//                                "lineserverid" : dbLine["@id"],
-//                                "linenum" : $(".parsing").length
-//                            }).removeClass("newColumn");
-//                            annoListTester.resources.push(dbLine);
-//                        }
-//                        else{
-//                            annoListTester.resources.splice(beforeIndex + 1, 0, dbLine);
-//                            updateLine(lineBefore);
-//                        }
-//
-//                    }
-    //                    //console.log("line saved...update the list it belongs to");
+                    data=JSON.parse(data);
+                    dbLine["@id"] = data["@id"];
+                    newLine.attr("lineserverid", data["@id"]);
+                    $("div[newcol='"+true+"']").attr({
+                        "startid" : dbLine["@id"],
+                        "endid" : dbLine["@id"],
+                        "newcol":false
+                    });
+                    currentFolio = parseInt(currentFolio);
+                    var currentAnnoList = annoLists[currentFolio - 1];
+                    if(currentAnnoList !== "noList" && currentAnnoList !== "empty"){ // if it IIIF, we need to update the list
                         var annosURL = "getAnno";
                         var properties = {"@id": currentAnnoList};
                         var paramOBJ = {"content": JSON.stringify(properties)};
@@ -3168,7 +3076,6 @@ function toggleLineCol(){
                                 currentAnnoList.resources.push(dbLine);
                             }
                             else{
-                                //splice it in
                                 currentAnnoList.resources.splice(beforeIndex + 1, 0, dbLine);
                             }
                             currentFolio = parseInt(currentFolio);
@@ -3182,16 +3089,13 @@ function toggleLineCol(){
     //                            //console.log("Updated list on anno store");
                                 if(lineBefore !== undefined && lineBefore !== null){
                                     //This is the good case.  We called split line and saved the new line, now we need to update the other one. 
-                                    //console.log("Split line, update line before now");
                                     updateLine(lineBefore);
                                 }
                             });
                         });
                     
                 }
-                else if(currentAnnoList == "empty"){ //empty as in no list in otherContent
-                //make a new list for it.    //Annotation lists need to be connected to a project, so we are adding that property in.  We should find a proper vocabulary for it through IIIF (like metadata)
-                      //console.log("gotta make a new list");
+                else if(currentAnnoList == "empty"){ 
                       var newAnnoList = 
                         {
                             "@type" : "sc:AnnotationList",
@@ -3234,7 +3138,7 @@ function toggleLineCol(){
                     });
                 }
                 else if(currentAnnoList == "noList"){ //noList means there was no otherContent field with the canvas.  this is an invalid object.  its possible annos are directly
-                    //in resoucres[] for the canvas.  this is classic T-PEN.
+                    //in resoucres[] for the canvas.  this is a classic T-PEN scenario.
                     //console.log("NO list.  This is probably not newberry.  beforeindex="+beforeIndex);
                     if(beforeIndex == -1){ //New line vs new column
                         $(".newColumn").attr({
@@ -3324,16 +3228,13 @@ function toggleLineCol(){
      */
      function splitLine(e,event){        
         //e is the line that was clicked in
-//        //console.log("split line.  Need to create new line, update anno list.  update old line, update anno list.")
         //This is where the click happened relative to img top.  In other words, where the click happened among the lines. 
         var originalLineHeight = $(e).height() - 1;  //take one px off for the border
         $(".parsing").attr("newline", "false");
         var originalLineTop = $(e).offset().top - $("#imgTop").offset().top + 1; //Move down one px for the border.  
         var clickInLines = event.pageY - $("#imgTop").offset().top;
         var lineOffset = $(e).offset().top - $("#imgTop").offset().top;
-        var oldLineHeight = (clickInLines - lineOffset)/$("#imgTop").height() * 100;
-        //console.log("new line height = ("+originalLineHeight+" - "+"("+clickInLines+" - "+originalLineTop+")) / "+$("#imgTop").height()+" * "+100);
-        //console.log((originalLineHeight - (clickInLines - originalLineTop))/$("#imgTop").height() * 100);
+        var oldLineHeight = (clickInLines - lineOffset)/$("#imgTop").height() * 100;;
         var newLineHeight = (originalLineHeight - (clickInLines - originalLineTop))/$("#imgTop").height() * 100;
         var newLineTop = (clickInLines/$("#imgTop").height()) * 100;
         var newLine = $(e).clone(true);
@@ -3404,7 +3305,6 @@ function toggleLineCol(){
             } 
             var params = new Array({name:"remove",value:removedLine.attr("lineserverid")});
             removedLine.remove(); 
-            ////console.log("removing line...");
             removeTranscriptlet(removedLine.attr("lineserverid"),$(e).attr("lineserverid"), true);
             return params;
         }
@@ -3420,7 +3320,6 @@ function toggleLineCol(){
      function removeTranscriptlet(lineid, updatedLineID, draw){
         // if(!isMember && !permitParsing)return false;
         //update remaining line, if needed
-        //console.log("remove transcriptlet");
         var updateText = "";
         if (lineid !== updatedLineID){
             var updatedLine =   $(".parsing[lineserverid='"+updatedLineID+"']");
@@ -3436,15 +3335,7 @@ function toggleLineCol(){
             });
             toUpdate.attr("lineheight", updatedLine.attr("lineheight"));
             updateLine(toUpdate);
-        }
-        //remove transcriptlet
-        //NOTE: all transcription information for a canvas is redrawn when returning to full screen transcription.  Transcriptlet altering may not be necessary here...check it.
-        
-//        $(".transcriptlet[lineserverid='"+lineid+"']").remove();
-//        var col = $(".transcriptlet[lineserverid='"+lineid+"']").attr("col");
-//        var line= $(".transcriptlet[lineserverid='"+lineid+"']").attr("collinenum");
-//        var pair = col+line;
-//        $("div[pair='"+pair+"']").remove();        
+        }      
 
         var index = -1;
         currentFolio = parseInt(currentFolio);
@@ -3486,7 +3377,6 @@ function toggleLineCol(){
                                     currentFolio = parseInt(currentFolio);
                                     annoLists[currentFolio - 1] = annoListID;
                                 });
-                                //update forreal
                             }
                         });                       
                     });
@@ -3505,7 +3395,6 @@ function toggleLineCol(){
                 }
             });
         } 
-        //TODO: Do this for real on anno store
         //When it is just one line being removed, we need to redraw.  When its the whole column, we just delete. 
         cleanupTranscriptlets(draw);
     
@@ -3618,20 +3507,6 @@ function toggleLineCol(){
         var oldLeft = -9999;
         var columnLeft;
         var transcriptlets = $(".transcriptlet");
-//        transcriptlets.each(function(index) {
-//            lineCtr++;
-//            columnLeft = parseInt($(this).find(".lineLeft").val(),10);
-//            if (columnLeft > oldLeft){
-//                columnCtr++;
-//                columnLineShift = lineCtr-1;
-//                oldLeft = columnLeft;
-//            }
-//            $(this).attr("id","transcriptlet_"+(index+1))
-//            .find("textarea").attr("id", "transcription" + (index + 1));
-//            $(this).attr("col",String.fromCharCode(64+columnCtr).toUpperCase()).attr("collinenum", lineCtr-columnLineShift);
-//            
-//            
-//          });
           if(draw){
               transcriptlets.remove();
               $(".lineColIndicatorArea").children().remove();
@@ -3642,11 +3517,7 @@ function toggleLineCol(){
                 drawLinesToCanvas(transcriptionFolios[currentFolio-1], true);
               });
           }
-        
-        // realign the focus with something in the DOM, if missing
-        //if (!focusItem[1].closest('body').length) focusItem[1] = $('#t1');
-        //this.setLineNavBtns();
-        //rebuild();
+
     }
     
 function scrubFolios(){
@@ -3685,7 +3556,6 @@ function toggleImgTools(){
     else{
         $("#imageTools").addClass("activeTools");
         $('.toolWrap').show();
-        console.log("0deg");
         $("#activeImageTool").children("i").css("transform", "rotate(0deg)");
     }
     var hello = [{"_id":{"date":{"date":8,"day":3,"hours":8,"minutes":20,"month":6,"seconds":23,"time":1436361623000,"timezoneOffset":300,"year":115},"inc":954446037,"machine":-458215640,"new":false,"time":1436361623000,"timeSecond":1436361623,"timestamp":1436361623},"@type":"sc:AnnotationList","on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208","originalAnnoID":["",""],"version":[1,1],"permission":0,"forkFromID":["",""],"oa:createdBY":"transcribe.library.utoronto.ca/637","addedTime":1436361623187,"serverName":"UTL TPEN Prod","serverIP":"142.1.120.133","@id":"http://165.134.241.141/annotationstore/annotation/559d2397e4b02f2838e3b0d5","resources":[{"@id":"http://165.134.241.141/annotationstore/annotation/559d2397e4b02f2838e3b0d4","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,65,513,73","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d239be4b02f2838e3b0d6","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,138,513,20","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d239de4b02f2838e3b0d7","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,159,513,15","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d239ee4b02f2838e3b0d8","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,174,513,19","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d239ee4b02f2838e3b0d9","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,193,513,17","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d239fe4b02f2838e3b0da","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,210,513,25","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d23a1e4b02f2838e3b0db","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,235,513,16","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d23a2e4b02f2838e3b0dc","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,251,513,19","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d23a3e4b02f2838e3b0dd","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,271,513,23","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d23a4e4b02f2838e3b0de","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,293,513,19","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d23a6e4b02f2838e3b0df","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,313,513,20","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d23a8e4b02f2838e3b0e0","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,333,513,23","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d23b0e4b02f2838e3b0e2","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,356,513,18","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d23b3e4b02f2838e3b0e3","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,374,513,18","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d23b3e4b02f2838e3b0e4","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,393,513,17","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d23b4e4b02f2838e3b0e5","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,410,513,17","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d23b5e4b02f2838e3b0e6","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,427,513,30","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d23b7e4b02f2838e3b0e7","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,457,513,17","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d23b8e4b02f2838e3b0e8","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,475,513,17","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d23b8e4b02f2838e3b0e9","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,492,513,31","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d23bae4b02f2838e3b0ea","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,523,513,16","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d23bbe4b02f2838e3b0eb","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,539,513,19","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d23bde4b02f2838e3b0ec","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,559,513,19","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d23bfe4b02f2838e3b0ed","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,578,513,26","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d23c1e4b02f2838e3b0ee","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText","cnt:chars":""},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,604,513,41"}]}]
