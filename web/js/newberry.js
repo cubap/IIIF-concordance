@@ -853,7 +853,6 @@
 
         if(canvasObj.images[0].resource['@id'] !== undefined && canvasObj.images[0].resource['@id'] !== ""){ //Only one image
             $("#imgTop, #imgTop img, #imgBottom img, #imgBottom, #transcriptionCanvas").css("height", "auto");
-            
             var image = new Image();
             $(image)
                     .on("load",function() {

@@ -220,7 +220,7 @@
                                 <div class="parsingToolButtons">
                                     <span id="addLines" class="tpenButton" title="Split lines to create new ones in a column" show="addLinesInst">Add Lines</span>
                                     <span id="removeLines" class="tpenButton" title="Merge two lines or remove the last line from a column" show="removeLinesInst">Delete/Merge Lines</span>
-                                    <span id="adjustLines" class="tpenButton" title="Simple adjustments to individual lines" show="addLinesInst" show="adjustLinesInst">Adjust Lines</span>                       
+                                    <span id="adjustLines" class="tpenButton" title="Simple adjustments to individual lines" show="adjustLinesInst">Adjust Lines</span>                       
                                 </div>
                                 <div class="activeParsingTool">
                                     <div class="startHide" id="addLinesInst">
@@ -802,6 +802,7 @@
                     $("#ctrlLinesInst").find(".activeParsingTool").css("display", "inline-table");
                     $("#imgTop").children(".line").addClass("parsing").removeClass("line");
                     $(".parsing").css("z-index", "5");
+                    $('.parsing').unbind();
                     $(".parsingColumn").remove();
                     if (thisID == "adjustLines") {
                         $("#addLines").removeClass("active");
@@ -854,7 +855,6 @@
                         $("#removeLines").removeClass("active");
                         isAddingLines = true;
                         $("#imgTop").children(".line").addClass("parsing").removeClass("line");
-                        $('.parsing').unbind();
                         $(".parsing").bind({
                             mouseenter: function(){
                                 applyRuler($(this));
@@ -874,7 +874,6 @@
                         //prep for column adjustment
                         //writeLines($("#imgTop img"));
                         isAddingLines = false;
-                        $(".parsing").unbind();
                         $(".parsing").bind({
                             mouseenter: function(){
                                 applyRuler($(this));
