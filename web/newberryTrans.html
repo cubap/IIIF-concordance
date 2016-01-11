@@ -188,7 +188,8 @@
                                             <dt>Adjustments:</dt>
                                             <dd>Drag the edges of an existing column</dd>
                                         </dl>
-                                        <p class="small"><span class="inline ui-icon ui-icon-check"></span>This method does not destroy any <acronym title="Text, markup, and notes saved for lines within this column will remain attached.">transcription information</acronym>.<br />
+<!--                                        <p class="small"><span class="inline ui-icon ui-icon-check"></span>
+                                            This method does not destroy any <acronym title="Text, markup, and notes saved for lines within this column will remain attached.">transcription information</acronym>.<br />-->
                                     </div>
                                     <div class="startHide" id="destroyColumnInst">
                                         <p class="">Click a column to remove all lines and transcription data it contains from the project.</p>
@@ -803,6 +804,7 @@
                     $("#imgTop").children(".line").addClass("parsing").removeClass("line");
                     $(".parsing").css("z-index", "5");
                     $('.parsing').unbind();
+                    $(".parsing").css('cursor','default');
                     $(".parsingColumn").remove();
                     if (thisID == "adjustLines") {
                         $("#addLines").removeClass("active");

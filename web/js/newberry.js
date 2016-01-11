@@ -1006,6 +1006,7 @@
         //console.log(originalCanvasWidth2 / originalCanvasHeight2);
         ratio = theWidth / theHeight;
         for(var i=0; i<lines.length;i++){
+            console.log("line "+i);
             var line = lines[i];
             var lastLine = {};
             var col = letters[letterIndex];
@@ -1049,8 +1050,8 @@
                     if(numberArray.length === 4){ // string must have all 4 to be valid
                         x = numberArray[0];
                         w = numberArray[2];
-                        if(lastLineX < x){
-                            if(x - lastLineX <= 3){ //within 3 pixels...
+                        if(lastLineX !== x){
+                            if(Math.abs(x - lastLineX) <= 3){ //within 3 pixels...
                                 
                                 //align them, call them the same Column. 
                                 /*
@@ -1067,8 +1068,8 @@
                                 colCounter = 0; //Reset line counter so that when the column changes the line# restarts?
                             }
                         }
-                        if(lastLineWidth < w){
-                            if(w - lastLineWidth <= 5){ //within 5 pixels...
+                        if(lastLineWidth !== w){
+                            if(Math.abs(w - lastLineWidth) <= 5){ //within 5 pixels...
                                 
                                 //align them, call them the same Column. 
                                 /*
@@ -1778,8 +1779,6 @@
                 writeLines($("#imgTop img"));
                 var firstLine = $(".parsing").filter(":first");
                 var correctHeight = (topImg.height() > $("#transcriptionTemplate").height()) ? -999 : firstLine.attr("lineheight") * topImg.height() / 1000;
-                    window.clearInterval(ParsingInterval);
-
             },1200);
          
     };
