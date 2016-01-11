@@ -132,8 +132,8 @@
                     <div id="imageTools" style="width: 201px;">
                         <div id="activeImageTool" onclick="toggleImgTools();" ><span>Image Tools</span> <i>&#9660;</i></div> <!--  -->
                            <div class="toolWrap">
-                                <button class="imgTool" onclick="toggleFilter('grayscale');">Grayscale</button><br>
-                                <button class="imgTool" onclick="toggleFilter('invert');">Invert</button>
+                                <button style="margin-right: 18px; margin-top: 15px;" class="imgTool" which="grayscale" onclick="toggleFilter('grayscale');">Grayscale</button>
+                                <button style="margin-bottom: 14px;" class="imgTool" which="invert" onclick="toggleFilter('invert');">Invert</button>
                                 <div id="imageToolSliders" class="imgTool">
                                     Brightness
                                     <div id="brightnessSlider"></div>
@@ -1121,10 +1121,12 @@
         if(filterObjectTop.className.indexOf(thisFilter) >= 0){
           filterObjectTop.className = filterObjectTop.className.replace(thisFilter, '');
           filterObjectBottom.className = filterObjectBottom.className.replace(thisFilter, '');
+          $("button[which='"+which+"']").removeClass("selected");
         }
         else{
           filterObjectTop.className = filterObjectTop.className+=" "+thisFilter;
           filterObjectBottom.className = filterObjectBottom.className+=" "+thisFilter;
+          $("button[which='"+which+"']").addClass("selected");
         }
     }
     function validTextColour(stringToTest) {

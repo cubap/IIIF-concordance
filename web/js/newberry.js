@@ -1002,8 +1002,6 @@
         originalCanvasHeight = theHeight;
         originalCanvasHeight2 = originalCanvasHeight;
         originalCanvasWidth2 = theWidth;
-        //console.log(originalCanvasWidth2 + " / " +originalCanvasHeight2+" is the ratio when putting lines to screen");
-        //console.log(originalCanvasWidth2 / originalCanvasHeight2);
         ratio = theWidth / theHeight;
         for(var i=0; i<lines.length;i++){
             console.log("line "+i);
@@ -1050,40 +1048,53 @@
                     if(numberArray.length === 4){ // string must have all 4 to be valid
                         x = numberArray[0];
                         w = numberArray[2];
-                        if(lastLineX !== x){
-                            if(Math.abs(x - lastLineX) <= 3){ //within 3 pixels...
-                                
+                        if(lastLineX !== x){ //check if the last line's x value is equal to this line's x value (means same column)
+                            if(Math.abs(x - lastLineX) <= 3){ //allow a 3 pixel  variance and fix this variance when necessary...
                                 //align them, call them the same Column. 
                                 /*
                                  * This is a consequence of #xywh for a resource needing to be an integer.  When I calculate its intger position off of
                                  * percentages, it is often a float and I have to round to write back.  This can cause a 1 or 2 pixel discrenpency, which I account
                                  * for here.  There may be better ways of handling this, but this is a good solution for now. 
                                  */
+                                if(lastLineWidth !== w){ //within "same" column (based on 3px variance).  Check the width
+                                    if(Math.abs(w - lastLineWidth) <= 5){ //If the width of the line is within five pixels, automatically make the width equal to the last line's width.
+
+                                        //align them, call them the same Column. 
+                                        /*
+                                         * This is a consequence of #xywh for a resource needing to be an integer.  When I calculate its intger position off of
+                                         * percentages, it is often a float and I have to round to write back.  This can cause a 1 or 2 pixel discrenpency, which I account
+                                         * for here.  There may be better ways of handling this, but this is a good solution for now. 
+                                         */
+                                        w = lastLineWidth;
+                                        numberArray[2] = w;
+                                    }
+                                }
                                 x = lastLineX;
                                 numberArray[0] = x;
                             }
-                            else{
+                            else{ //we are in a new column, column indicator needs to increase. 
                                 letterIndex++;
                                 col = letters[letterIndex];
                                 colCounter = 0; //Reset line counter so that when the column changes the line# restarts?
                             }
                         }
-                        if(lastLineWidth !== w){
-                            if(Math.abs(w - lastLineWidth) <= 5){ //within 5 pixels...
-                                
-                                //align them, call them the same Column. 
-                                /*
-                                 * This is a consequence of #xywh for a resource needing to be an integer.  When I calculate its intger position off of
-                                 * percentages, it is often a float and I have to round to write back.  This can cause a 1 or 2 pixel discrenpency, which I account
-                                 * for here.  There may be better ways of handling this, but this is a good solution for now. 
-                                 */
-                                w = lastLineWidth;
-                                numberArray[2] = w;
+                        else{ //If the X value matches, we are in the same column and don't have to account for any variance or update the array.  Still check for slight width variance.. 
+                            if(lastLineWidth !== w){
+                                if(Math.abs(w - lastLineWidth) <= 5){ //within 5 pixels...
+
+                                    //align them, call them the same Column. 
+                                    /*
+                                     * This is a consequence of #xywh for a resource needing to be an integer.  When I calculate its intger position off of
+                                     * percentages, it is often a float and I have to round to write back.  This can cause a 1 or 2 pixel discrenpency, which I account
+                                     * for here.  There may be better ways of handling this, but this is a good solution for now. 
+                                     */
+                                    w = lastLineWidth;
+                                    numberArray[2] = w;
+                                }
                             }
                         }
                         y = numberArray[1];
                         h = numberArray[3];
-                       
                         XYWHarray = [x,y,w,h];
                     }
                     else{
@@ -1104,7 +1115,7 @@
             if(line.resource['cnt:chars'] !== undefined && line.resource['cnt:chars'] !== ""){
                 thisContent = line.resource['cnt:chars'];
             }
-            else{
+            else{ //no text stored with the line yet or text stored is blank.  Give user a standard placeholder.
                 //update = false;
                 thisContent = "Enter a line transcription";
             }

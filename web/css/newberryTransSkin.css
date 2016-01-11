@@ -786,7 +786,7 @@ label {width:auto;padding: 0;float: none;}/*fixme should not have to overwrite*/
     padding: 4px 6px;
 }
 #brightnessSlider, #contrastSlider{
-    margin: 4px 0px;
+    margin: 7px 0px 18px 0px;
 }
 .character, .lookLikeButtons{
   display: block;
@@ -1157,3 +1157,16 @@ a{
     padding: 0px 1%;
     margin-left: 1%;
 }
+.ui-slider-horizontal{
+    height: .3em;
+}
+
+.ui-slider-horizontal .ui-slider-handle {
+    top: -.4em;
+    margin-left: -.6em;
+}
+
+.selected{
+    background-color: #D14836;
+}
+
