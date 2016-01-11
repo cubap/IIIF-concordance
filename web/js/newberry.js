@@ -1762,8 +1762,7 @@
         
         $("#transWorkspace,#imgBottom").hide();
         $("#noLineWarning").hide();
-        /* Depricated
-            ResizeTopImg = window.setTimeout(function(){
+            window.setTimeout(function(){
                 $("#imgTop, #imgTop img").height($(window).innerHeight()); 
                 $("#imgTop img").css("width" , "auto");
                 $("#imgTop").css("width" , $("#imgTop img").width());
@@ -1773,36 +1772,17 @@
                 $(".lineColIndicatorArea").css("height", $(window).innerHeight());
                 $("#transcriptionCanvas").css("display" , "block");
                 //$("#parsingSplit").css("top", "-"+($("#imgTop img").height()+32)+"px");
-            },
-            850);
-            ParsingInterval = window.setTimeout(function(){
+            });
+            window.setTimeout(function(){
                 //in here we can control what interface loads up.  writeLines draws lines onto the new full size transcription image.
                 $('.lineColIndicatorArea').hide();
                 writeLines($("#imgTop img"));
-                //$("#bookmark").css("left","-9999px");
                 var firstLine = $(".parsing").filter(":first");
-                //if ($.browser.opera) firstLine += 2;
-                // Find the correct height for a well-displayed tool with a full-height image.
                 var correctHeight = (topImg.height() > $("#transcriptionTemplate").height()) ? -999 : firstLine.attr("lineheight") * topImg.height() / 1000;
-                //if ((Math.abs(firstLine.height() - correctHeight) > 2.5) || (topImg.height() > $("#transcriptionTemplate").height())) {
-                    // assures that the resizing of the img completely took place
-                    // FIXME may cause slow loop
-                   // //console.log("parsing adjustment ("+firstLine.height()+", "+correctHeight+")");
-                    //hideWorkspaceForParsing(); 
                     window.clearInterval(ParsingInterval);
-                //} 
-//                else {
-//                    //hack to make the image draw correctly in some cases
-//                  topImg.css('top', 'auto');
-//                  topImg.css('top', '0');
-//                  //console.log("image position confirmed");
-//                  
-//                }
+
             },1200);
-         */
-            
-//            $("#ctrlColumns").click();
-//            $("#ctrlLines").click();
+         
     };
     
     /** 
