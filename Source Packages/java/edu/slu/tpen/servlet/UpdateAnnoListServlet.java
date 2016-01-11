@@ -21,7 +21,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- *
+ * Update annotation list from rerum.io. 
+ * This is not tpen transformation. It utilizes rerum.io as its repository. 
  * @author hanyan
  */
 public class UpdateAnnoListServlet extends HttpServlet {
@@ -38,7 +39,7 @@ public class UpdateAnnoListServlet extends HttpServlet {
             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             connection.connect();
             DataOutputStream out = new DataOutputStream(connection.getOutputStream());
-            //TODO value to save
+            //value to save
             out.writeBytes("content=" + URLEncoder.encode(request.getParameter("content"), "utf-8"));
             out.flush();
             out.close(); // flush and close
@@ -47,7 +48,7 @@ public class UpdateAnnoListServlet extends HttpServlet {
             StringBuilder sb = new StringBuilder();
             while ((line = reader.readLine()) != null){
                 //line = new String(line.getBytes(), "utf-8");  
-                System.out.println(line);
+//                System.out.println(line);
                 sb.append(line);
             }
             reader.close();

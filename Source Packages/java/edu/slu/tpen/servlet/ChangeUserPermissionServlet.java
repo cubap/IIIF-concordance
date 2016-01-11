@@ -29,7 +29,8 @@ import textdisplay.ProjectPermissions;
 import user.Group.roles;
 
 /**
- *
+ * Change user permission in a project (group). This is a transformation of tpen function to web service. 
+ * It's using tpen MySQL database. 
  * @author hanyan
  */
 public class ChangeUserPermissionServlet extends HttpServlet {
@@ -172,7 +173,7 @@ public class ChangeUserPermissionServlet extends HttpServlet {
     }
     
     /**
-     * Add user to a project
+     * Add user to a project by saving user to project group.
      * @param projectId
      * @param userId
      * @return 1: user added, 11: user is already in project
@@ -201,7 +202,7 @@ public class ChangeUserPermissionServlet extends HttpServlet {
     }
     
     /**
-     * Remove a user from project
+     * Remove a user from project by deleting user from project group.
      * @param projectId
      * @param userId
      * @param currentUid (uid from session)

@@ -24,6 +24,7 @@ import textdisplay.DatabaseWrapper;
 
 /**
  * Retrieve all a user's shared projects. 
+ * This is a transformation of tpen function to web service. It's using tpen MySQL database. 
  * @author hanyan
  */
 @WebServlet(name = "GetSharedProjectsByUserServlet", urlPatterns = {"/getSharedProjectsByUser"})

@@ -15,10 +15,10 @@
 package edu.slu.tpen.servlet;
 
 /**
- *
+ * Class to hold all static values that will be reused in project. 
  * @author hanyan
  */
 public class Constant {
-      public static String ANNOTATION_SERVER_ADDR = "http://165.134.241.141:80/annotationstore";
-//    public static String ANNOTATION_SERVER_ADDR = "http://localhost:8080/annotationstore";
+//      public static String ANNOTATION_SERVER_ADDR = "http://165.134.241.141:80/annotationstore";
+    public static String ANNOTATION_SERVER_ADDR = "http://localhost:8080/annotationstore";
 }

@@ -43,8 +43,8 @@ import textdisplay.Project;
 import user.Group;
 
 /**
- * Create a manuscript, folio and project for New Berry.
- *
+ * Create a manuscript, folio and project for New Berry. This part is a transformation of tpen function to web service. 
+ * Servlet also adds annotation list to each canvas (also known as foliio in old tpen) using rerum.io. 
  * @author hanyan
  */
 public class CreateProjectServlet extends HttpServlet {
@@ -148,7 +148,7 @@ public class CreateProjectServlet extends HttpServlet {
                     for (int i = 0; i < ls_folios_keys.size(); i++) {
                         Folio folio = new Folio(ls_folios_keys.get(i));
                         array_folios[i] = folio;
-                        //create anno list for original canvas
+                        //create anno list for each canvas (also known as folio in old tpen)
                         JSONObject annoList = CreateAnnoListUtil.createEmptyAnnoList(newProject.getProjectName(), newProject.getProjectID(), folio.getPageName(), new JSONArray());
                         URL postUrl = new URL(Constant.ANNOTATION_SERVER_ADDR + "/anno/saveNewAnnotation.action");
                         HttpURLConnection uc = (HttpURLConnection) postUrl.openConnection();
@@ -187,6 +187,7 @@ public class CreateProjectServlet extends HttpServlet {
                 newProject.importData(UID);
                 conn.commit();
                 String propVal = Folio.getRbTok("CREATE_PROJECT_RETURN_DOMAIN");
+                //return trimed project url
                 return propVal + "/project/" + projectID;
             }
         } catch (SQLException ex) {

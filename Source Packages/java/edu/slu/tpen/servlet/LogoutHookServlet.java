@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- *
+ * This is a SSO function for NewBerry. When user logs out on NewBerry, it sends user info here and logs out user on tpen. 
  * @author hanyan
  */
 @WebServlet(name = "LogoutHookServlet", urlPatterns = {"/logoutHook"})
