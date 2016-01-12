@@ -45,7 +45,8 @@ import utils.Tool;
 import utils.UserTool;
 
 /**
- *
+ * Get tpen project. 
+ * This is a transformation of tpen function to web service. It's using tpen MySQL database. 
  * @author hanyan
  */
 public class GetProjectTPENServlet extends HttpServlet {

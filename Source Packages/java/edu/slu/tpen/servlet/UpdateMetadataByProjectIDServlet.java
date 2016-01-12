@@ -26,7 +26,8 @@ import javax.servlet.http.HttpServletResponse;
 import textdisplay.Metadata;
 
 /**
- *
+ * Update metadata by project id. 
+ * This is a transformation of tpen function to web service. It's using tpen MySQL database. 
  * @author hanyan
  */
 public class UpdateMetadataByProjectIDServlet extends HttpServlet {

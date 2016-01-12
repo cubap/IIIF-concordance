@@ -28,7 +28,8 @@ import net.sf.json.JSONObject;
 import user.User;
 
 /**
- *
+ * Get user info by user id. 
+ * This is a transformation of tpen function to web service. It's using tpen MySQL database. 
  * @author hanyan
  */
 public class UserInfoServlet extends HttpServlet {

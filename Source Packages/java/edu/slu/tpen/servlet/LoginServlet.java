@@ -35,7 +35,7 @@ import user.User;
 
 /**
  * Servlet to log into and log out of T-PEN.
- *
+ * This is a transformation of tpen function to web service. It's using tpen MySQL database. 
  * @author tarkvara
  */
 public class LoginServlet extends HttpServlet {

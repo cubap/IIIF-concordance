@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- *
+ * Get annotations by properties. It's not from tpen. It is a rerum.io service. 
  * @author hanyan
  */
 public class GetAnnotationByPropertiesServlet extends HttpServlet {

@@ -30,7 +30,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- *
+ * Update trans-line to rerum,io. Please distinguish this to UpdateLineServlet.java. 
+ * NOTE! This is not inherited from tpen. It utilizes rerum.io as its repository. 
  * @author hanyan
  */
 public class UpdateTransLineServlet extends HttpServlet {
@@ -72,7 +73,7 @@ public class UpdateTransLineServlet extends HttpServlet {
 //            System.out.println("=============================");  
             while ((line = reader.readLine()) != null){  
                 //line = new String(line.getBytes(), "utf-8");  
-                System.out.println(line);
+//                System.out.println(line);
                 sb.append(line);
             }  
 //            System.out.println("=============================");  

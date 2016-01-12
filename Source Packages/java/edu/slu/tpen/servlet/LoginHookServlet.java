@@ -25,7 +25,8 @@ import javax.servlet.http.HttpSession;
 import textdisplay.DatabaseWrapper;
 
 /**
- *
+ * This is a SSO function for NewBerry. When user logs in on NewBerry, it sends user info here and puts user info into tpen part session. 
+ * If the user doesn't exist in tpen user table, create a new user. 
  * @author hanyan
  */
 @WebServlet(name = "LoginHookServlet", urlPatterns = {"/loginHook"})
@@ -59,6 +60,7 @@ public class LoginHookServlet extends HttpServlet {
                     }
                 }
             }
+            //select user using credentials from NewBerry Drupal part. 
             String query = "select * from users where email = ?";
             Connection j = null;
             PreparedStatement ps=null;
@@ -73,10 +75,12 @@ public class LoginHookServlet extends HttpServlet {
             DatabaseWrapper.closeDBConnection(j);
             DatabaseWrapper.closePreparedStatement(ps);
             if(uid != 0){
+                //if user exits, put user info into session. 
                 HttpSession session = request.getSession();
                 session.setAttribute("UID", uid);
                 session.setAttribute("role", vals.get("role"));
             }else{
+                //if user doesn't exist, create a new user. 
                 String insertUser = "insert into users (uname, email) values (?,?)";
                 j = DatabaseWrapper.getConnection();
                 ps = j.prepareStatement(insertUser, Statement.RETURN_GENERATED_KEYS);
@@ -86,6 +90,7 @@ public class LoginHookServlet extends HttpServlet {
                 ResultSet gk = ps.getGeneratedKeys();
                 int newUID = -1;
                 if(gk.next()){
+                    //put new user info into session.
                     newUID = gk.getInt(1);
                     HttpSession session = request.getSession();
                     session.setAttribute("UID", newUID);

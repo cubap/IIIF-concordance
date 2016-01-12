@@ -33,7 +33,7 @@ import user.User;
 
 /**
  * Servlet to retrieve information about all a user's projects.
- *
+ * This is a transformation of tpen function to web service. It's using tpen MySQL database. 
  * @author tarkvara
  */
 public class ProjectsServlet extends HttpServlet {

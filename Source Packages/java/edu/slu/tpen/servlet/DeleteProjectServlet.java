@@ -30,7 +30,8 @@ import textdisplay.Project;
 import user.Group;
 
 /**
- *
+ * Delete project and project related attachments from tpen. 
+ * This is a transformation of tpen function to web service. It's using tpen MySQL database. 
  * @author hanyan
  */
 public class DeleteProjectServlet extends HttpServlet {
