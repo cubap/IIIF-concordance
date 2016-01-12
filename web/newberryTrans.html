@@ -21,12 +21,35 @@
             display: inline-block;
             border-right: 2px solid black;
         }
+        .magnifyHelp{
+            position: fixed;
+            top:35px;
+            left: 0;
+            right:0;
+            margin: 0 auto;
+            border: 2px outset #002a5c;
+            background-color: #BFBFBF;
+            height: 134px;
+            width: 200px;
+            font-size: 9pt;
+            padding: 4px 6px;
+            color: #002a5c;
+            height: 110px;
+            z-index: 3;
+            display: none;
+        }
         
     </style>
     <body>
         <div class="pageTurnCover">
             <div class="turnMsg">Please wait while we load the page...</div>
             <div class="turnLoader"><img src="../newberry/images/loading2.gif" /></div>
+        </div>
+        <div class="magnifyHelp">
+            <div id='magnifyHlpLabel'>Magnify Help</div>
+            <button style='margin-bottom: 3px;' class='nohover'>esc</button><span>   to quit</span><br>
+            <button style='margin-bottom: 3px;' class='nohover'>+</button><span>   to zoom in</span><br>
+            <button class='nohover'>-</button><span>   to zoom out</span>
         </div>
         <div class="topTrim">
             <span class="trimSection">TITLE:<span id="trimTitle"></span></span>
@@ -70,11 +93,11 @@
         <div id="transcriptionTemplate">
             
             <div id="transcriptionCanvas">
-                <div id="magnifyTools">
+<!--                <div id="magnifyTools">
                     <div onclick="$('.magnifyTool').toggle();">Magnify</div>
                     <i class="magnifyTool">+</i>
                     <i class="magnifyTool">-</i>
-                </div>
+                </div>-->
                 <div id="noLineWarning">
                     <div id="noLineConfirmation">This canvas has no lines.  If you would like to create lines <span style="color: blue;" onclick="hideWorkspaceForParsing()">click here</span>.
                     Otherwise, you can <span style="color: red;" onclick="$('#noLineWarning').hide()">dismiss this message</span>.</div>
@@ -92,11 +115,11 @@
                     <button id="prevCanvas" onclick="previousFolio();" title="Previous Page">prev</button><button id="nextCanvas" title="Next Page" onclick="nextFolio();">next</button>
                 </div>
                 <div id="transcriptletArea"></div>
+                <div id="lineCol"><div title="Previous Line" id="prevColLine"></div><div title="Current Line" id="currentColLine"></div></div>
                 <div id="lineControls">
                     <div id="lineLabel">Line</div>
                     <button id="prevLine" title="Previous Line" onclick="previousTranscriptlet();">prev</button><button id="nextLine" title="Next Line" onclick="nextTranscriptlet();">next</button>
-                </div>
-                <div id="lineCol"><div title="Previous Line" id="prevColLine"></div><div title="Current Line" id="currentColLine"></div></div><br>
+                </div><br>
                 <div class="bottomButtons">
                     <select id="charactersPopin" class="specialCharacters"  title="Special Characters" >
                         <option id="activeCharacters" >Characters</option> <!-- onclick="toggleCharacters();" -->
@@ -133,7 +156,7 @@
                         <div id="activeImageTool" onclick="toggleImgTools();" ><span>Image Tools</span> <i>&#9660;</i></div> <!--  -->
                            <div class="toolWrap">
                                 <button style="margin-right: 18px; margin-top: 15px;" class="imgTool" which="grayscale" onclick="toggleFilter('grayscale');">Grayscale</button>
-                                <button style="margin-bottom: 14px;" class="imgTool" which="invert" onclick="toggleFilter('invert');">Invert</button>
+                                <button style="margin-bottom: 10px;" class="imgTool" which="invert" onclick="toggleFilter('invert');">Invert</button>
                                 <div id="imageToolSliders" class="imgTool">
                                     Brightness
                                     <div id="brightnessSlider"></div>
@@ -149,9 +172,9 @@
                      <button id="parsingBtn" title="Correct Page Parsing" onclick="hideWorkspaceForParsing();" >Correct Parsing</button> <!--Page event on the listener for this class in js.--> 
                      <!--<button id="linebreakBtn">Linebreak</button>TODO-->
                     <div  id="lineColControls">
-                        <div title="Control Drawn Line Settings" class="linehdr">Line Control</div>
-                        <span title="Toggle Entire Lines" class="linehdr">Lines</span><input title="Toggle Lines" type="checkbox" onchange="toggleLineMarkers();" checked="checked">
-                        <span title="Toggle Lines' Indicator" class="linehdr">Line #s</span><input type="checkbox" onchange="toggleLineCol();" checked="checked"><br>
+                        <div title="Control Drawn Line Settings" id="lineCtrlLabel">Line Control</div>
+                        <span title="Toggle Entire Lines" class="linehdr">Lines</span><input style="margin-right: 12px;" title="Toggle Lines" type="checkbox" onchange="toggleLineMarkers();" checked="checked">
+                        <span title="Toggle Lines' Indicator" class="linehdr">Line #s</span><input  type="checkbox" onchange="toggleLineCol();" checked="checked"><br>
                         <button id="markerColors" onclick="markerColors();">Line Color</button>
                     </div>
                 </div>
@@ -549,6 +572,13 @@
                 magnify($(this).attr("magnifyImg"),event);
             }
         });
+        
+        $("#imgTop").hover(function(){
+            var color = colorThisTime.replace(".4", "1");
+            $('.activeLine').css('box-shadow', '0px 0px 15px 8px '+color);
+        }, function(){
+            $('.activeLine').css('box-shadow', '0px 0px 15px 8px '+colorThisTime);
+        });
 
         $(document).keydown(function(event){
             if(isMagnifying){
@@ -564,17 +594,7 @@
                 }
                 //esc
                 else if(event.which === 27){
-                    isMagnifying = false;
-                    zoomMultiplier = 2;
-                    $(document).off("mousemove");
-                    $("#zoomDiv").removeClass("ui-state-active");
-                    $("#zoomDiv").hide();
-                    $(".magnifyBtn").removeClass("ui-state-active");
-                    $("#magnifyTools").fadeOut(800);
-//                    $("#imgBottom img").css("top", imgBottomOriginal);
-//                    $("#imgBottom .lineColIndicatorArea").css("top", imgBottomOriginal);
-                    $(".lineColIndicatorArea").show();
-                    restoreWorkspace();
+                    stopMagnify();
                 }
                 else {
 
@@ -601,6 +621,7 @@
                 $("#imgTop, #imgBottom").unbind();
                 $("#imgTop").css("cursor", "default");
                 $("#imgBottom").css("cursor", "default");
+                $(".transcriptlet").children("textarea").removeClass("imageMove").removeAttr("disabled");
             }
             else if (event.which === 13){ //entr
                 var activeTranscriptlet = $(".transcriptlet:visible");
@@ -613,9 +634,8 @@
             }
             })
             .keyup(function(event){
-                stopWaitingForArrows();
                 if(event.which == 18 || event.altKey){
-                    $("#imgTop,#imgBottom,.workpaceHandle").unbind().css("cursor", "default");
+                    $("#imgTop,#imgBottom").unbind().css("cursor", "default");
                     //restoreTransition();
                     //unShiftInterface();
                 }

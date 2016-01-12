@@ -345,12 +345,19 @@ body{
     top: -35px;
 
 }
-#pageLabel, #lineLabel{
+#pageLabel, #lineLabel, #lineCtrlLabel, #magnifyHlpLabel{
     margin: 0 auto;
     color: #002a5c;
     font-weight: bold;
     top: 3px;
     position: relative;
+}
+#magnifyHlpLabel{
+    margin-bottom: 6px;
+    text-align: center;
+}
+#lineCtrlLabel{
+    top: -1px !important;
 }
 #prevPage, #nextPage{
     font-size: 30pt;
@@ -387,7 +394,7 @@ body{
 #prevColLine{
     background-color: #FFF;
     right: -7px;
-    top: 36px;
+    top: 34px;
 }
 #currentColLine{
     background-color: #BFBFBF;
@@ -409,7 +416,7 @@ body{
     background-position: 0px 0px;
     background-size: auto;
     background-repeat:no-repeat;
-    z-index: 12;
+    z-index: 4;
 }
 #pageLabel1{
     left: 35%;
@@ -596,7 +603,7 @@ label {width:auto;padding: 0;float: none;}/*fixme should not have to overwrite*/
 }
 #progress {bottom:0;right:0;}
 #lineResizing {top:50%;width:auto;max-width: 25%;}
-#zoomDiv {display: none;border-radius : 50%; box-shadow :5px 5px 15px 3px black,15px 15px 100px rgba(230,255,255,.8) inset,-15px -15px 100px rgba(0,0,15,.4) inset;width : 300;height:300;border: 3px gold outset;overflow : hidden;position:fixed;left: 450px;top: 65px;background-color: transparent;background-position: 0px 0px;background-size: auto;background-repeat:no-repeat;z-index: 2;}
+#zoomDiv {display: none;border-radius : 50%; box-shadow :5px 5px 15px 3px black,15px 15px 100px rgba(230,255,255,.8) inset,-15px -15px 100px rgba(0,0,15,.4) inset;width : 300;height:300;border: 3px gold outset;overflow : hidden;position:fixed;left: 450px;top: 65px;background-color: transparent;background-position: 0px 0px;background-size: auto;background-repeat:no-repeat;}
 #historyListing {height: 100%;overflow: auto;position:relative;}
 .historyEntry,.historyLine{position: relative;overflow: auto;}
 .historyLine{height:100%;}
@@ -730,7 +737,7 @@ label {width:auto;padding: 0;float: none;}/*fixme should not have to overwrite*/
     color:black;
     background-color: white;
     display: inline-block;
-    z-index:5;
+    z-index:3;
     text-align:center;
     font-size:8pt;
     top: -8px;
@@ -829,11 +836,14 @@ label {width:auto;padding: 0;float: none;}/*fixme should not have to overwrite*/
     display: none;
     height: auto;
 }
+button.imgTool{
+    width: 37%;
+}
 .imgTool{
     cursor: pointer;
     border: 1px solid black;
     padding: 4px 3px;
-    margin: 4px 0px;
+    margin: 0px;
 }
 #imageToolSliders{
     cursor: default !important;
@@ -923,7 +933,7 @@ label {width:auto;padding: 0;float: none;}/*fixme should not have to overwrite*/
 .trimSection{
     font-size: 10pt;
     color: #FFF;
-    border-right: 3px solid #D14836;
+    border-right: 2px solid #BFBFBF;
     text-align: center;
     white-space: nowrap;
     overflow: hidden;
@@ -1010,10 +1020,14 @@ label {width:auto;padding: 0;float: none;}/*fixme should not have to overwrite*/
     left:3px;
     border: 2px outset #002a5c;
 }
+/* changing margin here moves all buttons across bottom of transcription workspace. */
 .linehdr{
     color: #002a5c;
     font-size: 11pt;
     cursor: default;
+    margin-bottom: 4px;
+    position: relative;
+    display: inline-block;
 }
 #lineColControls{
     width: 151px;
@@ -1125,7 +1139,7 @@ p{
     width:auto;
 }
 .activeTools{
-    height: 202px !important;
+    height: 190px !important;
 }
 #imageTools .ui-widget-content{
     border: 1px solid black !important;
@@ -1168,5 +1182,10 @@ a{
 
 .selected{
     background-color: #D14836;
+}
+
+.nohover:hover{
+    background-color: black !important;
+    cursor: default !important;
 }
 

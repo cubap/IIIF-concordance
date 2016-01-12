@@ -13,8 +13,8 @@
     var isAddingLines = false;
     var charactersForButton = "";
     var tagsForButton = "";
-    var colorList = ["rgba(153,255,0,1)", "rgba(0,255,204,1)", "rgba(51,0,204,1)", "rgba(204,255,0,1)", "rgba(0,0,0,1)", "rgba(255,255,255,1)", "rgba(255,0,0,1)"];
-    var colorThisTime = "rgba(255,255,255,1)";
+    var colorList = ["rgba(153,255,0,.4)", "rgba(0,255,204,.4)", "rgba(51,0,204,.4)", "rgba(204,255,0,.4)", "rgba(0,0,0,.4)", "rgba(255,255,255,.4)", "rgba(255,0,0,.4)"];
+    var colorThisTime = "rgba(255,255,255,.4)";
     var annoLists = [];
     var loggedInUser = false;
     //var basePath = window.location.protocol + "//" + window.location.host;
@@ -561,6 +561,7 @@
                                                 }
                                                 else{
                                                     //console.log("push empty 1");
+                                                    //otherContent was empty (IIIF says otherContent should have URI's to AnnotationLists).  We will check the store for these lists still.
                                                     annoLists.push("empty");
                                                 }
                                             }
@@ -640,6 +641,7 @@
                                     }
                                     else{
                                         //console.log("push empty 2");
+                                        //otherContent was empty (IIIF says otherContent should have URI's to AnnotationLists).  We will check the store for these lists still.
                                         annoLists.push("empty");
                                     }
                                 }
@@ -711,6 +713,7 @@
                                                         }
                                                         else{
                                                             //console.log("push empty 3");
+                                                            //otherContent was empty (IIIF says otherContent should have URI's to AnnotationLists).  We will check the store for these lists still.
                                                             annoLists.push("empty");
                                                         }
                                                     }
@@ -792,6 +795,7 @@
                                             }
                                             else{
                                                 //console.log("push empty 4");
+                                                //otherContent was empty (IIIF says otherContent should have URI's to AnnotationLists).  We will check the store for these lists still.
                                                 annoLists.push("empty");
                                             }
                                         }
@@ -1463,8 +1467,17 @@
     };
     
      function startMoveImg(){
-        $("#imgTop, #imgBottom").css("cursor", "url("+"images/open_grab.png),auto");
-        $("#imgTop,#imgBottom").mousedown(function(event){moveImg(event);});
+       if($(".transcriptlet:first").hasClass("imageMove")){
+           $(".transcriptlet").children("textarea").removeClass("imageMove").removeAttr("disabled");
+           $("#imgTop, #imgBottom").css("cursor", "default");
+           $("#imgTop,#imgBottom").unbind();
+       }
+       else{
+            $(".transcriptlet").addClass("imageMove").attr("disabled", "");
+            $("#imgTop, #imgBottom").css("cursor", "url("+"images/open_grab.png),auto");
+            $("#imgTop,#imgBottom").mousedown(function(event){moveImg(event);});
+       }
+        
     }
     
     /** 
@@ -1591,6 +1604,7 @@
             });
         }
         $("#zoomDiv").show();
+        $(".magnifyHelp").show();
         hideWorkspaceToSeeImage();
         $(".lineColIndicatorArea").hide();
         liveTool = "image";
@@ -2919,7 +2933,7 @@ function toggleLineCol(){
 
         var index = -1;
         
-        if(currentAnnoListID !== "noList" && currentAnnoListID !== "empty"){ // if it IIIF, we need to update the list
+        if(currentAnnoListID !== "noList" && currentAnnoListID !== "empty"){ // if its IIIF, we need to update the list
             if(currentAnnoListID.indexOf("/annoList/5") > -1){
                 $.each(annoListTester.resources, function(){
                     index++;
@@ -2962,7 +2976,7 @@ function toggleLineCol(){
             }
         }
         else if(currentAnnoList == "empty"){
-           //cannot update and empty list
+           //cannot update an empty list
         }
         else if(currentAnnoList == "noList"){ //If it is classic T-PEN, we need to update canvas resources
             currentFolio = parseInt(currentFolio);
@@ -3085,6 +3099,7 @@ function toggleLineCol(){
                     
                 }
                 else if(currentAnnoList == "empty"){ 
+                    //This means we know no AnnotationList was on the store for this canvas, and otherContent stored with the canvas object did not have the list.  Make a new one in this case. 
                       var newAnnoList = 
                         {
                             "@type" : "sc:AnnotationList",
@@ -3106,29 +3121,24 @@ function toggleLineCol(){
                         currentFolio = parseInt(currentFolio);
                         annoLists[currentFolio - 1] = newAnnoListCopy["@id"];
                         transcriptionFolios[currentFolio - 1].otherContent[0] = newAnnoListCopy["@id"];
-                        
-    //                    //console.log("Update list with new anno");
-
-                                var url3 = "updateAnnoList";
-                                var paramObj3 = {"@id":newAnnoListCopy["@id"], "resources": [dbLine]};
-    //                            //console.log(paramObj3);
-                                var params3 = {"content":JSON.stringify(paramObj3)};
-                                $.post(url3, params3, function(data){
-    //                                //console.log("New list updated with new anno");
-                                       $(".newColumn").attr({
-                                            "lineserverid" : dbLine["@id"],
-                                            "startid" : dbLine["@id"],
-                                            "endid" : dbLine["@id"],
-                                            "linenum" : $(".parsing").length
-                                        }).removeClass("newColumn");
-                                        newLine.attr("lineserverid", dbLine["@id"]);
-                                    });
-
+                        var url3 = "updateAnnoList";
+                        var paramObj3 = {"@id":newAnnoListCopy["@id"], "resources": [dbLine]};
+//                            //console.log(paramObj3);
+                        var params3 = {"content":JSON.stringify(paramObj3)};
+                        $.post(url3, params3, function(data){
+//                                //console.log("New list updated with new anno");
+                               $(".newColumn").attr({
+                                    "lineserverid" : dbLine["@id"],
+                                    "startid" : dbLine["@id"],
+                                    "endid" : dbLine["@id"],
+                                    "linenum" : $(".parsing").length
+                                }).removeClass("newColumn");
+                                newLine.attr("lineserverid", dbLine["@id"]);
+                            });
                     });
                 }
                 else if(currentAnnoList == "noList"){ //noList means there was no otherContent field with the canvas.  this is an invalid object.  its possible annos are directly
                     //in resoucres[] for the canvas.  this is a classic T-PEN scenario.
-                    //console.log("NO list.  This is probably not newberry.  beforeindex="+beforeIndex);
                     if(beforeIndex == -1){ //New line vs new column
                         $(".newColumn").attr({
                             "lineserverid" : dbLine["@id"],
@@ -3164,7 +3174,7 @@ function toggleLineCol(){
      * @param newLineID lineid of new line
      */
      function buildTranscriptlet(e, afterThisID, newServerID){
-         var newLineID = $(".transcriptlet").length + 1;
+        var newLineID = $(".transcriptlet").length + 1;
         var isNotColumn = true;
         var newW = e.attr("linewidth");
         var newX = e.attr("lineleft");
@@ -3199,11 +3209,13 @@ function toggleLineCol(){
         if (isNotColumn){
             //update transcriptlet that was split
             $afterThis.after(newTranscriptlet.join("")).find(".lineHeight").val($(".parsing[lineserverid='"+afterThisID+"']").attr("lineheight"));                    
-        } else {
-      if (afterThisID === -1) {
-        $("#entry").prepend(newTranscriptlet.join(""));
-            } else {
-                $afterThis.after(newTranscriptlet.join(""));
+        } 
+        else {
+            if (afterThisID === -1) {
+            $   ("#entry").prepend(newTranscriptlet.join(""));
+            } 
+            else {
+                    $afterThis.after(newTranscriptlet.join(""));
             }
         }
         $(e).attr("lineserverid", newServerID);
@@ -3234,8 +3246,7 @@ function toggleLineCol(){
             "newline"   :   true,
             "lineheight" :  oldLineHeight
         });
-        
-        
+              
         $(newLine).css({
             "height"    :   newLineHeight + "%",
             "top"       :   newLineTop + "%"
@@ -3250,11 +3261,8 @@ function toggleLineCol(){
         $.each($(".parsing"), function(){
             newNum++;
             $(this).attr("linenum", newNum);
-        });
-        
+        });        
          saveNewLine($(e),newLine); 
-         
-        
         $("#progress").html("Line Added").fadeIn(1000).delay(3000).fadeOut(1000);
     }
     
@@ -3547,5 +3555,19 @@ function toggleImgTools(){
         $('.toolWrap').show();
         $("#activeImageTool").children("i").css("transform", "rotate(0deg)");
     }
-    var hello = [{"_id":{"date":{"date":8,"day":3,"hours":8,"minutes":20,"month":6,"seconds":23,"time":1436361623000,"timezoneOffset":300,"year":115},"inc":954446037,"machine":-458215640,"new":false,"time":1436361623000,"timeSecond":1436361623,"timestamp":1436361623},"@type":"sc:AnnotationList","on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208","originalAnnoID":["",""],"version":[1,1],"permission":0,"forkFromID":["",""],"oa:createdBY":"transcribe.library.utoronto.ca/637","addedTime":1436361623187,"serverName":"UTL TPEN Prod","serverIP":"142.1.120.133","@id":"http://165.134.241.141/annotationstore/annotation/559d2397e4b02f2838e3b0d5","resources":[{"@id":"http://165.134.241.141/annotationstore/annotation/559d2397e4b02f2838e3b0d4","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,65,513,73","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d239be4b02f2838e3b0d6","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,138,513,20","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d239de4b02f2838e3b0d7","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,159,513,15","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d239ee4b02f2838e3b0d8","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,174,513,19","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d239ee4b02f2838e3b0d9","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,193,513,17","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d239fe4b02f2838e3b0da","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,210,513,25","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d23a1e4b02f2838e3b0db","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,235,513,16","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d23a2e4b02f2838e3b0dc","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,251,513,19","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d23a3e4b02f2838e3b0dd","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,271,513,23","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d23a4e4b02f2838e3b0de","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,293,513,19","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d23a6e4b02f2838e3b0df","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,313,513,20","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d23a8e4b02f2838e3b0e0","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,333,513,23","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d23b0e4b02f2838e3b0e2","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,356,513,18","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d23b3e4b02f2838e3b0e3","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,374,513,18","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d23b3e4b02f2838e3b0e4","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,393,513,17","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d23b4e4b02f2838e3b0e5","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,410,513,17","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d23b5e4b02f2838e3b0e6","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,427,513,30","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d23b7e4b02f2838e3b0e7","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,457,513,17","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d23b8e4b02f2838e3b0e8","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,475,513,17","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d23b8e4b02f2838e3b0e9","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,492,513,31","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d23bae4b02f2838e3b0ea","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,523,513,16","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d23bbe4b02f2838e3b0eb","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,539,513,19","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d23bde4b02f2838e3b0ec","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,559,513,19","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d23bfe4b02f2838e3b0ed","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText"},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,578,513,26","otherContent":[]},{"@id":"http://165.134.241.141/annotationstore/annotation/559d23c1e4b02f2838e3b0ee","@type":"oa:Annotation","motivation":"sc:painting","resource":{"@type":"cnt:ContentAsText","cnt:chars":""},"on":"https://paleography.library.utoronto.ca/islandora/object/paleography:1208#xywh=38,604,513,41"}]}]
+}
+
+function stopMagnify(){
+    isMagnifying = false;
+    zoomMultiplier = 2;
+    $(document).off("mousemove");
+    $("#zoomDiv").removeClass("ui-state-active");
+    $("#zoomDiv").hide();
+    $(".magnifyBtn").removeClass("ui-state-active");
+    $("#magnifyTools").fadeOut(800);
+//                    $("#imgBottom img").css("top", imgBottomOriginal);
+//                    $("#imgBottom .lineColIndicatorArea").css("top", imgBottomOriginal);
+    $(".lineColIndicatorArea").show();
+    $(".magnifyHelp").hide();
+    restoreWorkspace();
 }
