@@ -39,8 +39,11 @@ import textdisplay.Project;
 
 /**
  * Copy project from a template project(or called standard project) which is created by NewBerry. 
- * Clear all transcription data from project and connect the new project 
- * to the template project on switch board. 
+ * Clear all transcription data from project and connect the new project to the template project on switch board. 
+ * Servlet will first go deep into annotation list and copy each annotation first, then goes out to update annotation list with newly copied annotation info then update annotation list. 
+ * It keeps annotation list name but change project id to newly created project's. 
+ * Please follow the comments to go through the process. If you want to know how it works step by step, please uncomment "System out". 
+ * This function is not from tpen. It's a new function required by NewBerry. 
  * @author hanyan
  */
 public class CopyProjWithAnnoServlet extends HttpServlet {
@@ -80,9 +83,10 @@ public class CopyProjWithAnnoServlet extends HttpServlet {
                             //get annotation list for each canvas
                             JSONObject annoLsQuery = new JSONObject();
                             annoLsQuery.element("@type", "sc:AnnotationList");
-                            annoLsQuery.element("proj", templateProject.getProjectID());
+                            //For newberry, we cannot do this since its possible we want the master project, which does not have this field.
+                            //annoLsQuery.element("proj", templateProject.getProjectID());
                             annoLsQuery.element("on", Folio.getRbTok("SERVERURL") + templateProject.getProjectName() + "/canvas/" + URLEncoder.encode(folio.getPageName(), "UTF-8"));
-System.out.println("on: " + Folio.getRbTok("SERVERURL") + templateProject.getProjectName() + "/canvas/" + URLEncoder.encode(folio.getPageName(), "UTF-8"));
+//System.out.println("on: " + Folio.getRbTok("SERVERURL") + templateProject.getProjectName() + "/canvas/" + URLEncoder.encode(folio.getPageName(), "UTF-8"));
                             URL postUrlannoLs = new URL(Constant.ANNOTATION_SERVER_ADDR + "/anno/getAnnotationByProperties.action");
                             HttpURLConnection ucAnnoLs = (HttpURLConnection) postUrlannoLs.openConnection();
                             ucAnnoLs.setDoInput(true);
@@ -111,26 +115,62 @@ System.out.println("on: " + Folio.getRbTok("SERVERURL") + templateProject.getPro
 //                                System.out.println("=============================");
                             readerAnnoLs.close();
                             ucAnnoLs.disconnect();
-                            JSONArray ja_annotationList = JSONArray.fromObject(sbAnnoLs.toString());
-                            if(ja_annotationList.size() > 0)
-                            {
-                                for(int m = 0; m < ja_annotationList.size(); m++)
-                                {
-                                    JSONObject annoList = ja_annotationList.getJSONObject(m);
-                                    JSONArray resources = annoList.getJSONArray("resources");
-                                    //grab annotation list from each canvas list and copy them
+                            //transfer annotation list string to annotation list JSON Array. 
+                            JSONArray ja_allAnnoLists = JSONArray.fromObject(sbAnnoLs.toString()); //This is the list of all AnnotatationLists attached to this folio.
+                            JSONObject jo_annotationList = new JSONObject();
+                            if(ja_allAnnoLists.size() > 0){
+                                //find the annotations list whose proj matches or use the master ([0])
+                                for(int x =0; x<ja_allAnnoLists.size(); x++){
+                                    JSONObject current_list = ja_allAnnoLists.getJSONObject(x);
+                                    System.out.println("WHICH LIST ARE WE ON?");
+                                    System.out.println(current_list.getString("@id"));
+                                    if(null!=current_list.get("proj")){ //make sure this list has proj field
+                                        int current_proj =current_list.getInt("proj"); //it will be a String
+                                        if(current_proj == templateProject.getProjectID()){ //if its id equal to the id of the project we are copying
+                                            jo_annotationList = current_list; //if so, thats the list we want
+                                            break;
+                                        }
+                                        else{ //it was not a match, are we done looking at all lists?
+                                            if(x == (ja_allAnnoLists.size()-1)){ //if none of them match, we want the first to be our list to copy (master list)
+                                                System.out.println("USE MASTER!!!!!!!!!!!!!!!!!!!!");
+                                                jo_annotationList = ja_allAnnoLists.getJSONObject(0); //assuming the first object is the master.  if not, we will have to do something
+                                                System.out.println(jo_annotationList.getString("@id"));
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    else{ //it was null, are we done looking at all lists?
+                                        if(x == (ja_allAnnoLists.size()-1)){ //if none of them match, we want the first to be our list to copy (master list)
+                                            System.out.println("USE MASTER!!!!!!!!!!!!!!!!!!!!");
+                                            jo_annotationList = ja_allAnnoLists.getJSONObject(0); //assuming the first object is the master.  if not, we will have to do something
+                                            System.out.println(jo_annotationList.getString("@id"));
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                            //JSONArray ja_annotationList = JSONArray.fromObject(sbAnnoLs.toString());
+                            //figure out if we are using master (elem [0]) or if we can match projID
+                            //loop through annotation list and make a copy of each list memeber. 
+                            //if(ja_annotationList.size() > 0)
+                            //{
+                               // for(int m = 0; m < ja_annotationList.size(); m++)
+                                //{
+                                    System.out.println("What is the id of the annotationList chosen?");
+                                    System.out.println(jo_annotationList.getString("@id"));
+                                    JSONArray resources = jo_annotationList.getJSONArray("resources");
+                                    //Get the annotations out of the AnnotaionList resources and go through them.  We need to make new annotaions for each of  them for the new list.
                                     for(int n = 0; n < resources.size(); n++)
                                     {
                                         JSONObject resource = resources.getJSONObject(n);
                                         //print json element of annotation list starts
 //                                        System.out.println(annoInList.keySet().size());
 //                                        System.out.println("content of template anno in anno list starts: ");
-                                        //loop through resource 
 //                                        System.out.println("content of template anno in anno list starts: ");
                                         //print json element of annotation list ends
-                                        //get each annotation in annotation list
+                                        //get each annotation in annotation list by its @id
                                         JSONObject annoQuery = new JSONObject();
-                                        System.out.println("@id ==== " + resource.get("@id"));
+//                                            System.out.println("@id ==== " + resource.get("@id"));
                                         annoQuery.element("@id", resource.get("@id"));
                                         URL postGetAnnoByAID = new URL(Constant.ANNOTATION_SERVER_ADDR + "/anno/getAnnotationByProperties.action");
                                         HttpURLConnection ucGetAnnoByAID = (HttpURLConnection) postGetAnnoByAID.openConnection();
@@ -191,7 +231,7 @@ System.out.println("on: " + Folio.getRbTok("SERVERURL") + templateProject.getPro
                                         resource.remove("@id");
                                         resource.element("@id", copyAnnoNewAID);
                                     }
-                                    //copy canvas list from original canvas list
+                                    //copy canvas list from original canvas(also known as folio in old tpen) list with newly copied annotation info.
                                     JSONObject canvasList = CreateAnnoListUtil.createEmptyAnnoList(templateProject.getProjectName(), thisProject.getProjectID(), folio.getPageName(), resources);
                                     URL postUrl = new URL(Constant.ANNOTATION_SERVER_ADDR + "/anno/saveNewAnnotation.action");
                                     HttpURLConnection uc = (HttpURLConnection) postUrl.openConnection();
@@ -222,8 +262,8 @@ System.out.println("on: " + Folio.getRbTok("SERVERURL") + templateProject.getPro
     //                                System.out.println("=============================");  
                                     reader.close();
                                     uc.disconnect();
-                                }
-                            }
+                               // }
+                            //}
                         }
                     }
                     String propVal = textdisplay.Folio.getRbTok("CREATE_PROJECT_RETURN_DOMAIN"); 

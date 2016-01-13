@@ -8,6 +8,30 @@ and open the template in the editor.
     Author     : bhaberbe
 */
 
+.pageTurnCover{
+    display: none;
+    height: 1000px;
+    width: 100%;
+    top: 33px;
+    background-color: white;
+    position: absolute;
+    z-index: 6;
+}
+.turnLoader{
+    width: 100%;
+    text-align: center;
+}
+.turnLoader img{
+    width: 263px;
+}
+.turnMsg{
+    font-size: 16pt;
+    color: #002a5c;
+    margin-bottom: 50px;
+    width: 100%;
+    margin-top: 33px;
+    text-align: center;
+}
 .promoteUser{
     font-weight: bold;
     font-size: 117%;
@@ -32,7 +56,7 @@ body{
     display: none;
 }
 .lookLikeButtons{
-    font-family: "Open Sans","Helvetica Neue",sans-serif;
+/*    font-family: "Open Sans","Helvetica Neue",sans-serif;*/
     font-weight: bold;
     color: #FFF;
     border-radius: 4px;
@@ -97,7 +121,7 @@ body{
 /*      top:0;*/
       visibility:visible;
       width:auto;
-      top:42px;
+      top:48px;
 /*      z-index:3;*/
     }
 
@@ -165,7 +189,7 @@ body{
         left:0;
         position:absolute;
         top:0;
-        width:100%; /* or 100% ?*/
+        /*width:100%;*/
         max-height: none !important; 
         z-index:inherit;
         max-width: 100%;
@@ -190,11 +214,14 @@ body{
         min-height: 1em;
         position: relative;
         background-color: #E7E8E9;
-        color: #D14836;
-        width: 78.1%;
-        left: 104px;
-        padding: 7px 11px;
+        color: #002a5c;
+        width: 73.5%;
+        left: 113px;
         position: relative;
+        border: 1px solid #002a5c;
+        padding-left: 7px;
+        padding-top: 7px;
+        padding-bottom: 7px;
     }
    
     /*
@@ -250,14 +277,11 @@ body{
        height:auto;
        width:auto;
        font-size: 14px;
-       color:red;
+       color:#e21635; //or #002a5c
        margin-bottom:10px;
        display: none;
    }
    
-   /* Newberry Specific */
-
-
 
 .slideHandleLeft{
     position: absolute;
@@ -288,15 +312,27 @@ body{
 }*/
 
 
-#bottomButtons{
+.bottomButtons{
     position: relative;
-    width: 100%;
+    width: auto;
     height: auto;
     top: -5px;
+    display: inline-block;
 }
 
-#bottomButtons select{
+.bottomButtons select{
     margin: 0px 3px;
+    height: 35px;
+    background: white;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    text-transform: none;
+    font-size: 15px;
+    color: black;
+}
+.bottomButtons:last-child{
+    padding-left:20px;
 }
 #transcriptletArea{
     display: inline-block;
@@ -309,10 +345,19 @@ body{
     top: -35px;
 
 }
-#pageLabel, #lineLabel{
+#pageLabel, #lineLabel, #lineCtrlLabel, #magnifyHlpLabel{
     margin: 0 auto;
-    color: black;
+    color: #002a5c;
     font-weight: bold;
+    top: 3px;
+    position: relative;
+}
+#magnifyHlpLabel{
+    margin-bottom: 6px;
+    text-align: center;
+}
+#lineCtrlLabel{
+    top: -1px !important;
 }
 #prevPage, #nextPage{
     font-size: 30pt;
@@ -336,26 +381,31 @@ body{
     position: relative;
     height: 30px;
     width: 30px;
-    border: 1px solid #D14836;
+    border: 3px outset #D14836;
     text-align: center;
     line-height: 30px;
     display:block;
     cursor: default;
+    color: #002a5c;
+    font-weight: bold;
+    font-size: 11pt;
 }
+
 #prevColLine{
     background-color: #FFF;
     right: -7px;
-    top: 36px;
+    top: 34px;
 }
 #currentColLine{
-    background-color: #808080;
+    background-color: #BFBFBF;
     right: -7px;
-    top: 44px;
+    top: 46px;
 }
 #zoomDiv {
     display: none;
     border-radius : 50%;
-    box-shadow :5px 5px 15px 3px black,15px 15px 100px rgba(230,255,255,.8) inset,-15px -15px 100px rgba(0,0,15,.4) inset;width : 300;
+    box-shadow :5px 5px 15px 3px black,15px 15px 100px rgba(230,255,255,.8) inset,-15px -15px 100px rgba(0,0,15,.4) inset;
+    width : 300;
     height:300;
     border: 3px gold outset;
     overflow : hidden;
@@ -366,14 +416,68 @@ body{
     background-position: 0px 0px;
     background-size: auto;
     background-repeat:no-repeat;
-    z-index: 12;
+    z-index: 4;
 }
 #pageLabel1{
     left: 35%;
     position: absolute;
 }
 
+
+
+
 /* Fix parsing page */
+
+/* outer wrapper for column control and line control */
+.actions{
+    margin: 10px 6px;
+    padding: 0px 2px 2px 13px;
+    z-index: 1;
+    border: 2px solid #002a5c;
+    transition: max-height 1s ease;
+    white-space: nowrap;
+    overflow: hidden;
+}
+/* Inner sections of column control and line control */
+.startHide{
+    display: none;
+    /*max-height: 0px;*/
+    overflow: hidden;
+    transition: display 1s ease;
+    height: auto;
+}
+.actions .startHide{
+    color: #002a5c;
+}
+.tpenButton{
+    font-weight: bold;
+    color:white;
+    border-radius: 4px;
+    padding-bottom: 4px;
+    padding-left: 6px;
+    padding-right: 6px;
+    padding-top: 4px;
+    height: 35px;
+    background-clip: border-box;
+    background-origin: padding-box;
+    cursor: pointer;
+    background-color: #272727;
+    border: none;
+    display: block;
+/*    line-height: 35px;*/
+}
+.parsingToolButtons .tpenButton{
+    display: block;
+    margin-bottom: 5px;
+    min-width: 198px;
+    text-align: center;
+    line-height: 35px;
+}
+
+#ctrlColumns, #ctrlLines, .tpenButton{
+    cursor: pointer;
+}
+
 /*#parsingSplit {max-width:600px; min-width: 350px;position: relative; z-index: 9;}*/
 #parsingSplit{background-color: white;}
 #parsingDiv, #linebreakDiv {height:100%; padding: 4px;overflow: auto;width:auto;}
@@ -381,12 +485,12 @@ body{
 #columnOptions > span, #allColumnOptions > span {width: 50%;}
 .parsingColumn {background-image: url('css/custom-theme/images/ui-bg_layered-circles_50_618797_13x13.png');background-attachment: scroll;background-repeat: repeat;position: absolute;border-style: solid; border-width: 2px;border-color: black;z-index: 3;opacity:.3;}
 .parsingColumnSelected {background-image: url('css/custom-theme/images/ui-bg_layered-circles_50_ffc6b9_13x13.png') !important;border-color: red !important;opacity:.5 !important;cursor:url("css/custom-theme/images/deleteDiv.png"),url("css/custom-theme/images/deleteDiv.cur"),auto !important;} /* Visual selection for deleting columns */
-.actions > div {position:relative;z-index: 10;margin: 4px;}
+/*.actions > div {position:relative;z-index: 10;margin: 4px;}
 .actions{
     margin:10px 6px;background: url(images/linen.png);padding:6px 2px 2px;overflow: visible;z-index: 1; border: 1px solid #A68329;
     -moz-box-shadow: -1px 1px 2px black;
     -webkit-box-shadow: -1px 1px 2px black; 
-    box-shadow:-1px 1px 2px black;}
+    box-shadow:-1px 1px 2px black;}*/
 label {width:auto;padding: 0;float: none;}/*fixme should not have to overwrite*/
 #linebreakText {clear:left;width:auto;max-height:120px;height:40%;overflow: auto;background: white fixed repeat; border: 2px inset #FFDB7F;margin-bottom:4px;position:relative;}
 #linebreakSplit {width: 350px;}
@@ -470,12 +574,12 @@ iframe {background: url('images/linen.png') white scroll repeat; position: relat
 #columnOptions > span, #allColumnOptions > span {width: 50%;}
 .parsingColumn {background-image: url('css/custom-theme/images/ui-bg_layered-circles_50_618797_13x13.png');background-attachment: scroll;background-repeat: repeat;position: absolute;border-style: solid; border-width: 2px;border-color: black;z-index: 3;opacity:.3;}
 .parsingColumnSelected {background-image: url('css/custom-theme/images/ui-bg_layered-circles_50_ffc6b9_13x13.png') !important;border-color: red !important;opacity:.5 !important;cursor:url("css/custom-theme/images/deleteDiv.png"),url("css/custom-theme/images/deleteDiv.cur"),auto !important;} /* Visual selection for deleting columns */
-.actions > div {position:relative;z-index: 10;margin: 4px;}
+/*.actions > div {position:relative;z-index: 10;margin: 4px;}
 .actions{
     margin:10px 6px;background: url(images/linen.png);padding:6px 2px 2px;overflow: visible;z-index: 1; border: 1px solid #A68329;
     -moz-box-shadow: -1px 1px 2px black;
     -webkit-box-shadow: -1px 1px 2px black; 
-    box-shadow:-1px 1px 2px black;}
+    box-shadow:-1px 1px 2px black;}*/
 label {width:auto;padding: 0;float: none;}/*fixme should not have to overwrite*/
 #linebreakText {clear:left;width:auto;max-height:120px;height:40%;overflow: auto;background: white fixed repeat; border: 2px inset #FFDB7F;margin-bottom:4px;position:relative;}
 #linebreakSplit {width: 350px;}
@@ -494,7 +598,7 @@ label {width:auto;padding: 0;float: none;}/*fixme should not have to overwrite*/
 #iprAgreement h1,#iprAgreement h2,#iprAgreement h3,#iprAgreement h4,#iprAgreement h5,#iprAgreement h6{
     text-shadow: none; 
     color: #226683;
-    font-family: Tahoma, Geneva, sans-serif;
+/*    font-family: Tahoma, Geneva, sans-serif;*/
 }
 #lineResizing,#progress{position: fixed;right:10px;z-index: 500;padding: 15px;display: none;
     -moz-box-shadow: 0 0 15px black;
@@ -502,7 +606,7 @@ label {width:auto;padding: 0;float: none;}/*fixme should not have to overwrite*/
 }
 #progress {bottom:0;right:0;}
 #lineResizing {top:50%;width:auto;max-width: 25%;}
-#zoomDiv {display: none;border-radius : 50%; box-shadow :5px 5px 15px 3px black,15px 15px 100px rgba(230,255,255,.8) inset,-15px -15px 100px rgba(0,0,15,.4) inset;width : 300;height:300;border: 3px gold outset;overflow : hidden;position:fixed;left: 450px;top: 65px;background-color: transparent;background-position: 0px 0px;background-size: auto;background-repeat:no-repeat;z-index: 2;}
+#zoomDiv {display: none;border-radius : 50%; box-shadow :5px 5px 15px 3px black,15px 15px 100px rgba(230,255,255,.8) inset,-15px -15px 100px rgba(0,0,15,.4) inset;width : 300;height:300;border: 3px gold outset;overflow : hidden;position:fixed;left: 450px;top: 65px;background-color: transparent;background-position: 0px 0px;background-size: auto;background-repeat:no-repeat;}
 #historyListing {height: 100%;overflow: auto;position:relative;}
 .historyEntry,.historyLine{position: relative;overflow: auto;}
 .historyLine{height:100%;}
@@ -633,11 +737,10 @@ label {width:auto;padding: 0;float: none;}/*fixme should not have to overwrite*/
     position: relative;
     height: auto;
     border: 2px solid black;
+    color:black;
     background-color: white;
-    color:white;
-    background-color: #D14836;
     display: inline-block;
-    z-index:5;
+    z-index:3;
     text-align:center;
     font-size:8pt;
     top: -8px;
@@ -645,11 +748,10 @@ label {width:auto;padding: 0;float: none;}/*fixme should not have to overwrite*/
 }
 #splitScreenTools{
     position: relative;
-    height: auto;
     border: 2px solid #000;
-    background-color: #D14836;
+    background-color: white;
     display: inline-table;
-    color: #FFF;
+    color: black;
     top: 2px;
     text-align:center;
     cursor: default;
@@ -665,38 +767,43 @@ label {width:auto;padding: 0;float: none;}/*fixme should not have to overwrite*/
     text-align:center;
 }
 #imageTools{
-    position: relative;
-    height: auto;
-    border: 2px solid #000;
-    background-color: #D14836;
-    display: inline-table;
-    color: #FFF;
-    top: 4px;
-    text-align:center;
-    padding: 0px 4px;
+    height: 31px;
+    background-color: #BFBFBF;
+    display: inline-block;
+    color: black;
+    text-align: center;
+    position: absolute;
+    bottom: -13px;
+    z-index: 3;
+    transition: height 1s;
+    border: 2px solid black;
+    margin-left: 6px; 
+    color: rgba(0,42,92,1);
 }
 #charactersPopin, #xmlTagPopin{
   position: relative;
-  height: auto;
-  border: 2px solid #000;
-  background-color: #D14836;
-  display: inline-table;
-  color: #FFF;
-  text-align:center;
-  top: 2px;
+    /* height: auto; */
+    border: 2px solid #000;
+    /* background-color: #D14836; */
+    display: inline-table;
+    /* color: #FFF; */
+    text-align: center;
+    top: 2px;
+    /* padding: 4px 0px;
   /*padding: 4px 0px;*/
 }
 #xmlTagPopin option, #charactersPopin option{
     padding: 4px 6px;
 }
 #brightnessSlider, #contrastSlider{
-    margin: 4px 0px;
+    margin: 7px 0px 18px 0px;
 }
 .character, .lookLikeButtons{
   display: block;
-  background-color: #D14836;
+  /*background-color: #D14836;*/
+  background-color:white;
   cursor: pointer;
-  color: white;
+  color: black;
   padding: 4px 6px;
 }
 
@@ -714,38 +821,60 @@ label {width:auto;padding: 0;float: none;}/*fixme should not have to overwrite*/
 }
 #activeImageTool{
     padding: 4px 6px;
-    background-color: rgb(209,72,54);
+    background-color: white;
     cursor: default;
+    position: relative;
+    top: 0px;
+    color: black !important;
+    height: 23px;
+    line-height: 23px;
+}
+#activeImageTool i {
+    right:0; 
+    font-size: 9pt; 
+    display: inline-block;
+    transform: rotate(180deg);
+}
+.toolWrap{
+    display: none;
+    height: auto;
+}
+button.imgTool{
+    width: 37%;
 }
 .imgTool{
-    display: none;
     cursor: pointer;
     border: 1px solid black;
-    padding: 4px 0px;
-    margin: 4px 0px;
+    padding: 4px 3px;
+    margin: 0px;
 }
 #imageToolSliders{
     cursor: default !important;
     border: transparent !important;
 }
+#imageToolSliders:hover{
+    background-color: transparent !important;
+}
 #activeCharacters, #activeTags{
-    background-color: rgb(209,72,54);
+    /*background-color: rgb(209,72,54);*/
+    background-color: white;
     cursor: default;
     padding: 4px 6px;
 }
 #activePage{
-    background-color: rgb(209,72,54);
+    background-color: white;
     cursor: default;
     padding: 4px 6px;
 }
 .splitTool,  .magnifyTool, .folioJump, .compareJump{
     cursor: pointer;
-    color: white;
-    background-color: #D14836;
+    color: black;
+/*    background-color: #D14836;*/
+    background-color: white;
     padding: 4px 0px;
 }
 .splitTool:hover, .imgTool:hover, .magnifyTool:hover, .folioJump:hover, .compareJump:hover{
-  background-color: #272727;
+    background-color: rgb(209,72,54);
 }
 
 .fullScreenTrans{
@@ -797,34 +926,42 @@ label {width:auto;padding: 0;float: none;}/*fixme should not have to overwrite*/
     top: 0px;
     left:0px;
 /*    background-color: rgb(0,59,91);*/
-    background-color: #d14836;
+    background-color: black;
     width : 100%;
     height:32px;
     cursor:default;
+    min-width: 1160px;
+    white-space: nowrap;
 }
 .trimSection{
-    font-size: 9pt;
+    font-size: 10pt;
     color: #FFF;
-    border-right: 3px solid #272727;
+    border-right: 2px solid #BFBFBF;
     text-align: center;
     white-space: nowrap;
     overflow: hidden;
-    width: 100px;
+    width: auto;
     position:relative;
     cursor: default;
-    padding: 0px 5px;
+    padding: 0px 11px 1px 4px;
     height: 30px;
     line-height: 30px;
     display: inline-block;
+    width: 18%;
+    transition: color 0.5s ease;
+    letter-spacing: .5px;
 }
-.trimSection:first-child{
-  min-width:165px;
-  max-width: 200px;
+.trimSection:hover, .trimSection a:hover{
+    color: #e21635;
 }
+.trimSection:last-child{
+  border-right: transparent;
+}
+/*
 .trimSection:nth-child(3){
   min-width:300px;
   max-width: 301px;
-}
+}*/
 .trimSection i{
     cursor: pointer;
     margin: 0px 5px;
@@ -857,13 +994,14 @@ label {width:auto;padding: 0;float: none;}/*fixme should not have to overwrite*/
 
 #lineControls{
     width: 104px;
-    height: 69px;
-    background-color: #808080;
+    height: 67px;
+    background-color: #BFBFBF;
     position: relative;
     display: inline-block;
-    left: 6px;
-    top: -18px; 
-    text-align:center;
+    left: 8px;
+    top: -16px;
+    text-align: center;
+    border: 2px outset #002a5c;
 }
 #prevCanvas, #prevLine{
     margin-right: 3px;
@@ -877,24 +1015,43 @@ label {width:auto;padding: 0;float: none;}/*fixme should not have to overwrite*/
 #pageControls{
     position: relative;
     width:104px;
-    height:69px;
-    background-color: gray;
+    height:67px;
+    background-color: #BFBFBF;
     display: inline-block;
     text-align:center;
-    top:-18px;
-    left:4px;
+    top:-16px;
+    left:3px;
+    border: 2px outset #002a5c;
 }
-
+/* changing margin here moves all buttons across bottom of transcription workspace. */
+.linehdr{
+    color: #002a5c;
+    font-size: 11pt;
+    cursor: default;
+    margin-bottom: 4px;
+    position: relative;
+    display: inline-block;
+}
 #lineColControls{
     width: 151px;
-    height: 67px;
-    background-color: #808080;
+    height: 72px;
+    background-color: #BFBFBF;
     position: relative;
     display: inline-block;
     text-align: center;
     font-size: 10pt;
-    top: 0px;
+    top: -4px;
     padding: 3px;
+    border: 2px outset #002a5c
+}
+#lineColControls input[type="checkbox"]{
+/*    height: 16px;
+    width: 16px;
+    color: #002a5c;
+    background-color:white;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;*/
 }
 #lineControls i, #pageControls i{
     display: inline-table;
@@ -918,32 +1075,30 @@ label {width:auto;padding: 0;float: none;}/*fixme should not have to overwrite*/
 *
 */
 body{
-    font-family:"Helvetica Neue",Arial,Helvetica,sans-serif;
+    font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
     overflow-x: hidden;
 }
 button{
-    font-family: 'Open Sans','Helvetica Neue',sans-serif;
+/*    font-family: 'Open Sans','Helvetica Neue',sans-serif;*/
     font-weight: bold;
     color:white;
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
+    border-radius: 4px;
     padding-bottom: 4px;
     padding-left: 6px;
     padding-right: 6px;
     padding-top: 4px;
-    height: 32px;
+    height: 35px;
     background-clip: border-box;
     background-origin: padding-box;
     cursor: pointer;
-    background-color: #d14836;
+    background-color: #272727;
+    border: none;
 }
 button:hover{
-    background-color: #272727;
+    background-color: #d14836;
 }
 p{
-    font-family: 'Open Sans','Helvetica Neue',sans-serif;
+    /*font-family: 'Open Sans','Helvetica Neue',sans-serif;*/
 }
 .handl{
     background-image: url("../images/grabber.png");
@@ -986,11 +1141,55 @@ p{
     display: block;
     width:auto;
 }
-/*.topTrim{
-    background-color: #d14836 !important;
-    
-}*/
-/*.trimSection{
-    color: white !important;
-    border-right: 3px solid #272727 !important;
-}*/
+.activeTools{
+    height: 190px !important;
+}
+#imageTools .ui-widget-content{
+    border: 1px solid black !important;
+    color: black;
+    background: rgba(0,42,92, .5) !important;
+}
+#imageTools .ui-widget-header{
+   background: rgba(0,42,92, .5) !important;
+}
+#imageTools .ui-slider-horizontal .ui-slider-handle {
+    background: #002a5c;
+    border: 1px solid black;
+}
+a{
+    text-decoration: none !important;
+    color: white;
+}
+.jump{
+    min-width: 305px;
+}
+.parsingToolButtons{
+    max-width: 25%;
+    display: inline-table;
+}
+.activeParsingTool{
+    max-width: 71%;
+    display: none;
+    border: 1px solid black;
+    padding: 0px 1%;
+    margin-left: 1%;
+    margin-bottom: 12px;
+}
+.ui-slider-horizontal{
+    height: .3em;
+}
+
+.ui-slider-horizontal .ui-slider-handle {
+    top: -.4em;
+    margin-left: -.6em;
+}
+
+.selected{
+    background-color: #D14836;
+}
+
+.nohover:hover{
+    background-color: black !important;
+    cursor: default !important;
+}
+
