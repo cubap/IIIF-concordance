@@ -845,6 +845,8 @@
         $("#imgTop, #imgBottom").css("height", "400px");
         $("#imgTop img, #imgBottom img").css("height", "400px");
         $("#imgTop img, #imgBottom img").css("width", "auto");
+        $("#prevColLine").html("**");
+        $("#currentColLine").html("**");
         $('.transcriptionImage').attr('src', "../newberry/images/loading2.gif"); //background loader if there is a hang time waiting for image
         $('.lineColIndicator').remove();
         $(".transcriptlet").remove();
@@ -1469,12 +1471,14 @@
     
      function startMoveImg(){
        if($(".transcriptlet:first").hasClass("imageMove")){
-           $(".transcriptlet").children("textarea").removeClass("imageMove").removeAttr("disabled");
+           $(".transcriptlet").removeClass("imageMove");
+           $(".transcriptlet").children("textarea").removeAttr("disabled");
            $("#imgTop, #imgBottom").css("cursor", "default");
            $("#imgTop,#imgBottom").unbind();
        }
        else{
-            $(".transcriptlet").addClass("imageMove").attr("disabled", "");
+            $(".transcriptlet").addClass("imageMove");
+            $(".transcriptlet").children("textarea").attr("disabled", "");
             $("#imgTop, #imgBottom").css("cursor", "url("+"images/open_grab.png),auto");
             $("#imgTop,#imgBottom").mousedown(function(event){moveImg(event);});
        }
@@ -1561,7 +1565,7 @@
             pageJumpIcons[3].setAttribute('onclick', 'lastFolio();');
             $("#prevCanvas").attr("onclick", "previousFolio();");
             $("#nextCanvas").attr("onclick", "nextFolio();");
-            $("#pageJump").siblings().css("color", "white");
+            //$("#pageJump").siblings().css("color", "white");
             $("#pageJump").removeAttr("disabled");
         }
         
@@ -1726,7 +1730,7 @@
 //        imgTopOriginalTop = $("#imgTop img").css("top");
         originalCanvasHeight = $("#transcriptionCanvas").height();
         originalCanvasWidth = $("#transcriptionCanvas").width();
-        $("#pageJump").attr("disabled", "disabled");
+        //$("#pageJump").attr("disabled", "disabled");
          var pageJumpIcons = $("#pageJump").parent().children("i");
             pageJumpIcons[0].setAttribute('onclick', 'firstFolio("parsing");');
             pageJumpIcons[1].setAttribute('onclick', 'previousFolio("parsing");');
