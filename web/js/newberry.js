@@ -520,6 +520,7 @@
             projectID = 4080;
             var userTranscription = $('#transcriptionText').val();
             currentFolio = 1;
+            
             if($.isNumeric(userTranscription)){ //The user can put the project ID in directly and a call will be made to newberry proper to grab it.
                 projectID = userTranscription;
                 theProjectID = projectID;
@@ -841,7 +842,6 @@
     function loadTranscriptionCanvas(canvasObj){
         var noLines = true;
         var canvasAnnoList = "";
-        
         $("#imgTop, #imgBottom").css("height", "400px");
         $("#imgTop img, #imgBottom img").css("height", "400px");
         $("#imgTop img, #imgBottom img").css("width", "auto");
@@ -856,10 +856,10 @@
         var cnt = -1;
 
         if(canvasObj.images[0].resource['@id'] !== undefined && canvasObj.images[0].resource['@id'] !== ""){ //Only one image
-            $("#imgTop, #imgTop img, #imgBottom img, #imgBottom, #transcriptionCanvas").css("height", "auto");
             var image = new Image();
             $(image)
                     .on("load",function() {
+                        $("#imgTop, #imgTop img, #imgBottom img, #imgBottom, #transcriptionCanvas").css("height", "auto");
                         $("#imgTop img, #imgBottom img").css("width", "100%");
                         $("#imgBottom").css("height", "inherit");
                         originalCanvasHeight2 = $("#imgTop img").height();
@@ -875,6 +875,7 @@
                         var image2 = new Image();
                         $(image2)
                         .on("load", function(){
+                            $("#imgTop, #imgTop img, #imgBottom img, #imgBottom, #transcriptionCanvas").css("height", "auto");
                             $("#imgTop img, #imgBottom img").css("width", "100%");
                             $('.transcriptionImage').attr('src', "../newberry/images/missingImage.png");
                             $("#fullPageImg").attr("src", "../newberry/images/missingImage.png");
@@ -2724,19 +2725,20 @@ function compareJump(folio){
 function markerColors(){
     /*
      * This function allows the user to go through annotation colors and decide what color the outlined lines are.
+     * colorThisTime
      */
-    var tempColorList = ["rgba(153,255,0,1)", "rgba(0,255,204,1)", "rgba(51,0,204,1)", "rgba(204,255,0,1)", "rgba(0,0,0,1)", "rgba(255,255,255,1)", "rgba(255,0,0,1)"];
+    var tempColorList = ["rgba(153,255,0,.4)", "rgba(0,255,204,.4)", "rgba(51,0,204,.4)", "rgba(204,255,0,.4)", "rgba(0,0,0,.4)", "rgba(255,255,255,.4)", "rgba(255,0,0,.4)"];
     if (colorList.length == 0){
         colorList = tempColorList;
     }
     colorThisTime = colorList[Math.floor(Math.random()*colorList.length)];
     colorList.splice(colorList.indexOf(colorThisTime),1);
-    var oneToChange = colorThisTime.lastIndexOf(")") - 1;
+    var oneToChange = colorThisTime.lastIndexOf(")") - 2;
     var borderColor = colorThisTime.substr(0, oneToChange) + '.2' + colorThisTime.substr(oneToChange + 1);
-    
-    $('.lineColIndicator').css('border', '1px solid '+colorThisTime);
-    $('.lineColOnLine').css({'border-left':'1px solid '+borderColor, 'color':colorThisTime});
-    $('.activeLine').css('box-shadow', '0px 0px 15px 8px '+colorThisTime);
+    var lineColor = colorThisTime.replace(".4", "1"); //make this color opacity 100
+    $('.lineColIndicator').css('border', '1px solid '+lineColor);
+    $('.lineColOnLine').css({'border-left':'1px solid '+borderColor, 'color':lineColor});
+    $('.activeLine').css('box-shadow', '0px 0px 15px 8px '+colorThisTime); //keep this color opacity .4 until imgTop is hovered.
 }
 function toggleLineMarkers(){
     if($('.lineColIndicator:first').is(":visible") && $('.lineColIndicator:eq(1)').is(":visible")){ //see if a pair of lines are visible just in case you checked the active line first. 
