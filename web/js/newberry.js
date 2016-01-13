@@ -374,67 +374,82 @@
     
     /* Populate the split page for Text Preview.  These are the transcription lines' text. */
     function createPreviewPages(){  
+        console.log("Creating preview pages");
         $(".previewPage").remove();
         var noLines = true;
         var pageLabel = "";
         for(var i = 0; i<transcriptionFolios.length; i++){
+            var currentFolioToUse = transcriptionFolios[i];
+            pageLabel = currentFolioToUse.label;
+            var currentOn = currentFolioToUse["@id"];
             var currentPage = "";
             if(i===0){
                 currentPage = "currentPage";
             }
            var lines = [];
-           if(transcriptionFolios[i].resources && transcriptionFolios[i].resources.length > 0){
-               lines = transcriptionFolios[i].resources;
-               pageLabel = transcriptionFolios[i].label;
+           if(currentFolioToUse.resources && currentFolioToUse.resources.length > 0){
+               lines = currentFolioToUse.resources;
                 populatePreview(lines, pageLabel, currentPage);    
            }
            else{
-               if(transcriptionFolios[i].otherContent && transcriptionFolios[i].otherContent.length>0 && transcriptionFolios[i].otherContent[0].indexOf("/annoList/5") > -1){
+               if(currentFolioToUse.otherContent && currentFolioToUse.otherContent.length>0 && currentFolioToUse.otherContent[0].indexOf("/annoList/5") > -1){
 //                //console.log("this is the tester")
                     lines = annoListTester.resources;
                     pageLabel = annoListTester.label;
                     populatePreview(lines, pageLabel, currentPage);    
                 }
                 else{
-                    var annosURL = "getAnno";
-                    var properties = {"@type": "sc:AnnotationList", "on" : transcriptionFolios[i]["@id"]};
-                    var paramOBJ = {"content": JSON.stringify(properties)};
-                    pageLabel = transcriptionFolios[i].label;
-                     $.post(annosURL, paramOBJ, function(annoList){
-                         annoList = JSON.parse(annoList);
-                         if(annoList.length > 0){
-                             var masterList = annoList[0];
-                             //Always default to the master list, which was the first list created for the canvas.  That way, the annotation lists associated with the master are still supported.
-                             if(masterList.resources !== undefined && masterList.resources.length > 0){
-                                lines = masterList.resources;
-                             }
-                             var found = false;
-                             $.each(annoList, function(){
-                                 if(this.proj !== undefined && this.proj == theProjectID){
-                                    found = true;
-                                    if(this.resources.length > 0){
-                                        lines = this.resources;
-                                    }
-                                 }
-                             });
-                             if(!found){
-                                 //console.log("Lines for project ID were not found in createPreviewPages");
-                             }
-                             populatePreview(lines, pageLabel, currentPage);
-                         }
-                         
-                     });
+                    console.log("Gotta get annos on " + currentOn);
+                    gatherAndPopulate(currentOn, pageLabel, currentPage, i);                   
                 }
            }
 
         }
     }
     
-    function populatePreview(lines, pageLabel, currentPage){
-        var col = "A";
-        var previewPage = $('<div class="previewPage"><span class="previewFolioNumber">'+pageLabel+'</span></div>');
-        if(lines.length === 0) previewPage = $('<div class="previewPage"><span class="previewFolioNumber">'+pageLabel+'</span><br>No Lines</div>');
+    function gatherAndPopulate(currentOn, pageLabel, currentPage, i){
+        console.log("get annos on "+currentOn);
+        var annosURL = "getAnno";
+        var properties = {"@type": "sc:AnnotationList", "on" : currentOn};
+        var paramOBJ = {"content": JSON.stringify(properties)};
+         $.post(annosURL, paramOBJ, function(annoList){
+             annoList = JSON.parse(annoList);
+             if(annoList.length > 0){
+                 checkForMaster(annoList, pageLabel, currentPage, i);
+             }
+
+         });
+    }
+    function checkForMaster(annoList, pageLabel, currentPage, j){
+        var lines = [];
+        var masterList = annoList[0];
+        for(var i=0; i<annoList.length; i++){
+            var thisList = annoList[i];
+            if(thisList.proj !== undefined && thisList.proj == theProjectID){
+               console.log("proj == "+theProjectID);
+               if(thisList.resources.length > 0){
+                   lines = thisList.resources;
+                   populatePreview(lines, pageLabel, currentPage, j);
+                   return false;
+               }
+            }
+            else if(lines.length===0 && i===annoList.length-1){
+                console.log("master");
+                lines = masterList.resources;
+                populatePreview(lines, pageLabel, currentPage, j);
+                return false;
+            }
+        }
+    }
+    
+    
+    function populatePreview(lines, pageLabel, currentPage, order){
+        var letterIndex = 0;
+        var letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        var previewPage = $('<div order="'+order+'" class="previewPage"><span class="previewFolioNumber">'+pageLabel+'</span></div>');
+        if(lines.length === 0) previewPage = $('<div order="'+order+'" class="previewPage"><span class="previewFolioNumber">'+pageLabel+'</span><br>No Lines</div>');
         for(var j=0; j<lines.length; j++){
+            var col = letters[letterIndex];
             var currentLine = lines[j].on;
             var currentLineXYWH = currentLine.slice(currentLine.indexOf("#xywh=")+6);
             currentLineXYWH = currentLineXYWH.split(",");
@@ -448,8 +463,9 @@
                 var lastLineXYWH = lastLine.slice(lastLine.indexOf("#xywh=")+6);
                 lastLineXYWH = lastLineXYWH.split(",");
                 var lastLineX = lastLineXYWH[0];
-                if(parseInt(lastLineX) < parseInt(currentLineX)){
-                    col++;
+                var abs = Math.abs(parseInt(lastLineX) - parseInt(currentLineX));
+                if(abs > 0){
+                    letterIndex++;
                 }
             }
             
@@ -1910,7 +1926,7 @@
         originalCanvasWidth = $("#transcriptionCanvas").width();
         var ratio = originalCanvasWidth/originalCanvasHeight;
         $("#splitScreenTools").attr("disabled", "disabled");
-        $("#pageJump").attr("disabled", "disabled");
+        //$("#pageJump").attr("disabled", "disabled");
         var imgBottomRatio = parseFloat($("#imgBottom img").css("top")) / originalCanvasHeight;
         var imgTopRatio = parseFloat($("#imgTop img").css("top")) / originalCanvasHeight;
         $("#transcriptionTemplate").css({
@@ -2082,11 +2098,7 @@
             });
             break;
           case "preview":
-            $("#previewSplit").css({
-              "display": "inline-table"
-//              "height" : splitHeight+"px",
-//              "width" : splitWidth
-            });
+              forceOrderPreview();
             break;
           case "history":
             $("#historySplit").css({
@@ -2140,7 +2152,7 @@
        // $("#splitScreenTools").hide();
         //$("#transcriptionCanvas").css("width" , $("#imgTop img").width()); //this causes the resize function to bust. 
         //$("#transcriptionCanvas").css("height" , $("#imgTop img").height());
-        $("#pageJump").attr("disabled", "disabled");
+        //$("#pageJump").attr("disabled", "disabled");
          var pageJumpIcons = $("#pageJump").parent().children("i");
             pageJumpIcons[0].setAttribute('onclick', 'firstFolio("parsing");');
             pageJumpIcons[1].setAttribute('onclick', 'previousFolio("parsing");');
@@ -2148,6 +2160,28 @@
             pageJumpIcons[3].setAttribute('onclick', 'lastFolio("parsing");');
         $("#prevCanvas").attr("onclick", "");
         $("#nextCanvas").attr("onclick", "");
+    }
+    
+    function forceOrderPreview(){
+        var ordered = [];
+        var length = $(".previewPage").length;
+        console.log("force order,  length: "+length);
+        for(var i=0; i<length; i++){
+            console.log("find order = "+i)
+            var thisOne = $(".previewPage[order='"+i+"']");
+            ordered.push(thisOne);
+            if(i===length - 1){
+                console.log("append");
+                console.log(ordered);
+                $("#previewDiv").empty();
+                $("#previewDiv").append(ordered);
+            }
+        }
+        $("#previewSplit").css({
+              "display": "inline-table"
+//              "height" : splitHeight+"px",
+//              "width" : splitWidth
+            });
     }
 
     function populateCompareSplit(folioIndex){
