@@ -431,11 +431,12 @@ body{
 /* outer wrapper for column control and line control */
 .actions{
     margin: 10px 6px;
-    padding: 6px 2px 2px;
-    overflow: visible;
+    padding: 0px 2px 2px 13px;
     z-index: 1;
     border: 2px solid #002a5c;
     transition: max-height 1s ease;
+    white-space: nowrap;
+    overflow: hidden;
 }
 /* Inner sections of column control and line control */
 .startHide{
@@ -468,9 +469,11 @@ body{
 .parsingToolButtons .tpenButton{
     display: block;
     margin-bottom: 5px;
-    max-width: 208px;
+    min-width: 198px;
     text-align: center;
+    line-height: 35px;
 }
+
 #ctrlColumns, #ctrlLines, .tpenButton{
     cursor: pointer;
 }
@@ -1170,6 +1173,7 @@ a{
     border: 1px solid black;
     padding: 0px 1%;
     margin-left: 1%;
+    margin-bottom: 12px;
 }
 .ui-slider-horizontal{
     height: .3em;
