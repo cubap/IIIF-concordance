@@ -448,7 +448,9 @@
         var letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         var previewPage = $('<div order="'+order+'" class="previewPage"><span class="previewFolioNumber">'+pageLabel+'</span></div>');
         if(lines.length === 0) previewPage = $('<div order="'+order+'" class="previewPage"><span class="previewFolioNumber">'+pageLabel+'</span><br>No Lines</div>');
+        var num = 0;
         for(var j=0; j<lines.length; j++){
+            num++;
             var col = letters[letterIndex];
             var currentLine = lines[j].on;
             var currentLineXYWH = currentLine.slice(currentLine.indexOf("#xywh=")+6);
@@ -466,12 +468,13 @@
                 var abs = Math.abs(parseInt(lastLineX) - parseInt(currentLineX));
                 if(abs > 0){
                     letterIndex++;
+                    num = 0;
                 }
             }
             
             var previewLine = $('<div class="previewLine" data-lineNumber="'+j+'">\n\
                          <span class="previewLineNumber" lineserverid="'+lineID+'" data-lineNumber="'+j+'"  data-column="'+col+'"  data-lineOfColumn="'+j+'">\n\
-                            '+col+''+(j+1)+'\n\
+                            '+col+''+num+'\n\
                           </span>\n\
                          <span class="previewText '+currentPage+'">'+lineText+'<span class="previewLinebreak"></span></span>\n\
                          <span class="previewNotes" contentEditable="(permitModify||isMember)" ></span>\n\
@@ -553,9 +556,10 @@
                             var getURLfromThis = activeProject.ls_ms;
                             getURLfromThis = JSON.parse(getURLfromThis);
                             url  = getURLfromThis[1].archive; //This is the manifest inside the project data
-                            //console.log("manifest is here: "+getURLfromThis[1].archive);
+                            console.log("manifest is here: "+getURLfromThis[1].archive);
                             if(url.indexOf("http") < 0){ //Then this is a newberry created newberry project
                                 //create the newberry url
+                                console.log("gunna call project servlet because http was not present in this url");
                                 url = "project/"+projectID;
                             }
                             $.ajax({ /* Causes CORS */

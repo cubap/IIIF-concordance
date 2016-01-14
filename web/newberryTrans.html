@@ -43,6 +43,12 @@
             width: 35px;
         }
         
+        .parsingHdr{
+            margin-left: 20px;
+        }
+        
+        
+        
         
     </style>
     <body>
@@ -60,13 +66,13 @@
             <span class="trimSection">TITLE:<span id="trimTitle"></span></span>
             <span class="trimSection">PAGE: <span id="trimPage"></span></span>
             <span class="trimSection jump">
-                <i onclick="firstFolio();" title="First Folio">&#8606;</i>
-                <i onclick="previousFolio();" title="Previous Folio">&#8676;</i>
+                <i onclick="firstFolio();" title="First Folio"><img src='../newberry/images/firstpage.png' ></i>
+                <i onclick="previousFolio();" title="Previous Folio"><img src='../newberry/images/previouspage.png' ></i>
                 <select id="pageJump">
                     <option id="activePage" folioNum="0">Jump to Page</option>
                 </select>
-                <i onclick="nextFolio();" title="Next Folio">&#8677;</i>
-                <i onclick="lastFolio();" title="Last Folio">&#8608;</i>
+                <i onclick="nextFolio();" title="Next Folio"><img src='../newberry/images/nextpage.png' ></i>
+                <i onclick="lastFolio();" title="Last Folio"><img src='../newberry/images/endpage.png' ></i>
             </span>
             <span class="trimSection">USER: <span id="trimCurrentUser"></span></span>
 <!--            <span class="trimSection">Help</span> -->
@@ -178,8 +184,8 @@
                      <!--<button id="linebreakBtn">Linebreak</button>TODO-->
                     <div  id="lineColControls">
                         <div title="Control Drawn Line Settings" id="lineCtrlLabel">Line Control</div>
-                        <span title="Toggle Entire Lines" class="linehdr">Lines</span><input style="margin-right: 12px;" title="Toggle Lines" type="checkbox" onchange="toggleLineMarkers();" checked="checked">
-                        <span title="Toggle Lines' Indicator" class="linehdr">Line #s</span><input  type="checkbox" onchange="toggleLineCol();" checked="checked"><br>
+                        <span style="top:5px;" title="Toggle Entire Lines" class="linehdr">Lines</span><input style="top:5px;" title="Toggle Lines" type="checkbox" onchange="toggleLineMarkers();" checked="checked"><br>
+                        <span title="Toggle Lines' Indicator" class="linehdr">Line #s</span><input  type="checkbox" onchange="toggleLineCol();" checked="checked">
                         <button id="markerColors" onclick="markerColors();">Line Color</button>
                     </div>
                 </div>
@@ -198,8 +204,7 @@
                 </div>
                 <div id="parsingDiv" class="">
                     <div id="parseOptions">
-                        <h4 style="margin-left: 8px;" class="clear-left">Line Parsing</h4>
-                        <p> You cannot change the page while you are working on parsing.  Save your work and click 'Full Screen Transcription' to be able to move around the pages. </p>
+                        <h3 class="parsingHdr">Line Parsing</h3>
                         <div id="ctrlColumnsInst" class="actions">
                             <h4 id="ctrlColumns" title="Make adjustments at the column level" class="clear-left">Column Controls</h4>
                                 <!--<p class="loud">Create, destroy, adjust, or reparse columns.</p>-->
@@ -667,10 +672,8 @@
             .css("cursor","n-resize");
     
             $(".parsingToolButtons").children("span").click(function(){
-                $(".startHide").fadeOut(800);
+               
                 var show = $(this).attr("show");
-                $(".startHide").hide();
-                $("#"+show).fadeIn(800);
                 $("#imgTop").unbind();
                 $(".parsing").removeClass("adjustable");
                 $(".parsing").unbind('mousemove');
@@ -678,13 +681,15 @@
                 $("#ruler2").hide();
                 
                 var thisID = $(this).attr("id");
-                $(".parsingToolButtons").find("button").removeClass("selected");
+                $(".parsingToolButtons").find(".tpenButton").removeClass("selected");
                 $(this).addClass("selected");
                 if (thisID == "createColumn" || thisID == "destroyColumn" || thisID=="clearColumns") {
                     $("#addLines").removeClass("active");
                     $("#removeLines").removeClass("active");
-                    $("#ctrlColumnsInst").find(".activeParsingTool").css("display", "inline-table");
-                    $("#ctrlLinesInst").find(".activeParsingTool").hide();
+                    $("#ctrlColumnsInst").find(".startHide").hide();
+                    $("#"+show).fadeIn(800);
+                    $("#ctrlColumnsInst").find(".activeParsingTool").fadeIn(800);
+                    $("#ctrlLinesInst").find(".activeParsingTool").fadeOut(800);
                     $(".parsing").unbind();
                     linesToColumns();
                     
@@ -831,8 +836,10 @@
                     }
                 }
                 else if (thisID == "addLines" || thisID == "removeLines" || thisID == "adjustLines") {
-                    $("#ctrlColumnsInst").find(".activeParsingTool").hide();
-                    $("#ctrlLinesInst").find(".activeParsingTool").css("display", "inline-table");
+                    $("#ctrlLinesInst").find(".startHide").hide();
+                    $("#"+show).fadeIn(800);
+                    $("#ctrlColumnsInst").find(".activeParsingTool").fadeOut(800);
+                    $("#ctrlLinesInst").find(".activeParsingTool").fadeIn(800);
                     $("#imgTop").children(".line").addClass("parsing").removeClass("line");
                     $(".parsing").css("z-index", "5");
                     $('.parsing').unbind();
@@ -1218,14 +1225,14 @@
                     top: e.pageY,
                     height:'1px',
                     width:e.pageX-myLeft-7,
-                    background:"red"
+                    //background:"red"
                 });
                 $('#ruler2').show().css({
                     left: e.pageX+7,
                     top: e.pageY,
                     width:myWidth+myLeft-e.pageX-7,
                     height:'1px',
-                    background:"red"
+                   // background:"red"
                 });
             });
         
