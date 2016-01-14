@@ -616,17 +616,19 @@
                 }
             }
             else if (event.which == 18 || event.altKey){
-               // //console.log('ALT KEY');
+               console.log('ALT KEY');
                var lineForEditing = $(".activeLine");
                lineForEditing.resizable();
                //alt + arrows will bump active line left and right
                if(event.which == 37 && (event.altKey||event.which == 18)){
                    //left
+                   event.preventDefault();
                    bumpLine("left", lineForEditing);
                    
                }
                else if (event.which == 39 && (event.altKey||event.which == 18)){
                    //right
+                   event.preventDefault();
                    bumpLine("right", lineForEditing);
                }
             }
@@ -1004,34 +1006,34 @@
     });
     
     function bumpLine(direction, activeLine){
+        //values are in pixel, not percentage.
         var id = activeLine.attr("lineserverid");
         if(direction === "left"){
             var currentLineLeft = activeLine.css("left");
-            currentLineLeft = parseFloat(currentLineLeft);
-            var newLineLeft = 0.0;
-            if (currentLineLeft > .5){
-                currentLineLeft -= .5;
+            var currentLineLeftPerc = (parseFloat(currentLineLeft) / $("#imgTop").width()) * 100;
+            if (currentLineLeftPerc > .3){
+                currentLineLeftPerc -= .3;
             }   
             else{ //no negative left value
-                currentLineLeft = 0.0;
+                currentLineLeftPerc = 0.0;
             }
-           newLineLeft = currentLineLeft;
-           currentLineLeft = "%"+currentLineLeft;
+           currentLineLeft = "%"+currentLineLeftPerc;
         }
         else if (direction === "right"){
             var currentLineLeft = activeLine.css("left");
-            currentLineLeft = parseFloat(currentLineLeft);
-            if (currentLineLeft < 99.5){ //no left values greater than 100
-                currentLineLeft += .5;
+            var currentLineLeftPerc = (parseFloat(currentLineLeft) / $("#imgTop").width()) * 100;
+            console.log(currentLineLeftPerc);
+            if (currentLineLeftPerc < 99.7){ //no left values greater than 100
+                currentLineLeftPerc += .3;
             }   
             else{
-                currentLineLeft = 100.0;
+                currentLineLeftPerc = 100.0;
             }
-           newLineLeft = currentLineLeft;
-           currentLineLeft = "%"+currentLineLeft;
+           currentLineLeft = "%"+currentLineLeftPerc;
         }
-        $(".transcriptlet[lineserverid='"+id+"']").attr("lineleft", newLineLeft);
-        activeLine.css("left", currentLineLeft);
+        var currentLineLeftPX = parseFloat(currentLineLeftPerc/100) * $("#imgTop").width() + "px";
+        $(".transcriptlet[lineserverid='"+id+"']").attr("lineleft", currentLineLeftPerc);
+        activeLine.css("left", currentLineLeftPX);
         updateLine($(".transcriptlet[lineserverid='"+id+"']"), "no");
        
     }

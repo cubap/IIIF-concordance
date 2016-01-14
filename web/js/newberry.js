@@ -874,6 +874,15 @@
         $("#trimPage").html(pageTitle);
         $("#trimPage").attr("title", pageTitle);
         $('#transcriptionTemplate').css("display", "inline-block");
+        $("#parsingBtn").css("box-shadow", "none");
+        $(".lineColIndicator").css({
+            "box-shadow": "rgba(255, 255, 255, 0.4)",
+            "border": "1px solid rgb(255, 255, 255)"
+        });
+        $(".lineColOnLine").css({
+            "border-left": "1px solid rgba(255, 255, 255, 0.2);",
+            "color": "rgb(255, 255, 255)"
+        });
         //Move up all image annos
         var cnt = -1;
 
