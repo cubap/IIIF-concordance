@@ -16,10 +16,9 @@ import textdisplay.Folio;
  * @author hanyan
  */
 public class CreateAnnoListUtil {
-    public static JSONObject createEmptyAnnoList(String projectName, Integer projectID, String folioPageName, JSONArray resource) throws UnsupportedEncodingException{
+    public static JSONObject createEmptyAnnoList(Integer projectID, String canvasID, JSONArray resource) throws UnsupportedEncodingException{
         JSONObject canvasList = new JSONObject();
         canvasList.element("@type", "sc:AnnotationList");
-        String canvasID = Folio.getRbTok("SERVERURL") + projectName + "/canvas/" + URLEncoder.encode(folioPageName, "UTF-8");
         canvasList.element("on", canvasID);
         canvasList.element("originalAnnoID", "");
         canvasList.element("version", 1);
