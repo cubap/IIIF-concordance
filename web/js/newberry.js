@@ -1924,7 +1924,13 @@
         restoreWorkspace();
         $("#splitScreenTools").show();
         $("#transcriptionCanvas").css("height", originalCanvasHeight+"px");
-        $(".lineColIndicatorArea").css("height", originalCanvasHeight+"px"); 
+        $(".lineColIndicatorArea").css("height", originalCanvasHeight+"px");
+        $("#imgTop").hover(function(){
+            var color = colorThisTime.replace(".4", "1");
+            $('.activeLine').css('box-shadow', '0px 0px 15px 8px '+color);
+        }, function(){
+            $('.activeLine').css('box-shadow', '0px 0px 15px 8px '+colorThisTime);
+        });
         $.each($(".lineColOnLine"),function(){
               $(this).css("line-height", $(this).height()+"px");
           });
