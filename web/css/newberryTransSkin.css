@@ -385,7 +385,7 @@ body{
     position: relative;
     height: 30px;
     width: 30px;
-    border: 3px outset #002a5c;
+    border: 3px outset rgba(0,42,92,.4);
     text-align: center;
     line-height: 30px;
     display:block;
@@ -980,6 +980,10 @@ button.imgTool{
     position: relative;
     display: inline-block;
     font-size: 31pt;
+}
+.trimSection i img{
+    width: 15px;
+    height: 28px;
 }
 /*.trimSection i:nth-child(4){
   left: 120px;
