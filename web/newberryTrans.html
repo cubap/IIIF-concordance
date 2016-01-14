@@ -34,10 +34,15 @@
             font-size: 9pt;
             padding: 4px 6px;
             color: #002a5c;
-            height: 110px;
+            height: 130px;
             z-index: 3;
             display: none;
         }
+        
+        .magifyHelp button{
+            width: 35px;
+        }
+        
         
     </style>
     <body>
@@ -673,6 +678,8 @@
                 $("#ruler2").hide();
                 
                 var thisID = $(this).attr("id");
+                $(".parsingToolButtons").find("button").removeClass("selected");
+                $(this).addClass("selected");
                 if (thisID == "createColumn" || thisID == "destroyColumn" || thisID=="clearColumns") {
                     $("#addLines").removeClass("active");
                     $("#removeLines").removeClass("active");

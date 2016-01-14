@@ -435,7 +435,7 @@ body{
     z-index: 1;
     border: 2px solid #002a5c;
     transition: max-height 1s ease;
-    white-space: nowrap;
+    /*white-space: nowrap;  This is difficult.  On smaller screens, the explanation boxes must break line.*/
     overflow: hidden;
 }
 /* Inner sections of column control and line control */
