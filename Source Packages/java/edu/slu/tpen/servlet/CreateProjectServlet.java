@@ -16,6 +16,7 @@ package edu.slu.tpen.servlet;
 
 import edu.slu.tpen.servlet.util.CreateAnnoListUtil;
 import edu.slu.util.ServletUtils;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -31,10 +32,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import servlets.createManuscript;
@@ -148,8 +151,12 @@ public class CreateProjectServlet extends HttpServlet {
                     for (int i = 0; i < ls_folios_keys.size(); i++) {
                         Folio folio = new Folio(ls_folios_keys.get(i));
                         array_folios[i] = folio;
-                        //create anno list for each canvas (also known as folio in old tpen)
-                        JSONObject annoList = CreateAnnoListUtil.createEmptyAnnoList(newProject.getProjectName(), newProject.getProjectID(), folio.getPageName(), new JSONArray());
+                        //Parse folio.getImageURL() to retrieve paleography pid, and then generate new canvas id
+                        String imageURL = folio.getImageURL();
+                        // use regex to extract paleography pid
+                        String canvasID = Constant.PALEO_CANVAS_ID_PREFIX + imageURL.replaceAll("^.*(paleography[^/]+).*$", "/$1");
+                        //create anno list for original canvas
+                        JSONObject annoList = CreateAnnoListUtil.createEmptyAnnoList(newProject.getProjectID(), canvasID, new JSONArray());
                         URL postUrl = new URL(Constant.ANNOTATION_SERVER_ADDR + "/anno/saveNewAnnotation.action");
                         HttpURLConnection uc = (HttpURLConnection) postUrl.openConnection();
                         uc.setDoInput(true);

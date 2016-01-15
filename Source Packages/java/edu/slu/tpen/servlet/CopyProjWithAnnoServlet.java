@@ -85,8 +85,15 @@ public class CopyProjWithAnnoServlet extends HttpServlet {
                             annoLsQuery.element("@type", "sc:AnnotationList");
                             //For newberry, we cannot do this since its possible we want the master project, which does not have this field.
                             //annoLsQuery.element("proj", templateProject.getProjectID());
-                            annoLsQuery.element("on", Folio.getRbTok("SERVERURL") + templateProject.getProjectName() + "/canvas/" + URLEncoder.encode(folio.getPageName(), "UTF-8"));
-//System.out.println("on: " + Folio.getRbTok("SERVERURL") + templateProject.getProjectName() + "/canvas/" + URLEncoder.encode(folio.getPageName(), "UTF-8"));
+                            //Parse folio.getImageURL() to retrieve paleography pid, and then generate new canvas id
+                            String imageURL = folio.getImageURL();
+                            // use regex to extract paleography pid
+                            String canvasID = Constant.PALEO_CANVAS_ID_PREFIX + imageURL.replaceAll("^.*(paleography[^/]+).*$", "/$1");
+                            //Folio.getRbTok("SERVERURL") + templateProject.getProjectName() + "/canvas/" + URLEncoder.encode(folio.getPageName(), "UTF-8")
+                            annoLsQuery.element("on", canvasID);
+                           
+                            //System.out.println(annoLsQuery.toString());
+                            
                             URL postUrlannoLs = new URL(Constant.ANNOTATION_SERVER_ADDR + "/anno/getAnnotationByProperties.action");
                             HttpURLConnection ucAnnoLs = (HttpURLConnection) postUrlannoLs.openConnection();
                             ucAnnoLs.setDoInput(true);
@@ -232,7 +239,7 @@ public class CopyProjWithAnnoServlet extends HttpServlet {
                                         resource.element("@id", copyAnnoNewAID);
                                     }
                                     //copy canvas list from original canvas(also known as folio in old tpen) list with newly copied annotation info.
-                                    JSONObject canvasList = CreateAnnoListUtil.createEmptyAnnoList(templateProject.getProjectName(), thisProject.getProjectID(), folio.getPageName(), resources);
+                                    JSONObject canvasList = CreateAnnoListUtil.createEmptyAnnoList(thisProject.getProjectID(), canvasID, resources);
                                     URL postUrl = new URL(Constant.ANNOTATION_SERVER_ADDR + "/anno/saveNewAnnotation.action");
                                     HttpURLConnection uc = (HttpURLConnection) postUrl.openConnection();
                                     uc.setDoInput(true);
