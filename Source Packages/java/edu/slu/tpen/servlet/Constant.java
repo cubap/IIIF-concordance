@@ -15,7 +15,7 @@
 package edu.slu.tpen.servlet;
 
 /**
- *
+ * Class to hold all static values that will be reused in project. 
  * @author hanyan
  */
 public class Constant {

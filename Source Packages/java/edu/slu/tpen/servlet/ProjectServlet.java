@@ -32,7 +32,7 @@ import user.User;
 
 /**
  * Servlet for transferring project information out of and into T-PEN.
- *
+ * This is a transformation of tpen function to web service. It's using tpen MySQL database. 
  * @author tarkvara
  */
 public class ProjectServlet extends HttpServlet {

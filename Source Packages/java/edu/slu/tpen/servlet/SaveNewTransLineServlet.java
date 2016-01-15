@@ -23,7 +23,8 @@ import javax.servlet.http.HttpServletResponse;
 import net.sf.json.JSONObject;
 
 /**
- * This servlet is used for IIIF store. 
+ * This servlet is used for IIIF store (rerum.io). It saves new trans-line to rerum.io. 
+ * This is not from tpen. It utilizes rerum.io as its annotation repository. 
  * @author hanyan
  */
 public class SaveNewTransLineServlet extends HttpServlet {

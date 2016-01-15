@@ -13,8 +13,8 @@
     var isAddingLines = false;
     var charactersForButton = "";
     var tagsForButton = "";
-    var colorList = ["rgba(153,255,0,1)", "rgba(0,255,204,1)", "rgba(51,0,204,1)", "rgba(204,255,0,1)", "rgba(0,0,0,1)", "rgba(255,255,255,1)", "rgba(255,0,0,1)"];
-    var colorThisTime = "rgba(255,255,255,1)";
+    var colorList = ["rgba(153,255,0,.4)", "rgba(0,255,204,.4)", "rgba(51,0,204,.4)", "rgba(204,255,0,.4)", "rgba(0,0,0,.4)", "rgba(255,255,255,.4)", "rgba(255,0,0,.4)"];
+    var colorThisTime = "rgba(255,255,255,.4)";
     var annoLists = [];
     var loggedInUser = false;
     
@@ -220,38 +220,97 @@
             "on" : "http://t-pen.org/Tradamus+Simple/canvas/100r"
         }
     
-    function firstFolio(){
+    function firstFolio(parsing){
+        currentFolio = parseInt(currentFolio);
         if(parseInt(currentFolio) !== 1){
-            focusItem = [null,null];
-            currentFolio = 1;
-            loadTranscriptionCanvas(transcriptionFolios[0]);
+            if(parsing === "parsing"){
+                $(".pageTurnCover").show();
+                fullPage();
+                focusItem = [null,null];
+                currentFolio = 1;
+                loadTranscriptionCanvas(transcriptionFolios[0]);
+                setTimeout(function(){
+                hideWorkspaceForParsing();
+                    $(".pageTurnCover").fadeOut(1500);
+                }, 800);
+            }
+            else{
+                focusItem = [null,null];
+                currentFolio = 1;
+                loadTranscriptionCanvas(transcriptionFolios[0]);
+            }
+            
+            
         }
     }
     
-    function lastFolio(){
+    function lastFolio(parsing){
+        currentFolio = parseInt(currentFolio);
         var lastFolio = transcriptionFolios.length;
         if(parseInt(currentFolio) !== parseInt(lastFolio)){
-            focusItem = [null,null];
-            currentFolio = lastFolio;
-            loadTranscriptionCanvas(transcriptionFolios[lastFolio-1]);
+            if(parsing === "parsing"){
+                $(".pageTurnCover").show();
+                fullPage();
+                focusItem = [null,null];
+                currentFolio = lastFolio;
+                loadTranscriptionCanvas(transcriptionFolios[lastFolio-1]);
+                setTimeout(function(){
+                    hideWorkspaceForParsing();
+                    $(".pageTurnCover").fadeOut(1500);
+                }, 800);
+            }
+            else{
+                focusItem = [null,null];
+                currentFolio = lastFolio;
+                loadTranscriptionCanvas(transcriptionFolios[lastFolio-1]);
+            }
         }
     }
-    function previousFolio(){
+    function previousFolio(parsing){
+        currentFolio = parseInt(currentFolio);
         if(parseInt(currentFolio) > 1){
-            focusItem = [null, null];
-            currentFolio -= 1;
-            loadTranscriptionCanvas(transcriptionFolios[currentFolio - 1]);
+            if(parsing === "parsing"){
+                $(".pageTurnCover").show();
+                fullPage();
+                focusItem = [null, null];
+                currentFolio -= 1;
+                loadTranscriptionCanvas(transcriptionFolios[currentFolio - 1]);
+                setTimeout(function(){
+                    hideWorkspaceForParsing();
+                    $(".pageTurnCover").fadeOut(1500);
+                }, 800);
+            }
+            else{
+                focusItem = [null, null];
+                currentFolio -= 1;
+                loadTranscriptionCanvas(transcriptionFolios[currentFolio - 1]);
+            }
         }
         else{
             //console.log("BUGGER");
         }
     }
     
-    function nextFolio(){
+    function nextFolio(parsing){
+        currentFolio = parseInt(currentFolio);
         if(parseInt(currentFolio) !== transcriptionFolios.length){
-            focusItem = [null, null];  
-            currentFolio += 1;
-            loadTranscriptionCanvas(transcriptionFolios[currentFolio-1]);
+            if(parsing === "parsing"){
+                $(".pageTurnCover").show();
+                fullPage();
+                focusItem = [null, null];  
+                currentFolio += 1;
+                loadTranscriptionCanvas(transcriptionFolios[currentFolio-1]);
+                setTimeout(function(){
+                    hideWorkspaceForParsing();
+                    $(".pageTurnCover").fadeOut(1500);
+                }, 800);
+            }
+            else{
+                focusItem = [null, null];  
+                currentFolio += 1;
+                loadTranscriptionCanvas(transcriptionFolios[currentFolio-1]);
+            }
+            
         }
         else{
             //console.log("BOOGER");
@@ -265,7 +324,6 @@
     function isJSON(str) {
         var r = true;
         if(typeof str === "object"){
-            //console.log('str is an object');
             r = true;
         }
         else{
@@ -274,7 +332,6 @@
                 r=true;
             } 
             catch (e) {
-               //console.log('str could not be parsed: '+e);
                r = false;
             }
         }
@@ -284,23 +341,9 @@
 
     function resetTranscription(){
         window.location.reload();
-//        transcriptionCanvases = [];
-//        focusItem = [null,null];
-//        transcriptionFile = "";
-//        transcriptionObject = {};
-//        projectID = 0;
-//        //console.log('NEW RESET CODE!');
-//        $('#setTranscriptionObjectArea').show();
-//        $('#transcriptionText').html("");
-//        $('#transcriptionTemplate').hide();
-//        $('#bookmark').css({left:"-600%", height:"0px"});
-//        $('#imgTop').css('height', '0px');
-//        $('#captions').empty();
-//        $('.transcriptionImage').attr('src', '');
-//        $('.transcriptlet').remove();
-//       
-//        //console.log('Reset Ran');
+
     }
+    /* The tools for newberry are hard set in the html page, no need for this function. */
     
 //    function getProjectTools(projectID){
 //        var url = "http://localhost:8080/getProjectTPENServlet?projectID="+projectID;
@@ -328,68 +371,86 @@
 //        });
 //    }
     
+    /* Populate the split page for Text Preview.  These are the transcription lines' text. */
     function createPreviewPages(){  
+        console.log("Creating preview pages");
         $(".previewPage").remove();
         var noLines = true;
         var pageLabel = "";
         for(var i = 0; i<transcriptionFolios.length; i++){
+            var currentFolioToUse = transcriptionFolios[i];
+            pageLabel = currentFolioToUse.label;
+            var currentOn = currentFolioToUse["@id"];
             var currentPage = "";
             if(i===0){
                 currentPage = "currentPage";
             }
            var lines = [];
-           if(transcriptionFolios[i].resources && transcriptionFolios[i].resources.length > 0){
-               lines = transcriptionFolios[i].resources;
-               pageLabel = transcriptionFolios[i].label;
+           if(currentFolioToUse.resources && currentFolioToUse.resources.length > 0){
+               lines = currentFolioToUse.resources;
                 populatePreview(lines, pageLabel, currentPage);    
            }
            else{
-               if(transcriptionFolios[i].otherContent && transcriptionFolios[i].otherContent.length>0 && transcriptionFolios[i].otherContent[0].indexOf("/annoList/5") > -1){
+               if(currentFolioToUse.otherContent && currentFolioToUse.otherContent.length>0 && currentFolioToUse.otherContent[0].indexOf("/annoList/5") > -1){
 //                //console.log("this is the tester")
                     lines = annoListTester.resources;
                     pageLabel = annoListTester.label;
                     populatePreview(lines, pageLabel, currentPage);    
                 }
                 else{
-                    var annosURL = "getAnno";
-                    var properties = {"@type": "sc:AnnotationList", "on" : transcriptionFolios[i]["@id"]};
-                    var paramOBJ = {"content": JSON.stringify(properties)};
-                    pageLabel = transcriptionFolios[i].label;
-                     $.post(annosURL, paramOBJ, function(annoList){
-                         annoList = JSON.parse(annoList);
-                         if(annoList.length > 0){
-                             var masterList = annoList[0];
-                             //Always default to the master list, which was the first list created for the canvas.  That way, the annotation lists associated with the master are still supported.
-                             if(masterList.resources !== undefined && masterList.resources.length > 0){
-                                lines = masterList.resources;
-                             }
-                             var found = false;
-                             $.each(annoList, function(){
-                                 if(this.proj !== undefined && this.proj == theProjectID){
-                                    found = true;
-                                    if(this.resources.length > 0){
-                                        lines = this.resources;
-                                    }
-                                 }
-                             });
-                             if(!found){
-                                 //console.log("Lines for project ID were not found in createPreviewPages");
-                             }
-                             populatePreview(lines, pageLabel, currentPage);
-                         }
-                         
-                     });
+                    console.log("Gotta get annos on " + currentOn);
+                    gatherAndPopulate(currentOn, pageLabel, currentPage, i);                   
                 }
            }
 
         }
     }
     
-    function populatePreview(lines, pageLabel, currentPage){
-        var col = "A";
-        var previewPage = $('<div class="previewPage"><span class="previewFolioNumber">'+pageLabel+'</span></div>');
-        if(lines.length === 0) previewPage = $('<div class="previewPage"><span class="previewFolioNumber">'+pageLabel+'</span><br>No Lines</div>');
+    function gatherAndPopulate(currentOn, pageLabel, currentPage, i){
+        console.log("get annos on "+currentOn);
+        var annosURL = "getAnno";
+        var properties = {"@type": "sc:AnnotationList", "on" : currentOn};
+        var paramOBJ = {"content": JSON.stringify(properties)};
+         $.post(annosURL, paramOBJ, function(annoList){
+             annoList = JSON.parse(annoList);
+             if(annoList.length > 0){
+                 checkForMaster(annoList, pageLabel, currentPage, i);
+             }
+
+         });
+    }
+    function checkForMaster(annoList, pageLabel, currentPage, j){
+        var lines = [];
+        var masterList = annoList[0];
+        for(var i=0; i<annoList.length; i++){
+            var thisList = annoList[i];
+            if(thisList.proj !== undefined && thisList.proj == theProjectID){
+               console.log("proj == "+theProjectID);
+               if(thisList.resources.length > 0){
+                   lines = thisList.resources;
+                   populatePreview(lines, pageLabel, currentPage, j);
+                   return false;
+               }
+            }
+            else if(lines.length===0 && i===annoList.length-1){
+                console.log("master");
+                lines = masterList.resources;
+                populatePreview(lines, pageLabel, currentPage, j);
+                return false;
+            }
+        }
+    }
+    
+    
+    function populatePreview(lines, pageLabel, currentPage, order){
+        var letterIndex = 0;
+        var letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        var previewPage = $('<div order="'+order+'" class="previewPage"><span class="previewFolioNumber">'+pageLabel+'</span></div>');
+        if(lines.length === 0) previewPage = $('<div order="'+order+'" class="previewPage"><span class="previewFolioNumber">'+pageLabel+'</span><br>No Lines</div>');
+        var num = 0;
         for(var j=0; j<lines.length; j++){
+            num++;
+            var col = letters[letterIndex];
             var currentLine = lines[j].on;
             var currentLineXYWH = currentLine.slice(currentLine.indexOf("#xywh=")+6);
             currentLineXYWH = currentLineXYWH.split(",");
@@ -403,14 +464,16 @@
                 var lastLineXYWH = lastLine.slice(lastLine.indexOf("#xywh=")+6);
                 lastLineXYWH = lastLineXYWH.split(",");
                 var lastLineX = lastLineXYWH[0];
-                if(parseInt(lastLineX) < parseInt(currentLineX)){
-                    col++;
+                var abs = Math.abs(parseInt(lastLineX) - parseInt(currentLineX));
+                if(abs > 0){
+                    letterIndex++;
+                    num = 0;
                 }
             }
             
             var previewLine = $('<div class="previewLine" data-lineNumber="'+j+'">\n\
                          <span class="previewLineNumber" lineserverid="'+lineID+'" data-lineNumber="'+j+'"  data-column="'+col+'"  data-lineOfColumn="'+j+'">\n\
-                            '+col+''+(j+1)+'\n\
+                            '+col+''+num+'\n\
                           </span>\n\
                          <span class="previewText '+currentPage+'">'+lineText+'<span class="previewLinebreak"></span></span>\n\
                          <span class="previewNotes" contentEditable="(permitModify||isMember)" ></span>\n\
@@ -431,7 +494,7 @@
             else{
                 var keyVal = thisChar.key;
                 var position2 = parseInt(thisChar.position);
-                var newCharacter = "<option onclick=\"addchar('&#"+keyVal+";');\" class='character'>&#"+keyVal+";</option>";
+                var newCharacter = "<option class='character'>&#"+keyVal+";</option>";  // onclick=\"addchar('&#"+keyVal+";');\" 
                 if(position2-1 >= 0 && (position2-1) < specialCharacters.length){
                     speCharactersInOrder[position2-1] = newCharacter; 
                 }
@@ -440,7 +503,6 @@
         }
         $.each(speCharactersInOrder, function(){
             var button1 = $(''+this);
-//            //console.log(button1);
             $(".specialCharacters").append(button1);
         });
 
@@ -464,7 +526,6 @@
         }
         $.each(tagsInOrder, function(){
             var button2 = $(''+this);
-//            //console.log(button2);
             $(".xmlTags").append(button2);
         }); 
     }
@@ -477,6 +538,7 @@
             projectID = 4080;
             var userTranscription = $('#transcriptionText').val();
             currentFolio = 1;
+            
             if($.isNumeric(userTranscription)){ //The user can put the project ID in directly and a call will be made to newberry proper to grab it.
                 projectID = userTranscription;
                 theProjectID = projectID;
@@ -493,10 +555,10 @@
                             var getURLfromThis = activeProject.ls_ms;
                             getURLfromThis = JSON.parse(getURLfromThis);
                             url  = getURLfromThis[0].archive; //This is the manifest inside the project data
-//                            console.log("data is here: "+getURLfromThis[1].archive);
+//                            console.log("manifest is here: "+getURLfromThis[1].archive);
                             if(url.indexOf("http") < 0){ //Then this is a newberry created newberry project
-                                //console.log("IT IS NEWBERRY, create the project/projectID url to get it.");
                                 //create the newberry url
+                                console.log("gunna call project servlet because http was not present in this url");
                                 url = "project/"+projectID;
                             }
                             $.ajax({ /* Causes CORS */
@@ -519,6 +581,7 @@
                                                 }
                                                 else{
                                                     //console.log("push empty 1");
+                                                    //otherContent was empty (IIIF says otherContent should have URI's to AnnotationLists).  We will check the store for these lists still.
                                                     annoLists.push("empty");
                                                 }
                                             }
@@ -546,7 +609,7 @@
                                          alert(jqXHR.responseText); 
                                     }
                                     else{
-                                        alert("Something went wrong");
+                                        alert("Something went wrong. Could not get the project. 1");
                                     }
                                }
                             });
@@ -570,7 +633,15 @@
                         });
                         populateSpecialCharacters(activeProject.projectButtons);
                         populateXML(activeProject.xml);
-                    }
+                    },
+                    error: function(jqXHR,error, errorThrown) {  
+                            if(jqXHR.status && jqXHR.status==400){
+                                 alert(jqXHR.responseText); 
+                            }
+                            else{
+                                alert("Something went wrong. Could not get the project. 2");
+                            }
+                       }
                 });
                 }
                 else if(isJSON(userTranscription)){
@@ -590,6 +661,7 @@
                                     }
                                     else{
                                         //console.log("push empty 2");
+                                        //otherContent was empty (IIIF says otherContent should have URI's to AnnotationLists).  We will check the store for these lists still.
                                         annoLists.push("empty");
                                     }
                                 }
@@ -661,6 +733,7 @@
                                                         }
                                                         else{
                                                             //console.log("push empty 3");
+                                                            //otherContent was empty (IIIF says otherContent should have URI's to AnnotationLists).  We will check the store for these lists still.
                                                             annoLists.push("empty");
                                                         }
                                                     }
@@ -686,7 +759,7 @@
                                                  alert(jqXHR.responseText); 
                                             }
                                             else{
-                                                alert("Something went wrong");
+                                                alert("Something went wrong 2");
                                             }
                                        }
                                 });
@@ -710,7 +783,15 @@
                             });
                             populateSpecialCharacters(activeProject.projectButtons);
                             populateXML(activeProject.xml);
-                        }
+                        },
+                        error: function(jqXHR,error, errorThrown) {  
+                                    if(jqXHR.status && jqXHR.status==400){
+                                         alert(jqXHR.responseText); 
+                                    }
+                                    else{
+                                        alert("Something went wrong. Could not get the project. 4");
+                                    }
+                               }
                     });
                     }
                     else{ //it is not a local project, so just grab the url that was input and request the manifst. 
@@ -734,6 +815,7 @@
                                             }
                                             else{
                                                 //console.log("push empty 4");
+                                                //otherContent was empty (IIIF says otherContent should have URI's to AnnotationLists).  We will check the store for these lists still.
                                                 annoLists.push("empty");
                                             }
                                         }
@@ -760,7 +842,7 @@
                                      alert(jqXHR.responseText); 
                                 }
                                 else{
-                                    alert("Something went wrong");
+                                    alert("Something went wrong 5");
                                 }
                            }
                         });
@@ -779,47 +861,70 @@
     function loadTranscriptionCanvas(canvasObj){
         var noLines = true;
         var canvasAnnoList = "";
-        
-        $("#imgTop, #imgBottom").css("height", "200px");
-        $("#imgTop img, #imgBottom img").css("height", "200px");
-        $('.transcriptionImage').attr('src', "../images/loading.gif"); //background loader
+        $("#imgTop, #imgBottom").css("height", "400px");
+        $("#imgTop img, #imgBottom img").css("height", "400px");
+        $("#imgTop img, #imgBottom img").css("width", "auto");
+        $("#prevColLine").html("**");
+        $("#currentColLine").html("**");
+        $('.transcriptionImage').attr('src', "../newberry/images/loading2.gif"); //background loader if there is a hang time waiting for image
         $('.lineColIndicator').remove();
         $(".transcriptlet").remove();
         var pageTitle = canvasObj.label;
         $("#trimPage").html(pageTitle);
         $("#trimPage").attr("title", pageTitle);
         $('#transcriptionTemplate').css("display", "inline-block");
+        $("#parsingBtn").css("box-shadow", "none");
+        $(".lineColIndicator").css({
+            "box-shadow": "rgba(255, 255, 255, 0.4)",
+            "border": "1px solid rgb(255, 255, 255)"
+        });
+        $(".lineColOnLine").css({
+            "border-left": "1px solid rgba(255, 255, 255, 0.2);",
+            "color": "rgb(255, 255, 255)"
+        });
         //Move up all image annos
         var cnt = -1;
 
         if(canvasObj.images[0].resource['@id'] !== undefined && canvasObj.images[0].resource['@id'] !== ""){ //Only one image
-            $("#imgTop, #imgTop img, #imgBottom img, #imgBottom, #transcriptionCanvas").css("height", "auto");
-            $('.transcriptionImage').attr('src', canvasObj.images[0].resource['@id'].replace('amp;',''));
-            $("#fullPageImg").attr("src", canvasObj.images[0].resource['@id'].replace('amp;',''));
-            //Fix the bug of the images height not being set because the img load didnt happen quick enough.  Made a load callback that has worked thus far. 
-            $("#imgTop img").one("load",function() {
-                $("#imgBottom").css("height", "inherit");
-//                //console.log("Top image height: "+ $(this).height());
-                originalCanvasHeight2 = $("#imgTop img").height();
-                originalCanvasWidth2 = $("#imgTop img").width();
-                //console.log(originalCanvasWidth2 + " / " +originalCanvasHeight2+" is the ratio when canvas is loaded");
-                //console.log(originalCanvasWidth2 / originalCanvasHeight2);
-                drawLinesToCanvas(canvasObj, false);
-                $("#transcriptionCanvas").attr("canvasid", canvasObj["@id"]);
-                $("#transcriptionCanvas").attr("annoList", canvasAnnoList);
-                
-//                //console.log("Set OH and OW 2: " + originalCanvasHeight2, originalCanvasWidth2);
-              });
+            var image = new Image();
+            $(image)
+                    .on("load",function() {
+                        $("#imgTop, #imgTop img, #imgBottom img, #imgBottom, #transcriptionCanvas").css("height", "auto");
+                        $("#imgTop img, #imgBottom img").css("width", "100%");
+                        $("#imgBottom").css("height", "inherit");
+                        originalCanvasHeight2 = $("#imgTop img").height();
+                        originalCanvasWidth2 = $("#imgTop img").width();
+                        $('.transcriptionImage').attr('src', canvasObj.images[0].resource['@id'].replace('amp;',''));
+                        $("#fullPageImg").attr("src", canvasObj.images[0].resource['@id'].replace('amp;',''));
+                        drawLinesToCanvas(canvasObj, false);
+                        $("#transcriptionCanvas").attr("canvasid", canvasObj["@id"]);
+                        $("#transcriptionCanvas").attr("annoList", canvasAnnoList);
+                        
+                    })
+                    .on("error", function(){
+                        var image2 = new Image();
+                        $(image2)
+                        .on("load", function(){
+                            $("#imgTop, #imgTop img, #imgBottom img, #imgBottom, #transcriptionCanvas").css("height", "auto");
+                            $("#imgTop img, #imgBottom img").css("width", "100%");
+                            $('.transcriptionImage').attr('src', "../newberry/images/missingImage.png");
+                            $("#fullPageImg").attr("src", "../newberry/images/missingImage.png");
+                            $('#transcriptionCanvas').css('height', $("#imgBottom img").height() + "px");
+                            $('.lineColIndicatorArea').css('height', $("#imgBottom img").height() + "px");
+                            $("#imgTop").css("height", "0%");
+                            $("#imgBottom img").css("top", "0px");
+                            $("#imgBottom").css("height", "inherit");     
+                        })
+                        .attr("src", "../newberry/images/missingImage.png")
+                    })
+                    .attr("src", canvasObj.images[0].resource['@id'].replace('amp;',''));
         }
         else{
+             $('.transcriptionImage').attr('src',"../newberry/images/missingImage.png");
+             alert("The canvas is malformed.  No 'images' field in canvas object or images:[0]['@id'] does not exist.  Cannot draw lines.");
             //ERROR!  Malformed canvas object.  
         }
-////        $('.transcriptionImage').error(function(){
-////            $(this).attr('src', "images/missingImage.png");
-////        });
         $(".previewText").removeClass("currentPage");
-//        //console.log("Lines To Add Current Page TO");
-//        //console.log($(".previewPage:eq("+currentFolio+")").find(".previewLine"));
         $.each($("#previewDiv").children(".previewPage:eq("+(parseInt(currentFolio)-1)+")").find(".previewLine"),function(){
             $(this).find('.previewText').addClass("currentPage");
         });
@@ -831,7 +936,7 @@
      */
     function drawLinesToCanvas(canvasObj, rebuild){
         var lines = [];
-        
+        currentFolio = parseInt(currentFolio);
         //console.log("Draw lines");
 //        //console.log(canvasObj);
         if(canvasObj.resources !== undefined && canvasObj.resources.length > 0){
@@ -853,7 +958,6 @@
             else{
                 var annosURL = "getAnno";
                 var onValue = canvasObj["@id"];
-                //onValue = encodeURIComponent(onValue);
                 //console.log("get annos for draw for canvas "+onValue);
                 var properties = {"@type": "sc:AnnotationList", "on" : onValue};
                 var paramOBJ = {"content": JSON.stringify(properties)};
@@ -870,8 +974,7 @@
                         currentList = masterList;
                         annoLists[currentFolio -1] = masterList["@id"];
                         $.each(annoList, function(){
-                            //console.log("does "+this.proj+" == "+theProjectID)
-                            if(this.proj !== undefined && this.proj == theProjectID){
+                            if(this.proj !== undefined && this.proj!=="" && this.proj == theProjectID){;
                                 //These are the lines we want to draw
                                 //console.log("Lines we wanna draw");
                                 lines = this.resources;
@@ -880,7 +983,6 @@
                                 annoLists[currentFolio -1] = this["@id"];
                             }
                             else{
-                                
                                 //It is an annotation list for this canvas in a different project.
                                 //console.log("Anno list for this canvas but different project.  ");
                             }
@@ -890,7 +992,6 @@
                         }
                         if(lines.length > 0){
                             //console.log("Got lines to draw");
-                            //console.log(lines);
                             linesToScreen(lines);
                         }
                         else{ //list has no lines
@@ -905,8 +1006,6 @@
                         }
                     }
                     else{ // couldnt get list.  one should always exist, even if empty.  We will say no list and changes will be stored locally to the canvas.
-                        //console.log("couldnt find a list...set to empty");
-                        //annoLists[currentFolio -1 ] = "empty"; //This wil avoid all updates.
                         annoLists[currentFolio -1 ] = "empty";
                         $("#noLineWarning").show();
                         $('#transcriptionCanvas').css('height', $("#imgBottom img").height() + "px");
@@ -917,14 +1016,11 @@
                         $("#parsingBtn").css("box-shadow", "0px 0px 6px 5px yellow");
                     }
                 });
-            }
-            
+            }  
         }
     }
     
     function linesToScreen(lines){
-//        //console.log("here are the lines");
-//        //console.log(lines);
         var letterIndex = 0;
         var letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         letters = letters.split("");
@@ -941,10 +1037,9 @@
         originalCanvasHeight = theHeight;
         originalCanvasHeight2 = originalCanvasHeight;
         originalCanvasWidth2 = theWidth;
-        //console.log(originalCanvasWidth2 + " / " +originalCanvasHeight2+" is the ratio when putting lines to screen");
-        //console.log(originalCanvasWidth2 / originalCanvasHeight2);
         ratio = theWidth / theHeight;
         for(var i=0; i<lines.length;i++){
+            console.log("line "+i);
             var line = lines[i];
             var lastLine = {};
             var col = letters[letterIndex];
@@ -960,7 +1055,6 @@
             }
             else{
                 //ERROR.  malformed line.
-                //console.log("f1");
                 update = false;
             }
             if(line["@id"] !== undefined && line["@id"]!=="" ){ //&& line['@id'].indexOf('annotationstore/annotation') >=0
@@ -968,7 +1062,6 @@
             }
             else{
                 //ERROR.  Malformed line. 
-                //console.log("f2");
                 update = false;
             }
             thisContent = "";
@@ -990,67 +1083,74 @@
                     if(numberArray.length === 4){ // string must have all 4 to be valid
                         x = numberArray[0];
                         w = numberArray[2];
-                        if(lastLineX < x){
-                            if(x - lastLineX <= 3){ //within 3 pixels...
-                                
+                        if(lastLineX !== x){ //check if the last line's x value is equal to this line's x value (means same column)
+                            if(Math.abs(x - lastLineX) <= 3){ //allow a 3 pixel  variance and fix this variance when necessary...
                                 //align them, call them the same Column. 
                                 /*
                                  * This is a consequence of #xywh for a resource needing to be an integer.  When I calculate its intger position off of
                                  * percentages, it is often a float and I have to round to write back.  This can cause a 1 or 2 pixel discrenpency, which I account
                                  * for here.  There may be better ways of handling this, but this is a good solution for now. 
                                  */
+                                if(lastLineWidth !== w){ //within "same" column (based on 3px variance).  Check the width
+                                    if(Math.abs(w - lastLineWidth) <= 5){ //If the width of the line is within five pixels, automatically make the width equal to the last line's width.
+
+                                        //align them, call them the same Column. 
+                                        /*
+                                         * This is a consequence of #xywh for a resource needing to be an integer.  When I calculate its intger position off of
+                                         * percentages, it is often a float and I have to round to write back.  This can cause a 1 or 2 pixel discrenpency, which I account
+                                         * for here.  There may be better ways of handling this, but this is a good solution for now. 
+                                         */
+                                        w = lastLineWidth;
+                                        numberArray[2] = w;
+                                    }
+                                }
                                 x = lastLineX;
                                 numberArray[0] = x;
-                                //console.log(i+": last line x "+lastLineX+", this line x "+x);
                             }
-                            else{
+                            else{ //we are in a new column, column indicator needs to increase. 
                                 letterIndex++;
                                 col = letters[letterIndex];
                                 colCounter = 0; //Reset line counter so that when the column changes the line# restarts?
                             }
                         }
-//                        //console.log(lastLineWidth +" < "+w+"?");
-                        if(lastLineWidth < w){
-                            if(w - lastLineWidth <= 5){ //within 5 pixels...
-                                
-                                //align them, call them the same Column. 
-                                /*
-                                 * This is a consequence of #xywh for a resource needing to be an integer.  When I calculate its intger position off of
-                                 * percentages, it is often a float and I have to round to write back.  This can cause a 1 or 2 pixel discrenpency, which I account
-                                 * for here.  There may be better ways of handling this, but this is a good solution for now. 
-                                 */
-                                w = lastLineWidth;
-                                numberArray[2] = w;
-                                //console.log(i+": last line w "+lastLineWidth+", this line w "+w);
+                        else{ //If the X value matches, we are in the same column and don't have to account for any variance or update the array.  Still check for slight width variance.. 
+                            if(lastLineWidth !== w){
+                                if(Math.abs(w - lastLineWidth) <= 5){ //within 5 pixels...
+
+                                    //align them, call them the same Column. 
+                                    /*
+                                     * This is a consequence of #xywh for a resource needing to be an integer.  When I calculate its intger position off of
+                                     * percentages, it is often a float and I have to round to write back.  This can cause a 1 or 2 pixel discrenpency, which I account
+                                     * for here.  There may be better ways of handling this, but this is a good solution for now. 
+                                     */
+                                    w = lastLineWidth;
+                                    numberArray[2] = w;
+                                }
                             }
                         }
                         y = numberArray[1];
                         h = numberArray[3];
-                       
                         XYWHarray = [x,y,w,h];
                     }
                     else{
                         //ERROR! Malformed line
-                        //console.log("f3");
                         update = false;
                     }
                 }
                 else{
                     //ERROR! Malformed line
-                    //console.log("f4");
                     update = false;
                 }
             }
             else{
                 //ERROR!  Malformed line.
-                //console.log("f5");
                 update = false;
             }
             
             if(line.resource['cnt:chars'] !== undefined && line.resource['cnt:chars'] !== ""){
                 thisContent = line.resource['cnt:chars'];
             }
-            else{
+            else{ //no text stored with the line yet or text stored is blank.  Give user a standard placeholder.
                 //update = false;
                 thisContent = "Enter a line transcription";
             }
@@ -1160,9 +1260,6 @@
           var imgTopHeight = (previousLine + currentLineHeight)+1.5; // obscure behind workspace.
           var topImgPositionPercent = ((previousLine - currentLineTop)*100)/imgTopHeight;
           var topImgPositionPx = (previousLine - currentLineTop)*bottomImageHeight/100;
-//          //console.log("WHY IS TOP OFF?  "+currentLineTop+" + "+imgTopHeight/100+" X "+topImgPositionPercent);
-//          //console.log(currentLineTop+" + "+(imgTopHeight/100)*topImgPositionPercent);
-//          //console.log(currentLineTop + ((imgTopHeight/100)*topImgPositionPercent));
 //          var bookmarkTop = (currentLineTop + ((imgTopHeight/100)*topImgPositionPercent));
           var bottomImgPositionPercent = -(currentLineTop + currentLineHeight);
           var bottomImgPositionPx = -(currentLineTop+currentLineHeight)*bottomImageHeight / 100;
@@ -1222,7 +1319,6 @@
             top: positions.topImgPositionPx + "px",
             left: "0px"
           },250);
-//          //console.log("Top line/col indicator");
          $("#imgTop .lineColIndicatorArea").animate({
             top: positions.topImgPositionPx + "px",
             left: "0px"
@@ -1243,8 +1339,6 @@
             top: positions.bottomImgPositionPx  + "px",
             left: "0px"
           },250);
-//            imgBottomOriginal = $("#imgBottom img").css("top");
-//            imgTopOriginalTop = $("#imgTop img").css("top");
           if($('.activeLine').hasClass('linesHidden')){
               $('.activeLine').hide();
           }
@@ -1404,8 +1498,19 @@
     };
     
      function startMoveImg(){
-        $("#imgTop, #imgBottom").css("cursor", "url(images/open_grab.png),auto");
-        $("#imgTop,#imgBottom").mousedown(function(event){moveImg(event);});
+       if($(".transcriptlet:first").hasClass("imageMove")){
+           $(".transcriptlet").removeClass("imageMove");
+           $(".transcriptlet").children("textarea").removeAttr("disabled");
+           $("#imgTop, #imgBottom").css("cursor", "default");
+           $("#imgTop,#imgBottom").unbind();
+       }
+       else{
+            $(".transcriptlet").addClass("imageMove");
+            $(".transcriptlet").children("textarea").attr("disabled", "");
+            $("#imgTop, #imgBottom").css("cursor", "url("+"images/open_grab.png),auto");
+            $("#imgTop,#imgBottom").mousedown(function(event){moveImg(event);});
+       }
+        
     }
     
     /** 
@@ -1488,7 +1593,7 @@
             pageJumpIcons[3].setAttribute('onclick', 'lastFolio();');
             $("#prevCanvas").attr("onclick", "previousFolio();");
             $("#nextCanvas").attr("onclick", "nextFolio();");
-            $("#pageJump").siblings().css("color", "white");
+            //$("#pageJump").siblings().css("color", "white");
             $("#pageJump").removeAttr("disabled");
         }
         
@@ -1532,6 +1637,7 @@
             });
         }
         $("#zoomDiv").show();
+        $(".magnifyHelp").show();
         hideWorkspaceToSeeImage();
         $(".lineColIndicatorArea").hide();
         liveTool = "image";
@@ -1652,12 +1758,12 @@
 //        imgTopOriginalTop = $("#imgTop img").css("top");
         originalCanvasHeight = $("#transcriptionCanvas").height();
         originalCanvasWidth = $("#transcriptionCanvas").width();
-        $("#pageJump").attr("disabled", "disabled");
+        //$("#pageJump").attr("disabled", "disabled");
          var pageJumpIcons = $("#pageJump").parent().children("i");
-            pageJumpIcons[0].setAttribute('onclick', '');
-            pageJumpIcons[1].setAttribute('onclick', '');
-            pageJumpIcons[2].setAttribute('onclick', '');
-            pageJumpIcons[3].setAttribute('onclick', '');
+            pageJumpIcons[0].setAttribute('onclick', 'firstFolio("parsing");');
+            pageJumpIcons[1].setAttribute('onclick', 'previousFolio("parsing");');
+            pageJumpIcons[2].setAttribute('onclick', 'nextFolio("parsing");');
+            pageJumpIcons[3].setAttribute('onclick', 'lastFolio("parsing");');
         $("#prevCanvas").attr("onclick", "");
         $("#nextCanvas").attr("onclick", "");
         
@@ -1706,10 +1812,6 @@
                   var splitWidth = window.innerWidth - (width+35) + "px";
                   $(".split img").css("max-width", splitWidth);
                   $(".split:visible").css("width", splitWidth);
-                  //make sure image containers grow with image.
-//                  //console.log("Full page split should have height "+$("#fullPageImg").height());
-                  //$('#fullPageSplit').css('height', $("#fullPageImg").height() + 'px');
-                  //$('#compareSplit').css('height', $("#compareSplit img").height() + 'px');
               },
               stop: function(event, ui){;
                   //$(".lineColIndicator .lineColOnLine").css("line-height", $(this).height()+"px");
@@ -1717,8 +1819,8 @@
             });
         
         $("#transWorkspace,#imgBottom").hide();
-        // Safari DEBUG to include min-height
-            ResizeTopImg = window.setTimeout(function(){
+        $("#noLineWarning").hide();
+            window.setTimeout(function(){
                 $("#imgTop, #imgTop img").height($(window).innerHeight()); 
                 $("#imgTop img").css("width" , "auto");
                 $("#imgTop").css("width" , $("#imgTop img").width());
@@ -1728,36 +1830,15 @@
                 $(".lineColIndicatorArea").css("height", $(window).innerHeight());
                 $("#transcriptionCanvas").css("display" , "block");
                 //$("#parsingSplit").css("top", "-"+($("#imgTop img").height()+32)+"px");
-            },
-            850);
-            ParsingInterval = window.setTimeout(function(){
+            });
+            window.setTimeout(function(){
                 //in here we can control what interface loads up.  writeLines draws lines onto the new full size transcription image.
                 $('.lineColIndicatorArea').hide();
                 writeLines($("#imgTop img"));
-                //$("#imgTop").children(".line").addClass("parsing").removeClass("line");
-                //$("#bookmark").css("left","-9999px");
                 var firstLine = $(".parsing").filter(":first");
-                //if ($.browser.opera) firstLine += 2;
-                // Find the correct height for a well-displayed tool with a full-height image.
                 var correctHeight = (topImg.height() > $("#transcriptionTemplate").height()) ? -999 : firstLine.attr("lineheight") * topImg.height() / 1000;
-                //if ((Math.abs(firstLine.height() - correctHeight) > 2.5) || (topImg.height() > $("#transcriptionTemplate").height())) {
-                    // assures that the resizing of the img completely took place
-                    // FIXME may cause slow loop
-                   // //console.log("parsing adjustment ("+firstLine.height()+", "+correctHeight+")");
-                    //hideWorkspaceForParsing(); 
-                    window.clearInterval(ParsingInterval);
-                //} 
-//                else {
-//                    //hack to make the image draw correctly in some cases
-//                  topImg.css('top', 'auto');
-//                  topImg.css('top', '0');
-//                  //console.log("image position confirmed");
-//                  
-//                }
             },1200);
-            $("#noLineWarning").hide();
-            $("#ctrlColumns").click();
-            $("#ctrlLines").click();
+         
     };
     
     /** 
@@ -1776,8 +1857,6 @@
             setOfLines[index] = makeOverlayDiv($(this),originalX, count);
         });
         imgToParse.parent().append($(setOfLines.join("")));
-//        $(".parsing").attr('onmouseenter','applyRuler($(this));').attr('onmouseleave', 'removeRuler($(this))');
-//        $(".parsing").attr('onclick', 'lineChange($(this), event);');
     }
     
     function makeOverlayDiv(thisLine,originalX, cnt){
@@ -1807,13 +1886,7 @@
         return lineOverlay;
     }
 
-    function fullPage(){
-//        window.clearInterval(ParsingInterval);
-//        window.clearInterval(WaitToFocus);
-//        window.clearInterval(ResizeTopImg);
-//        if ($(event.target).hasClass('ui-resizable-handle')) {
-//            return false;
-//        }
+    function fullPage(){;
         if ($("#overlay").is(":visible")) {
             $("#overlay").click();
             return false;
@@ -1850,7 +1923,13 @@
         restoreWorkspace();
         $("#splitScreenTools").show();
         $("#transcriptionCanvas").css("height", originalCanvasHeight+"px");
-        $(".lineColIndicatorArea").css("height", originalCanvasHeight+"px"); 
+        $(".lineColIndicatorArea").css("height", originalCanvasHeight+"px");
+        $("#imgTop").hover(function(){
+            var color = colorThisTime.replace(".4", "1");
+            $('.activeLine').css('box-shadow', '0px 0px 15px 8px '+color);
+        }, function(){
+            $('.activeLine').css('box-shadow', '0px 0px 15px 8px '+colorThisTime);
+        });
         $.each($(".lineColOnLine"),function(){
               $(this).css("line-height", $(this).height()+"px");
           });
@@ -1865,7 +1944,7 @@
         originalCanvasWidth = $("#transcriptionCanvas").width();
         var ratio = originalCanvasWidth/originalCanvasHeight;
         $("#splitScreenTools").attr("disabled", "disabled");
-        $("#pageJump").attr("disabled", "disabled");
+        //$("#pageJump").attr("disabled", "disabled");
         var imgBottomRatio = parseFloat($("#imgBottom img").css("top")) / originalCanvasHeight;
         var imgTopRatio = parseFloat($("#imgTop img").css("top")) / originalCanvasHeight;
         $("#transcriptionTemplate").css({
@@ -2037,11 +2116,7 @@
             });
             break;
           case "preview":
-            $("#previewSplit").css({
-              "display": "inline-table"
-//              "height" : splitHeight+"px",
-//              "width" : splitWidth
-            });
+              forceOrderPreview();
             break;
           case "history":
             $("#historySplit").css({
@@ -2095,14 +2170,36 @@
        // $("#splitScreenTools").hide();
         //$("#transcriptionCanvas").css("width" , $("#imgTop img").width()); //this causes the resize function to bust. 
         //$("#transcriptionCanvas").css("height" , $("#imgTop img").height());
-        $("#pageJump").attr("disabled", "disabled");
+        //$("#pageJump").attr("disabled", "disabled");
          var pageJumpIcons = $("#pageJump").parent().children("i");
-            pageJumpIcons[0].setAttribute('onclick', '');
-            pageJumpIcons[1].setAttribute('onclick', '');
-            pageJumpIcons[2].setAttribute('onclick', '');
-            pageJumpIcons[3].setAttribute('onclick', '');
+            pageJumpIcons[0].setAttribute('onclick', 'firstFolio("parsing");');
+            pageJumpIcons[1].setAttribute('onclick', 'previousFolio("parsing");');
+            pageJumpIcons[2].setAttribute('onclick', 'nextFolio("parsing");');
+            pageJumpIcons[3].setAttribute('onclick', 'lastFolio("parsing");');
         $("#prevCanvas").attr("onclick", "");
         $("#nextCanvas").attr("onclick", "");
+    }
+    
+    function forceOrderPreview(){
+        var ordered = [];
+        var length = $(".previewPage").length;
+        console.log("force order,  length: "+length);
+        for(var i=0; i<length; i++){
+            console.log("find order = "+i)
+            var thisOne = $(".previewPage[order='"+i+"']");
+            ordered.push(thisOne);
+            if(i===length - 1){
+                console.log("append");
+                console.log(ordered);
+                $("#previewDiv").empty();
+                $("#previewDiv").append(ordered);
+            }
+        }
+        $("#previewSplit").css({
+              "display": "inline-table"
+//              "height" : splitHeight+"px",
+//              "width" : splitWidth
+            });
     }
 
     function populateCompareSplit(folioIndex){
@@ -2498,7 +2595,7 @@
      */
     function clickedLine(e,event) {
         if ($(e).hasClass("parsing")){
-            if ($("#addLines").hasClass('ui-state-active')||$("#removeLines").hasClass('ui-state-active')){
+            if ($("#addLines").hasClass('active')||$("#removeLines").hasClass('active')){
                 lineChange(e,event);
             }
         }
@@ -2564,17 +2661,19 @@
     
     function addchar(theChar, closingTag)
     {
+        console.log("Add Char Called");
         var closeTag = (closingTag == undefined) ? "" : closingTag;
         var e = focusItem[1].find('textarea')[0];
         if(e!=null) {
             //Data.makeUnsaved();
-            return this.setCursorPosition(e,this.insertAtCursor(e,theChar,closeTag));
+            return setCursorPosition(e,insertAtCursor(e,theChar,closeTag));
         }
         return false;
     }
     
     function setCursorPosition(e, position)
     {
+        console.log("set cursor pos.");
         var pos = position;
         var wrapped = false;
         if (pos.toString().indexOf("wrapped") == 0) {
@@ -2596,6 +2695,7 @@
     }
     
     function insertAtCursor (myField, myValue, closingTag) {
+        console.log("insert at cursor");
         var closeTag = (closingTag == undefined) ? "" : unescape(closingTag);
         //IE support
         if (document.selection) {
@@ -2666,12 +2766,8 @@ function togglePageJump(){
 function pageJump(folio){
     var folioNum = parseInt($("#pageJump").find('option:selected').attr("folioNum")); //1,2,3...
     var canvasToJumpTo = folioNum - 1; //0,1,2...
-//    //console.log(currentFolio, folioNum);
-//    //console.log(canvasToJumpTo);
     if(currentFolio !== folioNum && canvasToJumpTo >= 0){ //make sure the default option was not selected and that we are not jumping to the current folio 
-        //focusItem = [null, null];
         currentFolio = folioNum;
-        //fullPage();// If we go from parsing it must go full page.  Disabled for now in the UI.  
         loadTranscriptionCanvas(transcriptionFolios[canvasToJumpTo]);
     }
     else{
@@ -2685,19 +2781,20 @@ function compareJump(folio){
 function markerColors(){
     /*
      * This function allows the user to go through annotation colors and decide what color the outlined lines are.
+     * colorThisTime
      */
-    var tempColorList = ["rgba(153,255,0,1)", "rgba(0,255,204,1)", "rgba(51,0,204,1)", "rgba(204,255,0,1)", "rgba(0,0,0,1)", "rgba(255,255,255,1)", "rgba(255,0,0,1)"];
+    var tempColorList = ["rgba(153,255,0,.4)", "rgba(0,255,204,.4)", "rgba(51,0,204,.4)", "rgba(204,255,0,.4)", "rgba(0,0,0,.4)", "rgba(255,255,255,.4)", "rgba(255,0,0,.4)"];
     if (colorList.length == 0){
         colorList = tempColorList;
     }
     colorThisTime = colorList[Math.floor(Math.random()*colorList.length)];
     colorList.splice(colorList.indexOf(colorThisTime),1);
-    var oneToChange = colorThisTime.lastIndexOf(")") - 1;
+    var oneToChange = colorThisTime.lastIndexOf(")") - 2;
     var borderColor = colorThisTime.substr(0, oneToChange) + '.2' + colorThisTime.substr(oneToChange + 1);
-    
-    $('.lineColIndicator').css('border', '1px solid '+colorThisTime);
-    $('.lineColOnLine').css({'border-left':'1px solid '+borderColor, 'color':colorThisTime});
-    $('.activeLine').css('box-shadow', '0px 0px 15px 8px '+colorThisTime);
+    var lineColor = colorThisTime.replace(".4", "1"); //make this color opacity 100
+    $('.lineColIndicator').css('border', '1px solid '+lineColor);
+    $('.lineColOnLine').css({'border-left':'1px solid '+borderColor, 'color':lineColor});
+    $('.activeLine').css('box-shadow', '0px 0px 15px 8px '+colorThisTime); //keep this color opacity .4 until imgTop is hovered.
 }
 function toggleLineMarkers(){
     if($('.lineColIndicator:first').is(":visible") && $('.lineColIndicator:eq(1)').is(":visible")){ //see if a pair of lines are visible just in case you checked the active line first. 
@@ -2764,14 +2861,13 @@ function toggleLineCol(){
         if(startLineID !== endLineID){ //push the last line, so long as it was also not the first line
             linesToUpdate.push($(".parsing[lineserverid='"+endLineID+"']")); //push last line
         }
-        //console.log("column line update from resizing left or right.");
-        //console.log(linesToUpdate);
         columnUpdate(linesToUpdate);  
     }
     
     function columnUpdate(linesInColumn){
         //console.log("Doing batch update from column resize")
         var onCanvas = $("#transcriptionCanvas").attr("canvasid");
+        currentFolio = parseInt(currentFolio);
         var currentAnnoListID = annoLists[currentFolio - 1];
         var currentAnnoListResources = [];
         var lineTop, lineLeft, lineWidth, lineHeight = 0;
@@ -2822,7 +2918,8 @@ function toggleLineCol(){
                       "cnt:chars" : currentLineText
                     },
                     "on" : onCanvas+"#xywh="+lineString,
-                    "otherContent" : []
+                    "otherContent" : [],
+                    "forProject": "TPEN_NL"
                 };
                 
                 var index = - 1;
@@ -2846,6 +2943,7 @@ function toggleLineCol(){
             //console.log(currentAnnoListResources);
             $.post(url, params, function(data){
                 //console.log("list updated with new resources array");
+                currentFolio = parseInt(currentFolio);
                 annoLists[currentFolio - 1]= currentAnnoListID;
             });
             
@@ -2856,21 +2954,12 @@ function toggleLineCol(){
     
     function updateLine(line, cleanup){
         var onCanvas = $("#transcriptionCanvas").attr("canvasid");
+        currentFolio = parseInt(currentFolio);
         var currentAnnoListID = annoLists[currentFolio - 1];
         var currentAnnoList = "";
         var lineTop, lineLeft, lineWidth, lineHeight = 0;
         var ratio = originalCanvasWidth2 / originalCanvasHeight2; 
-        
-//        lineTop = (parseFloat(line.attr("linetop"))/100) * originalCanvasHeight2;
-//        lineLeft = (parseFloat(line.attr("lineleft"))/100) * originalCanvasWidth2;
-//        lineWidth = (parseFloat(line.attr("linewidth"))/100) * originalCanvasWidth2;
-//        lineHeight = (parseFloat(line.attr("lineheight"))/100) * originalCanvasHeight2;
 
-//        //console.log("Inversion function");
-//        //console.log(line.attr("lineleft")+ " * (10 * "+ratio+")");
-//        //console.log(line.attr("linetop")+ " * 10)");
-//        //console.log(line.attr("linewidth")+ " * (10 * "+ratio+")");
-//        //console.log(line.attr("lineleft")+ " * 10 ");
         lineTop = parseFloat(line.attr("linetop")) * 10 ;
         lineLeft = parseFloat(line.attr("lineleft")) * (10*ratio);
         lineWidth = parseFloat(line.attr("linewidth")) * (10*ratio);
@@ -2884,8 +2973,6 @@ function toggleLineCol(){
               
         line.css("width", line.attr("linewidth") + "%");
         var lineString = lineLeft+","+lineTop+","+lineWidth+","+lineHeight;
-        //console.log("Get id of line to update");
-        //console.log(line.attr('lineserverid'));
         var currentLineServerID = line.attr('lineserverid');
         var currentLineText = $(".transcriptlet[lineserverid='"+currentLineServerID+"']").find("textarea").val();
         var dbLine = 
@@ -2898,25 +2985,19 @@ function toggleLineCol(){
               "cnt:chars" : currentLineText
             },
             "on" : onCanvas+"#xywh="+lineString,
-            "otherContent" : []
+            "otherContent" : [],
+            "forProject": "TPEN_NL"
         };
-        
-//        TODO:  This is the real anno store update.  get it right. 
-//        var url = "http://localhost:8080/updateTransLineServlet";
-//        var params = {"content":""};
-//        params.content = dbLine;
-//        params = JSON.stringify(params);
-//        $.post(url,params, function(data){
-//            //console.log(data)
-//        });
+
         var index = -1;
         
-        if(currentAnnoListID !== "noList" && currentAnnoListID !== "empty"){ // if it IIIF, we need to update the list
+        if(currentAnnoListID !== "noList" && currentAnnoListID !== "empty"){ // if its IIIF, we need to update the list
             if(currentAnnoListID.indexOf("/annoList/5") > -1){
                 $.each(annoListTester.resources, function(){
                     index++;
                     if(this["@id"] == currentLineServerID){
                         annoListTester.resources[index] = dbLine;
+                        currentFolio = parseInt(currentFolio);
                         annoLists[currentFolio - 1]= "hello/annoList/5";
                     }
                 });
@@ -2944,6 +3025,7 @@ function toggleLineCol(){
                             $.post(url, params, function(data){
                                 //console.log("list updated");
                                 //console.log(currentAnnoList.resources)
+                                currentFolio = parseInt(currentFolio);
                                 annoLists[currentFolio - 1]= annoListID;
                             });
                         }
@@ -2952,9 +3034,10 @@ function toggleLineCol(){
             }
         }
         else if(currentAnnoList == "empty"){
-           //cannot update and empty list
+           //cannot update an empty list
         }
         else if(currentAnnoList == "noList"){ //If it is classic T-PEN, we need to update canvas resources
+            currentFolio = parseInt(currentFolio);
             $.each(transcriptionFolios[currentFolio - 1].resources, function(){
                 index++;
                 if(this["@id"] == currentLineServerID){
@@ -2984,8 +3067,6 @@ function toggleLineCol(){
         }
         var onCanvas = $("#transcriptionCanvas").attr("canvasid");
         var newLineTop, newLineLeft, newLineWidth, newLineHeight = 0;
-        //console.log(originalCanvasWidth2 + " / " +originalCanvasHeight2+" is the ratio");
-        //console.log(originalCanvasWidth2 / originalCanvasHeight2);
         var ratio = originalCanvasWidth2 / originalCanvasHeight2; 
         newLineTop = parseFloat(newLine.attr("linetop"));
         newLineLeft = parseFloat(newLine.attr("lineleft"));
@@ -3002,12 +3083,7 @@ function toggleLineCol(){
         newLineLeft = Math.round(newLineLeft,0);
         newLineWidth = Math.round(newLineWidth,0);
         newLineHeight = Math.round(newLineHeight,0);
-        
-//        //console.log("Converted and rounded new line xywh");
-//        //console.log(newLineLeft, newLineTop, newLineWidth, newLineHeight)
-//console.log("NEW LINE HEIGHT: " + newLineHeight);
-//console.log("NEW LINE LEFT: " + newLineLeft);
-        
+               
         var lineString = onCanvas + "#xywh=" +newLineLeft+","+newLineTop+","+newLineWidth+","+newLineHeight;
         var currentLineText = "";
         var dbLine = 
@@ -3021,6 +3097,7 @@ function toggleLineCol(){
                 },
                 "on" : lineString,
                 "otherContent":[],
+                "forProject": "TPEN_NL"
             }
         ;
         var url = "saveNewTransLineServlet";
@@ -3032,37 +3109,17 @@ function toggleLineCol(){
                {
                    //console.log("saved new line");
                    //console.log(data);
-                   data=JSON.parse(data);
-    //            //console.log("line saved");
-                //var newLineID = data["@id"];
-                //dbLine["@id"] = data;
-                dbLine["@id"] = data["@id"];
-                newLine.attr("lineserverid", data["@id"]);
-                $("div[newcol='"+true+"']").attr({
-                    "startid" : dbLine["@id"],
-                    "endid" : dbLine["@id"],
-                    "newcol":false
-                });
-                var currentAnnoList = annoLists[currentFolio - 1];
-                if(currentAnnoList !== "noList" && currentAnnoList !== "empty"){ // if it IIIF, we need to update the list
-    //                //console.log("Not no list and not empty");
-//                    if(currentAnnoList.indexOf("/annoList/5") > -1){
-//    //                    //console.log("line saved...set anno list to tester and update")
-//                        currentAnnoList = annoListTester;
-//                        if(beforeIndex == -1){
-//                            $(".newColumn").attr({
-//                                "lineserverid" : dbLine["@id"],
-//                                "linenum" : $(".parsing").length
-//                            }).removeClass("newColumn");
-//                            annoListTester.resources.push(dbLine);
-//                        }
-//                        else{
-//                            annoListTester.resources.splice(beforeIndex + 1, 0, dbLine);
-//                            updateLine(lineBefore);
-//                        }
-//
-//                    }
-    //                    //console.log("line saved...update the list it belongs to");
+                    data=JSON.parse(data);
+                    dbLine["@id"] = data["@id"];
+                    newLine.attr("lineserverid", data["@id"]);
+                    $("div[newcol='"+true+"']").attr({
+                        "startid" : dbLine["@id"],
+                        "endid" : dbLine["@id"],
+                        "newcol":false
+                    });
+                    currentFolio = parseInt(currentFolio);
+                    var currentAnnoList = annoLists[currentFolio - 1];
+                    if(currentAnnoList !== "noList" && currentAnnoList !== "empty"){ // if it IIIF, we need to update the list
                         var annosURL = "getAnno";
                         var properties = {"@id": currentAnnoList};
                         var paramOBJ = {"content": JSON.stringify(properties)};
@@ -3080,9 +3137,9 @@ function toggleLineCol(){
                                 currentAnnoList.resources.push(dbLine);
                             }
                             else{
-                                //splice it in
                                 currentAnnoList.resources.splice(beforeIndex + 1, 0, dbLine);
                             }
+                            currentFolio = parseInt(currentFolio);
                             transcriptionFolios[currentFolio - 1].otherContent[0] = annoListID;
                             annoLists[currentFolio - 1] = annoListID;
                             //Write back to db to update list
@@ -3093,16 +3150,14 @@ function toggleLineCol(){
     //                            //console.log("Updated list on anno store");
                                 if(lineBefore !== undefined && lineBefore !== null){
                                     //This is the good case.  We called split line and saved the new line, now we need to update the other one. 
-                                    //console.log("Split line, update line before now");
                                     updateLine(lineBefore);
                                 }
                             });
                         });
                     
                 }
-                else if(currentAnnoList == "empty"){ //empty as in no list in otherContent
-                //make a new list for it.    //Annotation lists need to be connected to a project, so we are adding that property in.  We should find a proper vocabulary for it through IIIF (like metadata)
-                      //console.log("gotta make a new list");
+                else if(currentAnnoList == "empty"){ 
+                    //This means we know no AnnotationList was on the store for this canvas, and otherContent stored with the canvas object did not have the list.  Make a new one in this case. 
                       var newAnnoList = 
                         {
                             "@type" : "sc:AnnotationList",
@@ -3112,7 +3167,7 @@ function toggleLineCol(){
                             "permission" : 0,
                             "forkFromID" : "",
                             "resources" : [],
-                            "proj" : projID,
+                            "proj" : projID
                         };
                     var url2 = "saveNewTransLineServlet";
                     var params2 = {"content": JSON.stringify(newAnnoList)};
@@ -3121,31 +3176,27 @@ function toggleLineCol(){
                         data=JSON.parse(data);
                         var newAnnoListCopy = newAnnoList;
                         newAnnoListCopy["@id"] = data["@id"];
+                        currentFolio = parseInt(currentFolio);
                         annoLists[currentFolio - 1] = newAnnoListCopy["@id"];
                         transcriptionFolios[currentFolio - 1].otherContent[0] = newAnnoListCopy["@id"];
-                        
-    //                    //console.log("Update list with new anno");
-
-                                var url3 = "updateAnnoList";
-                                var paramObj3 = {"@id":newAnnoListCopy["@id"], "resources": [dbLine]};
-    //                            //console.log(paramObj3);
-                                var params3 = {"content":JSON.stringify(paramObj3)};
-                                $.post(url3, params3, function(data){
-    //                                //console.log("New list updated with new anno");
-                                       $(".newColumn").attr({
-                                            "lineserverid" : dbLine["@id"],
-                                            "startid" : dbLine["@id"],
-                                            "endid" : dbLine["@id"],
-                                            "linenum" : $(".parsing").length
-                                        }).removeClass("newColumn");
-                                        newLine.attr("lineserverid", dbLine["@id"]);
-                                    });
-
+                        var url3 = "updateAnnoList";
+                        var paramObj3 = {"@id":newAnnoListCopy["@id"], "resources": [dbLine]};
+//                            //console.log(paramObj3);
+                        var params3 = {"content":JSON.stringify(paramObj3)};
+                        $.post(url3, params3, function(data){
+//                                //console.log("New list updated with new anno");
+                               $(".newColumn").attr({
+                                    "lineserverid" : dbLine["@id"],
+                                    "startid" : dbLine["@id"],
+                                    "endid" : dbLine["@id"],
+                                    "linenum" : $(".parsing").length
+                                }).removeClass("newColumn");
+                                newLine.attr("lineserverid", dbLine["@id"]);
+                            });
                     });
                 }
                 else if(currentAnnoList == "noList"){ //noList means there was no otherContent field with the canvas.  this is an invalid object.  its possible annos are directly
-                    //in resoucres[] for the canvas.  this is classic T-PEN.
-                    //console.log("NO list.  This is probably not newberry.  beforeindex="+beforeIndex);
+                    //in resoucres[] for the canvas.  this is a classic T-PEN scenario.
                     if(beforeIndex == -1){ //New line vs new column
                         $(".newColumn").attr({
                             "lineserverid" : dbLine["@id"],
@@ -3153,9 +3204,11 @@ function toggleLineCol(){
                             "endid" : dbLine["@id"],
                             "linenum" : $(".parsing").length
                         }).removeClass("newColumn");
+                        currentFolio = parseInt(currentFolio);
                         transcriptionFolios[currentFolio - 1].resources.push(dbLine);
                     }
                     else{
+                        currentFolio = parseInt(currentFolio);
                         transcriptionFolios[currentFolio - 1].resources.splice(beforeIndex + 1, 0, dbLine);
                     }
                     //should we write to the DB here?  This would be in support of old data.  
@@ -3179,7 +3232,7 @@ function toggleLineCol(){
      * @param newLineID lineid of new line
      */
      function buildTranscriptlet(e, afterThisID, newServerID){
-         var newLineID = $(".transcriptlet").length + 1;
+        var newLineID = $(".transcriptlet").length + 1;
         var isNotColumn = true;
         var newW = e.attr("linewidth");
         var newX = e.attr("lineleft");
@@ -3214,11 +3267,13 @@ function toggleLineCol(){
         if (isNotColumn){
             //update transcriptlet that was split
             $afterThis.after(newTranscriptlet.join("")).find(".lineHeight").val($(".parsing[lineserverid='"+afterThisID+"']").attr("lineheight"));                    
-        } else {
-      if (afterThisID === -1) {
-        $("#entry").prepend(newTranscriptlet.join(""));
-            } else {
-                $afterThis.after(newTranscriptlet.join(""));
+        } 
+        else {
+            if (afterThisID === -1) {
+            $   ("#entry").prepend(newTranscriptlet.join(""));
+            } 
+            else {
+                    $afterThis.after(newTranscriptlet.join(""));
             }
         }
         $(e).attr("lineserverid", newServerID);
@@ -3232,16 +3287,13 @@ function toggleLineCol(){
      */
      function splitLine(e,event){        
         //e is the line that was clicked in
-//        //console.log("split line.  Need to create new line, update anno list.  update old line, update anno list.")
         //This is where the click happened relative to img top.  In other words, where the click happened among the lines. 
         var originalLineHeight = $(e).height() - 1;  //take one px off for the border
         $(".parsing").attr("newline", "false");
         var originalLineTop = $(e).offset().top - $("#imgTop").offset().top + 1; //Move down one px for the border.  
         var clickInLines = event.pageY - $("#imgTop").offset().top;
         var lineOffset = $(e).offset().top - $("#imgTop").offset().top;
-        var oldLineHeight = (clickInLines - lineOffset)/$("#imgTop").height() * 100;
-        //console.log("new line height = ("+originalLineHeight+" - "+"("+clickInLines+" - "+originalLineTop+")) / "+$("#imgTop").height()+" * "+100);
-        //console.log((originalLineHeight - (clickInLines - originalLineTop))/$("#imgTop").height() * 100);
+        var oldLineHeight = (clickInLines - lineOffset)/$("#imgTop").height() * 100;;
         var newLineHeight = (originalLineHeight - (clickInLines - originalLineTop))/$("#imgTop").height() * 100;
         var newLineTop = (clickInLines/$("#imgTop").height()) * 100;
         var newLine = $(e).clone(true);
@@ -3252,8 +3304,7 @@ function toggleLineCol(){
             "newline"   :   true,
             "lineheight" :  oldLineHeight
         });
-        
-        
+              
         $(newLine).css({
             "height"    :   newLineHeight + "%",
             "top"       :   newLineTop + "%"
@@ -3268,11 +3319,8 @@ function toggleLineCol(){
         $.each($(".parsing"), function(){
             newNum++;
             $(this).attr("linenum", newNum);
-        });
-        
+        });        
          saveNewLine($(e),newLine); 
-         
-        
         $("#progress").html("Line Added").fadeIn(1000).delay(3000).fadeOut(1000);
     }
     
@@ -3312,7 +3360,6 @@ function toggleLineCol(){
             } 
             var params = new Array({name:"remove",value:removedLine.attr("lineserverid")});
             removedLine.remove(); 
-            ////console.log("removing line...");
             removeTranscriptlet(removedLine.attr("lineserverid"),$(e).attr("lineserverid"), true);
             return params;
         }
@@ -3328,7 +3375,6 @@ function toggleLineCol(){
      function removeTranscriptlet(lineid, updatedLineID, draw){
         // if(!isMember && !permitParsing)return false;
         //update remaining line, if needed
-        //console.log("remove transcriptlet");
         var updateText = "";
         if (lineid !== updatedLineID){
             var updatedLine =   $(".parsing[lineserverid='"+updatedLineID+"']");
@@ -3344,17 +3390,10 @@ function toggleLineCol(){
             });
             toUpdate.attr("lineheight", updatedLine.attr("lineheight"));
             updateLine(toUpdate);
-        }
-        //remove transcriptlet
-        //NOTE: all transcription information for a canvas is redrawn when returning to full screen transcription.  Transcriptlet altering may not be necessary here...check it.
-        
-//        $(".transcriptlet[lineserverid='"+lineid+"']").remove();
-//        var col = $(".transcriptlet[lineserverid='"+lineid+"']").attr("col");
-//        var line= $(".transcriptlet[lineserverid='"+lineid+"']").attr("collinenum");
-//        var pair = col+line;
-//        $("div[pair='"+pair+"']").remove();        
+        }      
 
         var index = -1;
+        currentFolio = parseInt(currentFolio);
         var currentAnnoList = annoLists[currentFolio -1];
         
          if(currentAnnoList !== "noList" && currentAnnoList !== "empty"){ // if it IIIF, we need to update the list
@@ -3390,9 +3429,9 @@ function toggleLineCol(){
                                 var params = {"content":JSON.stringify(paramObj)};
                                 $.post(url, params, function(data){
                                     //console.log("update from delete finished");
+                                    currentFolio = parseInt(currentFolio);
                                     annoLists[currentFolio - 1] = annoListID;
                                 });
-                                //update forreal
                             }
                         });                       
                     });
@@ -3402,6 +3441,7 @@ function toggleLineCol(){
             //There is no anno list assosiated with this anno.  This is an error.
         }
         else{ //If it is classic T-PEN, we need to update canvas resources
+            currentFolio = parseInt(currentFolio);
             $.each(transcriptionFolios[currentFolio - 1].resources, function(){
                 index++;
                 if(this["@id"] == lineid){
@@ -3410,7 +3450,6 @@ function toggleLineCol(){
                 }
             });
         } 
-        //TODO: Do this for real on anno store
         //When it is just one line being removed, we need to redraw.  When its the whole column, we just delete. 
         cleanupTranscriptlets(draw);
     
@@ -3418,6 +3457,7 @@ function toggleLineCol(){
      
      function removeColumnTranscriptlets(lines, recurse){
         var index = -1;
+        currentFolio = parseInt(currentFolio);
         var currentAnnoList = annoLists[currentFolio -1];
         //console.log("removing transcriptlets from this list");
         //console.log(currentAnnoList);
@@ -3522,34 +3562,17 @@ function toggleLineCol(){
         var oldLeft = -9999;
         var columnLeft;
         var transcriptlets = $(".transcriptlet");
-//        transcriptlets.each(function(index) {
-//            lineCtr++;
-//            columnLeft = parseInt($(this).find(".lineLeft").val(),10);
-//            if (columnLeft > oldLeft){
-//                columnCtr++;
-//                columnLineShift = lineCtr-1;
-//                oldLeft = columnLeft;
-//            }
-//            $(this).attr("id","transcriptlet_"+(index+1))
-//            .find("textarea").attr("id", "transcription" + (index + 1));
-//            $(this).attr("col",String.fromCharCode(64+columnCtr).toUpperCase()).attr("collinenum", lineCtr-columnLineShift);
-//            
-//            
-//          });
           if(draw){
               transcriptlets.remove();
               $(".lineColIndicatorArea").children().remove();
               $("#parsingSplit").find('.fullScreenTrans').unbind();
               $("#parsingSplit").find('.fullScreenTrans').bind("click", function(){
                 fullPage(); 
+                currentFolio = parseInt(currentFolio);
                 drawLinesToCanvas(transcriptionFolios[currentFolio-1], true);
               });
           }
-        
-        // realign the focus with something in the DOM, if missing
-        //if (!focusItem[1].closest('body').length) focusItem[1] = $('#t1');
-        //this.setLineNavBtns();
-        //rebuild();
+
     }
     
 function scrubFolios(){
@@ -3577,4 +3600,32 @@ function scrubFolios(){
             transcriptionFolios[cnt1].otherContent = [];
         }
         });
+}
+
+function toggleImgTools(){
+    if($("#imageTools").attr("class")!==undefined && $("#imageTools").attr("class").indexOf("activeTools") > -1){
+        $('.toolWrap').hide();
+        $("#imageTools").removeClass("activeTools");
+        $("#activeImageTool").children("i").css("transform", "rotate(180deg)");
+    }
+    else{
+        $("#imageTools").addClass("activeTools");
+        $('.toolWrap').show();
+        $("#activeImageTool").children("i").css("transform", "rotate(0deg)");
+    }
+}
+
+function stopMagnify(){
+    isMagnifying = false;
+    zoomMultiplier = 2;
+    $(document).off("mousemove");
+    $("#zoomDiv").removeClass("ui-state-active");
+    $("#zoomDiv").hide();
+    $(".magnifyBtn").removeClass("ui-state-active");
+    $("#magnifyTools").fadeOut(800);
+//                    $("#imgBottom img").css("top", imgBottomOriginal);
+//                    $("#imgBottom .lineColIndicatorArea").css("top", imgBottomOriginal);
+    $(".lineColIndicatorArea").show();
+    $(".magnifyHelp").hide();
+    restoreWorkspace();
 }

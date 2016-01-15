@@ -6,30 +6,25 @@ and open the template in the editor.
 -->
 <html>
     <head>
-            <title>Project Management</title>
-            <link type="text/css" href="css/custom-theme/jQuery.css" rel="Stylesheet" />
-            <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js"></script>
-            <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.js"></script> 
-            <script type="text/javascript" src="js/newberry.js"></script>
-    <!--        <link rel="stylesheet" href="http://165.134.241.141/newberry/css/tpen.css" type="text/css" media="screen, projection">--> 
             <style type="text/css" >
                 #editProjectMembers{
                     position: relative;
                 }
             </style>
     </head>
-    <div>
-        <div class="closeBtn" onclick="$('#projectUserManagement').hide();">X</div>
-        <h4>Add a new group member</h4>
-        <p>If the E-mail you enter is not a T-PEN user, a profile will be created for them and they will be placed into the group.  
-            Their password is blank, they will need to change it when they log in.
+    <div class="ui-widget">
+        <div class="closeBtn" onclick="$('#projectUserManagement').hide(); $('.pageCover').hide();">X</div>
+        <h3 class="popHdr">Share</h3>
+        <p>
+            If the E-mail used to add a member to a group is not a TPEN_NL user, a user profile will be created for them and they will be placed into the group.  
+            Their password is blank for the first time log in. They will need to change it.
         </p>
 
         <div id="addUserToGroup">
-           <label for="adduname">Username (e-mail) </label><input id="adduname" type="text"/>
-           <label for="addfname">First Name </label><input id="addfname" type="text"/>
-           <label for="addlname">Last Name </label><input id="addlname" type="text"/>
-           <input type="button" value="Add User" onclick="addUserToProject();"/>
+            <label for="adduname">Username (e-mail) </label><input id="adduname" type="text"/><br>
+           <label for="addfname">First Name </label><input id="addfname" type="text"/><br>
+           <label for="addlname">Last Name </label><input id="addlname" type="text"/><br>
+           <button onclick="addUserToProject();">Add User</button>
         </div>
 
 <!--        <h4>Create a new Group</h4>
@@ -38,7 +33,7 @@ and open the template in the editor.
             <input type="button" value="Create Group"/>
          </div>-->
 
-        <h4>Existing Members</h4>
+        <h3 class="popHdr">Existing Members</h3>
         <ul id="editProjectMembers" class="isMember">
 
         </ul>

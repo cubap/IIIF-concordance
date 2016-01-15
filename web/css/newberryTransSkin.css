@@ -83,6 +83,7 @@ body{
     background-color: red;
     color: white;
     cursor: pointer;
+    margin-bottom: 4px;
 }
 .parsing.ui-resizable{
     position: absolute !important;
@@ -351,6 +352,8 @@ body{
     font-weight: bold;
     top: 3px;
     position: relative;
+    font-size: 12pt;
+    text-align: center;
 }
 #magnifyHlpLabel{
     margin-bottom: 6px;
@@ -358,6 +361,7 @@ body{
 }
 #lineCtrlLabel{
     top: -1px !important;
+    margin-bottom: 2px;
 }
 #prevPage, #nextPage{
     font-size: 30pt;
@@ -381,7 +385,7 @@ body{
     position: relative;
     height: 30px;
     width: 30px;
-    border: 3px outset #D14836;
+    border: 3px outset rgba(0,42,92,.4);
     text-align: center;
     line-height: 30px;
     display:block;
@@ -431,11 +435,11 @@ body{
 /* outer wrapper for column control and line control */
 .actions{
     margin: 10px 6px;
-    padding: 0px 2px 2px 13px;
+    padding: 0px 15px 2px 13px;
     z-index: 1;
     border: 2px solid #002a5c;
     transition: max-height 1s ease;
-    white-space: nowrap;
+    /*white-space: nowrap;  This is difficult.  On smaller screens, the explanation boxes must break line.*/
     overflow: hidden;
 }
 /* Inner sections of column control and line control */
@@ -469,13 +473,18 @@ body{
 .parsingToolButtons .tpenButton{
     display: block;
     margin-bottom: 5px;
-    min-width: 198px;
     text-align: center;
     line-height: 35px;
+    font-size: 10pt;
 }
 
 #ctrlColumns, #ctrlLines, .tpenButton{
     cursor: pointer;
+}
+
+#ctrlColumns, #ctrlLines{
+    border-bottom: 1px solid #002a5c;
+    color: #002a5c;
 }
 
 /*#parsingSplit {max-width:600px; min-width: 350px;position: relative; z-index: 9;}*/
@@ -828,11 +837,14 @@ label {width:auto;padding: 0;float: none;}/*fixme should not have to overwrite*/
     color: black !important;
     height: 23px;
     line-height: 23px;
+    text-align: left;
 }
 #activeImageTool i {
-    right:0; 
-    font-size: 9pt; 
-    display: inline-block;
+    right: 5px;
+    top: 3px;
+    font-size: 9pt;
+    display: block;
+    position: absolute;
     transform: rotate(180deg);
 }
 .toolWrap{
@@ -964,10 +976,14 @@ button.imgTool{
 }*/
 .trimSection i{
     cursor: pointer;
-    margin: 0px 5px;
+    margin: 0px 10px;
     position: relative;
     display: inline-block;
     font-size: 31pt;
+}
+.trimSection i img{
+    width: 15px;
+    height: 28px;
 }
 /*.trimSection i:nth-child(4){
   left: 120px;
@@ -1001,7 +1017,7 @@ button.imgTool{
     left: 8px;
     top: -16px;
     text-align: center;
-    border: 2px outset #002a5c;
+    border: 2px outset rgba(0,42,92,.4);
 }
 #prevCanvas, #prevLine{
     margin-right: 3px;
@@ -1021,37 +1037,29 @@ button.imgTool{
     text-align:center;
     top:-16px;
     left:3px;
-    border: 2px outset #002a5c;
+    border: 2px outset rgba(0,42,92,.4);
 }
 /* changing margin here moves all buttons across bottom of transcription workspace. */
 .linehdr{
     color: #002a5c;
     font-size: 11pt;
     cursor: default;
-    margin-bottom: 4px;
     position: relative;
     display: inline-block;
 }
 #lineColControls{
     width: 151px;
-    height: 72px;
+    height: 69px;
     background-color: #BFBFBF;
     position: relative;
     display: inline-block;
-    text-align: center;
     font-size: 10pt;
-    top: -4px;
+    top: 1px;
     padding: 3px;
-    border: 2px outset #002a5c
+    border: 2px outset rgba(0,42,92,.4);
 }
 #lineColControls input[type="checkbox"]{
-/*    height: 16px;
-    width: 16px;
-    color: #002a5c;
-    background-color:white;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;*/
+    margin: 0px 0px 0px 4px;
 }
 #lineControls i, #pageControls i{
     display: inline-table;
@@ -1168,12 +1176,13 @@ a{
     display: inline-table;
 }
 .activeParsingTool{
-    max-width: 71%;
     display: none;
-    border: 1px solid black;
+    /*border: 1px solid black;*/
     padding: 0px 1%;
-    margin-left: 1%;
     margin-bottom: 12px;
+    width: 98%;
+    background-color: #BFBFBF;
+    margin-top: 10px;
 }
 .ui-slider-horizontal{
     height: .3em;

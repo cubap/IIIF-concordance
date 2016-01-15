@@ -38,6 +38,7 @@ import textdisplay.Project;
  * Copy project from a template project(or called standard project) which is created by NewBerry. 
  * Clear all transcription data from project and connect the new project 
  * to the template project on switch board. 
+ * This is a transformation of tpen function to web service. It's using tpen MySQL database. 
  * @author hanyan
  */
 public class CopyProjectForPracticerServlet extends HttpServlet {

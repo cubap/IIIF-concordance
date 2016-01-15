@@ -29,7 +29,8 @@ import user.Group;
 import user.User;
 
 /**
- *
+ * Add user to project and add this user to project group. This is a transformation of tpen function to web service.  
+ * It's using tpen MySQL database. 
  * @author hanyan
  */
 public class AddUserToProjectServlet extends HttpServlet {
@@ -50,7 +51,7 @@ public class AddUserToProjectServlet extends HttpServlet {
                         if (g.isAdmin(thisUser.getUID())) {
                             User newUser = new User(request.getParameter("uname"));
                             g.addMember(newUser.getUID());
-                            response.getWriter().print("success");
+                            response.getWriter().print(newUser.getUID());
                         }else{
                             //if user is not admin, return unauthorized. 
                             response.getWriter().print(response.SC_UNAUTHORIZED);
@@ -61,7 +62,7 @@ public class AddUserToProjectServlet extends HttpServlet {
                         if (g.isAdmin(thisUser.getUID())) {
                             User newUser = new User(request.getParameter("uname"));
                             g.addMember(newUser.getUID());
-                            response.getWriter().print("success");
+                            response.getWriter().print(newUser.getUID());
                         }else{
                             //if user is not admin, return unauthorized. 
                             response.getWriter().print(response.SC_UNAUTHORIZED);
@@ -72,7 +73,7 @@ public class AddUserToProjectServlet extends HttpServlet {
                         if (g.isAdmin(thisUser.getUID())) {
                             User newUser = new User(request.getParameter("uname"));
                             g.addMember(newUser.getUID());
-                            response.getWriter().print("success");
+                            response.getWriter().print(newUser.getUID());
                         }else{
                             //if user is not admin, return unauthorized. 
                             response.getWriter().print(response.SC_UNAUTHORIZED);
@@ -96,7 +97,7 @@ public class AddUserToProjectServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doGet(req, resp); //To change body of generated methods, choose Tools | Templates.
+        this.doPost(req, resp);
     }
     
 }

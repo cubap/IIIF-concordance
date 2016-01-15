@@ -27,7 +27,7 @@ public class CreateAnnoListUtil {
         canvasList.element("forkFromID", "");
         canvasList.element("resources", resource);
         canvasList.element("proj", projectID);
-        canvasList.element("testing", "testing");
+        canvasList.element("testing", "");
         return canvasList;
     }
 }
