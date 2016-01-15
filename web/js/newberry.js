@@ -866,7 +866,7 @@
         $("#imgTop img, #imgBottom img").css("width", "auto");
         $("#prevColLine").html("**");
         $("#currentColLine").html("**");
-        $('.transcriptionImage').attr('src', "../newberry/images/loading2.gif"); //background loader if there is a hang time waiting for image
+        $('.transcriptionImage').attr('src', "images/loading2.gif"); //background loader if there is a hang time waiting for image
         $('.lineColIndicator').remove();
         $(".transcriptlet").remove();
         var pageTitle = canvasObj.label;
@@ -907,20 +907,20 @@
                         .on("load", function(){
                             $("#imgTop, #imgTop img, #imgBottom img, #imgBottom, #transcriptionCanvas").css("height", "auto");
                             $("#imgTop img, #imgBottom img").css("width", "100%");
-                            $('.transcriptionImage').attr('src', "../newberry/images/missingImage.png");
-                            $("#fullPageImg").attr("src", "../newberry/images/missingImage.png");
+                            $('.transcriptionImage').attr('src', "images/missingImage.png");
+                            $("#fullPageImg").attr("src", "images/missingImage.png");
                             $('#transcriptionCanvas').css('height', $("#imgBottom img").height() + "px");
                             $('.lineColIndicatorArea').css('height', $("#imgBottom img").height() + "px");
                             $("#imgTop").css("height", "0%");
                             $("#imgBottom img").css("top", "0px");
                             $("#imgBottom").css("height", "inherit");     
                         })
-                        .attr("src", "../newberry/images/missingImage.png")
+                        .attr("src", "images/missingImage.png")
                     })
                     .attr("src", canvasObj.images[0].resource['@id'].replace('amp;',''));
         }
         else{
-             $('.transcriptionImage').attr('src',"../newberry/images/missingImage.png");
+             $('.transcriptionImage').attr('src',"images/missingImage.png");
              alert("The canvas is malformed.  No 'images' field in canvas object or images:[0]['@id'] does not exist.  Cannot draw lines.");
             //ERROR!  Malformed canvas object.  
         }
