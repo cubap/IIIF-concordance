@@ -476,6 +476,7 @@ body{
     text-align: center;
     line-height: 35px;
     font-size: 10pt;
+    min-width: 165px;
 }
 
 #ctrlColumns, #ctrlLines, .tpenButton{

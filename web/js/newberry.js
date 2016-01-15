@@ -1197,27 +1197,40 @@
             return false;
         }
         var nextCol = transcriptlet.attr("col");
-        var nextLineNum = parseInt(transcriptlet.attr("id").replace("transcriptlet_", ""))+1;
-        var nextColLine = nextCol+nextLineNum;
+        var nextLineNum = parseInt(transcriptlet.attr("collinenum"))+1;
+        var transcriptletBefore = $(transcriptlet.prev());
+        var nextColLine = nextCol+""+nextLineNum;
         $("#currentColLine").html(nextColLine);
-        if(nextLineNum > 1){
-            var currentTranscriptletNum = nextLineNum - 1;
-            var previousTranscriptletNum = currentTranscriptletNum - 1;
-            var prevLine = $("#transcriptlet_"+previousTranscriptletNum);
-            var prevLineCol = prevLine.attr("col");
-            var prevLineText = prevLine.attr("data-answer");
-            $("#prevColLine").html(prevLineCol+""+currentTranscriptletNum);
-            if(prevLineText === ""){
-                $("#captionsText").html("This line is not transcribed.");
+        if(parseInt(nextLineNum) >= 1){
+            if(transcriptletBefore.length>0){
+                var currentTranscriptletNum = parseInt(transcriptletBefore.attr("collinenum")) + 1;
+                //var prevLine = $("#transcriptlet_"+previousTranscriptletNum);
+                var preLine = "";
+                if(transcriptletBefore.length > 0){
+
+                }
+                else{
+
+                }
+                var prevLineCol = transcriptletBefore.attr("col");
+                var prevLineText = transcriptletBefore.attr("data-answer");
+                $("#prevColLine").html(prevLineCol+""+currentTranscriptletNum);
+                if(prevLineText === ""){
+                    $("#captionsText").html("This line is not transcribed.");
+                }
+                else{
+                    $("#captionsText").html(prevLineText);
+                }
             }
-            else{
-                $("#captionsText").html(prevLineText);
+            else{ //this is a probelm
+                $("#prevColLine").html("**");
+                $("#captionsText").html("You are on the first line.");
             }
             
         }
         else{ //there is no previous line
             $("#prevColLine").html("**");
-            $("#captionsText").html("You are on the first line");
+            $("#captionsText").html("ERROR.  NUMBERS ARE OFF");
         }
         focusItem[0] = focusItem[1];
         focusItem[1] = transcriptlet;
@@ -3482,7 +3495,7 @@ function toggleLineCol(){
                                 destroyPage();
                             }
                             else{
-                                cleanupTranscriptlets(true);
+                                cleanupTranscriptlets(false);
                             }
                         }
                 }
@@ -3501,21 +3514,22 @@ function toggleLineCol(){
                         //console.log(currentAnnoList.resources);
                         for(var l=lines.length-1; l>=0; l--){
                             var theLine = $(lines[l]);
-                            var index = -1;
+                            var index2 = -1;
                              $.each(currentAnnoList.resources, function(){
                                 var currentResource = this;
-                                index++;
+                                index2++;
                                 //console.log(currentResource["@id"] +" == "+ theLine.attr("lineserverid")+"?")
                                 if(currentResource["@id"] == theLine.attr("lineserverid")){
-                                    currentAnnoList.resources.splice(index, 1);
+                                    currentAnnoList.resources.splice(index2, 1);
                                     //console.log(theLine);
-                                    //console.log("Delete from list " + theLine.attr("lineserverid")+" at index "+index+".");
+                                    //console.log("Delete from list " + theLine.attr("lineserverid")+" at index "+index2+".");
                                     theLine.remove();
                                 }
                              });
 
                             if(l===0){
                                 //console.log("last line in column, update list");
+                                //console.log(currentAnnoList.resources);
                                 var url = "updateAnnoList";
                                 var paramObj = {"@id":annoListID, "resources": currentAnnoList.resources};
                                 var params = {"content":JSON.stringify(paramObj)};
@@ -3527,7 +3541,7 @@ function toggleLineCol(){
                                         destroyPage();
                                     }
                                     else{
-                                        cleanupTranscriptlets(false);
+                                        cleanupTranscriptlets(true);
                                     }
                                     
                                 });
@@ -3557,11 +3571,6 @@ function toggleLineCol(){
      }
     
     function cleanupTranscriptlets(draw) {
-        var columnCtr = 0;
-        var columnLineShift = 0;
-        var lineCtr = 0;
-        var oldLeft = -9999;
-        var columnLeft;
         var transcriptlets = $(".transcriptlet");
           if(draw){
               transcriptlets.remove();
