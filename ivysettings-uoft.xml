@@ -2,7 +2,7 @@
   <include url="${ivy.default.settings.dir}/ivysettings.xml"/>
   <property name="nexus-server" value="brickyard.library.utoronto.ca"/>
   <credentials host="${nexus-server}"
-    realm="Sonatype Nexus Repository Manager"
+    realm="Nexus Repository Manager"
     username="${nexus.user}"
     passwd="${nexus.pass}"/>
   <resolvers>
