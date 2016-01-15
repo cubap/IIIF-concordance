@@ -92,7 +92,7 @@ public class CopyProjWithAnnoServlet extends HttpServlet {
                             //Folio.getRbTok("SERVERURL") + templateProject.getProjectName() + "/canvas/" + URLEncoder.encode(folio.getPageName(), "UTF-8")
                             annoLsQuery.element("on", canvasID);
                            
-                            System.out.println(annoLsQuery.toString());
+                            //System.out.println(annoLsQuery.toString());
                             
                             URL postUrlannoLs = new URL(Constant.ANNOTATION_SERVER_ADDR + "/anno/getAnnotationByProperties.action");
                             HttpURLConnection ucAnnoLs = (HttpURLConnection) postUrlannoLs.openConnection();
