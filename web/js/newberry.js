@@ -2172,6 +2172,8 @@
             //??
               $("#mapsSplit").css("display", "inline-table");
             break;
+          case "start":
+              $("#startSplit").css("display", "inline-table");
           default:
               //This is a user added iframe tool.  tool is toolID= attribute of the tool div to show.  
               $('div[toolName="'+tool+'"]').css("display", "inline-table");
