@@ -140,15 +140,16 @@
                     </select>
                     <select id="splitScreenTools" > <!-- onclick="$('.splitTool').fadeToggle(400);" -->
                          <option id="activeSplitTool" >Split Page Tools</option> 
+                         <option splitter='start' class="splitTool" >Get Started</option>
                          <option splitter='essay' class="splitTool" >Background Essay</option>
                          <option splitter='partialTrans' class="splitTool" >Partial Transcriptions</option>
                          <option splitter='groupwork' class="splitTool" >Group Work</option>
                          <option splitter='calligraphy' class="splitTool" >Calligraphy Books</option>
-                         <option splitter='scripts' class="splitTool" >Scripts</option>
+                         <option splitter='scripts' class="splitTool" >French Scripts and Hands</option>
                          <option splitter='frenchdocs' class="splitTool" >About French Documents</option>
-                         <option splitter='conservation' class="splitTool" >Conservation</option>
+                         <option splitter='conservation' class="splitTool" >Manuscript Preservation</option>
                          <option splitter='conventions' class="splitTool" >Transcribing & Editing Conventions</option>
-                         <option splitter='teachers' class="splitTool" >For Teachers</option>
+                         <option splitter='teachers' class="splitTool" >Teaching</option>
                          <option splitter='dictionary' class="splitTool" >Dictionaries</option>
                          <option splitter='glossary' class="splitTool" >Glossary</option>
                          <option splitter='fInstitutions' class="splitTool" >French Institutions</option>
@@ -203,6 +204,7 @@
                 <!-- tool buttons for parsing -->
                 </div>
                 <div id="parsingDiv" class="">
+                    <div>Any lines or columns that are created or edited are saved automatically.</div>
                     <div id="parseOptions">
                         <h3 class="parsingHdr">Line Parsing</h3>
                         <div id="ctrlColumnsInst" class="actions">
@@ -294,9 +296,14 @@
                 </div>
             </div>
         
+             <div id="startSplit" class="split">
+                <button class="fullScreenTrans">Full Screen Transcription</button>
+                <iframe src="https://paleography.library.utoronto.ca/content/get-started"></iframe>
+            </div>
+        
             <div id="calligraphySplit" class="split">
                 <button class="fullScreenTrans">Full Screen Transcription</button>
-                <iframe src=" https://paleography.library.utoronto.ca/islandora/object/paleography%3Acalligraphybooks?response_type=embed"></iframe>
+                <iframe src="https://paleography.library.utoronto.ca/islandora/object/paleography%3Acalligraphybooks?response_type=embed"></iframe>
             </div>
         
             <div id="mapsSplit" class="split">

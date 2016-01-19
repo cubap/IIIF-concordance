@@ -589,10 +589,10 @@ public class TagButton {
             ctr++;
          }
          if (ctr == 0) {
-            TagButton b = new TagButton(uid, 1, "temp", "button description");
-            b = new TagButton(uid, 2, "temp", "button description");
-            b = new TagButton(uid, 3, "temp", "button description");
-            b = new TagButton(uid, 4, "temp", "button description");
+//            TagButton b = new TagButton(uid, 1, "temp", "button description");
+//            b = new TagButton(uid, 2, "temp", "button description");
+//            b = new TagButton(uid, 3, "temp", "button description");
+//            b = new TagButton(uid, 4, "temp", "button description");
          }
          return toret;
       } finally {
