@@ -59,8 +59,8 @@
         <div class="magnifyHelp">
             <div id='magnifyHlpLabel'>Magnify Help</div>
             <button style='margin-bottom: 3px;' class='nohover'>esc</button><span>   to quit</span><br>
-            <button style='margin-bottom: 3px;' class='nohover'>+</button><span>   to zoom in</span><br>
-            <button class='nohover'>-</button><span>   to zoom out</span>
+            <button style='margin-bottom: 3px;' class='nohover'>+</button><span>   or mouse wheel to zoom in</span><br>
+            <button class='nohover'>-</button><span>   or mouse wheel to zoom out</span>
         </div>
         <div class="topTrim">
             <span class="trimSection">TITLE:<span id="trimTitle"></span></span>
@@ -602,6 +602,21 @@
             $('.activeLine').css('box-shadow', '0px 0px 15px 8px '+color);
         }, function(){
             $('.activeLine').css('box-shadow', '0px 0px 15px 8px '+colorThisTime);
+        });
+        
+        document.addEventListener("mousewheel", function(e){
+            if(isMagnifying){
+                event.preventDefault();
+                var wDelta = e.wheelDelta < 0 ? 'down' : 'up';
+                if(wDelta === "up"){
+                    zoomMultiplier += .4;
+                    $(document).mousemove();
+                }
+                else{
+                    zoomMultiplier -= .4;
+                    $(document).mousemove();
+                }
+            }
         });
 
         $(document).keydown(function(event){

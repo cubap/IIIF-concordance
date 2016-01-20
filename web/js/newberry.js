@@ -1197,7 +1197,7 @@
                 colCounter+=1;
                 $("#transcriptletArea").append(newAnno);
                 
-                var lineColumnIndicator = $("<div pair='"+col+""+colCounter+"' lineserverid='"+lineID+"' lineID='"+counter+"' class='lineColIndicator' style='left:"+left+"%; top:"+top+"%; width:"+width+"%; height:"+height+"%;'><div class\n\
+                var lineColumnIndicator = $("<div onclick='loadTranscriptlet("+(counter-1)+");' pair='"+col+""+colCounter+"' lineserverid='"+lineID+"' lineID='"+counter+"' class='lineColIndicator' style='left:"+left+"%; top:"+top+"%; width:"+width+"%; height:"+height+"%;'><div class\n\
                 ='lineColOnLine' >"+col+""+colCounter+"</div></div>");
                 var fullPageLineColumnIndicator = $("<div pair='"+col+""+colCounter+"' lineserverid='"+lineID+"' lineID='"+counter+"' class='lineColIndicator fullP'\n\
                 onclick=\"updatePresentation($('#transcriptlet_"+(parseInt(counter)-1)+"'));\" style='left:"+left+"%; top:"+top+"%; width:"+width+"%; height:"+height+"%;'><div class\n\
@@ -1387,6 +1387,33 @@
           
     }  
    
+   function loadTranscriptlet(lineid){
+       var currentLineServerID = focusItem[1].attr("lineserverid");
+          if($('#transcriptlet_'+lineid).length > 0){
+              if(loggedInUser){
+                  var lineToUpdate = $(".transcriptlet[lineserverid='"+currentLineServerID+"']")
+                  updateLine(lineToUpdate, "no");
+                  updatePresentation($('#transcriptlet_'+lineid));
+              }
+              else{
+                var captionText1 = $("#captionsText").html();
+                $("#captionsText").html("You are not logged in.");
+                $('#captionsText').css("background-color", 'red');
+                setTimeout(function(){ $('#captionsText').css("background-color", '#E6E7E8'); }, 500);
+                setTimeout(function(){ $('#captionsText').css("background-color", 'red'); }, 1000);
+                setTimeout(function(){ $('#captionsText').css("background-color", '#E6E7E8');  $("#captionsText").html(captionText1); }, 1500);
+              }
+              
+          }
+          else{ //blink a caption warning
+              var captionText = $("#captionsText").html();
+              $("#captionsText").html("You are on the last line! ");
+              $('#captionsText').css("background-color", 'red');
+              setTimeout(function(){ $('#captionsText').css("background-color", '#E6E7E8'); }, 500);
+              setTimeout(function(){ $('#captionsText').css("background-color", 'red'); }, 1000);
+              setTimeout(function(){ $('#captionsText').css("background-color", '#E6E7E8');  $("#captionsText").html(captionText); }, 1500);
+          }
+   }
   
     /*
      * The UI control for going the the next transcriptlet in the transcription. 
