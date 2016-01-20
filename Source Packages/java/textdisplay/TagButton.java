@@ -589,10 +589,10 @@ public class TagButton {
             ctr++;
          }
          if (ctr == 0) {
-            TagButton b = new TagButton(uid, 1, "temp", "button description");
-            b = new TagButton(uid, 2, "temp", "button description");
-            b = new TagButton(uid, 3, "temp", "button description");
-            b = new TagButton(uid, 4, "temp", "button description");
+//            TagButton b = new TagButton(uid, 1, "temp", "button description");
+//            b = new TagButton(uid, 2, "temp", "button description");
+//            b = new TagButton(uid, 3, "temp", "button description");
+//            b = new TagButton(uid, 4, "temp", "button description");
          }
          return toret;
       } finally {
@@ -635,10 +635,10 @@ public class TagButton {
             ctr++;
          }
          if (ctr == 0) {
-            TagButton b = new TagButton(projectID, 1, "temp", true, "button description");
-            b = new TagButton(projectID, 2, "temp", true, "button description");
-            b = new TagButton(projectID, 3, "temp", true, "button description");
-            b = new TagButton(projectID, 4, "temp", true, "button description");
+//            TagButton b = new TagButton(projectID, 1, "temp", true, "button description");
+//            b = new TagButton(projectID, 2, "temp", true, "button description");
+//            b = new TagButton(projectID, 3, "temp", true, "button description");
+//            b = new TagButton(projectID, 4, "temp", true, "button description");
          }
          return toret;
       } finally {

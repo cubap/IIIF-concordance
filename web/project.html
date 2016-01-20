@@ -47,9 +47,13 @@ Open the project management section for a given project ID.
                 margin: 0 auto;
                 display: none;
                 border: 2px solid #002a5c;
-                background-color: #BFBFBF;
+                background-color: white;
                 padding: 0px 12px;
                 color: #002a5c;
+            }
+            
+            #newProjectMetadata{
+                margin-left: 22px;
             }
             
             .label{
@@ -58,7 +62,7 @@ Open the project management section for a given project ID.
                 font-weight: bold;
                 text-align: right;
                 display: inline-block;
-                width: 107px;
+                width: 131px;
             }
             .val{
                 font-size: 10pt;
@@ -74,21 +78,40 @@ Open the project management section for a given project ID.
             #button { text-decoration: none; }
             body,#wrapper {height: 100%;max-height: 100%;overflow: visible;}
             #project, #ms, #team, #options, #export { margin: 0; padding: 0;}
-            #project li, #ms li, #export li, #team li, #options li {padding: 0.4em; padding-left: 1.5em; height: 100%;overflow: hidden; position: relative;margin-right: 1%; background: #BFBFBF; display: inline-table; color: #002a5c; border: 1px solid #002a5c;}
+            #ms li, #export li, #team li{padding: 0.4em; padding-left: 1.5em; height: 100%;overflow: hidden; position: relative;margin-right: 1%; background: #BFBFBF; display: inline-table; color: #002a5c; border: none;}
             #project li ul,#ms li ul,#team li ul, #options li ul, #export li ul {padding: 0;margin: 0;}
-            #project li ul li,#ms li ul li,#team li ul li,  #export li ul li {list-style:outside none;padding:0;width:100%;height:100%;}
+            #project li ul li,#ms li ul li,#team li ul li,  #export li ul li {list-style:outside none;padding: 2px 0px 2px 4px;width:100%;height:100%;}
             #options li{
-                padding: 0.4em; padding-left: 1.5em; max-height: 590px; overflow: auto; float:left; width:30%; position: relative;margin-right: 1%; width: 47%
+                padding: 0.4em; 
+                padding-left: 1.5em; 
+                max-height: 590px; 
+                overflow-y: auto; 
+                position: relative;
+                margin-right: 1%; 
+                width: 43%;
+                border-right: #BFBFBF;
+                display: inline-block !important;
+            }
+            #project li{
+                padding: 0.4em; 
+                padding-left: 1.5em; 
+                max-height: 590px; 
+                overflow-y: auto; 
+                position: relative;
+                margin-right: 1%; 
+                width: 43%;
+                border-right: #BFBFBF;
+                display: inline-table !important;
             }
             #team li{padding: 0.4em; padding-left: 1.5em; height: 100%; width: 97%; overflow: hidden; position: relative;margin-right: 1%; background: #BFBFBF; color: #002a5c;}
             #project li{
-                width: 47%;
+                width: 43%;
             }
             
             #project div.tall {position: absolute;right:0;width: 29%;}
             #project div.tall li {position: absolute;right:20px;height:48%;margin:0;width:100%;min-height: 120px;}
             #project div.tall li:last-child {bottom:-13px;min-height: 80px;}
-            #projectList {max-height: 300px;overflow: auto;}
+            #projectList {max-height: 300px;overflow: hidden; max-width: 95%;}
             #projectList li {    
                 margin: 0;
                 border: none;
@@ -234,14 +257,62 @@ Open the project management section for a given project ID.
         }
         
         /* jQuery.css overwrites for the tab interface */
+        .ui-tabs{
+            padding: .2em .2em .2em 0em !important;
+        }
         .ui-tabs .ui-tabs-nav {
             background: white !important;
-            border: 1px solid #002a5c;
+            border: none !important;
+            padding: 0px 0px 0px 2px !important;
         }
         
+        .ui-tabs .ui-tabs-nav li{
+            top: -3px !important;
+            border-top: none !important;
+            border-left: 1px solid #BFBFBF;
+            border-right: 1px solid #BFBFBF; 
+        }
+        
+        .ui-tabs .ui-tabs-nav li:hover{
+            color: #e21635;
+        }
+        
+        .ui-tabs .ui-tabs-nav li a{
+            padding: 0 10px;
+            display: block;
+            float: left;
+            height: 1.5em;
+            line-height: 1.5em;
+            margin-right: 1px;
+            text-decoration: none;
+            background-color: #f5f5f5;
+            border-color: #ccc;
+            font-size: 15px;
+            font-weight: 300;
+            cursor: pointer;
+            transition: color 800ms;
+        }
+        
+        .ui-tabs .ui-tabs-nav li.ui-tabs-selected a{
+            background-color:white !important;
+            color: black !important;
+        }
+        
+        .ui-tabs .ui-tabs-nav li.ui-tabs-selected a:hover{
+            border-color: #ccc;
+            color: black !important;
+            cursor: default;
+        }
+        
+        .ui-tabs .ui-tabs-nav li a:hover, .ui-tabs .ui-tabs-nav li a:focus {
+            background-color: #eee;
+            border-color: #BFBFBF;
+            color: #e21635;
+        }
+             
         
         .ui-state-default, .ui-widget-content, .ui-widget-header .ui-state-default{
-            background: #BFBFBF !important;
+            background: white !important;
         }
         
         .ui-tabs-panel{
@@ -250,21 +321,31 @@ Open the project management section for a given project ID.
         }
         
         #tabs{
-            border: 1px solid #002a5c;
+            border-top: 1px solid #BFBFBF;
+            border-left: none !important;
+            border-right: none !important;
+            border-bottom: none !important;
             margin: 0px 1%;
         }
         .ui-corner-bottom{
             background-color: white !important;
         }
         .topTabs ul li{
-             color: #002a5c !important;
+             color: #002a5c;
              //background-color: #D14836;
         }
         .ui-widget-content a {
-                color: white;
+             color: white;
         }
         .ui-tabs .ui-tabs-nav li a{
-            color: #002a5c !important;
+            color: #002a5c;
+        }
+        
+        h3, h2{
+            border-bottom: 1px solid #002a5c;
+        }
+        p{
+            font-size: 12pt;
         }
         
 /*        .ui-state-active a, .ui-state-active a:link{
@@ -280,9 +361,9 @@ Open the project management section for a given project ID.
         <div id="wrapper">
             <!--<div id="header"><p align="center" class="tagline">transcription for paleographical and editorial notation</p></div>-->
             <div id="content">
-                <h1 class='projectTitle'><script>document.write(document.title); </script></h1>
-                <p class='projectTitle'>Use this page to view and alter information about the projects you are a part of.</p> 
-                <p class='projectTitle'>Admins can control project settings and general users can control their involvement in projects.  </p>
+                <h1 class='projectTitle'>Project Management</h1>
+<!--                <p class='projectTitle'>Use this page to view and alter information about the projects you are a part of.</p> 
+                <p class='projectTitle'>Admins can control project settings and general users can control their involvement in projects.  </p>-->
                 <div id="editProjectMetadata"></div>
                 
                 <div id="tabs">
@@ -324,7 +405,7 @@ Open the project management section for a given project ID.
                                      Check for header limitation 
                                   <span id="lineBreakNotice" class='ui-state-error-text'></span>-->
                                     
-                                <p>
+                                <p style='max-width: 95%;'>
                                     <span class="label">Title: </span><span class="val metadataTitle"></span><br />
                                     <span class="label">Subtitle:</span> <span class="val metadataSubtitle"></span><br />
                                     <span class="label">MS&nbsp;Identifier:</span> <span class="val metadataMSID"></span><br />
@@ -338,7 +419,7 @@ Open the project management section for a given project ID.
                                 </p>
                                 
                                 <!-- Make sure user can update information -->
-                                <div class="permitMetadata isMember">
+                                <div style='max-width: 95%;' class="permitMetadata isMember">
                                     <p class="mustBeAdmin">To update any of this information:</p>
                                     <a class="tpenButton mustBeAdmin" onclick="$('#projectMetadataWrapper').show(); $('.pageCover').show();"><span class="ui-icon ui-icon-tag right"></span>Update Metadata</a>
                                 </div>
@@ -491,7 +572,7 @@ Open the project management section for a given project ID.
                                                 <!--<h6>External Access</h6>-->
                                                 <label for="OACr" class="publicLabel">
                                                     <div class="publicDesc">
-                                                        <h3 class="noBottom">Open Annotation Collaboration</h3>
+                                                        <h4 class="noBottom">Open Annotation Collaboration</h4>
                                                         <input id="OACr" name="OACr" type="checkbox" value="true" />OAC Read<br>
                                                         <code>Read Permission</code>
                                                             <p>This setting allows external (not originating from t&#8209;pen.org) tools and services to <strong>read</strong> data from the T&#8209;PEN database. Projects with this permission can load annotations and transcriptions into other tools and interfaces for in-depth processing not available on T&#8209;PEN.</p>
@@ -502,7 +583,7 @@ Open the project management section for a given project ID.
                                                 </label>
                                                 <label for="OACw" class="publicLabel">
                                                     <div class="publicDesc">
-                                                        <h3 class="noBottom">Open Annotation Collaboration</h3>
+                                                        <h4 class="noBottom">Open Annotation Collaboration</h4>
                                                         <input id="OACw" name="OACw" type="checkbox"  value="true" />OAC Write<br>
                                                             <code>Write Permission</code>
                                                             <p>This setting allows external (not originating from t&#8209;pen.org) tools and services to write data from the T&#8209;PEN database. Projects with this permission can load annotations and transcriptions into other tools <em>and changes saved</em> for in-depth processing not available on T&#8209;PEN.</p>
@@ -514,7 +595,7 @@ Open the project management section for a given project ID.
                                                 <!--<%if(permitRead)out.print("checked");%>-->
                                                 <label for="readTrans" class="publicLabel">
                                                     <div class="publicDesc">
-                                                        <h3 class="noBottom">View Project</h3>
+                                                        <h4 class="noBottom">View Project</h4>
                                                         <input id="readTrans" name="readTrans" type="checkbox"  value="true" />View Project<br>
                                                             <code>Read Permission</code>
                                                             <p>This setting allows users logged into T&#8209;PEN to <strong>view</strong> this project in the transcription interface. Users cannot make any changes or view any data not revealed in the interface.</p>
@@ -525,7 +606,7 @@ Open the project management section for a given project ID.
                                                 </label>
                                                 <label for="publicExport" class="publicLabel">
                                                     <div class="publicDesc">
-                                                        <h3 class="noBottom">Export Project</h3>
+                                                        <h4 class="noBottom">Export Project</h4>
                                                         <input id="publicExport" name="publicExport" type="checkbox"  value="true" />Export Project<br>
                                                             <code>Read Permission</code>
                                                             <p>This setting allows users logged into T&#8209;PEN to <strong>export</strong> this project through the T&#8209;PEN interface. Users cannot make any changes to original data.</p>
@@ -537,7 +618,7 @@ Open the project management section for a given project ID.
                                                 <label for="projectCopy" class="publicLabel">
                                                     <!--<%if(permitCopy)out.print("checked");%> <%if(thisProject.containsUserUploadedManuscript())out.print("disabled title='This project contains private images.'");%>-->
                                                     <div class="publicDesc">
-                                                        <h3 class="noBottom">Copy Project</h3>
+                                                        <h4 class="noBottom">Copy Project</h4>
                                                         <input id="projectCopy" name="projectCopy" type="checkbox"  value="true" />Copy Project<br>
                                                             <code>Read Permission</code>
                                                             <p>This setting allows users logged into T&#8209;PEN to <strong>copy</strong> this project and work independently. Users cannot make any changes to original data.</p>
@@ -551,7 +632,7 @@ Open the project management section for a given project ID.
                                                 <label for="modNotes" class="publicLabel">
                                                     <!--<%if(permitNotes)out.print("checked");%>-->
                                                     <div class="publicDesc">
-                                                        <h3 class="noBottom">Modify Notes</h3>
+                                                        <h4 class="noBottom">Modify Notes</h4>
                                                         <input id="modNotes" name="modNotes" type="checkbox"  value="true" />Modify Notes<br>
                                                             <code>Write Permission</code>
                                                             <p>This setting allows users logged into T&#8209;PEN to <strong>modify</strong> any data in the notes fields. Changes are not restricted, but are tracked in the History with a username and timestamp.</p>
@@ -562,7 +643,7 @@ Open the project management section for a given project ID.
                                                 <label for="modTrans" class="publicLabel">
                                                     <!--<%if(permitModify)out.print("checked");%>-->
                                                     <div class="publicDesc">
-                                                        <h3 class="noBottom">Modify Transcription</h3>
+                                                        <h4 class="noBottom">Modify Transcription</h4>
                                                         <input id="modTrans" name="modTrans" type="checkbox"  value="true" />Modify Transcription<br>
                                                             <code>Write Permission</code>
                                                             <p>This setting allows users logged into T&#8209;PEN to <strong>modify</strong> any data in the transcription fields. Changes are not restricted, but are tracked in the History with a username and timestamp.</p>
@@ -573,7 +654,7 @@ Open the project management section for a given project ID.
                                                 <label for="modAnno" class="publicLabel">
                                                     <!--<%if(permitAnnotation)out.print("checked");%>-->
                                                     <div class="publicDesc">
-                                                        <h3 class="noBottom">Modify Annotations</h3>
+                                                        <h4 class="noBottom">Modify Annotations</h4>
                                                         <input id="modAnno" name="modAnno" type="checkbox"  value="true" />Modify Annotations<br>
                                                             <code>Write Permission</code>
                                                             <p>This setting allows users logged into T&#8209;PEN to <strong>modify</strong> any annotation. This includes insertion, deletion, and modification.</p>
@@ -585,7 +666,7 @@ Open the project management section for a given project ID.
                                                     <!--<%if(permitParsing)out.print("checked");%>-->
                                                     
                                                     <div class="publicDesc">
-                                                        <h3 class="noBottom">Modify Line Parsing</h3>
+                                                        <h4 class="noBottom">Modify Line Parsing</h4>
                                                         <input id="modParsing" name="modParsing" type="checkbox"  value="true" />Modify Line Parsing<br>
                                                             <code>Write Permission</code>
                                                             <p>This setting allows users logged into T&#8209;PEN to <strong>modify</strong> line parsing. This includes insertion, deletion, and modification.</p>
@@ -597,7 +678,7 @@ Open the project management section for a given project ID.
                                                     <!--<%if(permitButtons)out.print("checked");%>-->
                                                     
                                                     <div class="publicDesc">
-                                                        <h3 class="noBottom">Modify Buttons</h3>
+                                                        <h4 class="noBottom">Modify Buttons</h4>
                                                         <input id="modButton" name="modButton" type="checkbox"  value="true" />Modify Buttons and Tags<br>
                                                             <code>Write Permission</code>
                                                             <p>This setting allows users logged into T&#8209;PEN to <strong>modify</strong> any special character or XML tag buttons in the project (including addition and deletion).</p>
@@ -608,7 +689,7 @@ Open the project management section for a given project ID.
                                                 <label for="modMetadata" class="publicLabel">
                                                     <!--<%if(permitMetadata)out.print("checked");%>-->
                                                     <div class="publicDesc">
-                                                        <h3 class="noBottom">Modify Metadata</h3>
+                                                        <h4 class="noBottom">Modify Metadata</h4>
                                                         <input id="modMetadata" name="modMetadata" type="checkbox"  value="true" />Modify Metadata<br>
                                                             <code>Write Permission</code>
                                                             <p>This setting allows users logged into T&#8209;PEN to <strong>modify</strong> project metadata or upload a custom header.</p>

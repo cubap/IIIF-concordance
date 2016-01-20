@@ -76,9 +76,9 @@ body{
     background-color: #d14836;
 }*/
 
-.character:hover{
+/*.character:hover{
     background-color: #272727;
-}
+}*/
 .destroyPage{
     background-color: red;
     color: white;
@@ -476,6 +476,7 @@ body{
     text-align: center;
     line-height: 35px;
     font-size: 10pt;
+    min-width: 165px;
 }
 
 #ctrlColumns, #ctrlLines, .tpenButton{
@@ -1060,6 +1061,7 @@ button.imgTool{
 }
 #lineColControls input[type="checkbox"]{
     margin: 0px 0px 0px 4px;
+    position: relative;
 }
 #lineControls i, #pageControls i{
     display: inline-table;

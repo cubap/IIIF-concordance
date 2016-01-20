@@ -398,7 +398,7 @@
                     populatePreview(lines, pageLabel, currentPage);    
                 }
                 else{
-                    console.log("Gotta get annos on " + currentOn);
+                    //console.log("Gotta get annos on " + currentOn);
                     gatherAndPopulate(currentOn, pageLabel, currentPage, i);                   
                 }
            }
@@ -407,7 +407,7 @@
     }
     
     function gatherAndPopulate(currentOn, pageLabel, currentPage, i){
-        console.log("get annos on "+currentOn);
+        //console.log("get annos on "+currentOn);
         var annosURL = "getAnno";
         var properties = {"@type": "sc:AnnotationList", "on" : currentOn};
         var paramOBJ = {"content": JSON.stringify(properties)};
@@ -421,11 +421,15 @@
     }
     function checkForMaster(annoList, pageLabel, currentPage, j){
         var lines = [];
-        var masterList = annoList[0];
+        var masterList = {};
         for(var i=0; i<annoList.length; i++){
             var thisList = annoList[i];
+            if(thisList.proj === "master"){
+                //console.log("master");
+                masterList = thisList;
+            }
             if(thisList.proj !== undefined && thisList.proj == theProjectID){
-               console.log("proj == "+theProjectID);
+               //console.log("proj == "+theProjectID);
                if(thisList.resources.length > 0){
                    lines = thisList.resources;
                    populatePreview(lines, pageLabel, currentPage, j);
@@ -433,7 +437,7 @@
                }
             }
             else if(lines.length===0 && i===annoList.length-1){
-                console.log("master");
+                //console.log("must default to master");
                 lines = masterList.resources;
                 populatePreview(lines, pageLabel, currentPage, j);
                 return false;
@@ -558,7 +562,7 @@
 //                            console.log("manifest is here: "+getURLfromThis[1].archive);
                             if(url.indexOf("http") < 0){ //Then this is a newberry created newberry project
                                 //create the newberry url
-                                console.log("gunna call project servlet because http was not present in this url");
+                                //console.log("gunna call project servlet because http was not present in this url");
                                 url = "project/"+projectID;
                             }
                             $.ajax({ /* Causes CORS */
@@ -969,27 +973,32 @@
                     var currentList = {};
                     if(annoList.length > 0){
                         //Always default to the master list, which was the first list created for the canvas.  That way, the annotation lists associated with the master are still supported.
-                        var masterList = annoList[0];
-                        lines = masterList.resources;
-                        currentList = masterList;
-                        annoLists[currentFolio -1] = masterList["@id"];
+                        var masterList = {};
+                        //lines = masterList.resources;
+                        //currentList = masterList;
+                        //annoLists[currentFolio -1] = masterList["@id"];
                         $.each(annoList, function(){
-                            if(this.proj !== undefined && this.proj!=="" && this.proj == theProjectID){;
-                                //These are the lines we want to draw
-                                //console.log("Lines we wanna draw");
+                            //if we find the master list, make that the default
+                            if(this.proj === "master"){
+                                //console.log("master set to default");
+                                masterList = this;
                                 lines = this.resources;
-                                found = true;
                                 currentList = this;
                                 annoLists[currentFolio -1] = this["@id"];
                             }
+                            if(this.proj !== undefined && this.proj!=="" && this.proj == theProjectID){
+                                //These are the lines we want to draw because the projectID matches.  Overwrite master if necessary.
+                                //console.log("Lines we wanna draw");
+                                lines = this.resources;
+                                currentList = this;
+                                annoLists[currentFolio -1] = this["@id"];
+                                return false;
+                            }
                             else{
-                                //It is an annotation list for this canvas in a different project.
+                                //It is an annotation list for this canvas in a different project.  We have defaulted to master already.
                                 //console.log("Anno list for this canvas but different project.  ");
                             }
                         });
-                        if(!found){
-                            //console.log("Lines for project ID were not found in drawLinesToCanvas");
-                        }
                         if(lines.length > 0){
                             //console.log("Got lines to draw");
                             linesToScreen(lines);
@@ -1039,13 +1048,15 @@
         originalCanvasWidth2 = theWidth;
         ratio = theWidth / theHeight;
         for(var i=0; i<lines.length;i++){
-            console.log("line "+i);
+            //("line "+i);
             var line = lines[i];
             var lastLine = {};
             var col = letters[letterIndex];
             if(i>0)lastLine=lines[i-1];
             var lastLineX = 10000;
             var lastLineWidth = -1;
+            var lastLineTop = -2;
+            var lastLineHeight = -2;
             var x,y,w,h = 0;
             var XYWHarray = [x,y,w,h];
             var lineURL = "";
@@ -1070,19 +1081,42 @@
                 if(lastLine.on){ //won't be true for first line
                     lastLineX = lastLine.on.slice(lastLine.on.indexOf("#xywh=") + 6).split(",")[0];
                     lastLineWidth = lastLine.on.slice(lastLine.on.indexOf("#xywh=") + 6).split(",")[2];
+                    lastLineTop = lastLine.on.slice(lastLine.on.indexOf("#xywh=") + 6).split(",")[1];
+                    lastLineHeight = lastLine.on.slice(lastLine.on.indexOf("#xywh=") + 6).split(",")[3];
                 }                
                 else if(i===0 && lines.length > 1){ /* Check for the variance with the first line */
-                    lastLine = lines[i+1];
+                    lastLine = lines[0];
                      if(lastLine.on){
                          lastLineX = lastLine.on.slice(lastLine.on.indexOf("#xywh=") + 6).split(",")[0];
                          lastLineWidth = lastLine.on.slice(lastLine.on.indexOf("#xywh=") + 6).split(",")[2];
+                         lastLineTop = lastLine.on.slice(lastLine.on.indexOf("#xywh=") + 6).split(",")[1];
+                         lastLineHeight = lastLine.on.slice(lastLine.on.indexOf("#xywh=") + 6).split(",")[3];
                      }
                 }
                 if(XYWHsubstring.indexOf('=') > -1){ //string must contain this to be valid
                     var numberArray = XYWHsubstring.substring(lineURL.lastIndexOf('xywh=') + 5).split(',');
+                    if(parseInt(lastLineTop) + parseInt(lastLineHeight) !== numberArray[1]){
+                        //check for slight variance in top position.  Happens because of rounding percentage math that gets pixels to be an integer.
+                        var num1 = parseInt(lastLineTop) + parseInt(lastLineHeight);
+                        console.log(num1 +" is not "+numberArray[1] + "?");
+                        if(Math.abs(num1 - numberArray[1]) <= 2){
+                            console.log("Fix Top Variance");
+                            console.log(num1);
+                            //force it to always use the round up.
+                            if(num1 > numberArray[1]){
+                                console.log("set it");
+                                numberArray[1] = num1; //+1 for border ?
+                            }
+                            else{
+                                console.log("leave it");
+                            }
+                            
+                        }
+                    }
                     if(numberArray.length === 4){ // string must have all 4 to be valid
                         x = numberArray[0];
                         w = numberArray[2];
+                        if(lastLineTop)
                         if(lastLineX !== x){ //check if the last line's x value is equal to this line's x value (means same column)
                             if(Math.abs(x - lastLineX) <= 3){ //allow a 3 pixel  variance and fix this variance when necessary...
                                 //align them, call them the same Column. 
@@ -1108,9 +1142,11 @@
                                 numberArray[0] = x;
                             }
                             else{ //we are in a new column, column indicator needs to increase. 
-                                letterIndex++;
-                                col = letters[letterIndex];
-                                colCounter = 0; //Reset line counter so that when the column changes the line# restarts?
+                                if(lines.length > 1){
+                                    letterIndex++;
+                                    col = letters[letterIndex];
+                                    colCounter = 0; //Reset line counter so that when the column changes the line# restarts?
+                                }
                             }
                         }
                         else{ //If the X value matches, we are in the same column and don't have to account for any variance or update the array.  Still check for slight width variance.. 
@@ -1171,7 +1207,7 @@
                 colCounter+=1;
                 $("#transcriptletArea").append(newAnno);
                 
-                var lineColumnIndicator = $("<div pair='"+col+""+colCounter+"' lineserverid='"+lineID+"' lineID='"+counter+"' class='lineColIndicator' style='left:"+left+"%; top:"+top+"%; width:"+width+"%; height:"+height+"%;'><div class\n\
+                var lineColumnIndicator = $("<div onclick='loadTranscriptlet("+(counter-1)+");' pair='"+col+""+colCounter+"' lineserverid='"+lineID+"' lineID='"+counter+"' class='lineColIndicator' style='left:"+left+"%; top:"+top+"%; width:"+width+"%; height:"+height+"%;'><div class\n\
                 ='lineColOnLine' >"+col+""+colCounter+"</div></div>");
                 var fullPageLineColumnIndicator = $("<div pair='"+col+""+colCounter+"' lineserverid='"+lineID+"' lineID='"+counter+"' class='lineColIndicator fullP'\n\
                 onclick=\"updatePresentation($('#transcriptlet_"+(parseInt(counter)-1)+"'));\" style='left:"+left+"%; top:"+top+"%; width:"+width+"%; height:"+height+"%;'><div class\n\
@@ -1196,27 +1232,40 @@
             return false;
         }
         var nextCol = transcriptlet.attr("col");
-        var nextLineNum = parseInt(transcriptlet.attr("id").replace("transcriptlet_", ""))+1;
-        var nextColLine = nextCol+nextLineNum;
+        var nextLineNum = parseInt(transcriptlet.attr("collinenum"))+1;
+        var transcriptletBefore = $(transcriptlet.prev());
+        var nextColLine = nextCol+""+nextLineNum;
         $("#currentColLine").html(nextColLine);
-        if(nextLineNum > 1){
-            var currentTranscriptletNum = nextLineNum - 1;
-            var previousTranscriptletNum = currentTranscriptletNum - 1;
-            var prevLine = $("#transcriptlet_"+previousTranscriptletNum);
-            var prevLineCol = prevLine.attr("col");
-            var prevLineText = prevLine.attr("data-answer");
-            $("#prevColLine").html(prevLineCol+""+currentTranscriptletNum);
-            if(prevLineText === ""){
-                $("#captionsText").html("This line is not transcribed.");
+        if(parseInt(nextLineNum) >= 1){
+            if(transcriptletBefore.length>0){
+                var currentTranscriptletNum = parseInt(transcriptletBefore.attr("collinenum")) + 1;
+                //var prevLine = $("#transcriptlet_"+previousTranscriptletNum);
+                var preLine = "";
+                if(transcriptletBefore.length > 0){
+
+                }
+                else{
+
+                }
+                var prevLineCol = transcriptletBefore.attr("col");
+                var prevLineText = transcriptletBefore.attr("data-answer");
+                $("#prevColLine").html(prevLineCol+""+currentTranscriptletNum);
+                if(prevLineText === ""){
+                    $("#captionsText").html("This line is not transcribed.");
+                }
+                else{
+                    $("#captionsText").html(prevLineText);
+                }
             }
-            else{
-                $("#captionsText").html(prevLineText);
+            else{ //this is a probelm
+                $("#prevColLine").html("**");
+                $("#captionsText").html("You are on the first line.");
             }
             
         }
         else{ //there is no previous line
             $("#prevColLine").html("**");
-            $("#captionsText").html("You are on the first line");
+            $("#captionsText").html("ERROR.  NUMBERS ARE OFF");
         }
         focusItem[0] = focusItem[1];
         focusItem[1] = transcriptlet;
@@ -1348,6 +1397,33 @@
           
     }  
    
+   function loadTranscriptlet(lineid){
+       var currentLineServerID = focusItem[1].attr("lineserverid");
+          if($('#transcriptlet_'+lineid).length > 0){
+              if(loggedInUser){
+                  var lineToUpdate = $(".transcriptlet[lineserverid='"+currentLineServerID+"']")
+                  updateLine(lineToUpdate, "no");
+                  updatePresentation($('#transcriptlet_'+lineid));
+              }
+              else{
+                var captionText1 = $("#captionsText").html();
+                $("#captionsText").html("You are not logged in.");
+                $('#captionsText').css("background-color", 'red');
+                setTimeout(function(){ $('#captionsText').css("background-color", '#E6E7E8'); }, 500);
+                setTimeout(function(){ $('#captionsText').css("background-color", 'red'); }, 1000);
+                setTimeout(function(){ $('#captionsText').css("background-color", '#E6E7E8');  $("#captionsText").html(captionText1); }, 1500);
+              }
+              
+          }
+          else{ //blink a caption warning
+              var captionText = $("#captionsText").html();
+              $("#captionsText").html("Cannot load this line.");
+              $('#captionsText').css("background-color", 'red');
+              setTimeout(function(){ $('#captionsText').css("background-color", '#E6E7E8'); }, 500);
+              setTimeout(function(){ $('#captionsText').css("background-color", 'red'); }, 1000);
+              setTimeout(function(){ $('#captionsText').css("background-color", '#E6E7E8');  $("#captionsText").html(captionText); }, 1500);
+          }
+   }
   
     /*
      * The UI control for going the the next transcriptlet in the transcription. 
@@ -1999,120 +2075,77 @@
               }
             });
         $("#fullScreenBtn").fadeIn(250);
-//        var width = $("#transcriptionTemplate").width();
-//        var thisOriginalRatio = $("#transcriptionCanvas").width() / $("#transcriptionCanvas").height();
-//        var height = 1/thisOriginalRatio * width;
-//        $("#transcriptionCanvas").css("height", height+"px").css("width", width+"px");
-//        $(".lineColIndicatorArea").css("height", height+"px");
-//        var splitWidth = window.innerWidth - (width+35) + "px";
-//        var splitHeight = 1/thisOriginalRatio * height;
-//        //console.log("canvas height " + height);
-//        //console.log("canvas width  " + width);
-//        //console.log("split width " + splitWidth);
-//        //console.log("Is "+ width +" + "+splitWidth+" >= "+window.innerWidth+" ?");
-        //$(".split img").css("max-width", splitWidth);
-        //$(".split:visible").css("width", splitWidth);
-       
-        
-        //event.preventDefault();
         //show/manipulate whichever split tool is activated.
         switch(tool){
           case "calligraphy":
              $("#calligraphySplit").css({
               "display": "inline-table"
-//              "height" : splitHeight+"px",
-//              "width" : splitWidth
             });
             break;
           case "scripts":
               $("#scriptsSplit").css({
               "display": "inline-table"
-//              "height" : splitHeight+"px",
-//              "width" : splitWidth
             });
             break;
           case "frenchdocs":
               $("#documentsSplit").css({
               "display": "inline-table",
-//              "height" : splitHeight+"px",
-//              "width" : splitWidth
             });
             break;
           case "conservation":
               $("#conservationSplit").css({
               "display": "inline-table"
-//              "height" : splitHeight+"px",
-//              "width" : splitWidth
+
             });
             break;
           case "conventions":
              $("#conventionsSplit").css({
               "display": "inline-table"
-//              "height" : splitHeight+"px",
-//              "width" : splitWidth
             });
             break;
           case "teachers":
              $("#teachersSplit").css({
               "display": "inline-table"
-//              "height" : splitHeight+"px",
-//              "width" : splitWidth
             });
             break;
           case "groupwork":
              $("#groupSplit").css({
               "display": "inline-table"
-//              "height" : splitHeight+"px",
-//              "width" : splitWidth
             });
             break;
           case "glossary":
             $("#glossarySplit").css({
               "display": "inline-table"
-//              "height" : splitHeight+"px",
-//              "width" : splitWidth
             });
             break;
           case "fInstitutions":
              $("#fInstitutionsSplit").css({
               "display": "inline-table"
-//              "height" : splitHeight+"px",
-//              "width" : splitWidth
             });
             break;
           case "other":
              $("#otherSplit").css({
               "display": "inline-table"
-//              "height" : splitHeight+"px",
-//              "width" : splitWidth
             });
             break;
           case "essay":
             $("#essaySplit").css({
               "display": "inline-table"
-//              "height" : splitHeight+"px",
-//              "width" : splitWidth
             });
             break;
           case "partialTrans":
             $("#partialTransSplit").css({
               "display": "inline-table"
-//              "height" : splitHeight+"px",
-//              "width" : splitWidth
             });
             break;
           case "abbreviations":
             $("#abbrevSplit").css({
               "display": "inline-table"
-//              "height" : splitHeight+"px",
-//              "width" : splitWidth
             });
             break;
           case "dictionary":
             $("#dictionarySplit").css({
               "display": "inline-table"
-//              "height" : splitHeight+"px",
-//              "width" : splitWidth
             });
             break;
           case "preview":
@@ -2121,26 +2154,16 @@
           case "history":
             $("#historySplit").css({
               "display": "inline-table"
-//              "height" : splitHeight+"px",
-//              "width" : splitWidth
             });
             break;
           case "fullPage":
             $("#fullPageSplit").css({
               "display": "block"
-//              "height" : splitHeight+"px",
-//              "width" : splitWidth
             });
-//            $("#fullPageImg").css({
-//                "max-height":window.innerHeight+"px",
-//                "max-width":$("#fullPageSplit").width()+"px"
-//            });
             break;
           case "compare":
             $("#compareSplit").css({
                 "display": "block"
-//                "height": splitHeight+"px",
-//                "width" : splitWidth
             });
             //When comparing, you need to be able to see the whole image, so I restrict it to window height.  To allow it to continue to grow, comment out the code below.  
             $(".compareImage").css({
@@ -2158,6 +2181,8 @@
             //??
               $("#mapsSplit").css("display", "inline-table");
             break;
+          case "start":
+              $("#startSplit").css("display", "inline-table");
           default:
               //This is a user added iframe tool.  tool is toolID= attribute of the tool div to show.  
               $('div[toolName="'+tool+'"]').css("display", "inline-table");
@@ -2167,10 +2192,6 @@
             'max-height': window.innherHeight + 350 +"px",
             'max-width' : $(".split:visible").width() + "px"
         });
-       // $("#splitScreenTools").hide();
-        //$("#transcriptionCanvas").css("width" , $("#imgTop img").width()); //this causes the resize function to bust. 
-        //$("#transcriptionCanvas").css("height" , $("#imgTop img").height());
-        //$("#pageJump").attr("disabled", "disabled");
          var pageJumpIcons = $("#pageJump").parent().children("i");
             pageJumpIcons[0].setAttribute('onclick', 'firstFolio("parsing");');
             pageJumpIcons[1].setAttribute('onclick', 'previousFolio("parsing");');
@@ -2183,14 +2204,12 @@
     function forceOrderPreview(){
         var ordered = [];
         var length = $(".previewPage").length;
-        console.log("force order,  length: "+length);
         for(var i=0; i<length; i++){
-            console.log("find order = "+i)
+            //console.log("find order = "+i)
             var thisOne = $(".previewPage[order='"+i+"']");
             ordered.push(thisOne);
             if(i===length - 1){
-                console.log("append");
-                console.log(ordered);
+                //console.log("append");
                 $("#previewDiv").empty();
                 $("#previewDiv").append(ordered);
             }
@@ -2230,13 +2249,7 @@
 //            //console.log("END");
 //            //console.log($lastLine);
             colH = parseFloat($lastLine.attr("linetop"))-colY+parseFloat($lastLine.attr("lineheight"));
-            //While testing, this has to be out because it does not add the transcriptlet to the area. 
-//            $(".parsing[lineleft='"+colX+"']").each(function(){
-//                if ($(".transcriptlet[lineserverid='"+$(this).attr('lineserverid')+"']").find("textarea").val().length > 0) {
-//                    hasTranscription = true;
-//                    return false; //break out of each() loop
-//                }
-//            });
+
             var lastLineIndex = $(".parsing").index($lastLine);
 //            //console.log("PUSH TO GATHERED COLUMNS");
             gatheredColumns.push([colX,colY,colW,colH,$(line).attr("lineserverid"),$lastLine.attr("lineserverid"),true]);
@@ -2275,6 +2288,9 @@
         var lines = $(".parsing[lineleft='"+colX+"']");
         if(nextColumnToRemove.length > 0){
             removeColumnTranscriptlets(lines, true);
+        }
+        else{
+            cleanupTranscriptlets(true);
         }
     }
     function linesToColumns(){
@@ -2380,7 +2396,6 @@
         // if(!isMember && !permitParsing)return false;
         //prep for column adjustment
 //        //console.log("adjustColumn");
-        //linesToColumns();
         var thisColumnID = new Array(2);
         var thisColumn;
         var originalX = 1;
@@ -2673,7 +2688,7 @@
     
     function setCursorPosition(e, position)
     {
-        console.log("set cursor pos.");
+        //console.log("set cursor pos.");
         var pos = position;
         var wrapped = false;
         if (pos.toString().indexOf("wrapped") == 0) {
@@ -2695,7 +2710,7 @@
     }
     
     function insertAtCursor (myField, myValue, closingTag) {
-        console.log("insert at cursor");
+        //console.log("insert at cursor");
         var closeTag = (closingTag == undefined) ? "" : unescape(closingTag);
         //IE support
         if (document.selection) {
@@ -3083,6 +3098,9 @@ function toggleLineCol(){
         newLineLeft = Math.round(newLineLeft,0);
         newLineWidth = Math.round(newLineWidth,0);
         newLineHeight = Math.round(newLineHeight,0);
+        
+        console.log("saving new line");
+        console.log(newLineLeft, newLineTop, newLineWidth, newLineHeight);
                
         var lineString = onCanvas + "#xywh=" +newLineLeft+","+newLineTop+","+newLineWidth+","+newLineHeight;
         var currentLineText = "";
@@ -3288,12 +3306,14 @@ function toggleLineCol(){
      function splitLine(e,event){        
         //e is the line that was clicked in
         //This is where the click happened relative to img top.  In other words, where the click happened among the lines. 
-        var originalLineHeight = $(e).height() - 1;  //take one px off for the border
+        var originalLineHeight = $(e).height(); //-1 take one px off for the border
         $(".parsing").attr("newline", "false");
-        var originalLineTop = $(e).offset().top - $("#imgTop").offset().top + 1; //Move down one px for the border.  
+        var originalLineTop = $(e).offset().top - $("#imgTop").offset().top; // +1 Move down one px for the border.  
+        //var originalLineTop = parseFloat($(e).css("top"));
         var clickInLines = event.pageY - $("#imgTop").offset().top;
         var lineOffset = $(e).offset().top - $("#imgTop").offset().top;
-        var oldLineHeight = (clickInLines - lineOffset)/$("#imgTop").height() * 100;;
+        var oldLineHeight = (clickInLines - lineOffset)/$("#imgTop").height() * 100;
+        //var oldLineHeight = parseFloat($(e).css("height"));
         var newLineHeight = (originalLineHeight - (clickInLines - originalLineTop))/$("#imgTop").height() * 100;
         var newLineTop = (clickInLines/$("#imgTop").height()) * 100;
         var newLine = $(e).clone(true);
@@ -3500,21 +3520,22 @@ function toggleLineCol(){
                         //console.log(currentAnnoList.resources);
                         for(var l=lines.length-1; l>=0; l--){
                             var theLine = $(lines[l]);
-                            var index = -1;
+                            var index2 = -1;
                              $.each(currentAnnoList.resources, function(){
                                 var currentResource = this;
-                                index++;
+                                index2++;
                                 //console.log(currentResource["@id"] +" == "+ theLine.attr("lineserverid")+"?")
                                 if(currentResource["@id"] == theLine.attr("lineserverid")){
-                                    currentAnnoList.resources.splice(index, 1);
+                                    currentAnnoList.resources.splice(index2, 1);
                                     //console.log(theLine);
-                                    //console.log("Delete from list " + theLine.attr("lineserverid")+" at index "+index+".");
+                                    //console.log("Delete from list " + theLine.attr("lineserverid")+" at index "+index2+".");
                                     theLine.remove();
                                 }
                              });
 
                             if(l===0){
                                 //console.log("last line in column, update list");
+                                //console.log(currentAnnoList.resources);
                                 var url = "updateAnnoList";
                                 var paramObj = {"@id":annoListID, "resources": currentAnnoList.resources};
                                 var params = {"content":JSON.stringify(paramObj)};
@@ -3526,7 +3547,7 @@ function toggleLineCol(){
                                         destroyPage();
                                     }
                                     else{
-                                        cleanupTranscriptlets(false);
+                                        cleanupTranscriptlets(true);
                                     }
                                     
                                 });
@@ -3556,15 +3577,10 @@ function toggleLineCol(){
      }
     
     function cleanupTranscriptlets(draw) {
-        var columnCtr = 0;
-        var columnLineShift = 0;
-        var lineCtr = 0;
-        var oldLeft = -9999;
-        var columnLeft;
         var transcriptlets = $(".transcriptlet");
           if(draw){
               transcriptlets.remove();
-              $(".lineColIndicatorArea").children().remove();
+              $(".lineColIndicatorArea").children(".lineColIndicator").remove();
               $("#parsingSplit").find('.fullScreenTrans').unbind();
               $("#parsingSplit").find('.fullScreenTrans').bind("click", function(){
                 fullPage(); 
