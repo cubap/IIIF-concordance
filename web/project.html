@@ -344,6 +344,9 @@ Open the project management section for a given project ID.
         h3, h2{
             border-bottom: 1px solid #002a5c;
         }
+        p{
+            font-size: 12pt;
+        }
         
 /*        .ui-state-active a, .ui-state-active a:link{
             color: #002a5c !important;
@@ -569,7 +572,7 @@ Open the project management section for a given project ID.
                                                 <!--<h6>External Access</h6>-->
                                                 <label for="OACr" class="publicLabel">
                                                     <div class="publicDesc">
-                                                        <h3 class="noBottom">Open Annotation Collaboration</h3>
+                                                        <h4 class="noBottom">Open Annotation Collaboration</h4>
                                                         <input id="OACr" name="OACr" type="checkbox" value="true" />OAC Read<br>
                                                         <code>Read Permission</code>
                                                             <p>This setting allows external (not originating from t&#8209;pen.org) tools and services to <strong>read</strong> data from the T&#8209;PEN database. Projects with this permission can load annotations and transcriptions into other tools and interfaces for in-depth processing not available on T&#8209;PEN.</p>
@@ -580,7 +583,7 @@ Open the project management section for a given project ID.
                                                 </label>
                                                 <label for="OACw" class="publicLabel">
                                                     <div class="publicDesc">
-                                                        <h3 class="noBottom">Open Annotation Collaboration</h3>
+                                                        <h4 class="noBottom">Open Annotation Collaboration</h4>
                                                         <input id="OACw" name="OACw" type="checkbox"  value="true" />OAC Write<br>
                                                             <code>Write Permission</code>
                                                             <p>This setting allows external (not originating from t&#8209;pen.org) tools and services to write data from the T&#8209;PEN database. Projects with this permission can load annotations and transcriptions into other tools <em>and changes saved</em> for in-depth processing not available on T&#8209;PEN.</p>
@@ -592,7 +595,7 @@ Open the project management section for a given project ID.
                                                 <!--<%if(permitRead)out.print("checked");%>-->
                                                 <label for="readTrans" class="publicLabel">
                                                     <div class="publicDesc">
-                                                        <h3 class="noBottom">View Project</h3>
+                                                        <h4 class="noBottom">View Project</h4>
                                                         <input id="readTrans" name="readTrans" type="checkbox"  value="true" />View Project<br>
                                                             <code>Read Permission</code>
                                                             <p>This setting allows users logged into T&#8209;PEN to <strong>view</strong> this project in the transcription interface. Users cannot make any changes or view any data not revealed in the interface.</p>
@@ -603,7 +606,7 @@ Open the project management section for a given project ID.
                                                 </label>
                                                 <label for="publicExport" class="publicLabel">
                                                     <div class="publicDesc">
-                                                        <h3 class="noBottom">Export Project</h3>
+                                                        <h4 class="noBottom">Export Project</h4>
                                                         <input id="publicExport" name="publicExport" type="checkbox"  value="true" />Export Project<br>
                                                             <code>Read Permission</code>
                                                             <p>This setting allows users logged into T&#8209;PEN to <strong>export</strong> this project through the T&#8209;PEN interface. Users cannot make any changes to original data.</p>
@@ -615,7 +618,7 @@ Open the project management section for a given project ID.
                                                 <label for="projectCopy" class="publicLabel">
                                                     <!--<%if(permitCopy)out.print("checked");%> <%if(thisProject.containsUserUploadedManuscript())out.print("disabled title='This project contains private images.'");%>-->
                                                     <div class="publicDesc">
-                                                        <h3 class="noBottom">Copy Project</h3>
+                                                        <h4 class="noBottom">Copy Project</h4>
                                                         <input id="projectCopy" name="projectCopy" type="checkbox"  value="true" />Copy Project<br>
                                                             <code>Read Permission</code>
                                                             <p>This setting allows users logged into T&#8209;PEN to <strong>copy</strong> this project and work independently. Users cannot make any changes to original data.</p>
@@ -629,7 +632,7 @@ Open the project management section for a given project ID.
                                                 <label for="modNotes" class="publicLabel">
                                                     <!--<%if(permitNotes)out.print("checked");%>-->
                                                     <div class="publicDesc">
-                                                        <h3 class="noBottom">Modify Notes</h3>
+                                                        <h4 class="noBottom">Modify Notes</h4>
                                                         <input id="modNotes" name="modNotes" type="checkbox"  value="true" />Modify Notes<br>
                                                             <code>Write Permission</code>
                                                             <p>This setting allows users logged into T&#8209;PEN to <strong>modify</strong> any data in the notes fields. Changes are not restricted, but are tracked in the History with a username and timestamp.</p>
@@ -640,7 +643,7 @@ Open the project management section for a given project ID.
                                                 <label for="modTrans" class="publicLabel">
                                                     <!--<%if(permitModify)out.print("checked");%>-->
                                                     <div class="publicDesc">
-                                                        <h3 class="noBottom">Modify Transcription</h3>
+                                                        <h4 class="noBottom">Modify Transcription</h4>
                                                         <input id="modTrans" name="modTrans" type="checkbox"  value="true" />Modify Transcription<br>
                                                             <code>Write Permission</code>
                                                             <p>This setting allows users logged into T&#8209;PEN to <strong>modify</strong> any data in the transcription fields. Changes are not restricted, but are tracked in the History with a username and timestamp.</p>
@@ -651,7 +654,7 @@ Open the project management section for a given project ID.
                                                 <label for="modAnno" class="publicLabel">
                                                     <!--<%if(permitAnnotation)out.print("checked");%>-->
                                                     <div class="publicDesc">
-                                                        <h3 class="noBottom">Modify Annotations</h3>
+                                                        <h4 class="noBottom">Modify Annotations</h4>
                                                         <input id="modAnno" name="modAnno" type="checkbox"  value="true" />Modify Annotations<br>
                                                             <code>Write Permission</code>
                                                             <p>This setting allows users logged into T&#8209;PEN to <strong>modify</strong> any annotation. This includes insertion, deletion, and modification.</p>
@@ -663,7 +666,7 @@ Open the project management section for a given project ID.
                                                     <!--<%if(permitParsing)out.print("checked");%>-->
                                                     
                                                     <div class="publicDesc">
-                                                        <h3 class="noBottom">Modify Line Parsing</h3>
+                                                        <h4 class="noBottom">Modify Line Parsing</h4>
                                                         <input id="modParsing" name="modParsing" type="checkbox"  value="true" />Modify Line Parsing<br>
                                                             <code>Write Permission</code>
                                                             <p>This setting allows users logged into T&#8209;PEN to <strong>modify</strong> line parsing. This includes insertion, deletion, and modification.</p>
@@ -675,7 +678,7 @@ Open the project management section for a given project ID.
                                                     <!--<%if(permitButtons)out.print("checked");%>-->
                                                     
                                                     <div class="publicDesc">
-                                                        <h3 class="noBottom">Modify Buttons</h3>
+                                                        <h4 class="noBottom">Modify Buttons</h4>
                                                         <input id="modButton" name="modButton" type="checkbox"  value="true" />Modify Buttons and Tags<br>
                                                             <code>Write Permission</code>
                                                             <p>This setting allows users logged into T&#8209;PEN to <strong>modify</strong> any special character or XML tag buttons in the project (including addition and deletion).</p>
@@ -686,7 +689,7 @@ Open the project management section for a given project ID.
                                                 <label for="modMetadata" class="publicLabel">
                                                     <!--<%if(permitMetadata)out.print("checked");%>-->
                                                     <div class="publicDesc">
-                                                        <h3 class="noBottom">Modify Metadata</h3>
+                                                        <h4 class="noBottom">Modify Metadata</h4>
                                                         <input id="modMetadata" name="modMetadata" type="checkbox"  value="true" />Modify Metadata<br>
                                                             <code>Write Permission</code>
                                                             <p>This setting allows users logged into T&#8209;PEN to <strong>modify</strong> project metadata or upload a custom header.</p>
