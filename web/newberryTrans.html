@@ -697,7 +697,7 @@
             $(".workspaceHandle").mousedown(function(event){moveWorkspace(event);})
             .css("cursor","n-resize");
     
-            $(".parsingToolButtons").children("span").click(function(){
+            $(".parsingToolButtons").children("span").click(function(event){
                
                 var show = $(this).attr("show");
                 $("#imgTop").unbind();

@@ -1056,8 +1056,8 @@
             if(i>0)lastLine=lines[i-1];
             var lastLineX = 10000;
             var lastLineWidth = -1;
-            var lastLineTop = -1;
-            var lastLineHeight = -1;
+            var lastLineTop = -2;
+            var lastLineHeight = -2;
             var x,y,w,h = 0;
             var XYWHarray = [x,y,w,h];
             var lineURL = "";
@@ -1077,16 +1077,23 @@
                 update = false;
             }
             thisContent = "";
+            console.log("lineurl index");
+            console.log(lineURL.indexOf('#'));
             if(lineURL.indexOf('#') > -1){ //string must contain this to be valid
                 var XYWHsubstring = lineURL.substring(lineURL.lastIndexOf('#' + 1)); //xywh = 'x,y,w,h'
+                console.log(i);
+                console.log(lines.length);
                 if(lastLine.on){ //won't be true for first line
+                    console.log("last line .on exists");
                     lastLineX = lastLine.on.slice(lastLine.on.indexOf("#xywh=") + 6).split(",")[0];
                     lastLineWidth = lastLine.on.slice(lastLine.on.indexOf("#xywh=") + 6).split(",")[2];
                     lastLineTop = lastLine.on.slice(lastLine.on.indexOf("#xywh=") + 6).split(",")[1];
                     lastLineHeight = lastLine.on.slice(lastLine.on.indexOf("#xywh=") + 6).split(",")[3];
                 }                
                 else if(i===0 && lines.length > 1){ /* Check for the variance with the first line */
-                    lastLine = lines[i+1];
+                    console.log("no last line .on.  first line.");
+                    lastLine = lines[0];
+                    console.log(lastLine.on);
                      if(lastLine.on){
                          lastLineX = lastLine.on.slice(lastLine.on.indexOf("#xywh=") + 6).split(",")[0];
                          lastLineWidth = lastLine.on.slice(lastLine.on.indexOf("#xywh=") + 6).split(",")[2];
@@ -1094,14 +1101,19 @@
                          lastLineHeight = lastLine.on.slice(lastLine.on.indexOf("#xywh=") + 6).split(",")[3];
                      }
                 }
+                console.log("last line information");
+                console.log(lastLineX, lastLineWidth, lastLineTop, lastLineHeight);
                 if(XYWHsubstring.indexOf('=') > -1){ //string must contain this to be valid
                     var numberArray = XYWHsubstring.substring(lineURL.lastIndexOf('xywh=') + 5).split(',');
+                    console.log("numberArray1");
+                    console.log(numberArray);
                     if(parseInt(lastLineTop) + parseInt(lastLineHeight) !== numberArray[1]){
                         //check for slight variance in top position.  Happens because of rounding percentage math that gets pixels to be an integer.
                         var num1 = parseInt(lastLineTop) + parseInt(lastLineHeight);
-                        //console.log(num1 +" is not "+numberArray[1] + "?");
-                        if(Math.abs(num1 - numberArray[1] <= 2)){
-                            //console.log("Fix Top Variance");
+                        console.log(num1 +" is not "+numberArray[1] + "?");
+                        if(Math.abs(num1 - numberArray[1]) <= 2){
+                            console.log("Fix Top Variance");
+                            console.log(num1);
                             numberArray[1] = num1; //+1 for border ?
                         }
                     }
@@ -1134,9 +1146,11 @@
                                 numberArray[0] = x;
                             }
                             else{ //we are in a new column, column indicator needs to increase. 
-                                letterIndex++;
-                                col = letters[letterIndex];
-                                colCounter = 0; //Reset line counter so that when the column changes the line# restarts?
+                                if(lines.length > 1){
+                                    letterIndex++;
+                                    col = letters[letterIndex];
+                                    colCounter = 0; //Reset line counter so that when the column changes the line# restarts?
+                                }
                             }
                         }
                         else{ //If the X value matches, we are in the same column and don't have to account for any variance or update the array.  Still check for slight width variance.. 
@@ -1156,7 +1170,11 @@
                         }
                         y = numberArray[1];
                         h = numberArray[3];
+                        console.log("numberArray2");
+                        console.log(numberArray);
                         XYWHarray = [x,y,w,h];
+                        console.log("x,y,w,h");
+                        console.log(x,y,w,h);
                     }
                     else{
                         //ERROR! Malformed line
@@ -1186,6 +1204,8 @@
                 var top = parseFloat(XYWHarray[1]) / 10;
                 var width = parseFloat(XYWHarray[2]) / (10 * ratio);
                 var height = parseFloat(XYWHarray[3]) / 10;
+                console.log("drawing anno line");
+                console.log(left, top, width, height);
                 newAnno.attr({
                     lineLeft: left,
                     lineTop: top,
@@ -3085,6 +3105,9 @@ function toggleLineCol(){
         newLineLeft = Math.round(newLineLeft,0);
         newLineWidth = Math.round(newLineWidth,0);
         newLineHeight = Math.round(newLineHeight,0);
+        
+        console.log("saving new line");
+        console.log(newLineLeft, newLineTop, newLineWidth, newLineHeight);
                
         var lineString = onCanvas + "#xywh=" +newLineLeft+","+newLineTop+","+newLineWidth+","+newLineHeight;
         var currentLineText = "";
@@ -3292,12 +3315,12 @@ function toggleLineCol(){
         //This is where the click happened relative to img top.  In other words, where the click happened among the lines. 
         var originalLineHeight = $(e).height(); //-1 take one px off for the border
         $(".parsing").attr("newline", "false");
-        //var originalLineTop = $(e).offset().top - $("#imgTop").offset().top; // +1 Move down one px for the border.  
-        var originalLineTop = parseFloat($(e).css("top"));
+        var originalLineTop = $(e).offset().top - $("#imgTop").offset().top; // +1 Move down one px for the border.  
+        //var originalLineTop = parseFloat($(e).css("top"));
         var clickInLines = event.pageY - $("#imgTop").offset().top;
-        //var lineOffset = $(e).offset().top - $("#imgTop").offset().top;
-        //var oldLineHeight = (clickInLines - lineOffset)/$("#imgTop").height() * 100;
-        var oldLineHeight = parseFloat($(e).css("height"));
+        var lineOffset = $(e).offset().top - $("#imgTop").offset().top;
+        var oldLineHeight = (clickInLines - lineOffset)/$("#imgTop").height() * 100;
+        //var oldLineHeight = parseFloat($(e).css("height"));
         var newLineHeight = (originalLineHeight - (clickInLines - originalLineTop))/$("#imgTop").height() * 100;
         var newLineTop = (clickInLines/$("#imgTop").height()) * 100;
         var newLine = $(e).clone(true);
@@ -3485,7 +3508,7 @@ function toggleLineCol(){
                                 destroyPage();
                             }
                             else{
-                                cleanupTranscriptlets(false);
+                                cleanupTranscriptlets(true);
                             }
                         }
                 }
@@ -3564,7 +3587,7 @@ function toggleLineCol(){
         var transcriptlets = $(".transcriptlet");
           if(draw){
               transcriptlets.remove();
-              $(".lineColIndicatorArea").children().remove();
+              $(".lineColIndicatorArea").children(".lineColIndicator").remove();
               $("#parsingSplit").find('.fullScreenTrans').unbind();
               $("#parsingSplit").find('.fullScreenTrans').bind("click", function(){
                 fullPage(); 
