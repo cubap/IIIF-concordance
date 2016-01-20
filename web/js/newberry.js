@@ -1077,6 +1077,8 @@
                 update = false;
             }
             thisContent = "";
+            console.log("LINEURL");
+            console.log(lineURL);
             if(lineURL.indexOf('#') > -1){ //string must contain this to be valid
                 var XYWHsubstring = lineURL.substring(lineURL.lastIndexOf('#' + 1)); //xywh = 'x,y,w,h'
                 if(lastLine.on){ //won't be true for first line
@@ -1099,26 +1101,29 @@
                     if(parseInt(lastLineTop) + parseInt(lastLineHeight) !== numberArray[1]){
                         //check for slight variance in top position.  Happens because of rounding percentage math that gets pixels to be an integer.
                         var num1 = parseInt(lastLineTop) + parseInt(lastLineHeight);
-                        console.log(num1 +" is not "+numberArray[1] + "?");
-                        if(Math.abs(num1 - numberArray[1]) <= 2){
-                            console.log("Fix Top Variance");
-                            console.log(num1);
-                            //force it to always use the round up.
-                            if(num1 > numberArray[1]){
-                                console.log("set it");
-                                numberArray[1] = num1; //+1 for border ?
-                            }
-                            else{
-                                console.log("leave it");
+                                                if(Math.abs(num1 - numberArray[1]) <= 2 && Math.abs(num1 - numberArray[1])!==0){
+                            numberArray[1] = num1;
+                            var newString = numberArray[0]+","+num1+","+numberArray[2]+","+numberArray[3];
+                            if(i>0){
+                                //to make the change cascade to the rest of the lines, we actually have to update the #xywh of the current line with the new value for y.
+                                var lineOn = lineURL;
+                                var index = lineOn.indexOf("#xywh=") + 6;
+                                var newLineOn = lineOn.substr(0, index) + newString + lineOn.substr(index + newString.length);
+                                lines[i].on = newLineOn;
                             }
                             
+                        }
+                        else{
+                            //console.log("no difference");
                         }
                     }
                     if(numberArray.length === 4){ // string must have all 4 to be valid
                         x = numberArray[0];
                         w = numberArray[2];
-                        if(lastLineTop)
+                        console.log(lastLineX +" == "+x+"?");
                         if(lastLineX !== x){ //check if the last line's x value is equal to this line's x value (means same column)
+                            console.log("no");
+                            console.log(Math.abs(x - lastLineX));
                             if(Math.abs(x - lastLineX) <= 3){ //allow a 3 pixel  variance and fix this variance when necessary...
                                 //align them, call them the same Column. 
                                 /*
@@ -1698,6 +1703,7 @@
         if(img === "trans"){
             img = $("#transcriptionTemplate");
             $("#magnifyTools").fadeIn(800);
+            $("button[magnifyimg='trans']").addClass("selected");
         }
         else if(img === "compare"){
             img= $("#compareSplit");
@@ -1705,6 +1711,7 @@
                 "left":$("#compareSplit").css("left"),
                 "top" : "100px"
             });
+            $("button[magnifyimg='compare']").addClass("selected");
         }
         else if (img === "full"){
             img = $("#fullPageSplitCanvas");
@@ -1712,6 +1719,7 @@
                 "left":$("#fullPageSplit").css("left"),
                 "top" : "100px"
             });
+            $("button[magnifyimg='full']").addClass("selected");
         }
         $("#zoomDiv").show();
         $(".magnifyHelp").show();
@@ -3644,5 +3652,8 @@ function stopMagnify(){
 //                    $("#imgBottom .lineColIndicatorArea").css("top", imgBottomOriginal);
     $(".lineColIndicatorArea").show();
     $(".magnifyHelp").hide();
+    $("button[magnifyimg='full']").removeClass("selected");
+    $("button[magnifyimg='compare']").removeClass("selected");
+    $("button[magnifyimg='trans']").removeClass("selected");
     restoreWorkspace();
 }
