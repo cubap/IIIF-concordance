@@ -1061,6 +1061,7 @@ button.imgTool{
 }
 #lineColControls input[type="checkbox"]{
     margin: 0px 0px 0px 4px;
+    position: relative;
 }
 #lineControls i, #pageControls i{
     display: inline-table;

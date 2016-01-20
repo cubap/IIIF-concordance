@@ -1407,7 +1407,7 @@
           }
           else{ //blink a caption warning
               var captionText = $("#captionsText").html();
-              $("#captionsText").html("You are on the last line! ");
+              $("#captionsText").html("Cannot load this line.");
               $('#captionsText').css("background-color", 'red');
               setTimeout(function(){ $('#captionsText').css("background-color", '#E6E7E8'); }, 500);
               setTimeout(function(){ $('#captionsText').css("background-color", 'red'); }, 1000);
