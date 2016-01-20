@@ -47,9 +47,13 @@ Open the project management section for a given project ID.
                 margin: 0 auto;
                 display: none;
                 border: 2px solid #002a5c;
-                background-color: #BFBFBF;
+                background-color: white;
                 padding: 0px 12px;
                 color: #002a5c;
+            }
+            
+            #newProjectMetadata{
+                margin-left: 22px;
             }
             
             .label{
@@ -58,7 +62,7 @@ Open the project management section for a given project ID.
                 font-weight: bold;
                 text-align: right;
                 display: inline-block;
-                width: 107px;
+                width: 131px;
             }
             .val{
                 font-size: 10pt;
@@ -74,21 +78,40 @@ Open the project management section for a given project ID.
             #button { text-decoration: none; }
             body,#wrapper {height: 100%;max-height: 100%;overflow: visible;}
             #project, #ms, #team, #options, #export { margin: 0; padding: 0;}
-            #project li, #ms li, #export li, #team li, #options li {padding: 0.4em; padding-left: 1.5em; height: 100%;overflow: hidden; position: relative;margin-right: 1%; background: #BFBFBF; display: inline-table; color: #002a5c; border: 1px solid #002a5c;}
+            #ms li, #export li, #team li{padding: 0.4em; padding-left: 1.5em; height: 100%;overflow: hidden; position: relative;margin-right: 1%; background: #BFBFBF; display: inline-table; color: #002a5c; border: none;}
             #project li ul,#ms li ul,#team li ul, #options li ul, #export li ul {padding: 0;margin: 0;}
-            #project li ul li,#ms li ul li,#team li ul li,  #export li ul li {list-style:outside none;padding:0;width:100%;height:100%;}
+            #project li ul li,#ms li ul li,#team li ul li,  #export li ul li {list-style:outside none;padding: 2px 0px 2px 4px;width:100%;height:100%;}
             #options li{
-                padding: 0.4em; padding-left: 1.5em; max-height: 590px; overflow: auto; float:left; width:30%; position: relative;margin-right: 1%; width: 47%
+                padding: 0.4em; 
+                padding-left: 1.5em; 
+                max-height: 590px; 
+                overflow-y: auto; 
+                position: relative;
+                margin-right: 1%; 
+                width: 43%;
+                border-right: #BFBFBF;
+                display: inline-block !important;
+            }
+            #project li{
+                padding: 0.4em; 
+                padding-left: 1.5em; 
+                max-height: 590px; 
+                overflow-y: auto; 
+                position: relative;
+                margin-right: 1%; 
+                width: 43%;
+                border-right: #BFBFBF;
+                display: inline-table !important;
             }
             #team li{padding: 0.4em; padding-left: 1.5em; height: 100%; width: 97%; overflow: hidden; position: relative;margin-right: 1%; background: #BFBFBF; color: #002a5c;}
             #project li{
-                width: 47%;
+                width: 43%;
             }
             
             #project div.tall {position: absolute;right:0;width: 29%;}
             #project div.tall li {position: absolute;right:20px;height:48%;margin:0;width:100%;min-height: 120px;}
             #project div.tall li:last-child {bottom:-13px;min-height: 80px;}
-            #projectList {max-height: 300px;overflow: auto;}
+            #projectList {max-height: 300px;overflow: hidden; max-width: 95%;}
             #projectList li {    
                 margin: 0;
                 border: none;
@@ -234,14 +257,62 @@ Open the project management section for a given project ID.
         }
         
         /* jQuery.css overwrites for the tab interface */
+        .ui-tabs{
+            padding: .2em .2em .2em 0em !important;
+        }
         .ui-tabs .ui-tabs-nav {
             background: white !important;
-            border: 1px solid #002a5c;
+            border: none !important;
+            padding: 0px 0px 0px 2px !important;
         }
         
+        .ui-tabs .ui-tabs-nav li{
+            top: -3px !important;
+            border-top: none !important;
+            border-left: 1px solid #BFBFBF;
+            border-right: 1px solid #BFBFBF; 
+        }
+        
+        .ui-tabs .ui-tabs-nav li:hover{
+            color: #e21635;
+        }
+        
+        .ui-tabs .ui-tabs-nav li a{
+            padding: 0 10px;
+            display: block;
+            float: left;
+            height: 1.5em;
+            line-height: 1.5em;
+            margin-right: 1px;
+            text-decoration: none;
+            background-color: #f5f5f5;
+            border-color: #ccc;
+            font-size: 15px;
+            font-weight: 300;
+            cursor: pointer;
+            transition: color 800ms;
+        }
+        
+        .ui-tabs .ui-tabs-nav li.ui-tabs-selected a{
+            background-color:white !important;
+            color: black !important;
+        }
+        
+        .ui-tabs .ui-tabs-nav li.ui-tabs-selected a:hover{
+            border-color: #ccc;
+            color: black !important;
+            cursor: default;
+        }
+        
+        .ui-tabs .ui-tabs-nav li a:hover, .ui-tabs .ui-tabs-nav li a:focus {
+            background-color: #eee;
+            border-color: #BFBFBF;
+            color: #e21635;
+        }
+             
         
         .ui-state-default, .ui-widget-content, .ui-widget-header .ui-state-default{
-            background: #BFBFBF !important;
+            background: white !important;
         }
         
         .ui-tabs-panel{
@@ -250,21 +321,28 @@ Open the project management section for a given project ID.
         }
         
         #tabs{
-            border: 1px solid #002a5c;
+            border-top: 1px solid #BFBFBF;
+            border-left: none !important;
+            border-right: none !important;
+            border-bottom: none !important;
             margin: 0px 1%;
         }
         .ui-corner-bottom{
             background-color: white !important;
         }
         .topTabs ul li{
-             color: #002a5c !important;
+             color: #002a5c;
              //background-color: #D14836;
         }
         .ui-widget-content a {
-                color: white;
+             color: white;
         }
         .ui-tabs .ui-tabs-nav li a{
-            color: #002a5c !important;
+            color: #002a5c;
+        }
+        
+        h3, h2{
+            border-bottom: 1px solid #002a5c;
         }
         
 /*        .ui-state-active a, .ui-state-active a:link{
@@ -280,9 +358,9 @@ Open the project management section for a given project ID.
         <div id="wrapper">
             <!--<div id="header"><p align="center" class="tagline">transcription for paleographical and editorial notation</p></div>-->
             <div id="content">
-                <h1 class='projectTitle'><script>document.write(document.title); </script></h1>
-                <p class='projectTitle'>Use this page to view and alter information about the projects you are a part of.</p> 
-                <p class='projectTitle'>Admins can control project settings and general users can control their involvement in projects.  </p>
+                <h1 class='projectTitle'>Project Management</h1>
+<!--                <p class='projectTitle'>Use this page to view and alter information about the projects you are a part of.</p> 
+                <p class='projectTitle'>Admins can control project settings and general users can control their involvement in projects.  </p>-->
                 <div id="editProjectMetadata"></div>
                 
                 <div id="tabs">
@@ -324,7 +402,7 @@ Open the project management section for a given project ID.
                                      Check for header limitation 
                                   <span id="lineBreakNotice" class='ui-state-error-text'></span>-->
                                     
-                                <p>
+                                <p style='max-width: 95%;'>
                                     <span class="label">Title: </span><span class="val metadataTitle"></span><br />
                                     <span class="label">Subtitle:</span> <span class="val metadataSubtitle"></span><br />
                                     <span class="label">MS&nbsp;Identifier:</span> <span class="val metadataMSID"></span><br />
@@ -338,7 +416,7 @@ Open the project management section for a given project ID.
                                 </p>
                                 
                                 <!-- Make sure user can update information -->
-                                <div class="permitMetadata isMember">
+                                <div style='max-width: 95%;' class="permitMetadata isMember">
                                     <p class="mustBeAdmin">To update any of this information:</p>
                                     <a class="tpenButton mustBeAdmin" onclick="$('#projectMetadataWrapper').show(); $('.pageCover').show();"><span class="ui-icon ui-icon-tag right"></span>Update Metadata</a>
                                 </div>
