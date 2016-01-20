@@ -560,10 +560,10 @@
                             var getURLfromThis = activeProject.ls_ms;
                             getURLfromThis = JSON.parse(getURLfromThis);
                             url  = getURLfromThis[1].archive; //This is the manifest inside the project data
-                            console.log("manifest is here: "+getURLfromThis[1].archive);
+                            //console.log("manifest is here: "+getURLfromThis[1].archive);
                             if(url.indexOf("http") < 0){ //Then this is a newberry created newberry project
                                 //create the newberry url
-                                console.log("gunna call project servlet because http was not present in this url");
+                                //console.log("gunna call project servlet because http was not present in this url");
                                 url = "project/"+projectID;
                             }
                             $.ajax({ /* Causes CORS */
@@ -1049,7 +1049,7 @@
         originalCanvasWidth2 = theWidth;
         ratio = theWidth / theHeight;
         for(var i=0; i<lines.length;i++){
-            console.log("line "+i);
+            //("line "+i);
             var line = lines[i];
             var lastLine = {};
             var col = letters[letterIndex];
@@ -1099,9 +1099,9 @@
                     if(parseInt(lastLineTop) + parseInt(lastLineHeight) !== numberArray[1]){
                         //check for slight variance in top position.  Happens because of rounding percentage math that gets pixels to be an integer.
                         var num1 = parseInt(lastLineTop) + parseInt(lastLineHeight);
-                        console.log(num1 +" is not "+numberArray[1]);
+                        //console.log(num1 +" is not "+numberArray[1] + "?");
                         if(Math.abs(num1 - numberArray[1] <= 2)){
-                            console.log("Fix Top Variance");
+                            //console.log("Fix Top Variance");
                             numberArray[1] = num1; //+1 for border ?
                         }
                     }
@@ -2038,120 +2038,77 @@
               }
             });
         $("#fullScreenBtn").fadeIn(250);
-//        var width = $("#transcriptionTemplate").width();
-//        var thisOriginalRatio = $("#transcriptionCanvas").width() / $("#transcriptionCanvas").height();
-//        var height = 1/thisOriginalRatio * width;
-//        $("#transcriptionCanvas").css("height", height+"px").css("width", width+"px");
-//        $(".lineColIndicatorArea").css("height", height+"px");
-//        var splitWidth = window.innerWidth - (width+35) + "px";
-//        var splitHeight = 1/thisOriginalRatio * height;
-//        //console.log("canvas height " + height);
-//        //console.log("canvas width  " + width);
-//        //console.log("split width " + splitWidth);
-//        //console.log("Is "+ width +" + "+splitWidth+" >= "+window.innerWidth+" ?");
-        //$(".split img").css("max-width", splitWidth);
-        //$(".split:visible").css("width", splitWidth);
-       
-        
-        //event.preventDefault();
         //show/manipulate whichever split tool is activated.
         switch(tool){
           case "calligraphy":
              $("#calligraphySplit").css({
               "display": "inline-table"
-//              "height" : splitHeight+"px",
-//              "width" : splitWidth
             });
             break;
           case "scripts":
               $("#scriptsSplit").css({
               "display": "inline-table"
-//              "height" : splitHeight+"px",
-//              "width" : splitWidth
             });
             break;
           case "frenchdocs":
               $("#documentsSplit").css({
               "display": "inline-table",
-//              "height" : splitHeight+"px",
-//              "width" : splitWidth
             });
             break;
           case "conservation":
               $("#conservationSplit").css({
               "display": "inline-table"
-//              "height" : splitHeight+"px",
-//              "width" : splitWidth
+
             });
             break;
           case "conventions":
              $("#conventionsSplit").css({
               "display": "inline-table"
-//              "height" : splitHeight+"px",
-//              "width" : splitWidth
             });
             break;
           case "teachers":
              $("#teachersSplit").css({
               "display": "inline-table"
-//              "height" : splitHeight+"px",
-//              "width" : splitWidth
             });
             break;
           case "groupwork":
              $("#groupSplit").css({
               "display": "inline-table"
-//              "height" : splitHeight+"px",
-//              "width" : splitWidth
             });
             break;
           case "glossary":
             $("#glossarySplit").css({
               "display": "inline-table"
-//              "height" : splitHeight+"px",
-//              "width" : splitWidth
             });
             break;
           case "fInstitutions":
              $("#fInstitutionsSplit").css({
               "display": "inline-table"
-//              "height" : splitHeight+"px",
-//              "width" : splitWidth
             });
             break;
           case "other":
              $("#otherSplit").css({
               "display": "inline-table"
-//              "height" : splitHeight+"px",
-//              "width" : splitWidth
             });
             break;
           case "essay":
             $("#essaySplit").css({
               "display": "inline-table"
-//              "height" : splitHeight+"px",
-//              "width" : splitWidth
             });
             break;
           case "partialTrans":
             $("#partialTransSplit").css({
               "display": "inline-table"
-//              "height" : splitHeight+"px",
-//              "width" : splitWidth
             });
             break;
           case "abbreviations":
             $("#abbrevSplit").css({
               "display": "inline-table"
-//              "height" : splitHeight+"px",
-//              "width" : splitWidth
             });
             break;
           case "dictionary":
             $("#dictionarySplit").css({
               "display": "inline-table"
-//              "height" : splitHeight+"px",
-//              "width" : splitWidth
             });
             break;
           case "preview":
@@ -2160,26 +2117,16 @@
           case "history":
             $("#historySplit").css({
               "display": "inline-table"
-//              "height" : splitHeight+"px",
-//              "width" : splitWidth
             });
             break;
           case "fullPage":
             $("#fullPageSplit").css({
               "display": "block"
-//              "height" : splitHeight+"px",
-//              "width" : splitWidth
             });
-//            $("#fullPageImg").css({
-//                "max-height":window.innerHeight+"px",
-//                "max-width":$("#fullPageSplit").width()+"px"
-//            });
             break;
           case "compare":
             $("#compareSplit").css({
                 "display": "block"
-//                "height": splitHeight+"px",
-//                "width" : splitWidth
             });
             //When comparing, you need to be able to see the whole image, so I restrict it to window height.  To allow it to continue to grow, comment out the code below.  
             $(".compareImage").css({
@@ -2208,10 +2155,6 @@
             'max-height': window.innherHeight + 350 +"px",
             'max-width' : $(".split:visible").width() + "px"
         });
-       // $("#splitScreenTools").hide();
-        //$("#transcriptionCanvas").css("width" , $("#imgTop img").width()); //this causes the resize function to bust. 
-        //$("#transcriptionCanvas").css("height" , $("#imgTop img").height());
-        //$("#pageJump").attr("disabled", "disabled");
          var pageJumpIcons = $("#pageJump").parent().children("i");
             pageJumpIcons[0].setAttribute('onclick', 'firstFolio("parsing");');
             pageJumpIcons[1].setAttribute('onclick', 'previousFolio("parsing");');
@@ -2224,14 +2167,12 @@
     function forceOrderPreview(){
         var ordered = [];
         var length = $(".previewPage").length;
-        console.log("force order,  length: "+length);
         for(var i=0; i<length; i++){
-            console.log("find order = "+i)
+            //console.log("find order = "+i)
             var thisOne = $(".previewPage[order='"+i+"']");
             ordered.push(thisOne);
             if(i===length - 1){
-                console.log("append");
-                console.log(ordered);
+                //console.log("append");
                 $("#previewDiv").empty();
                 $("#previewDiv").append(ordered);
             }
@@ -2271,13 +2212,7 @@
 //            //console.log("END");
 //            //console.log($lastLine);
             colH = parseFloat($lastLine.attr("linetop"))-colY+parseFloat($lastLine.attr("lineheight"));
-            //While testing, this has to be out because it does not add the transcriptlet to the area. 
-//            $(".parsing[lineleft='"+colX+"']").each(function(){
-//                if ($(".transcriptlet[lineserverid='"+$(this).attr('lineserverid')+"']").find("textarea").val().length > 0) {
-//                    hasTranscription = true;
-//                    return false; //break out of each() loop
-//                }
-//            });
+
             var lastLineIndex = $(".parsing").index($lastLine);
 //            //console.log("PUSH TO GATHERED COLUMNS");
             gatheredColumns.push([colX,colY,colW,colH,$(line).attr("lineserverid"),$lastLine.attr("lineserverid"),true]);
@@ -2421,7 +2356,6 @@
         // if(!isMember && !permitParsing)return false;
         //prep for column adjustment
 //        //console.log("adjustColumn");
-        //linesToColumns();
         var thisColumnID = new Array(2);
         var thisColumn;
         var originalX = 1;
@@ -2714,7 +2648,7 @@
     
     function setCursorPosition(e, position)
     {
-        console.log("set cursor pos.");
+        //console.log("set cursor pos.");
         var pos = position;
         var wrapped = false;
         if (pos.toString().indexOf("wrapped") == 0) {
@@ -2736,7 +2670,7 @@
     }
     
     function insertAtCursor (myField, myValue, closingTag) {
-        console.log("insert at cursor");
+        //console.log("insert at cursor");
         var closeTag = (closingTag == undefined) ? "" : unescape(closingTag);
         //IE support
         if (document.selection) {
