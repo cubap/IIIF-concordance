@@ -476,6 +476,8 @@
             type: "GET",
             dataType: "json",
             success: function(data){
+                console.log("user data");
+                console.log(data);
                 if(data.uname && data.uname !== ""){
                     user = data.uname;
                     loggedInUser = true;
@@ -829,8 +831,8 @@
                         click: function() {
                           removeColumn($(this));
                           $(this).hide("blind", 250, function() {
-                            $("#destroyColumnInst").slideUp();
-                            $("#destroyColumn").removeClass("ui-state-active");
+                            //$("#destroyColumnInst").slideUp();
+                            //$("#destroyColumn").removeClass("ui-state-active");
                           });
                         }
                       });
@@ -1349,10 +1351,6 @@
 //            console.log("FAILED");
 //          });
 //    }
-    
-    
-    
-
-    
+        
     
 </script>

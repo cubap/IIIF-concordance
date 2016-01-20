@@ -399,7 +399,7 @@
                     populatePreview(lines, pageLabel, currentPage);    
                 }
                 else{
-                    console.log("Gotta get annos on " + currentOn);
+                    //console.log("Gotta get annos on " + currentOn);
                     gatherAndPopulate(currentOn, pageLabel, currentPage, i);                   
                 }
            }
@@ -408,7 +408,7 @@
     }
     
     function gatherAndPopulate(currentOn, pageLabel, currentPage, i){
-        console.log("get annos on "+currentOn);
+        //console.log("get annos on "+currentOn);
         var annosURL = "getAnno";
         var properties = {"@type": "sc:AnnotationList", "on" : currentOn};
         var paramOBJ = {"content": JSON.stringify(properties)};
@@ -422,11 +422,15 @@
     }
     function checkForMaster(annoList, pageLabel, currentPage, j){
         var lines = [];
-        var masterList = annoList[0];
+        var masterList = {};
         for(var i=0; i<annoList.length; i++){
             var thisList = annoList[i];
+            if(thisList.proj === "master"){
+                //console.log("master");
+                masterList = thisList;
+            }
             if(thisList.proj !== undefined && thisList.proj == theProjectID){
-               console.log("proj == "+theProjectID);
+               //console.log("proj == "+theProjectID);
                if(thisList.resources.length > 0){
                    lines = thisList.resources;
                    populatePreview(lines, pageLabel, currentPage, j);
@@ -434,7 +438,7 @@
                }
             }
             else if(lines.length===0 && i===annoList.length-1){
-                console.log("master");
+                //console.log("must default to master");
                 lines = masterList.resources;
                 populatePreview(lines, pageLabel, currentPage, j);
                 return false;
@@ -970,27 +974,32 @@
                     var currentList = {};
                     if(annoList.length > 0){
                         //Always default to the master list, which was the first list created for the canvas.  That way, the annotation lists associated with the master are still supported.
-                        var masterList = annoList[0];
-                        lines = masterList.resources;
-                        currentList = masterList;
-                        annoLists[currentFolio -1] = masterList["@id"];
+                        var masterList = {};
+                        //lines = masterList.resources;
+                        //currentList = masterList;
+                        //annoLists[currentFolio -1] = masterList["@id"];
                         $.each(annoList, function(){
-                            if(this.proj !== undefined && this.proj!=="" && this.proj == theProjectID){;
-                                //These are the lines we want to draw
-                                //console.log("Lines we wanna draw");
+                            //if we find the master list, make that the default
+                            if(this.proj === "master"){
+                                //console.log("master set to default");
+                                masterList = this;
                                 lines = this.resources;
-                                found = true;
                                 currentList = this;
                                 annoLists[currentFolio -1] = this["@id"];
                             }
+                            if(this.proj !== undefined && this.proj!=="" && this.proj == theProjectID){
+                                //These are the lines we want to draw because the projectID matches.  Overwrite master if necessary.
+                                //console.log("Lines we wanna draw");
+                                lines = this.resources;
+                                currentList = this;
+                                annoLists[currentFolio -1] = this["@id"];
+                                return false;
+                            }
                             else{
-                                //It is an annotation list for this canvas in a different project.
+                                //It is an annotation list for this canvas in a different project.  We have defaulted to master already.
                                 //console.log("Anno list for this canvas but different project.  ");
                             }
                         });
-                        if(!found){
-                            //console.log("Lines for project ID were not found in drawLinesToCanvas");
-                        }
                         if(lines.length > 0){
                             //console.log("Got lines to draw");
                             linesToScreen(lines);
@@ -1047,6 +1056,8 @@
             if(i>0)lastLine=lines[i-1];
             var lastLineX = 10000;
             var lastLineWidth = -1;
+            var lastLineTop = -1;
+            var lastLineHeight = -1;
             var x,y,w,h = 0;
             var XYWHarray = [x,y,w,h];
             var lineURL = "";
@@ -1071,19 +1082,33 @@
                 if(lastLine.on){ //won't be true for first line
                     lastLineX = lastLine.on.slice(lastLine.on.indexOf("#xywh=") + 6).split(",")[0];
                     lastLineWidth = lastLine.on.slice(lastLine.on.indexOf("#xywh=") + 6).split(",")[2];
+                    lastLineTop = lastLine.on.slice(lastLine.on.indexOf("#xywh=") + 6).split(",")[1];
+                    lastLineHeight = lastLine.on.slice(lastLine.on.indexOf("#xywh=") + 6).split(",")[3];
                 }                
                 else if(i===0 && lines.length > 1){ /* Check for the variance with the first line */
                     lastLine = lines[i+1];
                      if(lastLine.on){
                          lastLineX = lastLine.on.slice(lastLine.on.indexOf("#xywh=") + 6).split(",")[0];
                          lastLineWidth = lastLine.on.slice(lastLine.on.indexOf("#xywh=") + 6).split(",")[2];
+                         lastLineTop = lastLine.on.slice(lastLine.on.indexOf("#xywh=") + 6).split(",")[1];
+                         lastLineHeight = lastLine.on.slice(lastLine.on.indexOf("#xywh=") + 6).split(",")[3];
                      }
                 }
                 if(XYWHsubstring.indexOf('=') > -1){ //string must contain this to be valid
                     var numberArray = XYWHsubstring.substring(lineURL.lastIndexOf('xywh=') + 5).split(',');
+                    if(parseInt(lastLineTop) + parseInt(lastLineHeight) !== numberArray[1]){
+                        //check for slight variance in top position.  Happens because of rounding percentage math that gets pixels to be an integer.
+                        var num1 = parseInt(lastLineTop) + parseInt(lastLineHeight);
+                        console.log(num1 +" is not "+numberArray[1]);
+                        if(Math.abs(num1 - numberArray[1] <= 2)){
+                            console.log("Fix Top Variance");
+                            numberArray[1] = num1; //+1 for border ?
+                        }
+                    }
                     if(numberArray.length === 4){ // string must have all 4 to be valid
                         x = numberArray[0];
                         w = numberArray[2];
+                        if(lastLineTop)
                         if(lastLineX !== x){ //check if the last line's x value is equal to this line's x value (means same column)
                             if(Math.abs(x - lastLineX) <= 3){ //allow a 3 pixel  variance and fix this variance when necessary...
                                 //align them, call them the same Column. 
@@ -3304,12 +3329,14 @@ function toggleLineCol(){
      function splitLine(e,event){        
         //e is the line that was clicked in
         //This is where the click happened relative to img top.  In other words, where the click happened among the lines. 
-        var originalLineHeight = $(e).height() - 1;  //take one px off for the border
+        var originalLineHeight = $(e).height(); //-1 take one px off for the border
         $(".parsing").attr("newline", "false");
-        var originalLineTop = $(e).offset().top - $("#imgTop").offset().top + 1; //Move down one px for the border.  
+        //var originalLineTop = $(e).offset().top - $("#imgTop").offset().top; // +1 Move down one px for the border.  
+        var originalLineTop = parseFloat($(e).css("top"));
         var clickInLines = event.pageY - $("#imgTop").offset().top;
-        var lineOffset = $(e).offset().top - $("#imgTop").offset().top;
-        var oldLineHeight = (clickInLines - lineOffset)/$("#imgTop").height() * 100;;
+        //var lineOffset = $(e).offset().top - $("#imgTop").offset().top;
+        //var oldLineHeight = (clickInLines - lineOffset)/$("#imgTop").height() * 100;
+        var oldLineHeight = parseFloat($(e).css("height"));
         var newLineHeight = (originalLineHeight - (clickInLines - originalLineTop))/$("#imgTop").height() * 100;
         var newLineTop = (clickInLines/$("#imgTop").height()) * 100;
         var newLine = $(e).clone(true);
