@@ -2299,6 +2299,9 @@
         if(nextColumnToRemove.length > 0){
             removeColumnTranscriptlets(lines, true);
         }
+        else{
+            cleanupTranscriptlets(true);
+        }
     }
     function linesToColumns(){
         //update lines in case of changes
