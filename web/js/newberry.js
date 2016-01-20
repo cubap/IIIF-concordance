@@ -1077,23 +1077,16 @@
                 update = false;
             }
             thisContent = "";
-            console.log("lineurl index");
-            console.log(lineURL.indexOf('#'));
             if(lineURL.indexOf('#') > -1){ //string must contain this to be valid
                 var XYWHsubstring = lineURL.substring(lineURL.lastIndexOf('#' + 1)); //xywh = 'x,y,w,h'
-                console.log(i);
-                console.log(lines.length);
                 if(lastLine.on){ //won't be true for first line
-                    console.log("last line .on exists");
                     lastLineX = lastLine.on.slice(lastLine.on.indexOf("#xywh=") + 6).split(",")[0];
                     lastLineWidth = lastLine.on.slice(lastLine.on.indexOf("#xywh=") + 6).split(",")[2];
                     lastLineTop = lastLine.on.slice(lastLine.on.indexOf("#xywh=") + 6).split(",")[1];
                     lastLineHeight = lastLine.on.slice(lastLine.on.indexOf("#xywh=") + 6).split(",")[3];
                 }                
                 else if(i===0 && lines.length > 1){ /* Check for the variance with the first line */
-                    console.log("no last line .on.  first line.");
                     lastLine = lines[0];
-                    console.log(lastLine.on);
                      if(lastLine.on){
                          lastLineX = lastLine.on.slice(lastLine.on.indexOf("#xywh=") + 6).split(",")[0];
                          lastLineWidth = lastLine.on.slice(lastLine.on.indexOf("#xywh=") + 6).split(",")[2];
@@ -1101,12 +1094,8 @@
                          lastLineHeight = lastLine.on.slice(lastLine.on.indexOf("#xywh=") + 6).split(",")[3];
                      }
                 }
-                console.log("last line information");
-                console.log(lastLineX, lastLineWidth, lastLineTop, lastLineHeight);
                 if(XYWHsubstring.indexOf('=') > -1){ //string must contain this to be valid
                     var numberArray = XYWHsubstring.substring(lineURL.lastIndexOf('xywh=') + 5).split(',');
-                    console.log("numberArray1");
-                    console.log(numberArray);
                     if(parseInt(lastLineTop) + parseInt(lastLineHeight) !== numberArray[1]){
                         //check for slight variance in top position.  Happens because of rounding percentage math that gets pixels to be an integer.
                         var num1 = parseInt(lastLineTop) + parseInt(lastLineHeight);
@@ -1114,7 +1103,15 @@
                         if(Math.abs(num1 - numberArray[1]) <= 2){
                             console.log("Fix Top Variance");
                             console.log(num1);
-                            numberArray[1] = num1; //+1 for border ?
+                            //force it to always use the round up.
+                            if(num1 > numberArray[1]){
+                                console.log("set it");
+                                numberArray[1] = num1; //+1 for border ?
+                            }
+                            else{
+                                console.log("leave it");
+                            }
+                            
                         }
                     }
                     if(numberArray.length === 4){ // string must have all 4 to be valid
@@ -1170,11 +1167,7 @@
                         }
                         y = numberArray[1];
                         h = numberArray[3];
-                        console.log("numberArray2");
-                        console.log(numberArray);
                         XYWHarray = [x,y,w,h];
-                        console.log("x,y,w,h");
-                        console.log(x,y,w,h);
                     }
                     else{
                         //ERROR! Malformed line
@@ -1204,8 +1197,6 @@
                 var top = parseFloat(XYWHarray[1]) / 10;
                 var width = parseFloat(XYWHarray[2]) / (10 * ratio);
                 var height = parseFloat(XYWHarray[3]) / 10;
-                console.log("drawing anno line");
-                console.log(left, top, width, height);
                 newAnno.attr({
                     lineLeft: left,
                     lineTop: top,
