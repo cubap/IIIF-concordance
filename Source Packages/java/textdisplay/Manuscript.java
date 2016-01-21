@@ -138,7 +138,6 @@ public class Manuscript {
     * Get the Manuscript that contains this particular Folio
     */
    public Manuscript(int folio) throws SQLException {
-       System.out.println("111111111111111111111111");
       String query = "select msID from folios where pageNumber=?";
       Connection j = null;
       PreparedStatement ps = null;
@@ -147,23 +146,18 @@ public class Manuscript {
          ps = j.prepareStatement(query);
          ps.setInt(1, folio);
          ResultSet rs = ps.executeQuery();
-          System.out.println("2222222222222222222222222222");
          if (rs.next()) {
             this.id = rs.getInt(1);
-             System.out.println("3333333333333333333333333333333");
             query = "select city,repository, msIdentifier,archive from manuscript where id=?";
             ps = j.prepareStatement(query);
             ps.setInt(1, id);
-             System.out.println("4444444444444444444444444444444444");
             rs = ps.executeQuery();
             if (rs.next()) {
-                System.out.println("555555555555555555555555555555");
                this.city = rs.getString(1);
                this.repository = rs.getString(2);
                this.collection = rs.getString(3);
                this.archive = rs.getString(4);
             }
-             System.out.println("666666666666666666666666666666666666666666666");
          }
       } finally {
          if (j != null) {

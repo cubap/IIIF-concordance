@@ -129,8 +129,8 @@ public class CopyProjWithAnnoServlet extends HttpServlet {
                                 //find the annotations list whose proj matches or use the master ([0])
                                 for(int x =0; x<ja_allAnnoLists.size(); x++){
                                     JSONObject current_list = ja_allAnnoLists.getJSONObject(x);
-                                    System.out.println("WHICH LIST ARE WE ON?");
-                                    System.out.println(current_list.getString("@id"));
+//                                    System.out.println("WHICH LIST ARE WE ON?");
+//                                    System.out.println(current_list.getString("@id"));
                                     if(null!=current_list.get("proj")){ //make sure this list has proj field
                                         String current_proj = current_list.getString("proj");
                                         if(current_proj.matches("^\\d+$") && Integer.parseInt(current_proj) == templateProject.getProjectID()){ //if its id equal to the id of the project we are copying
@@ -139,18 +139,18 @@ public class CopyProjWithAnnoServlet extends HttpServlet {
                                         }
                                         else{ //it was not a match, are we done looking at all lists?
                                             if(x == (ja_allAnnoLists.size()-1)){ //if none of them match, we want the first to be our list to copy (master list)
-                                                System.out.println("USE MASTER!!!!!!!!!!!!!!!!!!!!");
+//                                                System.out.println("USE MASTER!!!!!!!!!!!!!!!!!!!!");
                                                 jo_annotationList = ja_allAnnoLists.getJSONObject(0); //assuming the first object is the master.  if not, we will have to do something
-                                                System.out.println(jo_annotationList.getString("@id"));
+//                                                System.out.println(jo_annotationList.getString("@id"));
                                                 break;
                                             }
                                         }
                                     }
                                     else{ //it was null, are we done looking at all lists?
                                         if(x == (ja_allAnnoLists.size()-1)){ //if none of them match, we want the first to be our list to copy (master list)
-                                            System.out.println("USE MASTER!!!!!!!!!!!!!!!!!!!!");
+//                                            System.out.println("USE MASTER!!!!!!!!!!!!!!!!!!!!");
                                             jo_annotationList = ja_allAnnoLists.getJSONObject(0); //assuming the first object is the master.  if not, we will have to do something
-                                            System.out.println(jo_annotationList.getString("@id"));
+//                                            System.out.println(jo_annotationList.getString("@id"));
                                             break;
                                         }
                                     }
@@ -163,8 +163,8 @@ public class CopyProjWithAnnoServlet extends HttpServlet {
                             //{
                                // for(int m = 0; m < ja_annotationList.size(); m++)
                                 //{
-                                    System.out.println("What is the id of the annotationList chosen?");
-                                    System.out.println(jo_annotationList.getString("@id"));
+//                                    System.out.println("What is the id of the annotationList chosen?");
+//                                    System.out.println(jo_annotationList.getString("@id"));
                                     JSONArray resources = jo_annotationList.getJSONArray("resources");
                                     //Get the annotations out of the AnnotaionList resources and go through them.  We need to make new annotaions for each of  them for the new list.
                                     for(int n = 0; n < resources.size(); n++)
