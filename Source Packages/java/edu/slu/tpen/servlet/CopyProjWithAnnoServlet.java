@@ -132,8 +132,8 @@ public class CopyProjWithAnnoServlet extends HttpServlet {
                                     System.out.println("WHICH LIST ARE WE ON?");
                                     System.out.println(current_list.getString("@id"));
                                     if(null!=current_list.get("proj")){ //make sure this list has proj field
-                                        int current_proj =current_list.getInt("proj"); //it will be a String
-                                        if(current_proj == templateProject.getProjectID()){ //if its id equal to the id of the project we are copying
+                                        String current_proj = current_list.getString("proj");
+                                        if(current_proj.matches("^\\d+$") && Integer.parseInt(current_proj) == templateProject.getProjectID()){ //if its id equal to the id of the project we are copying
                                             jo_annotationList = current_list; //if so, thats the list we want
                                             break;
                                         }
