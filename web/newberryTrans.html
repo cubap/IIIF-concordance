@@ -34,7 +34,7 @@
             font-size: 9pt;
             padding: 4px 6px;
             color: #002a5c;
-            height: 130px;
+            height: 140px;
             z-index: 3;
             display: none;
         }
@@ -110,8 +110,8 @@
                     <i class="magnifyTool">-</i>
                 </div>-->
                 <div id="noLineWarning">
-                    <div id="noLineConfirmation">This canvas has no lines.  If you would like to create lines <span style="color: blue;" onclick="hideWorkspaceForParsing()">click here</span>.
-                    Otherwise, you can <span style="color: red;" onclick="$('#noLineWarning').hide()">dismiss this message</span>.</div>
+                    <div id="noLineConfirmation">This canvas has no lines. You must be a leader for this project to create lines.
+                    <span style="color: red;" onclick="$('#noLineWarning').hide()">dismiss this message</span>.</div>
                 </div>
                 <div id="imgTop">
                   <img class="transcriptionImage"/>
@@ -180,7 +180,7 @@
                 </div>
                 <div class="bottomButtons">
                      <button class="magnifyBtn" magnifyImg="trans" title="Magnify Transcription Image" >Magnify</button> <!--Page event on the listener for this class in js.-->
-                     <button title="Move Transcription Image" onclick="startMoveImg();">Move Img</button>
+                     <button id="moveImage" title="Move Transcription Image" onclick="startMoveImg();">Move Img</button>
                      <button id="parsingBtn" title="Correct Page Parsing" onclick="hideWorkspaceForParsing();" >Correct Parsing</button> <!--Page event on the listener for this class in js.--> 
                      <!--<button id="linebreakBtn">Linebreak</button>TODO-->
                     <div  id="lineColControls">
@@ -204,7 +204,7 @@
                 <!-- tool buttons for parsing -->
                 </div>
                 <div id="parsingDiv" class="">
-                    <div>Any lines or columns that are created or edited are saved automatically.</div>
+                    <div>Any lines or columns that are created or edited are saved automatically.  This is also true for edits made in the full page transcription interface.</div>
                     <div id="parseOptions">
                         <h3 class="parsingHdr">Line Parsing</h3>
                         <div id="ctrlColumnsInst" class="actions">
@@ -568,6 +568,9 @@
             };
             reader.readAsText(selectedFile);
         });
+        
+        
+        
 
         $(".fullScreenTrans").click(function(){
             fullPage();
@@ -659,9 +662,14 @@
             else if (event.which === 27){
                 //Esc during any active tool means stop the tool.  In this case, our only worry is moving the image around.  We may add others later. 
                 ////console.log("ESC DOWN");
-                $("#imgTop, #imgBottom").unbind();
+                $("#imgTop, #imgBottom").unbind("mousemove");
+                $("#imgTop, #imgBottom").unbind("mousedown");
+                $("#imgTop, #imgBottom").unbind("mouseup");
+                //still need hover event on imgTop
                 $("#imgTop").css("cursor", "default");
                 $("#imgBottom").css("cursor", "default");
+                $(".magnifyBtn").removeClass("selected");
+                $("#moveImage").removeClass("selected");
                 $(".transcriptlet").children("textarea").removeClass("imageMove").removeAttr("disabled");
             }
             else if (event.which === 13){ //entr
@@ -676,7 +684,9 @@
             })
             .keyup(function(event){
                 if(event.which == 18 || event.altKey){
-                    $("#imgTop,#imgBottom").unbind().css("cursor", "default");
+                    $("#imgTop,#imgBottom").unbind("mousemove").css("cursor", "default");
+                    $("#imgTop, #imgBottom").unbind("mousedown");
+                    $("#imgTop, #imgBottom").unbind("mouseup");
                     //restoreTransition();
                     //unShiftInterface();
                 }
@@ -700,7 +710,11 @@
             $(".parsingToolButtons").children("span").click(function(event){
                
                 var show = $(this).attr("show");
-                $("#imgTop").unbind();
+                $("#imgTop").unbind("mousemove");
+                $("#imgTop").unbind("mousedown");
+                $("#imgTop").unbind("mouseup");
+                $("#imgTop").css("cursor", "default");
+                $("#imgBottom").css("cursor", "default");
                 $(".parsing").removeClass("adjustable");
                 $(".parsing").unbind('mousemove');
                 $("#ruler1").hide();
@@ -773,7 +787,11 @@
                                 mouseup:    function(event){
                                     event.preventDefault();
                                     if (!isCreating){
-                                        $('#imgTop').unbind('mousemove');
+                                        $("#imgTop").unbind("mousemove");
+                                        $("#imgTop").unbind("mousedown");
+                                        $("#imgTop").unbind("mouseup");
+                                        $("#imgTop").css("cursor", "default");
+                                        $("#imgBottom").css("cursor", "default");
                                         return true;
                                     }
                                     var $newCol = $("#newCol");
@@ -826,7 +844,11 @@
                                         .unbind("ajaxStop");
                                         isCreating = false;
                                     });
-                                    $('#imgTop').unbind('mousemove');
+                                    $("#imgTop").unbind("mousemove");
+                                    $("#imgTop").unbind("mousedown");
+                                    $("#imgTop").unbind("mouseup");
+                                    $("#imgTop").css("cursor", "default");
+                                    $("#imgBottom").css("cursor", "default");
                                 }
 
                         });
@@ -962,7 +984,11 @@
         .append("<span class='ui-icon ui-icon-triangle-1-e left'></span>")
         .click(function(event){
         //if(!isMember && !permitParsing)return false;
-        $("#imgTop").unbind();
+        $("#imgTop").unbind("mousemove");
+        $("#imgTop").unbind("mousedown");
+        $("#imgTop").unbind("mouseup");
+        $("#imgTop").css("cursor", "default");
+        $("#imgBottom").css("cursor", "default");
         $(".parsing").unbind('mousemove');
         $("#imgTop").children(".parsing").removeClass("adjustable");
         $(".destroyPage").unbind();
@@ -1286,6 +1312,7 @@
         }
         
     }
+    
     
     /* Used to test the create function and create a simple project, one that is easily copied. */
     

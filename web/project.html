@@ -89,7 +89,7 @@ Open the project management section for a given project ID.
                 position: relative;
                 margin-right: 1%; 
                 width: 43%;
-                border-right: #BFBFBF;
+                border-right: 1px solid #BFBFBF;
                 display: inline-block !important;
             }
             #project li{
@@ -100,7 +100,7 @@ Open the project management section for a given project ID.
                 position: relative;
                 margin-right: 1%; 
                 width: 43%;
-                border-right: #BFBFBF;
+                border-right: 1px solid #BFBFBF;
                 display: inline-table !important;
             }
             #team li{padding: 0.4em; padding-left: 1.5em; height: 100%; width: 97%; overflow: hidden; position: relative;margin-right: 1%; background: #BFBFBF; color: #002a5c;}
@@ -342,7 +342,9 @@ Open the project management section for a given project ID.
         }
         
         h3, h2{
-            border-bottom: 1px solid #002a5c;
+            /*border-bottom: 1px solid #002a5c;*/
+            border-bottom: 1px solid lightblue; /*their color under header*/
+            /*border-bottom: 1px solid #ddd; /*their color separating sections*/
         }
         p{
             font-size: 12pt;
@@ -351,11 +353,44 @@ Open the project management section for a given project ID.
 /*        .ui-state-active a, .ui-state-active a:link{
             color: #002a5c !important;
         }*/
+#site-name {
+    margin: 0;
+    padding: 0;
+    font-size: 220%;
+    font-weight: normal !important;
+    font-family: 'EB Garamond', serif !important;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+#logo{
+    padding: 5px 1%;
+    height: 100px;
+}
+#logo img{
+    width: 50px;
+    height: 65px;
+}
+.red{
+    color: #b43d2e
+}
+
+#site-name a{
+    color: black;
+}
         
         
     </style>
     </head>
     <body>
+        <h1 id="site-name">
+            <a target="_blank" href="https://paleography.library.utoronto.ca/">French Renaissance 
+              <div id="logo" style="display: inline-block;">
+                  <img src="images/rp-logo.png">
+              </div>
+              <span class="red">Paleography</span> <!-- <div class="newberry-slogan">A Project of the Newberry</div> -->
+            </a>
+        </h1>
         <div class='pageCover'></div>
         <input type="hidden" id="activeProjectID" />
         <div id="wrapper">
@@ -382,7 +417,7 @@ Open the project management section for a given project ID.
                                 <p id="publicProjectNotice" class="ui-state-highlight">You are viewing public project, <span id="publicProjectName" class="loud bold">THIS PROJECT's NAME</span>. To manage one of your own projects, click below.</p>
                                 
                                 <p id="activeProject">Active project is <span id="activeProjectName" class="loud"></span>.</p>
-                                <p> To manage a different project, select below.</p>
+                                <p> To manage a different project, click one below.</p>
                                 <p>To remove yourself from a project, click the 'x'.</p>
                                 <h5>All Your Projects</h5>
                                 <ul id="projectList">

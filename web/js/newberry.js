@@ -17,6 +17,8 @@
     var colorThisTime = "rgba(255,255,255,.4)";
     var annoLists = [];
     var loggedInUser = false;
+    var userIsAdmin = false;
+    //var basePath = window.location.protocol + "//" + window.location.host;
     
     var annoListTester = 
             {
@@ -421,17 +423,19 @@
     }
     function checkForMaster(annoList, pageLabel, currentPage, j){
         var lines = [];
-        var masterList = {};
+        var masterList = undefined;
         for(var i=0; i<annoList.length; i++){
             var thisList = annoList[i];
             if(thisList.proj === "master"){
                 //console.log("master");
-                masterList = thisList;
+                masterList = thisList; //The last list happens to be the master list, so set it.
             }
             if(thisList.proj !== undefined && thisList.proj == theProjectID){
                //console.log("proj == "+theProjectID);
-               if(thisList.resources.length > 0){
-                   lines = thisList.resources;
+               if(thisList.resources !== undefined){
+                   if(thisList.resources.length > 0){ //can be an empty list.
+                       lines = thisList.resources;
+                   }
                    populatePreview(lines, pageLabel, currentPage, j);
                    return false;
                }
@@ -554,7 +558,21 @@
                         var projectTools = activeProject.projectTool;
                         projectTools = JSON.parse(projectTools);
                         var count = 0;
-                        var url  = "";                      
+                        var url  = ""; 
+                        var currentUser = activeProject.cuser;
+                        var leaders = activeProject.ls_leader;
+                        leaders = JSON.parse(leaders);
+                        $.each(leaders, function(){
+                            if(this.UID === parseInt(currentUser)){
+                                console.log("This user is a leader.");
+                                userIsAdmin = true;
+                                $("#parsingBtn").show();
+                                var message = $('<span>This canvas has no lines.  If you would like to create lines</span> <span style="color: blue;" onclick="hideWorkspaceForParsing()">click here</span>.\n\
+                                Otherwise, you can <span style="color: red;" onclick="$(\"#noLineWarning\").hide()">dismiss this message</span>.');
+                                $("#noLineConfirmation").empty();
+                                $("#noLineConfirmation").append(message);
+                            }
+                        });
                         if(activeProject.ls_ms[0] !== undefined){
                             var getURLfromThis = activeProject.ls_ms;
                             getURLfromThis = JSON.parse(getURLfromThis);
@@ -1098,25 +1116,25 @@
                     if(parseInt(lastLineTop) + parseInt(lastLineHeight) !== numberArray[1]){
                         //check for slight variance in top position.  Happens because of rounding percentage math that gets pixels to be an integer.
                         var num1 = parseInt(lastLineTop) + parseInt(lastLineHeight);
-                        console.log(num1 +" is not "+numberArray[1] + "?");
-                        if(Math.abs(num1 - numberArray[1]) <= 2){
-                            console.log("Fix Top Variance");
-                            console.log(num1);
-                            //force it to always use the round up.
-                            if(num1 > numberArray[1]){
-                                console.log("set it");
-                                numberArray[1] = num1; //+1 for border ?
-                            }
-                            else{
-                                console.log("leave it");
+                        if(Math.abs(num1 - numberArray[1]) <= 2 && Math.abs(num1 - numberArray[1])!==0){
+                            numberArray[1] = num1;
+                            var newString = numberArray[0]+","+num1+","+numberArray[2]+","+numberArray[3];
+                            if(i>0){
+                                //to make the change cascade to the rest of the lines, we actually have to update the #xywh of the current line with the new value for y.
+                                var lineOn = lineURL;
+                                var index = lineOn.indexOf("#xywh=") + 6;
+                                var newLineOn = lineOn.substr(0, index) + newString + lineOn.substr(index + newString.length);
+                                lines[i].on = newLineOn;
                             }
                             
+                        }
+                        else{
+                            //console.log("no difference");
                         }
                     }
                     if(numberArray.length === 4){ // string must have all 4 to be valid
                         x = numberArray[0];
                         w = numberArray[2];
-                        if(lastLineTop)
                         if(lastLineX !== x){ //check if the last line's x value is equal to this line's x value (means same column)
                             if(Math.abs(x - lastLineX) <= 3){ //allow a 3 pixel  variance and fix this variance when necessary...
                                 //align them, call them the same Column. 
@@ -1190,7 +1208,8 @@
                 //update = false;
                 thisContent = "Enter a line transcription";
             }
-                
+                counter=parseInt(counter);
+                counter += 1;
                 var newAnno = $('<div id="transcriptlet_'+counter+'" col="'+col+'" colLineNum="'+colCounter+'" lineID="'+counter+'" lineserverid="'+lineID+'" class="transcriptlet" data-answer="' + thisContent + '"><textarea>'+thisContent+'</textarea></div>');
                 var left = parseFloat(XYWHarray[0]) / (10 * ratio);
                 var top = parseFloat(XYWHarray[1]) / 10;
@@ -1203,14 +1222,14 @@
                     lineHeight: height,
                     counter: counter
                 });
-                counter += 1;
+                
                 colCounter+=1;
                 $("#transcriptletArea").append(newAnno);
                 
-                var lineColumnIndicator = $("<div onclick='loadTranscriptlet("+(counter-1)+");' pair='"+col+""+colCounter+"' lineserverid='"+lineID+"' lineID='"+counter+"' class='lineColIndicator' style='left:"+left+"%; top:"+top+"%; width:"+width+"%; height:"+height+"%;'><div class\n\
+                var lineColumnIndicator = $("<div onclick='loadTranscriptlet("+counter+");' pair='"+col+""+colCounter+"' lineserverid='"+lineID+"' lineID='"+counter+"' class='lineColIndicator' style='left:"+left+"%; top:"+top+"%; width:"+width+"%; height:"+height+"%;'><div class\n\
                 ='lineColOnLine' >"+col+""+colCounter+"</div></div>");
                 var fullPageLineColumnIndicator = $("<div pair='"+col+""+colCounter+"' lineserverid='"+lineID+"' lineID='"+counter+"' class='lineColIndicator fullP'\n\
-                onclick=\"updatePresentation($('#transcriptlet_"+(parseInt(counter)-1)+"'));\" style='left:"+left+"%; top:"+top+"%; width:"+width+"%; height:"+height+"%;'><div class\n\
+                onclick=\"updatePresentation($('#transcriptlet_"+counter+"'));\" style='left:"+left+"%; top:"+top+"%; width:"+width+"%; height:"+height+"%;'><div class\n\
                 ='lineColOnLine' >"+col+""+colCounter+"</div></div>"); //TODO add click event to update presentation
                 //Make sure the col/line pair sits vertically in the middle of the outlined line.  
                 var lineHeight = theHeight * (height/100) + "px";
@@ -1218,11 +1237,26 @@
                 //Put to the DOM
                 $(".lineColIndicatorArea").append(lineColumnIndicator);
                 $("#fullPageSplitCanvas").append(fullPageLineColumnIndicator);
+                
             
         }
         if(update && $(".transcriptlet").eq(0) !== undefined){
             updatePresentation($(".transcriptlet").eq(0));
         }
+        //we want automatic updating for the lines these texareas correspond to.
+        var typingTimer;                //timer identifier
+        $("textarea").keydown(function(e){
+            //user has begun typing, clear the wait for an update
+            clearTimeout(typingTimer);
+        });
+        $("textarea").keyup(function(e){
+            var lineToUpdate = $(this).parent();
+            clearTimeout(typingTimer);
+            //when a user stops typing for 2 seconds, fire an update to get the new text.
+            typingTimer = setTimeout(function(){
+                updateLine(lineToUpdate, "no");
+            }, 2000);
+        });
     }
     
     function updatePresentation(transcriptlet) {
@@ -1299,7 +1333,7 @@
         var bottomImageHeight = $("#imgBottom img").height();
         if (focusItem[1].attr("lineHeight") !== null) {
           var pairForBookmarkCol = focusItem[1].attr('col');
-          var pairForBookmarkLine = parseInt(focusItem[1].attr('lineid'))+1;
+          var pairForBookmarkLine = parseInt(focusItem[1].attr('lineid'));
           var pairForBookmark = pairForBookmarkCol + pairForBookmarkLine;
           var currentLineHeight = parseFloat(focusItem[1].attr("lineHeight"));
           var currentLineTop = parseFloat(focusItem[1].attr("lineTop"));
@@ -1431,7 +1465,6 @@
     function nextTranscriptlet() {
           var nextID = parseInt(focusItem[1].attr('lineID')) + 1;
           var currentLineServerID = focusItem[1].attr("lineserverid");
-          
           if($('#transcriptlet_'+nextID).length > 0){
               if(loggedInUser){
                   var lineToUpdate = $(".transcriptlet[lineserverid='"+currentLineServerID+"']")
@@ -1464,7 +1497,7 @@
     function previousTranscriptlet() {
           var prevID = parseFloat(focusItem[1].attr('lineID')) - 1;
           var currentLineServerID = focusItem[1].attr("lineServerID");
-          var currentLineText = focusItem[1].find('textarea').val();
+          //var currentLineText = focusItem[1].find('textarea').val();
           if(prevID >= 0){
               if(loggedInUser){
                 var lineToUpdate = $(".transcriptlet[lineserverid='"+currentLineServerID+"']");
@@ -1574,14 +1607,16 @@
     };
     
      function startMoveImg(){
-       if($(".transcriptlet:first").hasClass("imageMove")){
-           $(".transcriptlet").removeClass("imageMove");
+       if($(".transcriptlet:first").hasClass("moveImage")){
+           $("#moveImage").removeClass("selected");
+           $(".transcriptlet").removeClass("moveImage");
            $(".transcriptlet").children("textarea").removeAttr("disabled");
            $("#imgTop, #imgBottom").css("cursor", "default");
-           $("#imgTop,#imgBottom").unbind();
+           $("#imgTop,#imgBottom").unbind("mousedown");
        }
        else{
-            $(".transcriptlet").addClass("imageMove");
+            $("#moveImage").addClass("selected");
+            $(".transcriptlet").addClass("moveImage");
             $(".transcriptlet").children("textarea").attr("disabled", "");
             $("#imgTop, #imgBottom").css("cursor", "url("+"images/open_grab.png),auto");
             $("#imgTop,#imgBottom").mousedown(function(event){moveImg(event);});
@@ -1697,6 +1732,7 @@
         if(img === "trans"){
             img = $("#transcriptionTemplate");
             $("#magnifyTools").fadeIn(800);
+            $("button[magnifyimg='trans']").addClass("selected");
         }
         else if(img === "compare"){
             img= $("#compareSplit");
@@ -1704,6 +1740,7 @@
                 "left":$("#compareSplit").css("left"),
                 "top" : "100px"
             });
+            $("button[magnifyimg='compare']").addClass("selected");
         }
         else if (img === "full"){
             img = $("#fullPageSplitCanvas");
@@ -1711,6 +1748,7 @@
                 "left":$("#fullPageSplit").css("left"),
                 "top" : "100px"
             });
+            $("button[magnifyimg='full']").addClass("selected");
         }
         $("#zoomDiv").show();
         $(".magnifyHelp").show();
@@ -1830,6 +1868,7 @@
      */
      function hideWorkspaceForParsing(){
 //        imgBottomOriginal = $("#imgBottom img").css("top");
+        $("#parsingBtn").css("box-shadow: none;")
         imgTopOriginalHeight = $("#imgTop img").height()+"px";
 //        imgTopOriginalTop = $("#imgTop img").css("top");
         originalCanvasHeight = $("#transcriptionCanvas").height();
@@ -2985,8 +3024,8 @@ function toggleLineCol(){
         lineLeft = Math.round(lineLeft,0);
         lineWidth = Math.round(lineWidth,0);
         lineHeight = Math.round(lineHeight,0);
-              
-        line.css("width", line.attr("linewidth") + "%");
+        
+        //line.css("width", line.attr("linewidth") + "%");
         var lineString = lineLeft+","+lineTop+","+lineWidth+","+lineHeight;
         var currentLineServerID = line.attr('lineserverid');
         var currentLineText = $(".transcriptlet[lineserverid='"+currentLineServerID+"']").find("textarea").val();
@@ -3098,10 +3137,7 @@ function toggleLineCol(){
         newLineLeft = Math.round(newLineLeft,0);
         newLineWidth = Math.round(newLineWidth,0);
         newLineHeight = Math.round(newLineHeight,0);
-        
-        console.log("saving new line");
-        console.log(newLineLeft, newLineTop, newLineWidth, newLineHeight);
-               
+                       
         var lineString = onCanvas + "#xywh=" +newLineLeft+","+newLineTop+","+newLineWidth+","+newLineHeight;
         var currentLineText = "";
         var dbLine = 
@@ -3643,5 +3679,8 @@ function stopMagnify(){
 //                    $("#imgBottom .lineColIndicatorArea").css("top", imgBottomOriginal);
     $(".lineColIndicatorArea").show();
     $(".magnifyHelp").hide();
+    $("button[magnifyimg='full']").removeClass("selected");
+    $("button[magnifyimg='compare']").removeClass("selected");
+    $("button[magnifyimg='trans']").removeClass("selected");
     restoreWorkspace();
 }

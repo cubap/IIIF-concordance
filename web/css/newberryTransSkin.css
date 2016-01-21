@@ -7,7 +7,9 @@ and open the template in the editor.
     Created on : Jan 27, 2015, 10:05:37 AM
     Author     : bhaberbe
 */
-
+textarea:focus{
+    outline: none;
+}
 .pageTurnCover{
     display: none;
     height: 1000px;
@@ -477,6 +479,10 @@ body{
     line-height: 35px;
     font-size: 10pt;
     min-width: 165px;
+}
+
+#parsingBtn{
+    display: none;
 }
 
 #ctrlColumns, #ctrlLines, .tpenButton{
@@ -1050,7 +1056,7 @@ button.imgTool{
 }
 #lineColControls{
     width: 151px;
-    height: 69px;
+    height: 73px;
     background-color: #BFBFBF;
     position: relative;
     display: inline-block;
@@ -1136,6 +1142,10 @@ p{
     border-left:1px solid rgba(255,255,255,.2);
     padding: 0px 8px;
     height:100%
+}
+.lineColOnLine:hover{
+    cursor: default;
+    font-weight: bold;
 }
 #fullPageSplitCanvas .lineColOnLine{
     border-left: none !important;
