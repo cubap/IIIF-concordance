@@ -1254,20 +1254,26 @@ function getActiveProjectMetadata(currentProjectID){
                 var removeUser = "<a class='removeUser' onclick=\"removeUserFromProject('"+this.Uname+"', $(this).parent());\">Remove member</a>";
                 var promoteUser = "<a class='promoteUser' title='Promote this user to Group Leader' onclick='promoteUserToAdmin("+this.UID+", $(this));' > + </a>";
                 var demoteUser = "<a class='demoteUser' title='Demote this user' onclick='demoteUser("+this.UID+", $(this));' > - </a>";
-                if(this.UID == currentUser.uid){
-                    isMember = true;
-                    $('.isMember').show();
-                }
+                
                 if($.inArray(this.UID, leaderIDs) !== -1){ //if a user is an admin
                     // leaders can demote others
-                        removeUser = "";
-                        promoteUser = "";
+                        removeUser = ""; //cannot remove admins from group
+                        promoteUser = ""; //cannot promote admins
                         leaderTag = " (Admin) ";
                 }
                 else{ //user is not an admin
-                    demoteUser = "";
+                    demoteUser = ""; //already demoted
                 }
-                if(!userIsProjectAdmin){ //if current user is not an admin, then they cannot perform the functions.
+                if(this.UID == currentUser.uid){
+                    isMember = true;
+                    $('.isMember').show();
+                    if(userIsProjectAdmin){ //cant do these things to yourself
+                        removeUser = "";
+                        promoteUser="";
+                        demoteUser="";
+                    }
+                }
+                if(!userIsProjectAdmin){ //if current user is not an admin, then they cannot perform the functions on anyone.
                     removeUser = "";
                     promoteUser="";
                     demoteUser="";
