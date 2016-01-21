@@ -1229,15 +1229,22 @@ function getActiveProjectMetadata(currentProjectID){
             //console.log("ACTIVE PROJECT INFORMATION");
             //console.log(activeProject);
             var leader = activeProject.ls_leader;
-            
             leader = JSON.parse(leader);
+            console.log("leaders");
+            console.log(leader);
+            var leaderIDs = [];
             //console.log('ADMIN CHECK');
             //console.log(leader[0].UID+"=="+currentUser.uid+"?");
-            if(leader[0].UID == currentUser.uid){
-                userIsProjectAdmin = true;
-                $('.mustBeAdmin').show();
-                
-            }
+            
+            //check if current user is an admin
+            $.each(leader, function(){
+                if(this.UID == currentUser.uid){
+                    userIsProjectAdmin = true;
+                    leaderIDs.push(this.UID);
+                    $('.mustBeAdmin').show();
+                }
+            });
+            
             $('.metadataLeader').html(leader[0].fname +"&nbsp;"+leader[0].lname+"&nbsp;&nbsp;("+leader[0].Uname+")");
             
             var users = activeProject.ls_u;
@@ -1245,19 +1252,31 @@ function getActiveProjectMetadata(currentProjectID){
             $.each(users,function(){
                 var leaderTag = "";
                 var removeUser = "<a class='removeUser' onclick=\"removeUserFromProject('"+this.Uname+"', $(this).parent());\">Remove member</a>";
-                var promoteUser = "<a class='promoteUser' title='Promote this user to Group Leader' onclick='promoteUserToAdmin("+this.UID+");' > + </a>";
+                var promoteUser = "<a class='promoteUser' title='Promote this user to Group Leader' onclick='promoteUserToAdmin("+this.UID+", $(this));' > + </a>";
+                var demoteUser = "<a class='demoteUser' title='Demote this user' onclick='demoteUser("+this.UID+", $(this));' > - </a>";
                 if(this.UID == currentUser.uid){
                     isMember = true;
                     if(userIsProjectAdmin){
-                        leaderTag = " (Leader) ";
+                        leaderTag = " (Admin) ";
                         removeUser = "";
                         promoteUser = "";
+                        demoteUser = ""; //cannot demote yourself
                     }
                     $('.isMember').show();
                 }
+                if($.inArray(this.UID, leaderIDs) !== -1){ //if user is an admin
+                    // leaders can demote others
+                        removeUser = "";
+                        promoteUser = "";
+                        leaderTag = " (Admin) ";
+                }
+                else{ //user is not an admin
+                    demoteUser = "";
+                }
+                
                $('#projectMembers').append("<li userID='"+this.UID+"'><span class='userFname'>"+this.fname+" </span><span class='userLname'>"+this.lname+"</span><span style='margin-left:5px;' class='userEmail'>("+this.Uname+")</span><span class='userFname'>"+leaderTag+"</span></li>");               
                //reference groups.html to find this html element.
-               $('#editProjectMembers').append("<li>"+promoteUser+"<span>" + this.Uname + leaderTag + "</span>"+removeUser+"</li>");
+               $('#editProjectMembers').append("<li>"+promoteUser+" "+demoteUser+"<span>" + this.Uname + leaderTag + "</span>"+removeUser+"</li>");
             });  
             
             var publicProperties = activeProject.projper;
