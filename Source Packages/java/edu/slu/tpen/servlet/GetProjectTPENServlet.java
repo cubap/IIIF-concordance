@@ -88,11 +88,11 @@ public class GetProjectTPENServlet extends HttpServlet {
                 Project proj = new Project(projID);
                 if (proj.getProjectID() > 0) {
                     Group group = new Group(proj.getGroupID());
-                    System.out.println("group Id ===== " + proj.getGroupID() + " is member " + group.isMember(uid));
+//                    System.out.println("group Id ===== " + proj.getGroupID() + " is member " + group.isMember(uid));
                     if (group.isMember(uid) || isTPENAdmin) {
                         if (checkModified(request, proj)) {
                             jsonMap.put("project", gson.toJson(proj));
-                            System.out.println("project json ====== " + gson.toJson(proj));
+//                            System.out.println("project json ====== " + gson.toJson(proj));
                             int projectID = proj.getProjectID();
                             //get folio
                             Folio[] folios = proj.getFolios();
@@ -124,15 +124,16 @@ public class GetProjectTPENServlet extends HttpServlet {
                                     break;
                                 }
                             }
-                            String role = session.getAttribute("role").toString();
+                            Object role = session.getAttribute("role");
                             if (!isLeader) {
-	                            if (role != null && role.equals("1")) {
+	                            if (role != null && role.toString().equals("1")) {
 	                                User currentUser = new User(uid);
 	                                ArrayList<User> leaderList = new ArrayList<User>(Arrays.asList(leaders));
 	                                leaderList.add(currentUser);
 	                                leaders = leaderList.toArray(new User[leaderList.size()]);
 	                            }
                             }
+//                            System.out.println("project leaders json ========= " + gson.toJson(leaders));
                             jsonMap.put("ls_leader", gson.toJson(leaders));
                             //get project permission
                             ProjectPermissions pms = new ProjectPermissions(proj.getProjectID());
