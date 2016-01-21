@@ -422,17 +422,19 @@
     }
     function checkForMaster(annoList, pageLabel, currentPage, j){
         var lines = [];
-        var masterList = {};
+        var masterList = undefined;
         for(var i=0; i<annoList.length; i++){
             var thisList = annoList[i];
             if(thisList.proj === "master"){
                 //console.log("master");
-                masterList = thisList;
+                masterList = thisList; //The last list happens to be the master list, so set it.
             }
             if(thisList.proj !== undefined && thisList.proj == theProjectID){
                //console.log("proj == "+theProjectID);
-               if(thisList.resources.length > 0){
-                   lines = thisList.resources;
+               if(thisList.resources !== undefined){
+                   if(thisList.resources.length > 0){ //can be an empty list.
+                       lines = thisList.resources;
+                   }
                    populatePreview(lines, pageLabel, currentPage, j);
                    return false;
                }
@@ -1196,7 +1198,8 @@
                 //update = false;
                 thisContent = "Enter a line transcription";
             }
-                
+                counter=parseInt(counter);
+                counter += 1;
                 var newAnno = $('<div id="transcriptlet_'+counter+'" col="'+col+'" colLineNum="'+colCounter+'" lineID="'+counter+'" lineserverid="'+lineID+'" class="transcriptlet" data-answer="' + thisContent + '"><textarea>'+thisContent+'</textarea></div>');
                 var left = parseFloat(XYWHarray[0]) / (10 * ratio);
                 var top = parseFloat(XYWHarray[1]) / 10;
@@ -1209,14 +1212,14 @@
                     lineHeight: height,
                     counter: counter
                 });
-                counter += 1;
+                
                 colCounter+=1;
                 $("#transcriptletArea").append(newAnno);
                 
-                var lineColumnIndicator = $("<div onclick='loadTranscriptlet("+(counter-1)+");' pair='"+col+""+colCounter+"' lineserverid='"+lineID+"' lineID='"+counter+"' class='lineColIndicator' style='left:"+left+"%; top:"+top+"%; width:"+width+"%; height:"+height+"%;'><div class\n\
+                var lineColumnIndicator = $("<div onclick='loadTranscriptlet("+counter+");' pair='"+col+""+colCounter+"' lineserverid='"+lineID+"' lineID='"+counter+"' class='lineColIndicator' style='left:"+left+"%; top:"+top+"%; width:"+width+"%; height:"+height+"%;'><div class\n\
                 ='lineColOnLine' >"+col+""+colCounter+"</div></div>");
                 var fullPageLineColumnIndicator = $("<div pair='"+col+""+colCounter+"' lineserverid='"+lineID+"' lineID='"+counter+"' class='lineColIndicator fullP'\n\
-                onclick=\"updatePresentation($('#transcriptlet_"+(parseInt(counter)-1)+"'));\" style='left:"+left+"%; top:"+top+"%; width:"+width+"%; height:"+height+"%;'><div class\n\
+                onclick=\"updatePresentation($('#transcriptlet_"+counter+"'));\" style='left:"+left+"%; top:"+top+"%; width:"+width+"%; height:"+height+"%;'><div class\n\
                 ='lineColOnLine' >"+col+""+colCounter+"</div></div>"); //TODO add click event to update presentation
                 //Make sure the col/line pair sits vertically in the middle of the outlined line.  
                 var lineHeight = theHeight * (height/100) + "px";
@@ -1232,6 +1235,8 @@
     }
     
     function updatePresentation(transcriptlet) {
+        console.log("update pres with ");
+        console.log(transcriptlet);
         if(transcriptlet === undefined || transcriptlet === null){
             $("#imgTop").css("height", "0%");
             $("#imgBottom").css("height", "inherit");
@@ -1305,7 +1310,7 @@
         var bottomImageHeight = $("#imgBottom img").height();
         if (focusItem[1].attr("lineHeight") !== null) {
           var pairForBookmarkCol = focusItem[1].attr('col');
-          var pairForBookmarkLine = parseInt(focusItem[1].attr('lineid'))+1;
+          var pairForBookmarkLine = parseInt(focusItem[1].attr('lineid'));
           var pairForBookmark = pairForBookmarkCol + pairForBookmarkLine;
           var currentLineHeight = parseFloat(focusItem[1].attr("lineHeight"));
           var currentLineTop = parseFloat(focusItem[1].attr("lineTop"));
@@ -1365,6 +1370,7 @@
    */
     function adjustImgs(positions) {
       //move background images above and below the workspace
+      console.log("line to make avtive is "+positions.activeLine);
          var lineToMakeActive = $(".lineColIndicator[pair='"+positions.activeLine+"']:first");
          var topImageHeight = $("#imgTop img").height();
           $("#imgTop").animate({
@@ -1405,6 +1411,7 @@
    
    function loadTranscriptlet(lineid){
        var currentLineServerID = focusItem[1].attr("lineserverid");
+       console.log("Load trans "+lineid);
           if($('#transcriptlet_'+lineid).length > 0){
               if(loggedInUser){
                   var lineToUpdate = $(".transcriptlet[lineserverid='"+currentLineServerID+"']")
@@ -1437,7 +1444,7 @@
     function nextTranscriptlet() {
           var nextID = parseInt(focusItem[1].attr('lineID')) + 1;
           var currentLineServerID = focusItem[1].attr("lineserverid");
-          
+          console.log("next line is "+nextID);
           if($('#transcriptlet_'+nextID).length > 0){
               if(loggedInUser){
                   var lineToUpdate = $(".transcriptlet[lineserverid='"+currentLineServerID+"']")
@@ -1470,7 +1477,8 @@
     function previousTranscriptlet() {
           var prevID = parseFloat(focusItem[1].attr('lineID')) - 1;
           var currentLineServerID = focusItem[1].attr("lineServerID");
-          var currentLineText = focusItem[1].find('textarea').val();
+          console.log("prev id is "+prevID);
+          //var currentLineText = focusItem[1].find('textarea').val();
           if(prevID >= 0){
               if(loggedInUser){
                 var lineToUpdate = $(".transcriptlet[lineserverid='"+currentLineServerID+"']");
@@ -1580,14 +1588,14 @@
     };
     
      function startMoveImg(){
-       if($(".transcriptlet:first").hasClass("imageMove")){
-           $(".transcriptlet").removeClass("imageMove");
+       if($(".transcriptlet:first").hasClass("selected")){
+           $(".transcriptlet").removeClass("selected");
            $(".transcriptlet").children("textarea").removeAttr("disabled");
            $("#imgTop, #imgBottom").css("cursor", "default");
            $("#imgTop,#imgBottom").unbind();
        }
        else{
-            $(".transcriptlet").addClass("imageMove");
+            $(".transcriptlet").addClass("selected");
             $(".transcriptlet").children("textarea").attr("disabled", "");
             $("#imgTop, #imgBottom").css("cursor", "url("+"images/open_grab.png),auto");
             $("#imgTop,#imgBottom").mousedown(function(event){moveImg(event);});
@@ -1839,6 +1847,7 @@
      */
      function hideWorkspaceForParsing(){
 //        imgBottomOriginal = $("#imgBottom img").css("top");
+        $("#parsingBtn").css("box-shadow: none;")
         imgTopOriginalHeight = $("#imgTop img").height()+"px";
 //        imgTopOriginalTop = $("#imgTop img").css("top");
         originalCanvasHeight = $("#transcriptionCanvas").height();
