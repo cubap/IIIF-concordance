@@ -34,7 +34,7 @@
             font-size: 9pt;
             padding: 4px 6px;
             color: #002a5c;
-            height: 130px;
+            height: 140px;
             z-index: 3;
             display: none;
         }
@@ -180,7 +180,7 @@
                 </div>
                 <div class="bottomButtons">
                      <button class="magnifyBtn" magnifyImg="trans" title="Magnify Transcription Image" >Magnify</button> <!--Page event on the listener for this class in js.-->
-                     <button title="Move Transcription Image" onclick="startMoveImg();">Move Img</button>
+                     <button id="moveImage" title="Move Transcription Image" onclick="startMoveImg();">Move Img</button>
                      <button id="parsingBtn" title="Correct Page Parsing" onclick="hideWorkspaceForParsing();" >Correct Parsing</button> <!--Page event on the listener for this class in js.--> 
                      <!--<button id="linebreakBtn">Linebreak</button>TODO-->
                     <div  id="lineColControls">
@@ -659,9 +659,14 @@
             else if (event.which === 27){
                 //Esc during any active tool means stop the tool.  In this case, our only worry is moving the image around.  We may add others later. 
                 ////console.log("ESC DOWN");
-                $("#imgTop, #imgBottom").unbind();
+                $("#imgTop, #imgBottom").unbind("mousemove");
+                $("#imgTop, #imgBottom").unbind("mousedown");
+                $("#imgTop, #imgBottom").unbind("mouseup");
+                //still need hover event on imgTop
                 $("#imgTop").css("cursor", "default");
                 $("#imgBottom").css("cursor", "default");
+                $(".magnifyBtn").removeClass("selected");
+                $("#moveImage").removeClass("selected");
                 $(".transcriptlet").children("textarea").removeClass("imageMove").removeAttr("disabled");
             }
             else if (event.which === 13){ //entr
@@ -676,7 +681,9 @@
             })
             .keyup(function(event){
                 if(event.which == 18 || event.altKey){
-                    $("#imgTop,#imgBottom").unbind().css("cursor", "default");
+                    $("#imgTop,#imgBottom").unbind("mousemove").css("cursor", "default");
+                    $("#imgTop, #imgBottom").unbind("mousedown");
+                    $("#imgTop, #imgBottom").unbind("mouseup");
                     //restoreTransition();
                     //unShiftInterface();
                 }
@@ -700,7 +707,9 @@
             $(".parsingToolButtons").children("span").click(function(event){
                
                 var show = $(this).attr("show");
-                $("#imgTop").unbind();
+                $("#imgTop").unbind("mousemove");
+                $("#imgTop").unbind("mousedown");
+                $("#imgTop").unbind("mouseup");
                 $(".parsing").removeClass("adjustable");
                 $(".parsing").unbind('mousemove');
                 $("#ruler1").hide();
@@ -773,7 +782,9 @@
                                 mouseup:    function(event){
                                     event.preventDefault();
                                     if (!isCreating){
-                                        $('#imgTop').unbind('mousemove');
+                                        $("#imgTop").unbind("mousemove");
+                                        $("#imgTop").unbind("mousedown");
+                                        $("#imgTop").unbind("mouseup");
                                         return true;
                                     }
                                     var $newCol = $("#newCol");
@@ -826,7 +837,9 @@
                                         .unbind("ajaxStop");
                                         isCreating = false;
                                     });
-                                    $('#imgTop').unbind('mousemove');
+                                    $("#imgTop").unbind("mousemove");
+                                    $("#imgTop").unbind("mousedown");
+                                    $("#imgTop").unbind("mouseup");
                                 }
 
                         });
@@ -962,7 +975,9 @@
         .append("<span class='ui-icon ui-icon-triangle-1-e left'></span>")
         .click(function(event){
         //if(!isMember && !permitParsing)return false;
-        $("#imgTop").unbind();
+        $("#imgTop").unbind("mousemove");
+        $("#imgTop").unbind("mousedown");
+        $("#imgTop").unbind("mouseup");
         $(".parsing").unbind('mousemove');
         $("#imgTop").children(".parsing").removeClass("adjustable");
         $(".destroyPage").unbind();

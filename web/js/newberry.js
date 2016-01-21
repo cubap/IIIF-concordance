@@ -1603,14 +1603,16 @@
     };
     
      function startMoveImg(){
-       if($(".transcriptlet:first").hasClass("selected")){
-           $(".transcriptlet").removeClass("selected");
+       if($(".transcriptlet:first").hasClass("moveImage")){
+           $("#moveImage").removeClass("selected");
+           $(".transcriptlet").removeClass("moveImage");
            $(".transcriptlet").children("textarea").removeAttr("disabled");
            $("#imgTop, #imgBottom").css("cursor", "default");
-           $("#imgTop,#imgBottom").unbind();
+           $("#imgTop,#imgBottom").unbind("mousedown");
        }
        else{
-            $(".transcriptlet").addClass("selected");
+            $("#moveImage").addClass("selected");
+            $(".transcriptlet").addClass("moveImage");
             $(".transcriptlet").children("textarea").attr("disabled", "");
             $("#imgTop, #imgBottom").css("cursor", "url("+"images/open_grab.png),auto");
             $("#imgTop,#imgBottom").mousedown(function(event){moveImg(event);});
