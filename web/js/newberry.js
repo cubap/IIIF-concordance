@@ -1094,8 +1094,6 @@
                 update = false;
             }
             thisContent = "";
-            console.log("LINEURL");
-            console.log(lineURL);
             if(lineURL.indexOf('#') > -1){ //string must contain this to be valid
                 var XYWHsubstring = lineURL.substring(lineURL.lastIndexOf('#' + 1)); //xywh = 'x,y,w,h'
                 if(lastLine.on){ //won't be true for first line
@@ -1118,7 +1116,7 @@
                     if(parseInt(lastLineTop) + parseInt(lastLineHeight) !== numberArray[1]){
                         //check for slight variance in top position.  Happens because of rounding percentage math that gets pixels to be an integer.
                         var num1 = parseInt(lastLineTop) + parseInt(lastLineHeight);
-                                                if(Math.abs(num1 - numberArray[1]) <= 2 && Math.abs(num1 - numberArray[1])!==0){
+                        if(Math.abs(num1 - numberArray[1]) <= 2 && Math.abs(num1 - numberArray[1])!==0){
                             numberArray[1] = num1;
                             var newString = numberArray[0]+","+num1+","+numberArray[2]+","+numberArray[3];
                             if(i>0){
@@ -1137,10 +1135,7 @@
                     if(numberArray.length === 4){ // string must have all 4 to be valid
                         x = numberArray[0];
                         w = numberArray[2];
-                        console.log(lastLineX +" == "+x+"?");
                         if(lastLineX !== x){ //check if the last line's x value is equal to this line's x value (means same column)
-                            console.log("no");
-                            console.log(Math.abs(x - lastLineX));
                             if(Math.abs(x - lastLineX) <= 3){ //allow a 3 pixel  variance and fix this variance when necessary...
                                 //align them, call them the same Column. 
                                 /*
@@ -1248,15 +1243,16 @@
         if(update && $(".transcriptlet").eq(0) !== undefined){
             updatePresentation($(".transcriptlet").eq(0));
         }
+        //we want automatic updating for the lines these texareas correspond to.
         var typingTimer;                //timer identifier
         $("textarea").keydown(function(e){
-            console.log("clear line update timer");
+            //user has begun typing, clear the wait for an update
             clearTimeout(typingTimer);
         });
         $("textarea").keyup(function(e){
-            console.log("set line update timer");
             var lineToUpdate = $(this).parent();
             clearTimeout(typingTimer);
+            //when a user stops typing for 2 seconds, fire an update to get the new text.
             typingTimer = setTimeout(function(){
                 updateLine(lineToUpdate, "no");
             }, 2000);
@@ -1264,8 +1260,6 @@
     }
     
     function updatePresentation(transcriptlet) {
-        console.log("update pres with ");
-        console.log(transcriptlet);
         if(transcriptlet === undefined || transcriptlet === null){
             $("#imgTop").css("height", "0%");
             $("#imgBottom").css("height", "inherit");
@@ -1399,7 +1393,6 @@
    */
     function adjustImgs(positions) {
       //move background images above and below the workspace
-      console.log("line to make avtive is "+positions.activeLine);
          var lineToMakeActive = $(".lineColIndicator[pair='"+positions.activeLine+"']:first");
          var topImageHeight = $("#imgTop img").height();
           $("#imgTop").animate({
@@ -1440,7 +1433,6 @@
    
    function loadTranscriptlet(lineid){
        var currentLineServerID = focusItem[1].attr("lineserverid");
-       console.log("Load trans "+lineid);
           if($('#transcriptlet_'+lineid).length > 0){
               if(loggedInUser){
                   var lineToUpdate = $(".transcriptlet[lineserverid='"+currentLineServerID+"']")
@@ -1473,7 +1465,6 @@
     function nextTranscriptlet() {
           var nextID = parseInt(focusItem[1].attr('lineID')) + 1;
           var currentLineServerID = focusItem[1].attr("lineserverid");
-          console.log("next line is "+nextID);
           if($('#transcriptlet_'+nextID).length > 0){
               if(loggedInUser){
                   var lineToUpdate = $(".transcriptlet[lineserverid='"+currentLineServerID+"']")
@@ -1506,7 +1497,6 @@
     function previousTranscriptlet() {
           var prevID = parseFloat(focusItem[1].attr('lineID')) - 1;
           var currentLineServerID = focusItem[1].attr("lineServerID");
-          console.log("prev id is "+prevID);
           //var currentLineText = focusItem[1].find('textarea').val();
           if(prevID >= 0){
               if(loggedInUser){
@@ -3147,10 +3137,7 @@ function toggleLineCol(){
         newLineLeft = Math.round(newLineLeft,0);
         newLineWidth = Math.round(newLineWidth,0);
         newLineHeight = Math.round(newLineHeight,0);
-        
-        console.log("saving new line");
-        console.log(newLineLeft, newLineTop, newLineWidth, newLineHeight);
-               
+                       
         var lineString = onCanvas + "#xywh=" +newLineLeft+","+newLineTop+","+newLineWidth+","+newLineHeight;
         var currentLineText = "";
         var dbLine = 
