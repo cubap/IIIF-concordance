@@ -1256,15 +1256,9 @@ function getActiveProjectMetadata(currentProjectID){
                 var demoteUser = "<a class='demoteUser' title='Demote this user' onclick='demoteUser("+this.UID+", $(this));' > - </a>";
                 if(this.UID == currentUser.uid){
                     isMember = true;
-                    if(userIsProjectAdmin){
-                        leaderTag = " (Admin) ";
-                        removeUser = "";
-                        promoteUser = "";
-                        demoteUser = ""; //cannot demote yourself
-                    }
                     $('.isMember').show();
                 }
-                if($.inArray(this.UID, leaderIDs) !== -1){ //if user is an admin
+                if($.inArray(this.UID, leaderIDs) !== -1){ //if a user is an admin
                     // leaders can demote others
                         removeUser = "";
                         promoteUser = "";
@@ -1272,6 +1266,11 @@ function getActiveProjectMetadata(currentProjectID){
                 }
                 else{ //user is not an admin
                     demoteUser = "";
+                }
+                if(!userIsProjectAdmin){ //if current user is not an admin, then they cannot perform the functions.
+                    removeUser = "";
+                    promoteUser="";
+                    demoteUser="";
                 }
                 
                $('#projectMembers').append("<li userID='"+this.UID+"'><span class='userFname'>"+this.fname+" </span><span class='userLname'>"+this.lname+"</span><span style='margin-left:5px;' class='userEmail'>("+this.Uname+")</span><span class='userFname'>"+leaderTag+"</span></li>");               
