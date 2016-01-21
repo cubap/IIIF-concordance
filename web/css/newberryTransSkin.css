@@ -479,6 +479,10 @@ body{
     min-width: 165px;
 }
 
+#parsingBtn{
+    display: none;
+}
+
 #ctrlColumns, #ctrlLines, .tpenButton{
     cursor: pointer;
 }

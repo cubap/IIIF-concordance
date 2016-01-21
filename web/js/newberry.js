@@ -17,6 +17,7 @@
     var colorThisTime = "rgba(255,255,255,.4)";
     var annoLists = [];
     var loggedInUser = false;
+    var userIsAdmin = false;
     //var basePath = window.location.protocol + "//" + window.location.host;
     
     var annoListTester = 
@@ -557,7 +558,21 @@
                         var projectTools = activeProject.projectTool;
                         projectTools = JSON.parse(projectTools);
                         var count = 0;
-                        var url  = "";                      
+                        var url  = ""; 
+                        var currentUser = activeProject.cuser;
+                        var leaders = activeProject.ls_leader;
+                        leaders = JSON.parse(leaders);
+                        $.each(leaders, function(){
+                            if(this.UID === parseInt(currentUser)){
+                                console.log("This user is a leader.");
+                                userIsAdmin = true;
+                                $("#parsingBtn").show();
+                                var message = $('<span>This canvas has no lines.  If you would like to create lines</span> <span style="color: blue;" onclick="hideWorkspaceForParsing()">click here</span>.\n\
+                                Otherwise, you can <span style="color: red;" onclick="$(\"#noLineWarning\").hide()">dismiss this message</span>.');
+                                $("#noLineConfirmation").empty();
+                                $("#noLineConfirmation").append(message);
+                            }
+                        });
                         if(activeProject.ls_ms[1] !== undefined){
                             var getURLfromThis = activeProject.ls_ms;
                             getURLfromThis = JSON.parse(getURLfromThis);
