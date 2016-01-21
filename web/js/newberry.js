@@ -1242,11 +1242,25 @@
                 //Put to the DOM
                 $(".lineColIndicatorArea").append(lineColumnIndicator);
                 $("#fullPageSplitCanvas").append(fullPageLineColumnIndicator);
+                
             
         }
         if(update && $(".transcriptlet").eq(0) !== undefined){
             updatePresentation($(".transcriptlet").eq(0));
         }
+        var typingTimer;                //timer identifier
+        $("textarea").keydown(function(e){
+            console.log("clear line update timer");
+            clearTimeout(typingTimer);
+        });
+        $("textarea").keyup(function(e){
+            console.log("set line update timer");
+            var lineToUpdate = $(this).parent();
+            clearTimeout(typingTimer);
+            typingTimer = setTimeout(function(){
+                updateLine(lineToUpdate, "no");
+            }, 2000);
+        });
     }
     
     function updatePresentation(transcriptlet) {
@@ -3020,8 +3034,8 @@ function toggleLineCol(){
         lineLeft = Math.round(lineLeft,0);
         lineWidth = Math.round(lineWidth,0);
         lineHeight = Math.round(lineHeight,0);
-              
-        line.css("width", line.attr("linewidth") + "%");
+        
+        //line.css("width", line.attr("linewidth") + "%");
         var lineString = lineLeft+","+lineTop+","+lineWidth+","+lineHeight;
         var currentLineServerID = line.attr('lineserverid');
         var currentLineText = $(".transcriptlet[lineserverid='"+currentLineServerID+"']").find("textarea").val();
