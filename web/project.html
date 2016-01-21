@@ -353,11 +353,44 @@ Open the project management section for a given project ID.
 /*        .ui-state-active a, .ui-state-active a:link{
             color: #002a5c !important;
         }*/
+#site-name {
+    margin: 0;
+    padding: 0;
+    font-size: 220%;
+    font-weight: normal !important;
+    font-family: 'EB Garamond', serif !important;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+#logo{
+    padding: 5px 1%;
+    height: 100px;
+}
+#logo img{
+    width: 50px;
+    height: 65px;
+}
+.red{
+    color: #b43d2e
+}
+
+#site-name a{
+    color: black;
+}
         
         
     </style>
     </head>
     <body>
+        <h1 id="site-name">
+            <a target="_blank" href="https://paleography.library.utoronto.ca/">French Renaissance 
+              <div id="logo" style="display: inline-block;">
+                  <img src="images/rp-logo.png">
+              </div>
+              <span class="red">Paleography</span> <!-- <div class="newberry-slogan">A Project of the Newberry</div> -->
+            </a>
+        </h1>
         <div class='pageCover'></div>
         <input type="hidden" id="activeProjectID" />
         <div id="wrapper">
