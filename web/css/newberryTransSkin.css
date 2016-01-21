@@ -47,7 +47,12 @@ textarea:focus{
     margin-right: 5px;
 }
 .removeUser{
-    margin-left: 5px;
+    margin-left: 15px;
+    color: #D14836;
+    cursor: pointer;
+}
+.removeUser:hover{
+    text-decoration: underline;
 }
 .promoteUser, .removeUser, .demoteUser{
     cursor: pointer;
