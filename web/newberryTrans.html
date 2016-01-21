@@ -710,6 +710,8 @@
                 $("#imgTop").unbind("mousemove");
                 $("#imgTop").unbind("mousedown");
                 $("#imgTop").unbind("mouseup");
+                $("#imgTop").css("cursor", "default");
+                $("#imgBottom").css("cursor", "default");
                 $(".parsing").removeClass("adjustable");
                 $(".parsing").unbind('mousemove');
                 $("#ruler1").hide();
@@ -785,6 +787,8 @@
                                         $("#imgTop").unbind("mousemove");
                                         $("#imgTop").unbind("mousedown");
                                         $("#imgTop").unbind("mouseup");
+                                        $("#imgTop").css("cursor", "default");
+                                        $("#imgBottom").css("cursor", "default");
                                         return true;
                                     }
                                     var $newCol = $("#newCol");
@@ -840,6 +844,8 @@
                                     $("#imgTop").unbind("mousemove");
                                     $("#imgTop").unbind("mousedown");
                                     $("#imgTop").unbind("mouseup");
+                                    $("#imgTop").css("cursor", "default");
+                                    $("#imgBottom").css("cursor", "default");
                                 }
 
                         });
@@ -978,6 +984,8 @@
         $("#imgTop").unbind("mousemove");
         $("#imgTop").unbind("mousedown");
         $("#imgTop").unbind("mouseup");
+        $("#imgTop").css("cursor", "default");
+        $("#imgBottom").css("cursor", "default");
         $(".parsing").unbind('mousemove');
         $("#imgTop").children(".parsing").removeClass("adjustable");
         $(".destroyPage").unbind();
