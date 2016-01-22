@@ -40,10 +40,21 @@ textarea:focus{
     color: blue;
     margin-right: 5px;
 }
-.removeUser{
-    margin-left: 5px;
+.demoteUser{
+    font-weight: bold;
+    font-size: 117%;
+    color: #d14836;
+    margin-right: 5px;
 }
-.promoteUser, .removeUser{
+.removeUser{
+    margin-left: 15px;
+    color: #D14836;
+    cursor: pointer;
+}
+.removeUser:hover{
+    text-decoration: underline;
+}
+.promoteUser, .removeUser, .demoteUser{
     cursor: pointer;
 }
 body{
