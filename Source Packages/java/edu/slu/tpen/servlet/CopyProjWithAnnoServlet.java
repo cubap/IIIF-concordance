@@ -280,7 +280,8 @@ public class CopyProjWithAnnoServlet extends HttpServlet {
                 e.printStackTrace();
             }
         }else{
-        	result = "" + response.SC_FORBIDDEN;
+            response.setStatus(response.SC_FORBIDDEN);
+        	result = "Unauthorized or invalid project speficied.";
         }
         response.getWriter().print(result);
     }
