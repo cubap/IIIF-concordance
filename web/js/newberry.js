@@ -1054,6 +1054,7 @@
         letters = letters.split("");
         var update = true;
         var thisContent = "";
+        var thisPlaceholder = "Enter a line transcription";
         var counter = 0;
         var colCounter = 0;
         var image = $('#imgBottom img');
@@ -1202,16 +1203,13 @@
                 update = false;
             }
             
-            if(line.resource['cnt:chars'] !== undefined && line.resource['cnt:chars'] !== ""){
+            if(line.resource['cnt:chars'] !== undefined && line.resource['cnt:chars'] !== "" && line.resource['cnt:chars'] != "Enter a line transcription"){
                 thisContent = line.resource['cnt:chars'];
             }
-            else{ //no text stored with the line yet or text stored is blank.  Give user a standard placeholder.
-                //update = false;
-                thisContent = "Enter a line transcription";
-            }
+
                 counter=parseInt(counter);
                 counter += 1;
-                var newAnno = $('<div id="transcriptlet_'+counter+'" col="'+col+'" colLineNum="'+colCounter+'" lineID="'+counter+'" lineserverid="'+lineID+'" class="transcriptlet" data-answer="' + thisContent + '"><textarea>'+thisContent+'</textarea></div>');
+                var newAnno = $('<div id="transcriptlet_'+counter+'" col="'+col+'" colLineNum="'+colCounter+'" lineID="'+counter+'" lineserverid="'+lineID+'" class="transcriptlet" data-answer="' + thisContent + '"><textarea placeholder="' + thisPlaceholder + '">'+thisContent+'</textarea></div>');
                 var left = parseFloat(XYWHarray[0]) / (10 * ratio);
                 var top = parseFloat(XYWHarray[1]) / 10;
                 var width = parseFloat(XYWHarray[2]) / (10 * ratio);
