@@ -19,7 +19,7 @@
     var loggedInUser = false;
     var userIsAdmin = false;
     //var basePath = window.location.protocol + "//" + window.location.host;
-    
+
     var annoListTester = 
             {
             "@id" : "http://www.example.org/iiif/LlangBrev/annoList/5",
@@ -577,6 +577,7 @@
                             var getURLfromThis = activeProject.ls_ms;
                             getURLfromThis = JSON.parse(getURLfromThis);
                             url  = getURLfromThis[0].archive; //This is the manifest inside the project data
+                            con
 //                            console.log("manifest is here: "+getURLfromThis[1].archive);
                             if(url.indexOf("http") < 0){ //Then this is a newberry created newberry project
                                 //create the newberry url
@@ -3684,3 +3685,7 @@ function stopMagnify(){
     $("button[magnifyimg='trans']").removeClass("selected");
     restoreWorkspace();
 }
+
+// Shim console.log to avoid blowing up browsers without it
+if (!window.console) window.console = {};
+if (!window.console.log) window.console.log = function () { };
