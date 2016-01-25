@@ -10,7 +10,7 @@ and open the template in the editor.
 textarea:focus{
     outline: none;
 }
-.pageTurnCover{
+.pageTurnCover, #parsingCover{
     display: none;
     height: 1000px;
     width: 100%;
@@ -18,6 +18,12 @@ textarea:focus{
     background-color: white;
     position: absolute;
     z-index: 6;
+}
+#parsingCover{
+    cursor: url(../images/loading.gif), auto;
+    /*cursor: not-allowed;*/
+    top: 0;
+    background-color: rgba(0,0,0,.7);
 }
 .turnLoader{
     width: 100%;

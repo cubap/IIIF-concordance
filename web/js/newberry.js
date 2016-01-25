@@ -2649,13 +2649,16 @@
      * parsing tool. Jumps to transcriptlet for full page tool.
      */
     function clickedLine(e,event) {
+        //Stop ability to make a new line until the update from this process is complete.
         if ($(e).hasClass("parsing")){
             if ($("#addLines").hasClass('active')||$("#removeLines").hasClass('active')){
+                console.log("show parsing cover");
+                $("#parsingCover").show();
                 lineChange(e,event);
             }
         }
         else{
-            $("#transcription"+($(e).index(".line")+1)).focus();
+            //$("#transcription"+($(e).index(".line")+1)).focus();
         }
     }
     
@@ -3082,6 +3085,8 @@ function toggleLineCol(){
                                 //console.log(currentAnnoList.resources)
                                 currentFolio = parseInt(currentFolio);
                                 annoLists[currentFolio - 1]= annoListID;
+                                console.log("hide cover");
+                                $("#parsingCover").hide();
                             });
                         }
                     });                    
@@ -3417,7 +3422,7 @@ function toggleLineCol(){
             } 
             var params = new Array({name:"remove",value:removedLine.attr("lineserverid")});
             removedLine.remove(); 
-            removeTranscriptlet(removedLine.attr("lineserverid"),$(e).attr("lineserverid"), true);
+            removeTranscriptlet(removedLine.attr("lineserverid"),$(e).attr("lineserverid"), true, "cover");
             return params;
         }
     
@@ -3429,7 +3434,7 @@ function toggleLineCol(){
      * @param lineid lineid to remove
      * @param updatedLineID lineid to be updated
      */
-     function removeTranscriptlet(lineid, updatedLineID, draw){
+     function removeTranscriptlet(lineid, updatedLineID, draw, cover){
         // if(!isMember && !permitParsing)return false;
         //update remaining line, if needed
         var updateText = "";
@@ -3488,6 +3493,8 @@ function toggleLineCol(){
                                     //console.log("update from delete finished");
                                     currentFolio = parseInt(currentFolio);
                                     annoLists[currentFolio - 1] = annoListID;
+                                    console.log("hide cover");
+                                    $("#parsingCover").hide();
                                 });
                             }
                         });                       

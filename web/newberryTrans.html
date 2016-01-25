@@ -102,7 +102,7 @@
         <!--<button id="loadBtn" class="hideme" onclick="createBryan();"> TEST CREATION </button>-->
         
         <div id="transcriptionTemplate">
-            
+            <div id="parsingCover"></div>
             <div id="transcriptionCanvas">
 <!--                <div id="magnifyTools">
                     <div onclick="$('.magnifyTool').toggle();">Magnify</div>
@@ -203,6 +203,7 @@
                 <div class="toolLinks">
                 <!-- tool buttons for parsing -->
                 </div>
+                
                 <div id="parsingDiv" class="">
                     <div>Any lines or columns that are created or edited are saved automatically.  This is also true for edits made in the full page transcription interface.</div>
                     <div id="parseOptions">
@@ -1314,6 +1315,8 @@
     }
     
     function lineChange(e,event){
+        //console.log("show parsing cover");
+        $("#parsingCover").show();
         if(isAddingLines){
             //console.log("SPLIT LINE");
             splitLine(e,event);
