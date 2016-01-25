@@ -568,7 +568,7 @@
                                 userIsAdmin = true;
                                 $("#parsingBtn").show();
                                 var message = $('<span>This canvas has no lines.  If you would like to create lines</span> <span style="color: blue;" onclick="hideWorkspaceForParsing()">click here</span>.\n\
-                                Otherwise, you can <span style="color: red;" onclick="$(\"#noLineWarning\").hide()">dismiss this message</span>.');
+                                Otherwise, you can <span style="color: red;" onclick="$(\'#noLineWarning\').hide()">dismiss this message</span>.');
                                 $("#noLineConfirmation").empty();
                                 $("#noLineConfirmation").append(message);
                             }
