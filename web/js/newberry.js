@@ -1058,8 +1058,8 @@
         var image = $('#imgTop img');
         var theHeight = image.height();
         var theWidth = image.width();
-        $('#transcriptionCanvas').css('height', theHeight);
-        $('.lineColIndicatorArea').css('height', theHeight);
+        $('#transcriptionCanvas').css('height', originalCanvasHeight2 +"px");
+        $('.lineColIndicatorArea').css('height',originalCanvasHeight2 + "px");
         var ratio = 0;
         //originalCanvasHeight2 = theHeight;
         //originalCanvasWidth2 = theWidth;
@@ -1865,8 +1865,8 @@
      function hideWorkspaceForParsing(){
 //        imgBottomOriginal = $("#imgBottom img").css("top");
         $("#parsingBtn").css("box-shadow: none;");
-        originalCanvasWidth2 = $("#imgTop img").width(); //make sure these are set correctly
-        originalCanvasHeight2 = $("#imgTop img").height(); //make sure these are set correctly.
+       // originalCanvasWidth2 = $("#imgTop img").width(); //make sure these are set correctly
+        //originalCanvasHeight2 = $("#imgTop img").height(); //make sure these are set correctly.
         
         originalCanvasHeight = $("#transcriptionCanvas").height();
         originalCanvasWidth = $("#transcriptionCanvas").width();
@@ -2039,8 +2039,8 @@
 //        //console.log("RESTORE WORKSPACE");
         restoreWorkspace();
         $("#splitScreenTools").show();
-        $("#transcriptionCanvas").css("height", originalCanvasHeight+"px");
-        $(".lineColIndicatorArea").css("height", originalCanvasHeight+"px");
+        $("#transcriptionCanvas").css("height", originalCanvasHeight2+"px");
+        $(".lineColIndicatorArea").css("height", originalCanvasHeight2+"px");
         $("#imgTop").hover(function(){
             var color = colorThisTime.replace(".4", "1");
             $('.activeLine').css('box-shadow', '0px 0px 15px 8px '+color);
@@ -2057,8 +2057,8 @@
         //TODO imgBottom img top needs to resize with the split (as well as the lineIndicatorArea
 //        //console.log("SPLIT PAGWE!");
         liveTool = tool;
-        originalCanvasHeight2 = $("#imgTop img").height(); //make sure these are set correctly
-        originalCanvasWidth2 = $("#imgTop img").width(); //make sure these are set correctly
+        //originalCanvasHeight2 = $("#imgTop img").height(); //make sure these are set correctly
+        //originalCanvasWidth2 = $("#imgTop img").width(); //make sure these are set correctly
         originalCanvasHeight = $("#transcriptionCanvas").height(); //make sure these are set correctly
         originalCanvasWidth = $("#transcriptionCanvas").width(); //make sure these are set correctly
         var ratio = originalCanvasWidth/originalCanvasHeight;
