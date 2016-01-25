@@ -788,7 +788,7 @@ public class Folio {
     * loads over a given period of time for the paleography UI
     */
    public Boolean isCached() throws SQLException {
-      String query = "select folio from imageCache where folio=? ";
+      String query = "select folio from imagecache where folio=? ";
       Connection j = null;
       PreparedStatement ps = null;
       try {

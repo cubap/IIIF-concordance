@@ -57,7 +57,7 @@ public class TextSearcher {
         PreparedStatement ps = null;
         try {
             j = DatabaseWrapper.getConnection();
-            String selectQuery = "select * from quotationSources where headWord=? and word1=?";
+            String selectQuery = "select * from quotationsources where headWord=? and word1=?";
             String[] queryParts = query.split(" ");
             if (queryParts.length < 2) {
                 return "";

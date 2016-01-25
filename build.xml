@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project name="t-pen-newberry" basedir="." default="deploy"
+  xmlns:ivy="antlib:org.apache.ivy.ant">
+  
+  <!-- IVY INSTALL -->
+
+  <condition property="ivy.available">
+    <available resource="org/apache/ivy/ant/antlib.xml"/>
+  </condition>
+
+  <target name="download-ivy" unless="ivy.available">
+    <mkdir dir="${user.home}/.ant/lib" />
+    <get
+      dest="${user.home}/.ant/lib/ivy.jar" 
+      src="http://search.maven.org/remotecontent?filepath=org/apache/ivy/ivy/2.4.0-rc1/ivy-2.4.0-rc1.jar" />
+  </target>
+
+  <target name="init-ivy" depends="download-ivy">
+    <path id="ivy.lib.path">
+      <fileset dir="${user.home}/.ant/lib" includes="*.jar"/>
+    </path>
+    <taskdef uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
+    <ivy:settings file="ivysettings-uoft.xml"/>
+  </target>
+
+  <!-- BUILD -->
+
+  <target name="init">
+    <presetdef name="javac">
+      <javac includeantruntime="false" />
+    </presetdef>
+    <property name="sourceDir" value="./Source Packages/java" />
+    <property name="outputDir" value="web/WEB-INF/classes" />
+    <property name="versionfile" value="./Source Packages/java/version.properties"/>
+    <property name="buildDir" value="build" />
+    <property name="web.src" value="web" />
+    <property name="web.dest" value="/var/lib/tomcat8/webapps/tpen" />
+    <property name="dependent.libs" value="lib/" />
+
+    <path id="compile.classpath">
+      <fileset dir="web/WEB-INF/lib">
+        <include name="*.jar"/>
+      </fileset>
+      <fileset dir="${dependent.libs}">
+        <include name="*.jar"/>
+      </fileset>
+    </path>
+  </target>
+  
+  <target name="clean" depends="init">
+    <delete dir="${outputDir}" />
+    <delete dir="${buildDir}" />
+  </target>
+  
+  <target name="prepare" depends="clean">
+    <mkdir dir="${outputDir}"/>
+    <mkdir dir="${buildDir}"/>
+  </target>
+  
+  <target name="resolve" depends="init-ivy">
+    <ivy:retrieve sync="true" />
+  </target>
+
+  <target name="compile" depends="prepare,resolve">
+    <javac srcdir="${sourceDir}" destdir="${outputDir}">
+      <classpath refid="compile.classpath" />
+    </javac>
+    <copy file="${versionfile}" todir="${outputDir}" failonerror="false" />
+  </target>
+  
+  <!-- DEPLOY or PACKAGE -->
+
+  <target name="deploy" depends="compile">
+    <copy todir="${web.dest}">
+      <fileset dir="${web.src}" />
+    </copy>
+  </target>
+
+  <target name="package" depends="compile">
+    <war destfile="${buildDir}/${ivy.module}.war" webxml="web/WEB-INF/web.xml">
+      <classes dir="web/WEB-INF/classes" />
+      <fileset dir="web">
+        <exclude name="WEB-INF/web.xml" />
+      </fileset>
+    </war>
+  </target>
+
+  <!-- PUBLISH -->
+
+  <target name="publish" depends="package">
+    <fail message="Missing parameter: nexus.user" unless="nexus.user"/>
+    <fail message="Missing parameter: nexus.pass" unless="nexus.pass"/>
+    <ivy:deliver deliverpattern="${buildDir}/ivy.xml" pubrevision="${ivy.revision}"/>
+    <ivy:makepom ivyfile="${buildDir}/ivy.xml" pomfile="${buildDir}/${ivy.module}.pom"/>
+    <ivy:publish resolver="nexus-releases" overwrite="true" publishivy="false" >
+      <artifacts pattern="${buildDir}/[artifact].[ext]" />
+    </ivy:publish>
+  </target>
+  
+</project>

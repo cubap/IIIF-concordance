@@ -43,8 +43,8 @@ public class FullTextIndexer {
       File dir = new File(src);
       File[] files = dir.listFiles();
       String corpus = "";
-      String deleteQuery = "truncate table quotationSources";
-      String insertQuery = "insert into quotationSources (workTitle, headword, word1, word2, word3, word4,word5,word6,word7,word8,word9) values(?,?,?,?,?,?,?,?,?,?,?)";
+      String deleteQuery = "truncate table quotationsources";
+      String insertQuery = "insert into quotationsources (workTitle, headword, word1, word2, word3, word4,word5,word6,word7,word8,word9) values(?,?,?,?,?,?,?,?,?,?,?)";
 
       Connection j = null;
       PreparedStatement del = null;

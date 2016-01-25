@@ -12,6 +12,10 @@
         <filter-name>UTF8Filter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
+	<listener>
+        <description>Session listener to put session in servlet context (used for paleo auth)</description>
+        <listener-class>edu.slu.util.SessionListener</listener-class>
+    </listener>
     <servlet>
         <servlet-name>imageResize</servlet-name>
         <servlet-class>imageLines.ImageResize</servlet-class>
@@ -546,7 +550,7 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>copyProjWithAnnoServlet</servlet-name>
-        <url-pattern>/copyProjWithAnnoServlet</url-pattern>
+        <url-pattern>/copyProjectWithAnnotations</url-pattern>
     </servlet-mapping>
     <!-- tpen webservices for newberry ends -->
     <session-config>

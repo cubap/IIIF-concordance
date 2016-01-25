@@ -19,7 +19,7 @@
     var loggedInUser = false;
     var userIsAdmin = false;
     //var basePath = window.location.protocol + "//" + window.location.host;
-    
+
     var annoListTester = 
             {
             "@id" : "http://www.example.org/iiif/LlangBrev/annoList/5",
@@ -348,7 +348,7 @@
     /* The tools for newberry are hard set in the html page, no need for this function. */
     
 //    function getProjectTools(projectID){
-//        var url = "http://localhost:8080/newberry/getProjectTPENServlet?projectID="+projectID;
+//        var url = "http://localhost:8080/getProjectTPENServlet?projectID="+projectID;
 //        $.ajax({
 //            url: url,
 //            type:"GET",
@@ -573,11 +573,12 @@
                                 $("#noLineConfirmation").append(message);
                             }
                         });
-                        if(activeProject.ls_ms[1] !== undefined){
+                        if(activeProject.ls_ms[0] !== undefined){
                             var getURLfromThis = activeProject.ls_ms;
                             getURLfromThis = JSON.parse(getURLfromThis);
-                            url  = getURLfromThis[1].archive; //This is the manifest inside the project data
-                            //console.log("manifest is here: "+getURLfromThis[1].archive);
+                            url  = getURLfromThis[0].archive; //This is the manifest inside the project data
+                            con
+//                            console.log("manifest is here: "+getURLfromThis[1].archive);
                             if(url.indexOf("http") < 0){ //Then this is a newberry created newberry project
                                 //create the newberry url
                                 //console.log("gunna call project servlet because http was not present in this url");
@@ -732,10 +733,10 @@
                                 projectTools = JSON.parse(projectTools);
                                 var count = 0;
                                 var url  = "";
-                                if(activeProject.ls_ms[1] !== undefined){
+                                if(activeProject.ls_ms[0] !== undefined){
                                     var getURLfromThis = activeProject.ls_ms;
                                     getURLfromThis = JSON.parse(getURLfromThis);
-                                    url  = getURLfromThis[1].archive;
+                                    url  = getURLfromThis[0].archive;
                                     $.ajax({
                                         url: url,
                                         success: function(projectData){
@@ -888,7 +889,7 @@
         $("#imgTop img, #imgBottom img").css("width", "auto");
         $("#prevColLine").html("**");
         $("#currentColLine").html("**");
-        $('.transcriptionImage').attr('src', "../newberry/images/loading2.gif"); //background loader if there is a hang time waiting for image
+        $('.transcriptionImage').attr('src', "images/loading2.gif"); //background loader if there is a hang time waiting for image
         $('.lineColIndicator').remove();
         $(".transcriptlet").remove();
         var pageTitle = canvasObj.label;
@@ -929,20 +930,20 @@
                         .on("load", function(){
                             $("#imgTop, #imgTop img, #imgBottom img, #imgBottom, #transcriptionCanvas").css("height", "auto");
                             $("#imgTop img, #imgBottom img").css("width", "100%");
-                            $('.transcriptionImage').attr('src', "../newberry/images/missingImage.png");
-                            $("#fullPageImg").attr("src", "../newberry/images/missingImage.png");
+                            $('.transcriptionImage').attr('src', "images/missingImage.png");
+                            $("#fullPageImg").attr("src", "images/missingImage.png");
                             $('#transcriptionCanvas').css('height', $("#imgBottom img").height() + "px");
                             $('.lineColIndicatorArea').css('height', $("#imgBottom img").height() + "px");
                             $("#imgTop").css("height", "0%");
                             $("#imgBottom img").css("top", "0px");
                             $("#imgBottom").css("height", "inherit");     
                         })
-                        .attr("src", "../newberry/images/missingImage.png")
+                        .attr("src", "images/missingImage.png")
                     })
                     .attr("src", canvasObj.images[0].resource['@id'].replace('amp;',''));
         }
         else{
-             $('.transcriptionImage').attr('src',"../newberry/images/missingImage.png");
+             $('.transcriptionImage').attr('src',"images/missingImage.png");
              alert("The canvas is malformed.  No 'images' field in canvas object or images:[0]['@id'] does not exist.  Cannot draw lines.");
             //ERROR!  Malformed canvas object.  
         }
@@ -1053,6 +1054,7 @@
         letters = letters.split("");
         var update = true;
         var thisContent = "";
+        var thisPlaceholder = "Enter a line transcription";
         var counter = 0;
         var colCounter = 0;
         var image = $('#imgTop img');
@@ -1200,16 +1202,13 @@
                 update = false;
             }
             
-            if(line.resource['cnt:chars'] !== undefined && line.resource['cnt:chars'] !== ""){
+            if(line.resource['cnt:chars'] !== undefined && line.resource['cnt:chars'] !== "" && line.resource['cnt:chars'] != "Enter a line transcription"){
                 thisContent = line.resource['cnt:chars'];
             }
-            else{ //no text stored with the line yet or text stored is blank.  Give user a standard placeholder.
-                //update = false;
-                thisContent = "Enter a line transcription";
-            }
+
                 counter=parseInt(counter);
                 counter += 1;
-                var newAnno = $('<div id="transcriptlet_'+counter+'" col="'+col+'" colLineNum="'+colCounter+'" lineID="'+counter+'" lineserverid="'+lineID+'" class="transcriptlet" data-answer="' + thisContent + '"><textarea>'+thisContent+'</textarea></div>');
+                var newAnno = $('<div id="transcriptlet_'+counter+'" col="'+col+'" colLineNum="'+colCounter+'" lineID="'+counter+'" lineserverid="'+lineID+'" class="transcriptlet" data-answer="' + thisContent + '"><textarea placeholder="' + thisPlaceholder + '">'+thisContent+'</textarea></div>');
                 var left = parseFloat(XYWHarray[0]) / (10 * ratio);
                 var top = parseFloat(XYWHarray[1]) / 10;
                 var width = parseFloat(XYWHarray[2]) / (10 * ratio);
@@ -1643,7 +1642,7 @@
         event.preventDefault();
 //        $(dragHelper).appendTo("body");
         $("#imgTop img,#imgBottom img,#imgTop .lineColIndicatorArea, #imgBottom .lineColIndicatorArea, #bookmark").addClass('noTransition');
-        $("#imgTop, #imgBottom").css("cursor", "url("+"images/close_grab.png),auto" );
+        $("#imgTop, #imgBottom").css("cursor", "url(images/close_grab.png),auto" );
         $(document)
         .disableSelection()
         .mousemove(function(event){
@@ -1677,7 +1676,7 @@
         .mouseup(function(){
             $("#dragHelper").remove();
             $("#imgTop img,#imgBottom img,#imgTop .lineColIndicatorArea, #imgBottom .lineColIndicatorArea, #bookmark").removeClass('noTransition');
-            if(!isMagnifying)$("#imgTop, #imgBottom").css("cursor", "url("+"images/open_grab.png),auto");
+            if(!isMagnifying)$("#imgTop, #imgBottom").css("cursor", "url(images/open_grab.png),auto");
             $(document)
             .enableSelection()
             .unbind("mousemove");
@@ -2884,7 +2883,7 @@ function toggleLineCol(){
 //            $('.parsing').each(function(){
 //                var currentLineServerID = $(this).attr('lineServerID');
 //                var currentLineText = $(this).find('textarea').val();
-//                var url = "http://localhost:8080/newberry/updateLine?text="+currentLineText+"&projectID="+projectID+"&line="+currentLineServerID;
+//                var url = "http://localhost:8080/updateLine?text="+currentLineText+"&projectID="+projectID+"&line="+currentLineServerID;
 //                var updateRequest = new XMLHttpRequest();
 //                updateRequest.open("POST", url, true);
 //      //          updateRequest.setRequestHeader("Access-Control-Allow-Origin", "Access-Control-Allow_Origin:*");
@@ -2895,7 +2894,7 @@ function toggleLineCol(){
 //            $('.transcriptlet').each(function(){
 //                var currentLineServerID = $(this).attr('lineServerID');
 //                var currentLineText = $(this).find('textarea').val();
-//                var url = "http://localhost:8080/newberry/updateLine?text="+currentLineText+"&projectID="+projectID+"&line="+currentLineServerID;
+//                var url = "http://localhost:8080/updateLine?text="+currentLineText+"&projectID="+projectID+"&line="+currentLineServerID;
 //                var updateRequest = new XMLHttpRequest();
 //                updateRequest.open("POST", url, true);
 //      //          updateRequest.setRequestHeader("Access-Control-Allow-Origin", "Access-Control-Allow_Origin:*");
@@ -3692,3 +3691,7 @@ function stopMagnify(){
     $("button[magnifyimg='trans']").removeClass("selected");
     restoreWorkspace();
 }
+
+// Shim console.log to avoid blowing up browsers without it
+if (!window.console) window.console = {};
+if (!window.console.log) window.console.log = function () { };

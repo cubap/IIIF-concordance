@@ -133,7 +133,7 @@ public class TagButton {
          LOG.log(Level.SEVERE, null, e);
       }
       try {
-         String query = "insert into projectButtons(project,position,text,description) values (?,?,?,?)";
+         String query = "insert into projectbuttons(project,position,text,description) values (?,?,?,?)";
          j = DatabaseWrapper.getConnection();
          stmt = j.prepareStatement(query);
          stmt.setString(3, tag);
@@ -209,7 +209,7 @@ public class TagButton {
                params[i] = "";
             }
          }
-         String query = "insert into projectButtons(project,position,text,param1, param2, param3, param4, param5, description) values (?,?,?,?,?,?,?,?,?)";
+         String query = "insert into projectbuttons(project,position,text,param1, param2, param3, param4, param5, description) values (?,?,?,?,?,?,?,?,?)";
          j = DatabaseWrapper.getConnection();
          stmt = j.prepareStatement(query);
          stmt.setString(3, tag);
@@ -305,7 +305,7 @@ public class TagButton {
       Connection j = null;
       PreparedStatement stmt = null;
       try {
-         String query = "select * from projectButtons where project=? and position=?";
+         String query = "select * from projectbuttons where project=? and position=?";
          j = DatabaseWrapper.getConnection();
          stmt = j.prepareStatement(query);
          stmt.setInt(1, projectID);
@@ -371,7 +371,7 @@ public class TagButton {
          this.parameters = parameters;
          String query;
          if (this.projectID > 0) {
-            query = "update projectButtons set param1=?, param2=?, param3=?, param4=?, param5=? where project=? and position=?";
+            query = "update projectbuttons set param1=?, param2=?, param3=?, param4=?, param5=? where project=? and position=?";
          } else {
             query = "update buttons set param1=?, param2=?, param3=?, param4=?, param5=? where uid=? and position=?";
          }
@@ -453,7 +453,7 @@ public class TagButton {
       try {
          String query = "UPDATE buttons set position=? where uid=? and position=?";
          if (projectID > 0) {
-            query = "UPDATE projectButtons set position=? where project=? and position=?";
+            query = "UPDATE projectbuttons set position=? where project=? and position=?";
          }
 
          j = DatabaseWrapper.getConnection();
@@ -480,7 +480,7 @@ public class TagButton {
       try {
          String query;
          if (projectID > 0) {
-            query = "update projectButtons set text=? where project=? and position=?";
+            query = "update projectbuttons set text=? where project=? and position=?";
          } else {
             query = "update buttons set text=? where uid=? and position=?";
          }
@@ -619,7 +619,7 @@ public class TagButton {
       PreparedStatement stmt = null;
       try {
          String toret = "";
-         String query = "select distinct(position) from projectButtons where project=? order by position";
+         String query = "select distinct(position) from projectbuttons where project=? order by position";
          j = DatabaseWrapper.getConnection();
          stmt = j.prepareStatement(query);
          stmt.setInt(1, projectID);
@@ -651,7 +651,7 @@ public class TagButton {
     * empty a Project of tags to load new tags
     */
    public void removeButtonsByProject(int projectID) throws SQLException {
-      String query = "DELETE FROM projectButtons WHERE project=?";
+      String query = "DELETE FROM projectbuttons WHERE project=?";
       Connection j = null;
       PreparedStatement ps = null;
       try {
@@ -674,7 +674,7 @@ public class TagButton {
    public void updateDescription(String desc) throws SQLException {
       String query = "update buttons set description=? where uid=? and position=?";
       if (this.projectID > 0) {
-         query = "update projectButtons set description=? where project=? and position=?";
+         query = "update projectbuttons set description=? where project=? and position=?";
       }
       Connection j = null;
       PreparedStatement ps = null;
@@ -703,14 +703,14 @@ public class TagButton {
    public void deleteTag() throws SQLException {
       String query = "delete from buttons where uid=? and position=?";
       if (this.projectID > 0) {
-         query = "delete from projectButtons where project=? and position=?";
+         query = "delete from projectbuttons where project=? and position=?";
       }
       Connection j = null;
       PreparedStatement ps = null;
       PreparedStatement update = null;
       String updateQuery = "update buttons set position=? where uid=? and position=?";
       if (this.projectID > 0) {
-         updateQuery = "update projectButtons set position=? where project=? and position=?";
+         updateQuery = "update projectbuttons set position=? where project=? and position=?";
       }
       try {
          j = DatabaseWrapper.getConnection();
@@ -767,7 +767,7 @@ public class TagButton {
       try {
          String query = "update buttons set text=? where uid=? and position=?";
          if (projectID > 0) {
-            query = "update projectButtons set text=? where project=? and position=?";
+            query = "update projectbuttons set text=? where project=? and position=?";
          }
          j = DatabaseWrapper.getConnection();
          stmt = j.prepareStatement(query);

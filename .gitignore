@@ -1,0 +1,7 @@
+build.xml
+.settings/
+build/
+src/version.properties
+WebContent/WEB-INF/classes/
+.project
+.classpath

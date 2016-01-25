@@ -70,7 +70,7 @@ public class LoginHookServlet extends HttpServlet {
             ResultSet rs = ps.executeQuery();
             int uid = 0;
             while(rs.next()){
-                uid = rs.getInt("id");
+                uid = rs.getInt("UID");
             }
             DatabaseWrapper.closeDBConnection(j);
             DatabaseWrapper.closePreparedStatement(ps);
@@ -94,6 +94,18 @@ public class LoginHookServlet extends HttpServlet {
                     newUID = gk.getInt(1);
                     HttpSession session = request.getSession();
                     session.setAttribute("UID", newUID);
+                    
+                    // add user to admins table
+                    // note: we should be guaranteed that this user does not already exist in admins
+                    // since the uid is brand new
+                    if (vals.get("role").equals("1")) {
+                    	String insertAdmin = "insert into admins (uid) values (?)";
+                    	ps = j.prepareStatement(insertAdmin);
+                    	ps.setString(1, newUID + "");
+                    	ps.executeUpdate();
+                    	session.setAttribute("role", vals.get("role"));
+                    }
+                    
                 }
             }
             response.sendRedirect((String)vals.get("redirect_uri"));

@@ -138,7 +138,6 @@ public class Manuscript {
     * Get the Manuscript that contains this particular Folio
     */
    public Manuscript(int folio) throws SQLException {
-       System.out.println("111111111111111111111111");
       String query = "select msID from folios where pageNumber=?";
       Connection j = null;
       PreparedStatement ps = null;
@@ -147,23 +146,18 @@ public class Manuscript {
          ps = j.prepareStatement(query);
          ps.setInt(1, folio);
          ResultSet rs = ps.executeQuery();
-          System.out.println("2222222222222222222222222222");
          if (rs.next()) {
             this.id = rs.getInt(1);
-             System.out.println("3333333333333333333333333333333");
             query = "select city,repository, msIdentifier,archive from manuscript where id=?";
             ps = j.prepareStatement(query);
             ps.setInt(1, id);
-             System.out.println("4444444444444444444444444444444444");
             rs = ps.executeQuery();
             if (rs.next()) {
-                System.out.println("555555555555555555555555555555");
                this.city = rs.getString(1);
                this.repository = rs.getString(2);
                this.collection = rs.getString(3);
                this.archive = rs.getString(4);
             }
-             System.out.println("666666666666666666666666666666666666666666666");
          }
       } finally {
          if (j != null) {
@@ -524,7 +518,7 @@ public class Manuscript {
    public static String getFullDocument(Project p, TagFilter.noteStyles includeNotes, Boolean newLine, Boolean pageLabels, Boolean imageWrap) throws SQLException {
 
       String toret = "";
-      String query = "select transcription.text, transcription.comment, transcription.folio from transcription join projectFolios on projectFolios.folio=transcription.folio where projectID=? order by position,x,y";
+      String query = "select transcription.text, transcription.comment, transcription.folio from transcription join projectfolios on projectfolios.folio=transcription.folio where projectID=? order by position,x,y";
 
       Connection j = null;
       PreparedStatement ps = null;
@@ -606,7 +600,7 @@ public class Manuscript {
       Boolean inRange = false;
       Boolean goingOutOfRange = false;
       String toret = "";
-      String query = "select transcription.text, transcription.comment, transcription.folio from transcription join projectFolios on projectFolios.folio=transcription.folio and projectFolios.project=? where projectID=? order by projectFolios.position,x,y";
+      String query = "select transcription.text, transcription.comment, transcription.folio from transcription join projectfolios on projectfolios.folio=transcription.folio and projectfolios.project=? where projectID=? order by projectfolios.position,x,y";
       Connection j = null;
       PreparedStatement ps = null;
       int note_ctr = 1;
@@ -695,7 +689,7 @@ public class Manuscript {
       Boolean inRange = false;
       Boolean goingOutOfRange = false;
       String toret = "";
-      String query = "select transcription.text, transcription.comment, transcription.folio from transcription join projectFolios on projectFolios.folio=transcription.folio and projectFolios.project=? where projectID=? order by projectFolios.position,x,y";
+      String query = "select transcription.text, transcription.comment, transcription.folio from transcription join projectfolios on projectfolios.folio=transcription.folio and projectfolios.project=? where projectID=? order by projectfolios.position,x,y";
       Connection j = null;
       PreparedStatement ps = null;
       int note_ctr = 1;
@@ -817,7 +811,7 @@ public class Manuscript {
     * @throws SQLException
     */
    public void deauthorizeUser(int uid) throws SQLException {
-      String query = "delete from manuscriptPermissions where uid=? and msID=?";
+      String query = "delete from manuscriptpermissions where uid=? and msID=?";
       Connection j = null;
       PreparedStatement ps = null;
       try {
@@ -839,7 +833,7 @@ public class Manuscript {
     * @throws SQLException
     */
    public void authorizeUser(int uid) throws SQLException {
-      String query = "insert into manuscriptPermissions (uid,msId) values(?,?)";
+      String query = "insert into manuscriptpermissions (uid,msId) values(?,?)";
       Connection j = null;
       PreparedStatement ps = null;
       try {
@@ -861,7 +855,7 @@ public class Manuscript {
     * @throws SQLException
     */
    public void authorizeUser(int uid, Boolean notify) throws SQLException {
-      String query = "insert into manuscriptPermissions (uid,msId) values(?,?)";
+      String query = "insert into manuscriptpermissions (uid,msId) values(?,?)";
       Connection j = null;
       PreparedStatement ps = null;
       try {
@@ -896,7 +890,7 @@ public class Manuscript {
     * @throws SQLException
     */
    public User[] getAuthorizedUsers() throws SQLException {
-      String query = "select * from manuscriptPermissions where msID=?";
+      String query = "select * from manuscriptpermissions where msID=?";
       Connection j = null;
       PreparedStatement ps = null;
       User[] s = new User[0];
@@ -930,7 +924,7 @@ public class Manuscript {
     * @throws SQLException
     */
    public Boolean isAuthorized(User u) throws SQLException {
-      String query = "select * from manuscriptPermissions where msId=? and uid=?";
+      String query = "select * from manuscriptpermissions where msId=? and uid=?";
       Connection j = null;
       PreparedStatement ps = null;
       try {

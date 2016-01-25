@@ -54,7 +54,7 @@
     <body>
         <div class="pageTurnCover">
             <div class="turnMsg">Please wait while we load the page...</div>
-            <div class="turnLoader"><img src="../newberry/images/loading2.gif" /></div>
+            <div class="turnLoader"><img src="images/loading2.gif" /></div>
         </div>
         <div class="magnifyHelp">
             <div id='magnifyHlpLabel'>Magnify Help</div>
@@ -66,13 +66,13 @@
             <span class="trimSection">TITLE:<span id="trimTitle"></span></span>
             <span class="trimSection">PAGE: <span id="trimPage"></span></span>
             <span class="trimSection jump">
-                <i onclick="firstFolio();" title="First Folio"><img src='../newberry/images/firstpage.png' ></i>
-                <i onclick="previousFolio();" title="Previous Folio"><img src='../newberry/images/previouspage.png' ></i>
+                <i onclick="firstFolio();" title="First Folio"><img src='images/firstpage.png' ></i>
+                <i onclick="previousFolio();" title="Previous Folio"><img src='images/previouspage.png' ></i>
                 <select id="pageJump">
                     <option id="activePage" folioNum="0">Jump to Page</option>
                 </select>
-                <i onclick="nextFolio();" title="Next Folio"><img src='../newberry/images/nextpage.png' ></i>
-                <i onclick="lastFolio();" title="Last Folio"><img src='../newberry/images/endpage.png' ></i>
+                <i onclick="nextFolio();" title="Next Folio"><img src='images/nextpage.png' ></i>
+                <i onclick="lastFolio();" title="Last Folio"><img src='images/endpage.png' ></i>
             </span>
             <span class="trimSection">USER: <span id="trimCurrentUser"></span></span>
 <!--            <span class="trimSection">Help</span> -->
@@ -95,7 +95,7 @@
         </div>
         
         <div id="setTranscriptionObjectArea">
-            <textarea id="transcriptionText"></textarea>
+            <textarea id="transcriptionText" placeholder="Enter a line transcription"></textarea>
         </div>
         
         <button id="loadBtn" class="hideme" onclick="loadTranscription();"> Load Transcription </button> 
@@ -338,7 +338,20 @@
         
             <div id="groupSplit" class="split">
                 <button class="fullScreenTrans">Full Screen Transcription</button>
-                <iframe src="https://groups.google.com/forum/#!forum/french-renaissance-paleography"></iframe>
+                <iframe id="forum_embed"
+                 src="javascript:void(0)"
+                 scrolling="no"
+                 frameborder="0"
+                 width="900"
+                 height="700">
+                </iframe>
+
+                <script type="text/javascript">
+                 document.getElementById("forum_embed").src =
+                  "https://groups.google.com/forum/embed/?place=forum/french-renaissance-paleography" +
+                  "&showsearch=true&showpopout=true&parenturl=" +
+                  encodeURIComponent(window.location.href);
+                </script>
             </div>
         
             <div id="abbrevSplit" class="split" >
@@ -467,7 +480,7 @@
         $("#imgTop, #imgBottom").css("height", "400px");
         $("#imgTop img, #imgBottom img").css("height", "400px");
         $("#imgTop img, #imgBottom img").css("width", "auto");
-        $('.transcriptionImage').attr('src', "../newberry/images/loading2.gif"); //background loader if there is a hang time waiting for image
+        $('.transcriptionImage').attr('src', "images/loading2.gif"); //background loader if there is a hang time waiting for image
         //check if logged in
         var user = "";
         var url = "geti";

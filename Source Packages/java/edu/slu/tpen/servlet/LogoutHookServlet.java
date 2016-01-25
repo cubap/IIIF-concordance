@@ -38,22 +38,8 @@ public class LogoutHookServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            String text = request.getQueryString();
-            EncryptUtil mcrypt = new EncryptUtil();
-            String decrypted = URLDecoder.decode(new String( mcrypt.decrypt( text ) ), "UTF-8");
-            String[] params = decrypted.split("&");
-            Map<String, Object> vals = new HashMap();
-            for(int i = 0; i < params.length; i++){
-                String param = params[i];
-                if(param.contains("=")){
-                    String[] nameVal = param.split("=");
-                    if(nameVal.length == 2){
-                        String prop = nameVal[0];
-                        String val = nameVal[1];
-                        vals.put(prop, val);
-                    }
-                }
-            }
+            String uri = request.getParameter("redirect_uri");
+
             HttpSession session = request.getSession();
             if(null != session.getAttribute("UID")){
                 session.removeAttribute("UID");
@@ -61,7 +47,7 @@ public class LogoutHookServlet extends HttpServlet {
             if(null != session.getAttribute("role")){
                 session.removeAttribute("role");
             }
-            response.sendRedirect((String)vals.get("redirect_uri"));
+            response.sendRedirect(uri);
         } catch (Exception ex) {
             Logger.getLogger(LogoutHookServlet.class.getName()).log(Level.SEVERE, null, ex);
         }

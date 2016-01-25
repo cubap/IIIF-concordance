@@ -925,7 +925,7 @@ PreparedStatement qry=null;
             j = DatabaseWrapper.getConnection();
 
             
-            qry = j.prepareStatement("select * from groupMembers where UID=?");
+            qry = j.prepareStatement("select * from groupmembers where UID=?");
             qry.setInt(1, UID);
             ResultSet rs = qry.executeQuery();
             int recordCount = 0;
@@ -993,7 +993,7 @@ DatabaseWrapper.closePreparedStatement(ps);
     public Project[] getUserProjects() throws SQLException
         {
         new ProjectPriority(UID).verifyPriorityContents();
-        String query = "select distinct(project.id) from project join groupMembers on grp=GID join projectPriorities on id=projectID where groupMembers.UID=? and projectPriorities.uid=?  order by projectPriorities.priority desc, project.name desc";
+        String query = "select distinct(project.id) from project join groupmembers on grp=GID join projectpriorities on id=projectID where groupmembers.UID=? and projectpriorities.uid=?  order by projectpriorities.priority desc, project.name desc";
         Connection j = null;
 PreparedStatement ps=null;
         try
