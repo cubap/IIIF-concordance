@@ -914,10 +914,10 @@
                         $("#imgTop, #imgTop img, #imgBottom img, #imgBottom, #transcriptionCanvas").css("height", "auto");
                         $("#imgTop img, #imgBottom img").css("width", "100%");
                         $("#imgBottom").css("height", "inherit");
-                        originalCanvasHeight2 = $("#imgTop img").height();
-                        originalCanvasWidth2 = $("#imgTop img").width();
                         $('.transcriptionImage').attr('src', canvasObj.images[0].resource['@id'].replace('amp;',''));
                         $("#fullPageImg").attr("src", canvasObj.images[0].resource['@id'].replace('amp;',''));
+                        originalCanvasHeight2 = $("#imgTop img").height();
+                        originalCanvasWidth2 = $("#imgTop img").width();
                         drawLinesToCanvas(canvasObj, false);
                         $("#transcriptionCanvas").attr("canvasid", canvasObj["@id"]);
                         $("#transcriptionCanvas").attr("annoList", canvasAnnoList);
@@ -1055,15 +1055,14 @@
         var thisContent = "";
         var counter = 0;
         var colCounter = 0;
-        var image = $('#imgBottom img');
+        var image = $('#imgTop img');
         var theHeight = image.height();
         var theWidth = image.width();
         $('#transcriptionCanvas').css('height', theHeight);
         $('.lineColIndicatorArea').css('height', theHeight);
         var ratio = 0;
-        originalCanvasHeight = theHeight;
-        originalCanvasHeight2 = originalCanvasHeight;
-        originalCanvasWidth2 = theWidth;
+        //originalCanvasHeight2 = theHeight;
+        //originalCanvasWidth2 = theWidth;
         ratio = theWidth / theHeight;
         for(var i=0; i<lines.length;i++){
             //("line "+i);
@@ -1868,11 +1867,12 @@
      */
      function hideWorkspaceForParsing(){
 //        imgBottomOriginal = $("#imgBottom img").css("top");
-        $("#parsingBtn").css("box-shadow: none;")
+        $("#parsingBtn").css("box-shadow: none;");
+        originalCanvasWidth2 = $("#imgTop img").width(); //make sure these are set correctly
+        originalCanvasHeight2 = $("#imgTop img").height(); //make sure these are set correctly.
         imgTopOriginalHeight = $("#imgTop img").height()+"px";
-//        imgTopOriginalTop = $("#imgTop img").css("top");
-        originalCanvasHeight = $("#transcriptionCanvas").height();
-        originalCanvasWidth = $("#transcriptionCanvas").width();
+        imgTopOriginalTop = $("#imgTop img").css("top");
+        
         //$("#pageJump").attr("disabled", "disabled");
          var pageJumpIcons = $("#pageJump").parent().children("i");
             pageJumpIcons[0].setAttribute('onclick', 'firstFolio("parsing");');
@@ -1916,7 +1916,8 @@
               minWidth: window.innerWidth / 2,
               maxWidth: window.innerWidth * .75,
               start: function(event, ui){
-                  originalRatio = $("#transcriptionCanvas").width() / $("#transcriptionCanvas").height();
+                  //originalRatio = $("#transcriptionCanvas").width() / $("#transcriptionCanvas").height();
+                  originalRatio = originalCanvasWidth2 / originalCanvasHeight2;
               },
               resize: function(event, ui) {
                   var width = ui.size.width;
@@ -2037,8 +2038,8 @@
 //        //console.log("RESTORE WORKSPACE");
         restoreWorkspace();
         $("#splitScreenTools").show();
-        $("#transcriptionCanvas").css("height", originalCanvasHeight+"px");
-        $(".lineColIndicatorArea").css("height", originalCanvasHeight+"px");
+        $("#transcriptionCanvas").css("height", originalCanvasHeight2+"px");
+        $(".lineColIndicatorArea").css("height", originalCanvasHeight2+"px");
         $("#imgTop").hover(function(){
             var color = colorThisTime.replace(".4", "1");
             $('.activeLine').css('box-shadow', '0px 0px 15px 8px '+color);
@@ -2055,18 +2056,18 @@
         //TODO imgBottom img top needs to resize with the split (as well as the lineIndicatorArea
 //        //console.log("SPLIT PAGWE!");
         liveTool = tool;
-        originalCanvasHeight = $("#transcriptionCanvas").height();
-        originalCanvasWidth = $("#transcriptionCanvas").width();
-        var ratio = originalCanvasWidth/originalCanvasHeight;
+        originalCanvasHeight2 = $("#imgTop img").height(); //make sure these are set correctly
+        originalCanvasWidth2 = $("#imgTop img").width(); //make sure these are set correctly
+        var ratio = originalCanvasWidth2/originalCanvasHeight2;
         $("#splitScreenTools").attr("disabled", "disabled");
         //$("#pageJump").attr("disabled", "disabled");
-        var imgBottomRatio = parseFloat($("#imgBottom img").css("top")) / originalCanvasHeight;
-        var imgTopRatio = parseFloat($("#imgTop img").css("top")) / originalCanvasHeight;
+        var imgBottomRatio = parseFloat($("#imgBottom img").css("top")) / originalCanvasHeight2;
+        var imgTopRatio = parseFloat($("#imgTop img").css("top")) / originalCanvasHeight2;
         $("#transcriptionTemplate").css({
            "width"   :   "55%",
            "display" : "inline-table"
         });
-        var newCanvasWidth = originalCanvasWidth * .55;
+        var newCanvasWidth = originalCanvasWidth2 * .55;
         var newCanvasHeight = 1/ratio * newCanvasWidth;
 //        //console.log("New canvas width: "+newCanvasWidth);
 //        //console.log("New canvas height: "+newCanvasHeight);
@@ -2088,7 +2089,8 @@
               minWidth: window.innerWidth / 2,
               maxWidth: window.innerWidth * .75,
               start: function(event, ui){
-                  originalRatio = $("#transcriptionCanvas").width() / $("#transcriptionCanvas").height();
+                  //originalRatio = $("#transcriptionCanvas").width() / $("#transcriptionCanvas").height();
+                  originalRatio = $("#imgTop img").width() / $("#imgTop img").height();
               },
               resize: function(event, ui) {
                   var width = ui.size.width;
