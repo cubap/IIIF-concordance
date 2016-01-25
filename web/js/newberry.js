@@ -577,8 +577,6 @@
                             var getURLfromThis = activeProject.ls_ms;
                             getURLfromThis = JSON.parse(getURLfromThis);
                             url  = getURLfromThis[0].archive; //This is the manifest inside the project data
-                            con
-//                            console.log("manifest is here: "+getURLfromThis[1].archive);
                             if(url.indexOf("http") < 0){ //Then this is a newberry created newberry project
                                 //create the newberry url
                                 //console.log("gunna call project servlet because http was not present in this url");
