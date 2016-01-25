@@ -11,17 +11,16 @@ import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import textdisplay.Folio;
 
 public class EncryptUtil {
 
         static char[] HEX_CHARS = {'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
-
-        private String iv = "ba987_5fedc%3210";//Dummy iv (CHANGE IT!)
+        private String iv = Folio.getRbTok("IV"); 
         private IvParameterSpec ivspec;
         private SecretKeySpec keyspec;
         private Cipher cipher;
-
-        private String SecretKey = "67%9a_c01K34jd%f";//Dummy secretKey (CHANGE IT!)
+        private String SecretKey = Folio.getRbTok("KEY");
 
         public EncryptUtil()
         {
