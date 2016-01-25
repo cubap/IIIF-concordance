@@ -1061,8 +1061,7 @@
         $('#transcriptionCanvas').css('height', originalCanvasHeight2 +"px");
         $('.lineColIndicatorArea').css('height',originalCanvasHeight2 + "px");
         var ratio = 0;
-        //originalCanvasHeight2 = theHeight;
-        //originalCanvasWidth2 = theWidth;
+        //should be the same as originalCanvasWidth2/originalCanvasBeight2
         ratio = theWidth / theHeight;
         for(var i=0; i<lines.length;i++){
             //("line "+i);
@@ -1865,13 +1864,9 @@
      function hideWorkspaceForParsing(){
 //        imgBottomOriginal = $("#imgBottom img").css("top");
         $("#parsingBtn").css("box-shadow: none;");
-       // originalCanvasWidth2 = $("#imgTop img").width(); //make sure these are set correctly
-        //originalCanvasHeight2 = $("#imgTop img").height(); //make sure these are set correctly.
         
         originalCanvasHeight = $("#transcriptionCanvas").height();
         originalCanvasWidth = $("#transcriptionCanvas").width();
-        
-        imgTopOriginalHeight = $("#imgTop img").height()+"px";
         imgTopOriginalTop = $("#imgTop img").css("top");
         
         //$("#pageJump").attr("disabled", "disabled");
@@ -1888,6 +1883,7 @@
 //            "height": $("#bookmark").height()+"px", "width":$("#bookmark").width+"px"};
         $("#imgTop").addClass("fixingParsing");
         var topImg = $("#imgTop img");
+        //shouldbe same has originalCanvasWidth2/originalCanvasHeight2;
         imgRatio = topImg.width() / topImg.height();
         var wrapWidth = imgRatio*$("#transcriptionTemplate").height();
         var PAGEWIDTH = $("#transcriptionTemplate").width();
