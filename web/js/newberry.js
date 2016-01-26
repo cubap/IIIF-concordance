@@ -18,6 +18,7 @@
     var annoLists = [];
     var loggedInUser = false;
     var userIsAdmin = false;
+    var adjustRatio = 0;
     //var basePath = window.location.protocol + "//" + window.location.host;
 
     var annoListTester = 
@@ -1063,6 +1064,10 @@
         var ratio = 0;
         //should be the same as originalCanvasWidth2/originalCanvasBeight2
         ratio = theWidth / theHeight;
+        adjustRatio = ratio;
+        console.log("ratio for lines to screen");
+        console.log(theWidth + "/" +theHeight);
+        console.log(ratio);
         for(var i=0; i<lines.length;i++){
             //("line "+i);
             var line = lines[i];
@@ -1883,7 +1888,6 @@
 //            "height": $("#bookmark").height()+"px", "width":$("#bookmark").width+"px"};
         $("#imgTop").addClass("fixingParsing");
         var topImg = $("#imgTop img");
-        //shouldbe same has originalCanvasWidth2/originalCanvasHeight2;
         imgRatio = topImg.width() / topImg.height();
         var wrapWidth = imgRatio*$("#transcriptionTemplate").height();
         var PAGEWIDTH = $("#transcriptionTemplate").width();
@@ -2444,6 +2448,8 @@
         var originalH = 1;
         var adjustment = "";
         var column = undefined;
+        var originalPercentW;
+        var originalPercentX;
         $.each($(".parsingColumn"),function(){
             if($(this).hasClass("ui-resizable")){
                 $(this).resizable("destroy");
@@ -2467,6 +2473,9 @@
                 thisColumn = $(".ui-resizable-resizing");
                 thisColumnID = [thisColumn.attr("startid"),thisColumn.attr("endid")];
                 adjustment = "new";
+                originalPercentW = parseFloat($(this).attr("linewidth"));
+                originalPercentX = parseFloat($(this).attr("lineleft"));
+
             },
             resize      : function(event,ui){
                 if(adjustment=="new"){
@@ -2491,7 +2500,13 @@
             },
             stop        : function(event,ui){
                 $("#progress").html("Column Resized - Saving...");
-                var parseRatio = ($("#imgTop img").width()/$("#imgTop img").height());
+               //var parseRatio2 = $("#transcriptionCanvas").width() / $("#transcriptionCanvas").height();
+               // var parseRatio1 = originalCanvasWidth2 / originalCanvasHeight2;
+                var parseRatio = $("#imgTop img").width() / $("#imgTop img").height();
+                //var parseRatio = adjustRatio;
+                console.log("ratio for adjust");
+                console.log($("#imgTop img").width()+"/"+$("#imgTop img").height());
+                console.log(parseRatio);
                 var originalX = ui.originalPosition.left;
                 var originalY = ui.originalPosition.top;
                 var originalW = ui.originalSize.width;
@@ -2598,8 +2613,12 @@
                             //save a new left,width for all these lines
                             var leftGuide = $(".parsing[lineserverid='"+thisColumnID[0]+"']");
                             oldLeft = parseFloat(leftGuide.attr("lineleft"));
-                            newWidth = (newW/parseRatio) / 10;
-                            newLeft = (newX/parseRatio) / 10;
+                            var ratio1 = originalPercentW / originalW;
+                            var ratio2 = originalPercentX/ originalX;
+                            newWidth = newW * ratio1;
+                            newLeft = newX * ratio2;
+                            //newWidth = newW/(parseRatio * 10);
+                            //newLeft = (newX/parseRatio) / 10;
                             $(".parsing[lineleft='"+oldLeft+"']").each(function(){
                                 $(this).attr({
                                     "lineleft" : newLeft,
@@ -2614,12 +2633,14 @@
                             updateLinesInColumn(thisColumnID);
                             $("#progress").html("Column Saved").delay(3000).fadeOut(1000);
                             cleanupTranscriptlets(true);
-                        } else if (adjustment=="right"){
+                        } 
+                        else if (adjustment=="right"){
                             //save a new width for all these lines
                             var rightGuide = $(".parsing[lineserverid='"+thisColumnID[0]+"']");
                             
                             oldLeft = parseFloat(rightGuide.attr("lineleft"));
-                            newWidth = (newW/parseRatio) / 10;
+                            var ratio = originalPercentW / originalW;
+                            newWidth = newW * ratio; //new percent width
                             $(".parsing[lineleft='"+oldLeft+"']").each(function(){
                                 $(this).attr({
                                     "linewidth": newWidth
@@ -2936,14 +2957,18 @@ function toggleLineCol(){
         $.post(annosURL, paramOBJ, function(annoLists){
             //console.log("got anno list.  Here are the current resources");
             annoLists = JSON.parse(annoLists);
-            var currentAnnoList = annoLists[0]; //master list
+            var currentAnnoList; 
             $.each(annoLists, function(){
-                if(this.proj == theProjectID){
-                    currentAnnoList = this; // list for this project.  May not be found; default to master
+                if(this.proj === "master"){
+                     currentAnnoListResources =this.resources;
+                }
+                if(this.proj !== undefined && this.proj!=="" && this.proj == theProjectID){
+                    //These are the lines we want to draw because the projectID matches.  Overwrite master if necessary.
+                    //console.log("Lines we wanna draw");
+                    currentAnnoListResources =this.resources;
                     return false;
                 }
             });
-            currentAnnoListResources = currentAnnoList.resources;
             //console.log(currentAnnoListResources);
             //Go over each line from the column resize.
             $.each(linesInColumn, function(){
