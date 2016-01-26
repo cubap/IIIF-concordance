@@ -1333,7 +1333,8 @@
         var bottomImageHeight = $("#imgBottom img").height();
         if (focusItem[1].attr("lineHeight") !== null) {
           var pairForBookmarkCol = focusItem[1].attr('col');
-          var pairForBookmarkLine = parseInt(focusItem[1].attr('lineid'));
+          var pairForBookmarkLine = parseInt(focusItem[1].attr('colelinenum'));
+          pairForBookmarkLine += 1;
           var pairForBookmark = pairForBookmarkCol + pairForBookmarkLine;
           var currentLineHeight = parseFloat(focusItem[1].attr("lineHeight"));
           var currentLineTop = parseFloat(focusItem[1].attr("lineTop"));
