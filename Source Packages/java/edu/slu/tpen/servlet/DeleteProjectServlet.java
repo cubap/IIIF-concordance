@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 import edu.slu.util.ServletUtils;
 import textdisplay.Project;
 import user.Group;
+import user.User;
 
 /**
  * Delete project and project related attachments from tpen. 
@@ -47,7 +48,9 @@ public class DeleteProjectServlet extends HttpServlet {
             try {
                 Project todel = new Project(projectNumToDelete);
                 Group projectGroup = new Group(todel.getGroupID());
-                if (projectGroup.isAdmin(UID)) {
+                boolean isTPENAdmin = (new User(UID)).isAdmin();
+
+                if (isTPENAdmin || projectGroup.isAdmin(UID)) {
                     todel.delete();
                 }else{
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
