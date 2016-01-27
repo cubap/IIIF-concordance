@@ -1075,7 +1075,7 @@ DatabaseWrapper.closePreparedStatement(qry);
                 emailFailure = true;
                 }
             //send a notification email to the invitee
-            body = this.getFname() + " " + this.getLname() + " (" + this.getUname() + ") has invited you to join their transcription project on TPEN. At this early stage in testing, an administrator must activate your account before you will recieve an email with your password.\n Thank you for your patience.\nThe TPEN team";
+            body = this.getFname() + " " + this.getLname() + " (" + this.getUname() + ") has invited you to join their transcription project on TPEN.  Your initial password is blank, please log in and set a password.  \nThe TPEN team";
             try
                 {
                 m.sendMail(Folio.getRbTok("EMAILSERVER"), "TPEN@t-pen.org", newUser.getUname(), "An invitation to transcribe on TPEN", body);
