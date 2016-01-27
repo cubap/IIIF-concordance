@@ -4,6 +4,7 @@ Open the project management section for a given project ID.
 -->
 <html>
     <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <title>Project Management</title>
         <link type="text/css" href="css/custom-theme/jQuery.css" rel="Stylesheet" />
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js"></script>
@@ -66,6 +67,7 @@ Open the project management section for a given project ID.
             }
             .val{
                 font-size: 10pt;
+                width: 60%;
             }
             
             .promoteUser{
@@ -1361,6 +1363,12 @@ function getActiveProjectMetadata(currentProjectID){
             var description = projectInformation.description;
             var subject = projectInformation.subject;
             
+            //The project name is not properly decoded here.  Some characters do not work, they come in the data as ?.  
+            projectTitle = decodeURIComponent(projectTitle);
+            projectSubtitle = decodeURIComponent(projectSubtitle);
+            location = decodeURIComponent(location);
+
+            
             var specialCharacters = activeProject.projectButtons;
             var xmlTags = activeProject.xml;
             populateSpecialCharacters(specialCharacters);
@@ -1478,7 +1486,9 @@ function getUserProjects(projectID, userID, username){
         success: function(data){
             var userProjects = data;
             $.each(userProjects, function(){
+                //the project name is properly decoded here.
                 projectName = this.name;
+                projectName=decodeURIComponent(projectName);
                 var projectID = this.id;
                 projectID = projectID.replace("projects/", "");
                 //console.log('User is admin: '+userIsProjectAdmin)
