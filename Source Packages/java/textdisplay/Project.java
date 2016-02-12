@@ -466,6 +466,7 @@ public class Project {
    public String getProjectName() throws SQLException {
       String toret = new Metadata(this.projectID).title;
       if (toret.compareTo("") == 0) {
+          System.out.println("non title, gotta get name: "+this.projectName);
          toret = this.projectName;
          if (toret == null || toret.compareTo("") == 0) {
             toret = "unknown project";

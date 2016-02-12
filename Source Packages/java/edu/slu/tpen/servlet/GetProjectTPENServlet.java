@@ -50,6 +50,9 @@ import utils.UserTool;
 import com.google.gson.Gson;
 
 import edu.slu.tpen.transfer.JsonImporter;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Get tpen project. 
@@ -76,10 +79,13 @@ public class GetProjectTPENServlet extends HttpServlet {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-        PrintWriter out = response.getWriter();
-        response.setContentType("application/ld+json; charset=UTF-8");
+// Force PrintWriter to use UTF-8 encoded strings.
+        response.setContentType("application/json; charset=UTF-8");
+        PrintWriter out = new PrintWriter(new OutputStreamWriter(response.getOutputStream(), "UTF8"), true);
+        
         Gson gson = new Gson();
         Map<String, String> jsonMap = new HashMap();
+//        JsonWriter writer = new JsonWriter(new OutputStreamWriter(out, "UTF-8"));
         if (uid >= 0) {
 //            System.out.println("UID ================= "+uid);
             try {
@@ -91,6 +97,7 @@ public class GetProjectTPENServlet extends HttpServlet {
 //                    System.out.println("group Id ===== " + proj.getGroupID() + " is member " + group.isMember(uid));
                     if (group.isMember(uid) || isTPENAdmin) {
                         if (checkModified(request, proj)) {
+                            
                             jsonMap.put("project", gson.toJson(proj));
 //                            System.out.println("project json ====== " + gson.toJson(proj));
                             int projectID = proj.getProjectID();
@@ -156,14 +163,13 @@ public class GetProjectTPENServlet extends HttpServlet {
                             Metadata metadata = new Metadata(proj.getProjectID());
                             jsonMap.put("metadata", gson.toJson(metadata));
                             
-                            //get project buttons
                             String allProjectButtons = TagButton.getAllProjectButtons(projID);
                             jsonMap.put("xml", allProjectButtons);
                             //get special characters
                             jsonMap.put("projectButtons", hk.javascriptToAddProjectButtonsRawData(projectID));
                             
                             response.setStatus(HttpServletResponse.SC_OK);
-                            out.print(JSONObject.fromObject(jsonMap));
+                            out.println(JSONObject.fromObject(jsonMap));
                         } else {
                            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
                         }
