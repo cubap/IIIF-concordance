@@ -619,7 +619,8 @@
                                         $('#setTranscriptionObjectArea').hide();
                                         $(".instructions").hide();
                                         $(".hideme").hide();
-                                        
+                                        //load Iframes after user check and project information data call    
+                                        loadIframes();
                                         //getProjectTools(projectID);
                                     }
                                     else{
@@ -633,6 +634,8 @@
                                     else{
                                         alert("Something went wrong. Could not get the project. 1");
                                     }
+                                    //load Iframes after user check and project information data call    
+                                    loadIframes();
                                }
                             });
                         }
@@ -699,9 +702,13 @@
                             $('#setTranscriptionObjectArea').hide();
                             $(".instructions").hide();
                             $(".hideme").hide();
+                            //load Iframes after user check and project information data call    
+                            loadIframes();
                         }
                         else{
-                            //ERROR!  It is a valid JSON object, but it is malformed and cannot be read as a transcription object. 
+                            //ERROR!  It is a valid JSON object, but it is malformed and cannot be read as a transcription object.
+                            //load Iframes after user check and project information data call    
+                            loadIframes();
                         }
                         
                 }
@@ -771,9 +778,13 @@
                                                 $(".instructions").hide();
                                                 $(".hideme").hide(); 
                                                 //getProjectTools(projectID);
+                                                //load Iframes after user check and project information data call    
+                                                loadIframes();
                                             }
                                             else{
                                                 //ERROR! It is a malformed transcription object.  There is no canvas sequence defined.  
+                                                //load Iframes after user check and project information data call    
+                                                loadIframes();
                                             }
                                         },
                                         error: function(jqXHR,error, errorThrown) {  
@@ -783,11 +794,15 @@
                                             else{
                                                 alert("Something went wrong 2");
                                             }
+                                            //load Iframes after user check and project information data call    
+                                            loadIframes();
                                        }
                                 });
                             }
                             else{
                                 alert("No Manifest Found");
+                                //load Iframes after user check and project information data call    
+                                loadIframes();
                             }
                             $.each(projectTools, function(){
                                 if(count < 4){ //allows 5 tools.  
@@ -858,6 +873,8 @@
                                 else{
                                     //ERROR! It is a malformed transcription object.  There is no canvas sequence defined.  
                                 }
+                                //load Iframes after user check and project information data call    
+                                loadIframes();
                             },
                             error: function(jqXHR,error, errorThrown) {  
                                 if(jqXHR.status && jqXHR.status==400){
@@ -866,15 +883,18 @@
                                 else{
                                     alert("Something went wrong 5");
                                 }
+                                //load Iframes after user check and project information data call    
+                                loadIframes();
                            }
                         });
                     }
                 }
                 else{
                     alert("The input was invalid.");
+                    //load Iframes after user check and project information data call.  Maybe only after valid page load parameters.  uncomment this line if necessary.    
+                    //loadIframes();
                 }
-                
-            //get project buttons and special characters        
+            
     } 
     
     /*
@@ -3725,6 +3745,20 @@ function stopMagnify(){
     $("button[magnifyimg='compare']").removeClass("selected");
     $("button[magnifyimg='trans']").removeClass("selected");
     restoreWorkspace();
+}
+
+/*
+ * Load all included Iframes on the page.  This function should be strategically placed so that the Iframes load after user and project information
+ * are gathered.  This should help avoid timeouts caused by embedded Iframes wait times mixed with many calls to the annotation store and calls for images.
+ * See the Network console in the Browser deveoper tools for problems with wait times on embedded content.  
+ * 
+ * @see newberryTrans.html to find the iframe elements.
+ */
+function loadIframes(){
+    $.each($("iframe"), function(){
+        var src = $(this).attr("data_src");
+        $(this).attr("src",src);
+    });
 }
 
 // Shim console.log to avoid blowing up browsers without it
