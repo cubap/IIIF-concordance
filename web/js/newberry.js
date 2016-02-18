@@ -544,6 +544,7 @@
     function loadTranscription(){
         //Object validation here.
         //Project ID is not part of the manifest data.  When a user gets to transcription, we already need to know the project ID.
+        console.log("LOAD")
             projectID = 4080;
             var userTranscription = $('#transcriptionText').val();
             currentFolio = 1;
