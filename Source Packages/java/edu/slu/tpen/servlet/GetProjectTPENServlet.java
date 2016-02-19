@@ -81,6 +81,7 @@ public class GetProjectTPENServlet extends HttpServlet {
 		}
 // Force PrintWriter to use UTF-8 encoded strings.
         response.setContentType("application/json; charset=UTF-8");
+        //PrintWriter out = response.getWriter();
         PrintWriter out = new PrintWriter(new OutputStreamWriter(response.getOutputStream(), "UTF8"), true);
         
         Gson gson = new Gson();

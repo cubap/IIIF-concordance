@@ -126,22 +126,22 @@ public class Group {
       qry = null;
       try {
          j = DatabaseWrapper.getConnection();
-          System.out.println("group ID in group ======== " + this.groupID);
+          //System.out.println("group ID in group ======== " + this.groupID);
          qry = j.prepareStatement("select UID from groupmembers where GID=?");
          qry.setInt(1, groupID);
-          System.out.println("sql ====== " + qry);
+          //System.out.println("sql ====== " + qry);
          ResultSet rs = qry.executeQuery();
          int recordCount = 0;
          while (rs.next()) {
             recordCount++;
          }
-          System.out.println("member count result count ==== " + recordCount);
+          //System.out.println("member count result count ==== " + recordCount);
          User[] users = new User[recordCount];
          rs.beforeFirst();
          int i = 0;
          while (rs.next()) {
             users[i] = new User(rs.getInt("UID"));
-             System.out.println("find user member id ===== " + rs.getInt("UID"));
+             //System.out.println("find user member id ===== " + rs.getInt("UID"));
             i++;
          }
          return users;
@@ -336,12 +336,12 @@ public class Group {
     */
    public Boolean isMember(int UID) {
       try {
-          System.out.println("sample ============== " + UID);
-          System.out.println("memeber len ===== " + this.getMembers().length);
+          //System.out.println("sample ============== " + UID);
+          //System.out.println("memeber len ===== " + this.getMembers().length);
          User[] groupmembers = this.getMembers();
          for (int i = 0; i < groupmembers.length; i++) {
             User thisUser = groupmembers[i];
-             System.out.println("mem user ID ====== " + thisUser.getUID());
+            // System.out.println("mem user ID ====== " + thisUser.getUID());
             if (thisUser.getUID() == UID) {
                return true;
             }
