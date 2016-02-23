@@ -61,13 +61,16 @@ public class CopyProjWithAnnoServlet extends HttpServlet {
             
             try {
                 //find original project and copy to a new project. 
+                System.out.println("begin copy project");
                 Project templateProject = new Project(projectID);
                 Connection conn = ServletUtils.getDBConnection();
                 conn.setAutoCommit(false);
                 //in this method, it copies everything about the project.
                 if(null != templateProject.getProjectName())
                 {
+                    System.out.println("new project from template projects...");
                     Project thisProject = new Project(templateProject.copyProjectWithoutTranscription(conn, uID));
+                    System.out.println("done 1");
                     //set partener project. It is to make a connection on switch board. 
                     thisProject.setAssociatedPartnerProject(projectID);
                     PartnerProject theTemplate = new PartnerProject(projectID);
@@ -77,8 +80,10 @@ public class CopyProjWithAnnoServlet extends HttpServlet {
                     Folio[] folios = thisProject.getFolios();
                     if(null != folios && folios.length > 0)
                     {
+                        System.out.println("start copying folios");
                         for(int i = 0; i < folios.length; i++)
                         {
+                            System.out.println("folio "+i);
                             Folio folio = folios[i];
                             //get annotation list for each canvas
                             JSONObject annoLsQuery = new JSONObject();
@@ -93,7 +98,7 @@ public class CopyProjWithAnnoServlet extends HttpServlet {
                             annoLsQuery.element("on", canvasID);
                            
                             //System.out.println(annoLsQuery.toString());
-                            
+                            System.out.println("get annolist for folio "+i);
                             URL postUrlannoLs = new URL(Constant.ANNOTATION_SERVER_ADDR + "/anno/getAnnotationByProperties.action");
                             HttpURLConnection ucAnnoLs = (HttpURLConnection) postUrlannoLs.openConnection();
                             ucAnnoLs.setDoInput(true);
@@ -125,22 +130,31 @@ public class CopyProjWithAnnoServlet extends HttpServlet {
                             //transfer annotation list string to annotation list JSON Array. 
                             JSONArray ja_allAnnoLists = JSONArray.fromObject(sbAnnoLs.toString()); //This is the list of all AnnotatationLists attached to this folio.
                             JSONObject jo_annotationList = new JSONObject();
+                            JSONObject jo_masterList = new JSONObject();
                             if(ja_allAnnoLists.size() > 0){
+                                System.out.println("go through all anno lists for folio "+i);
                                 //find the annotations list whose proj matches or use the master ([0])
                                 for(int x =0; x<ja_allAnnoLists.size(); x++){
                                     JSONObject current_list = ja_allAnnoLists.getJSONObject(x);
+                                    System.out.println("on anno "+x+" for folio "+i);
 //                                    System.out.println("WHICH LIST ARE WE ON?");
 //                                    System.out.println(current_list.getString("@id"));
                                     if(null!=current_list.get("proj")){ //make sure this list has proj field
                                         String current_proj = current_list.getString("proj");
+                                        if(current_proj == "master"){
+                                            jo_masterList = current_list;
+                                            System.out.println("found master anno list for folio "+i);
+                                        }
                                         if(current_proj.matches("^\\d+$") && Integer.parseInt(current_proj) == templateProject.getProjectID()){ //if its id equal to the id of the project we are copying
                                             jo_annotationList = current_list; //if so, thats the list we want
+                                            System.out.println("found project anno list for folio "+i);
                                             break;
                                         }
                                         else{ //it was not a match, are we done looking at all lists?
                                             if(x == (ja_allAnnoLists.size()-1)){ //if none of them match, we want the first to be our list to copy (master list)
 //                                                System.out.println("USE MASTER!!!!!!!!!!!!!!!!!!!!");
-                                                jo_annotationList = ja_allAnnoLists.getJSONObject(0); //assuming the first object is the master.  if not, we will have to do something
+                                                jo_annotationList = jo_masterList; //assuming the first object is the master.  if not, we will have to do something
+                                                System.out.println("default to master anno list for folio "+i);
 //                                                System.out.println(jo_annotationList.getString("@id"));
                                                 break;
                                             }
@@ -148,9 +162,10 @@ public class CopyProjWithAnnoServlet extends HttpServlet {
                                     }
                                     else{ //it was null, are we done looking at all lists?
                                         if(x == (ja_allAnnoLists.size()-1)){ //if none of them match, we want the first to be our list to copy (master list)
-//                                            System.out.println("USE MASTER!!!!!!!!!!!!!!!!!!!!");
-                                            jo_annotationList = ja_allAnnoLists.getJSONObject(0); //assuming the first object is the master.  if not, we will have to do something
-//                                            System.out.println(jo_annotationList.getString("@id"));
+  //                                          System.out.println("USE MASTER!!!!!!!!!!!!!!!!!!!!");
+                                            jo_annotationList = jo_masterList; //assuming the first object is the master.  if not, we will have to do something
+                                            System.out.println("default to master anno list for folio "+i);
+ //                                           System.out.println(jo_annotationList.getString("@id"));
                                             break;
                                         }
                                     }
@@ -167,8 +182,10 @@ public class CopyProjWithAnnoServlet extends HttpServlet {
 //                                    System.out.println(jo_annotationList.getString("@id"));
                                     JSONArray resources = jo_annotationList.getJSONArray("resources");
                                     //Get the annotations out of the AnnotaionList resources and go through them.  We need to make new annotaions for each of  them for the new list.
+                                    System.out.println("create copies of each anno in anno list for folio "+i);
                                     for(int n = 0; n < resources.size(); n++)
                                     {
+                                        System.out.println("create copies of anno "+n+" in anno list for folio "+i);
                                         JSONObject resource = resources.getJSONObject(n);
                                         //print json element of annotation list starts
 //                                        System.out.println(annoInList.keySet().size());
@@ -239,6 +256,7 @@ public class CopyProjWithAnnoServlet extends HttpServlet {
                                         resource.element("@id", copyAnnoNewAID);
                                     }
                                     //copy canvas list from original canvas(also known as folio in old tpen) list with newly copied annotation info.
+                                    System.out.println("store new anno list information folio "+i);
                                     JSONObject canvasList = CreateAnnoListUtil.createEmptyAnnoList(thisProject.getProjectID(), canvasID, resources);
                                     URL postUrl = new URL(Constant.ANNOTATION_SERVER_ADDR + "/anno/saveNewAnnotation.action");
                                     HttpURLConnection uc = (HttpURLConnection) postUrl.openConnection();
@@ -271,8 +289,10 @@ public class CopyProjWithAnnoServlet extends HttpServlet {
                                     uc.disconnect();
                                // }
                             //}
+                                    System.out.println("done with folio "+i);
                         }
                     }
+                    System.out.println("return project ID for copied project");
                     String propVal = textdisplay.Folio.getRbTok("CREATE_PROJECT_RETURN_DOMAIN"); 
                     result = propVal + "/project/" + thisProject.getProjectID();
                 }
