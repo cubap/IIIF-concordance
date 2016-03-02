@@ -12,7 +12,7 @@
         <filter-name>UTF8Filter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
-	<listener>
+    <listener>
         <description>Session listener to put session in servlet context (used for paleo auth)</description>
         <listener-class>edu.slu.util.SessionListener</listener-class>
     </listener>
@@ -424,7 +424,7 @@
         <servlet-name>updateAnnoListServlet</servlet-name>
         <servlet-class>edu.slu.tpen.servlet.UpdateAnnoListServlet</servlet-class>
     </servlet>
-     <servlet>
+    <servlet>
         <servlet-name>GetAnnotationByPropertiesServlet</servlet-name>
         <servlet-class>edu.slu.tpen.servlet.GetAnnotationByPropertiesServlet</servlet-class>
     </servlet>
@@ -443,6 +443,10 @@
     <servlet>
         <servlet-name>copyProjWithAnnoServlet</servlet-name>
         <servlet-class>edu.slu.tpen.servlet.CopyProjWithAnnoServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CopyProjectAndAnnos</servlet-name>
+        <servlet-class>edu.slu.tpen.servlet.CopyProjectAndAnnos</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>imageParsing</servlet-name>
@@ -532,7 +536,7 @@
         <servlet-name>updateAnnoListServlet</servlet-name>
         <url-pattern>/updateAnnoList</url-pattern>
     </servlet-mapping>
-     <servlet-mapping>
+    <servlet-mapping>
         <servlet-name>GetAnnotationByPropertiesServlet</servlet-name>
         <url-pattern>/getAnno</url-pattern>
     </servlet-mapping>
@@ -553,6 +557,10 @@
         <url-pattern>/copyProjectWithAnnotations</url-pattern>
     </servlet-mapping>
     <!-- tpen webservices for newberry ends -->
+    <servlet-mapping>
+        <servlet-name>CopyProjectAndAnnos</servlet-name>
+        <url-pattern>/copyProjectAndAnnos</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>3000</session-timeout>
     </session-config>
