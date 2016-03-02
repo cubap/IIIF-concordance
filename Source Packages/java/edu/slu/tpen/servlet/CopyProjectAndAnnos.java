@@ -150,10 +150,6 @@ public class CopyProjectAndAnnos extends HttpServlet {
                                 }
                             }
                                     
-//                                    System.out.println(jo_annotationList);
-
-//                            JSONArray hello = [{ "@id" : "http://localhost:8080/annotationstore/annotation/56d0788d788dda74c9445b95" , "@type" : "oa:Annotation" , "motivation" : "sc:painting" , "resource" :{ "@type" : "cnt:ContentAsText"} , "on" : "http://t-pen.org/TPEN/Encoding Test& Stuff/canvas/100r#xywh=786,583,376,31" , "otherContent" : [ ] , "forProject" :"TPEN_NL" , "addedTime" : [ 1456519745096 , 1456519745096] , "originalAnnoID" :[ "" , ""] , "version" : [ 1 , 1] , "permission" : 0 , "forkFromID" : [ "" , ""] , "serverName" : "localhost" , "serverIP" : "127.0.0.1"} , 
-//{ "@id" : "http://localhost:8080/annotationstore/annotation/56d0788d788dda74c9445b96" , "@type" : "oa:Annotation" , "motivation" : "sc:painting" , "resource" : { "@type" : "cnt:ContentAsText"} , "on" : "http://t-pen.org/TPEN/Encoding Test & Stuff/canvas/100r#xywh=786,615,376,36" , "otherContent" : [ ] , "forProject" : "TPEN_NL" , "addedTime" : [ 1456519745096 , 1456519745096] , "originalAnnoID" : [ "" , ""] , "version" : [ 1 , 1] , "permission" : 0 , "forkFromID" : [ "" , ""] , "serverName" : "localhost" , "serverIP" : "127.0.0.1"}]
                                     JSONArray resources = new JSONArray();
                                     if(null == jo_annotationList.get("resources")){
                                         //let it be empty

@@ -1,4 +1,3 @@
-
 /**Used for annotations that have been saved to the annotation store and thus have a uri rather than urn*/
 function Annotation(body,target,shape,dimensions,annotationURI,functionToRun, annotator_email, annotator_name,creation, generator)
 {
@@ -140,5 +139,3 @@ function createUUID() {
     var uuid = s.join("");
     return uuid;
 }
-
-

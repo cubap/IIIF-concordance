@@ -76,5 +76,3 @@ var setPrefixesForDatabank = function(data, databank) {
         databank.prefix(att.nodeName.split(':')[1], att.nodeValue);
     }
 };
-
-
