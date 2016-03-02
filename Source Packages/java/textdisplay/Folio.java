@@ -627,10 +627,10 @@ public class Folio {
                if (url.startsWith("/")) {
                   url = "file://" + url;
                } else {
-						// If it's a reference to the T-PEN pageImage servlet, point it at the
-						// current T-PEN instance.
-						url = url.replace("http://t-pen.org/TPEN/", getRbTok("SERVERURL"));
-					}
+                        // If it's a reference to the T-PEN pageImage servlet, point it at the
+                        // current T-PEN instance.
+                        url = url.replace("http://t-pen.org/TPEN/", getRbTok("SERVERURL"));
+                }
             }
          }
       }
