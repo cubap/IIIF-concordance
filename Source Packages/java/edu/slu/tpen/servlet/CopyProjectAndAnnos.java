@@ -211,7 +211,7 @@ public class CopyProjectAndAnnos extends HttpServlet {
                                     System.out.println("store new anno list information folio "+i);
                                     System.out.println(new_resources);
                                     JSONObject canvasList = CreateAnnoListUtil.createEmptyAnnoList(thisProject.getProjectID(), canvasID, new_resources);
-                                    canvasList.element("newbtest", "newbtest");
+                                    canvasList.element("copiedFrom", request.getParameter("projectID"));
                                     URL postUrl = new URL(Constant.ANNOTATION_SERVER_ADDR + "/anno/saveNewAnnotation.action");
                                     HttpURLConnection uc = (HttpURLConnection) postUrl.openConnection();
                                     uc.setDoInput(true);
