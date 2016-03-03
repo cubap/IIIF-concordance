@@ -50,7 +50,6 @@ public class CopyProjectAndAnnos extends HttpServlet {
             
             try {
                 //find original project and copy to a new project. 
-                System.out.println("begin copy project");
                 Project templateProject = new Project(projectID);
                 Connection conn = ServletUtils.getDBConnection();
                 conn.setAutoCommit(false);
@@ -127,16 +126,13 @@ public class CopyProjectAndAnnos extends HttpServlet {
                                         System.out.println(current_proj.equals("master"));
                                         if(current_proj.equals("master")){
                                             jo_masterList = current_list;
-                                            System.out.println("Set master");
                                         }
                                         if(current_proj.matches("^\\d+$") && Integer.parseInt(current_proj) == templateProject.getProjectID()){ //if its id equal to the id of the project we are copying
                                             jo_annotationList = current_list; //if so, thats the list we want
-                                            System.out.println("found list by projID");
                                             break;
                                         }
                                         else{ //it was not a match, are we done looking at all lists?
                                             if(x == (ja_allAnnoLists.size()-1)){ //if none of them match, we want the first to be our list to copy (master list)
-                                                System.out.println("USE MASTER!!!!!!!!!!!!!!!!!!!!");
                                                 jo_annotationList = jo_masterList; //assuming the first object is the master.  if not, we will have to do something
 //                                                System.out.println(jo_annotationList.getString("@id"));
                                                 break;
@@ -145,7 +141,6 @@ public class CopyProjectAndAnnos extends HttpServlet {
                                     }
                                     else{ //it was null, are we done looking at all lists?
                                         if(x == (ja_allAnnoLists.size()-1)){ //if none of them match, we want the first to be our list to copy (master list)
-                                            System.out.println("USE MASTER2!!!!!!!!!!!!!!!!!!!!");
                                             jo_annotationList = jo_masterList; //assuming the first object is the master.  if not, we will have to do something
  //                                           System.out.println(jo_annotationList.getString("@id"));
                                             break;
@@ -154,18 +149,14 @@ public class CopyProjectAndAnnos extends HttpServlet {
                                 }
                             }
                                     
-                                    System.out.println(jo_annotationList);
                                     JSONArray resources = new JSONArray();
                                     JSONArray new_resources = new JSONArray();
                                     if(jo_annotationList.size() > 0){
                                         if(null == jo_annotationList.get("resources")){
                                         //let it be empty
-                                        System.out.println("resources are null");
                                         }
                                         else{
-                                            System.out.println("Resources are not null.");
                                             resources = (JSONArray) jo_annotationList.get("resources");
-                                            System.out.println(resources);
                                         }
                                         URL postUrlCopyAnno = new URL(Constant.ANNOTATION_SERVER_ADDR + "/anno/batchSaveFromCopy.action");
                                         HttpURLConnection ucCopyAnno = (HttpURLConnection) postUrlCopyAnno.openConnection();
@@ -179,11 +170,9 @@ public class CopyProjectAndAnnos extends HttpServlet {
                                         DataOutputStream dataOutCopyAnno = new DataOutputStream(ucCopyAnno.getOutputStream());
                                         String str_resources = "";
                                         if(resources.size() > 0){
-                                            System.out.println("we have resources");
                                             str_resources = resources.toString();
                                         }
                                         else{
-                                            System.out.println("pass an empty array due to no resources.");
                                             str_resources = "[]";
                                         }
                                         dataOutCopyAnno.writeBytes("content=" + URLEncoder.encode(str_resources, "utf-8"));
@@ -208,8 +197,6 @@ public class CopyProjectAndAnnos extends HttpServlet {
                                        
                                     //Send the annotation resources in to be bulk saved.  The response will be the resources with updated @id fields as a BSONObject
                                     
-                                    System.out.println("store new anno list information folio "+i);
-                                    System.out.println(new_resources);
                                     JSONObject canvasList = CreateAnnoListUtil.createEmptyAnnoList(thisProject.getProjectID(), canvasID, new_resources);
                                     canvasList.element("copiedFrom", request.getParameter("projectID"));
                                     URL postUrl = new URL(Constant.ANNOTATION_SERVER_ADDR + "/anno/saveNewAnnotation.action");
@@ -228,7 +215,6 @@ public class CopyProjectAndAnnos extends HttpServlet {
                                     BufferedReader reader = new BufferedReader(new InputStreamReader(uc.getInputStream(),"utf-8")); 
                                     reader.close();
                                     uc.disconnect();
-                                    System.out.println("done with folio "+i);
                         }
                     }
                     String propVal = textdisplay.Folio.getRbTok("CREATE_PROJECT_RETURN_DOMAIN"); 
