@@ -556,9 +556,13 @@
         $('select').find('option:eq(0)').prop("selected",true); //stops certain bugs caused by previously selected dropdown options.  
         $('select').removeAttr("disabled");
         $("#pageJump").on("change",function(){
+            var parsing = "";
+            if($("#parsingDiv").is(":visible")){
+                parsing = "parsing";
+            }
             var a = $(this).find("option:selected");
             var b = a.attr("folioNum");
-            pageJump(b);
+            pageJump(b, parsing);
         });
          $("#compareJump").on("change",function(){
             var a = $(this).find("option:selected");
@@ -800,6 +804,7 @@
                                 },
                                 mouseup:    function(event){
                                     event.preventDefault();
+                                    $("#parsingCover").show();
                                     if (!isCreating){
                                         $("#imgTop").unbind("mousemove");
                                         $("#imgTop").unbind("mousedown");
@@ -809,8 +814,6 @@
                                         return true;
                                     }
                                     var $newCol = $("#newCol");
-
-                                    var colRatio = $("#imgTop").height() / $("#imgTop").width();
                                     $newCol.attr({
                                         "lineserverid"   : "-1",
                                         "newline"       : true,

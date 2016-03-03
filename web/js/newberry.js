@@ -231,7 +231,7 @@
                 fullPage();
                 focusItem = [null,null];
                 currentFolio = 1;
-                loadTranscriptionCanvas(transcriptionFolios[0]);
+                loadTranscriptionCanvas(transcriptionFolios[0], parsing);
                 setTimeout(function(){
                 hideWorkspaceForParsing();
                     $(".pageTurnCover").fadeOut(1500);
@@ -240,7 +240,7 @@
             else{
                 focusItem = [null,null];
                 currentFolio = 1;
-                loadTranscriptionCanvas(transcriptionFolios[0]);
+                loadTranscriptionCanvas(transcriptionFolios[0], "");
             }
             
             
@@ -256,7 +256,7 @@
                 fullPage();
                 focusItem = [null,null];
                 currentFolio = lastFolio;
-                loadTranscriptionCanvas(transcriptionFolios[lastFolio-1]);
+                loadTranscriptionCanvas(transcriptionFolios[lastFolio-1], parsing);
                 setTimeout(function(){
                     hideWorkspaceForParsing();
                     $(".pageTurnCover").fadeOut(1500);
@@ -265,7 +265,7 @@
             else{
                 focusItem = [null,null];
                 currentFolio = lastFolio;
-                loadTranscriptionCanvas(transcriptionFolios[lastFolio-1]);
+                loadTranscriptionCanvas(transcriptionFolios[lastFolio-1], "");
             }
         }
     }
@@ -277,7 +277,7 @@
                 fullPage();
                 focusItem = [null, null];
                 currentFolio -= 1;
-                loadTranscriptionCanvas(transcriptionFolios[currentFolio - 1]);
+                loadTranscriptionCanvas(transcriptionFolios[currentFolio - 1], parsing);
                 setTimeout(function(){
                     hideWorkspaceForParsing();
                     $(".pageTurnCover").fadeOut(1500);
@@ -286,7 +286,7 @@
             else{
                 focusItem = [null, null];
                 currentFolio -= 1;
-                loadTranscriptionCanvas(transcriptionFolios[currentFolio - 1]);
+                loadTranscriptionCanvas(transcriptionFolios[currentFolio - 1], "");
             }
         }
         else{
@@ -302,7 +302,7 @@
                 fullPage();
                 focusItem = [null, null];  
                 currentFolio += 1;
-                loadTranscriptionCanvas(transcriptionFolios[currentFolio-1]);
+                loadTranscriptionCanvas(transcriptionFolios[currentFolio-1], parsing);
                 setTimeout(function(){
                     hideWorkspaceForParsing();
                     $(".pageTurnCover").fadeOut(1500);
@@ -311,7 +311,7 @@
             else{
                 focusItem = [null, null];  
                 currentFolio += 1;
-                loadTranscriptionCanvas(transcriptionFolios[currentFolio-1]);
+                loadTranscriptionCanvas(transcriptionFolios[currentFolio-1], "");
             }
             
         }
@@ -443,8 +443,14 @@
             }
             else if(lines.length===0 && i===annoList.length-1){
                 //console.log("must default to master");
-                lines = masterList.resources;
-                populatePreview(lines, pageLabel, currentPage, j);
+                if(masterList !== undefined){
+                    lines = masterList.resources;
+                    populatePreview(lines, pageLabel, currentPage, j);
+                }
+                else{
+                    console.log("No matching list by projectID and no master found for "+pageLabel);
+                }
+                
                 return false;
             }
         }
@@ -612,7 +618,7 @@
                                                 annoLists.push("noList");
                                             }
                                         });
-                                        loadTranscriptionCanvas(transcriptionFolios[0]);
+                                        loadTranscriptionCanvas(transcriptionFolios[0],"");
                                         var projectTitle = projectData.label;
                                         $("#trimTitle").html(projectTitle);
                                         $("#trimTitle").attr("title", projectTitle);
@@ -695,7 +701,7 @@
                                     annoLists.push("noList");
                                 }
                             });
-                            loadTranscriptionCanvas(transcriptionFolios[0]);
+                            loadTranscriptionCanvas(transcriptionFolios[0],"");
                             var projectTitle = userTranscription.label;
                             $("#trimTitle").html(projectTitle);
                             $("#trimTitle").attr("title", projectTitle);
@@ -771,7 +777,7 @@
                                                         annoLists.push("noList");
                                                     }
                                                 });
-                                                loadTranscriptionCanvas(transcriptionFolios[0]);
+                                                loadTranscriptionCanvas(transcriptionFolios[0],"");
                                                 var projectTitle = projectData.label;
                                                 $("#trimTitle").html(projectTitle);
                                                 $("#trimTitle").attr("title", projectTitle);$('#transcriptionTemplate').css("display", "inline-block");
@@ -861,7 +867,7 @@
                                             annoLists.push("noList");
                                         }
                                     });
-                                    loadTranscriptionCanvas(transcriptionFolios[0]);
+                                    loadTranscriptionCanvas(transcriptionFolios[0],"");
                                     
                                     var projectTitle = projectData.label;
                                     $("#trimTitle").html(projectTitle);
@@ -901,7 +907,7 @@
     /*
      * Load a canvas from the manifest to the transcription interface. 
      */
-    function loadTranscriptionCanvas(canvasObj){
+    function loadTranscriptionCanvas(canvasObj, parsing){
         var noLines = true;
         var canvasAnnoList = "";
         $("#imgTop, #imgBottom").css("height", "400px");
@@ -917,6 +923,7 @@
         $("#trimPage").attr("title", pageTitle);
         $('#transcriptionTemplate').css("display", "inline-block");
         $("#parsingBtn").css("box-shadow", "none");
+        $("#parsingButton").removeAttr('disabled');
         $(".lineColIndicator").css({
             "box-shadow": "rgba(255, 255, 255, 0.4)",
             "border": "1px solid rgb(255, 255, 255)"
@@ -939,26 +946,33 @@
                         $("#fullPageImg").attr("src", canvasObj.images[0].resource['@id'].replace('amp;',''));
                         originalCanvasHeight2 = $("#imgTop img").height();
                         originalCanvasWidth2 = $("#imgTop img").width();
-                        drawLinesToCanvas(canvasObj, false);
+                        drawLinesToCanvas(canvasObj, parsing);
                         $("#transcriptionCanvas").attr("canvasid", canvasObj["@id"]);
                         $("#transcriptionCanvas").attr("annoList", canvasAnnoList);
-                        
+                        $("#parseOptions").find(".tpenButton").removeAttr("disabled");
+                        $("#parsingBtn").removeAttr("disabled");
                     })
                     .on("error", function(){
                         var image2 = new Image();
                         $(image2)
                         .on("load", function(){
+                            $("#noLineWarning").hide();
                             $("#imgTop, #imgTop img, #imgBottom img, #imgBottom, #transcriptionCanvas").css("height", "auto");
                             $("#imgTop img, #imgBottom img").css("width", "100%");
                             $('.transcriptionImage').attr('src', "images/missingImage.png");
                             $("#fullPageImg").attr("src", "images/missingImage.png");
-                            $('#transcriptionCanvas').css('height', $("#imgBottom img").height() + "px");
-                            $('.lineColIndicatorArea').css('height', $("#imgBottom img").height() + "px");
+                            $('#transcriptionCanvas').css('height', $("#imgTop img").height() + "px");
+                            $('.lineColIndicatorArea').css('height', $("#imgTop img").height() + "px");
                             $("#imgTop").css("height", "0%");
                             $("#imgBottom img").css("top", "0px");
-                            $("#imgBottom").css("height", "inherit");     
+                            $("#imgBottom").css("height", "inherit"); 
+                            $("#parsingButton").attr("disabled", "disabled");
+                            
+                            alert("No image for this canvas or it could not be resolved.  Not drawing lines.");
+                            $("#parseOptions").find(".tpenButton").attr("disabled", "disabled");
+                            $("#parsingBtn").attr("disabled", "disabled");
                         })
-                        .attr("src", "images/missingImage.png")
+                        .attr("src", "images/missingImage.png");
                     })
                     .attr("src", canvasObj.images[0].resource['@id'].replace('amp;',''));
         }
@@ -977,7 +991,7 @@
       /*
      * @paran canvasObj  A canvas object to extrac transcription lines from and draw to the interface. 
      */
-    function drawLinesToCanvas(canvasObj, rebuild){
+    function drawLinesToCanvas(canvasObj, parsing){
         var lines = [];
         currentFolio = parseInt(currentFolio);
         //console.log("Draw lines");
@@ -1044,20 +1058,24 @@
                         }
                         else{ //list has no lines
                             //console.log("no lines in what we got");
-                            $("#noLineWarning").show();
-                            $('#transcriptionCanvas').css('height', $("#imgBottom img").height() + "px");
-                            $('.lineColIndicatorArea').css('height', $("#imgBottom img").height() + "px");
-                            $("#imgTop").css("height", "0%");
-                            $("#imgBottom img").css("top", "0px");
+                            if(parsing !== "parsing"){
+                                $("#noLineWarning").show();
+                            }
+                            $('#transcriptionCanvas').css('height', $("#imgTop img").height() + "px");
+                            $('.lineColIndicatorArea').css('height', $("#imgTop img").height() + "px");
+                            $("#imgTop").css("height", $("#imgTop img").height() + "px");
+                            $("#imgTop img").css("top", "0px");
                             $("#imgBottom").css("height", "inherit");
                             $("#parsingBtn").css("box-shadow", "0px 0px 6px 5px yellow");
                         }
                     }
                     else{ // couldnt get list.  one should always exist, even if empty.  We will say no list and changes will be stored locally to the canvas.
                         annoLists[currentFolio -1 ] = "empty";
-                        $("#noLineWarning").show();
-                        $('#transcriptionCanvas').css('height', $("#imgBottom img").height() + "px");
-                        $('.lineColIndicatorArea').css('height', $("#imgBottom img").height() + "px");
+                        if(parsing !== "parsing"){
+                            $("#noLineWarning").show();
+                        }
+                        $('#transcriptionCanvas').css('height', $("#imgTop img").height() + "px");
+                        $('.lineColIndicatorArea').css('height', $("#imgTop img").height() + "px");
                         $("#imgTop").css("height", "0%");
                         $("#imgBottom img").css("top", "0px");
                         $("#imgBottom").css("height", "inherit");
@@ -1069,10 +1087,14 @@
     }
     
     function linesToScreen(lines){
+        $("#noLineWarning").hide();
         var letterIndex = 0;
         var letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         letters = letters.split("");
         var update = true;
+        if($("#parsingDiv").is(":visible")){
+            update = false;
+        }
         var thisContent = "";
         var thisPlaceholder = "Enter a line transcription";
         var counter = 0;
@@ -1899,11 +1921,9 @@
      function hideWorkspaceForParsing(){
 //        imgBottomOriginal = $("#imgBottom img").css("top");
         $("#parsingBtn").css("box-shadow: none;");
-        
         originalCanvasHeight = $("#transcriptionCanvas").height();
         originalCanvasWidth = $("#transcriptionCanvas").width();
         imgTopOriginalTop = $("#imgTop img").css("top");
-        
         //$("#pageJump").attr("disabled", "disabled");
          var pageJumpIcons = $("#pageJump").parent().children("i");
             pageJumpIcons[0].setAttribute('onclick', 'firstFolio("parsing");');
@@ -1971,19 +1991,20 @@
                 $("#imgTop, #imgTop img").height($(window).innerHeight()); 
                 $("#imgTop img").css("width" , "auto");
                 $("#imgTop").css("width" , $("#imgTop img").width());
+                $("#imgTop").css("height" , $("#imgTop img").height());
                 //At this point, transcription canvas is the original height and width of the full page image.  We can use that for when we resume transcription. 
                // $("#transcriptionCanvas").css("width" , $("#imgTop img").width()); //This causes the resize function to bust
                 $("#transcriptionCanvas").css("height" , $(window).innerHeight());
                 $(".lineColIndicatorArea").css("height", $(window).innerHeight());
                 $("#transcriptionCanvas").css("display" , "block");
                 //$("#parsingSplit").css("top", "-"+($("#imgTop img").height()+32)+"px");
-            });
+            }, 500);
             window.setTimeout(function(){
                 //in here we can control what interface loads up.  writeLines draws lines onto the new full size transcription image.
                 $('.lineColIndicatorArea').hide();
                 writeLines($("#imgTop img"));
                 var firstLine = $(".parsing").filter(":first");
-                var correctHeight = (topImg.height() > $("#transcriptionTemplate").height()) ? -999 : firstLine.attr("lineheight") * topImg.height() / 1000;
+                //var correctHeight = (topImg.height() > $("#transcriptionTemplate").height()) ? -999 : firstLine.attr("lineheight") * topImg.height() / 1000;
             },1200);
          
     };
@@ -2067,10 +2088,13 @@
         $(".split").hide();
         $(".split").css("width", "43%");
 //        //console.log("RESTORE WORKSPACE");
+        
         restoreWorkspace();
         $("#splitScreenTools").show();
-        $("#transcriptionCanvas").css("height", originalCanvasHeight2+"px");
-        $(".lineColIndicatorArea").css("height", originalCanvasHeight2+"px");
+        var screenWidth = $(window).width();
+        var adjustedHeightForFullscreen = (originalCanvasHeight2 / originalCanvasWidth2) * screenWidth;
+        $("#transcriptionCanvas").css("height", adjustedHeightForFullscreen+"px");
+        $(".lineColIndicatorArea").css("height", adjustedHeightForFullscreen+"px");
         $("#imgTop").hover(function(){
             var color = colorThisTime.replace(".4", "1");
             $('.activeLine').css('box-shadow', '0px 0px 15px 8px '+color);
@@ -2080,6 +2104,11 @@
         $.each($(".lineColOnLine"),function(){
               $(this).css("line-height", $(this).height()+"px");
           });
+          if(focusItem[0] == null && focusItem[1] == null){
+//            focusItem[0] = focusItem[1];
+//            focusItem[1] = $("#transcriptlet_1");
+              updatePresentation($("#transcriptlet_1"));
+        }
         
     }
 
@@ -2872,12 +2901,26 @@ function togglePageJump(){
        $("#pageJump .folioJump").fadeIn(400).css("display", "block"); 
     }
 }
-function pageJump(folio){
-    var folioNum = parseInt($("#pageJump").find('option:selected').attr("folioNum")); //1,2,3...
+function pageJump(page,parsing){
+    var folioNum = parseInt(page); //1,2,3...
     var canvasToJumpTo = folioNum - 1; //0,1,2...
     if(currentFolio !== folioNum && canvasToJumpTo >= 0){ //make sure the default option was not selected and that we are not jumping to the current folio 
         currentFolio = folioNum;
-        loadTranscriptionCanvas(transcriptionFolios[canvasToJumpTo]);
+        if(parsing == "parsing"){
+            $(".pageTurnCover").show();
+            fullPage();
+            focusItem = [null, null];  
+            loadTranscriptionCanvas(transcriptionFolios[canvasToJumpTo], parsing);
+            setTimeout(function(){
+                hideWorkspaceForParsing();
+                $(".pageTurnCover").fadeOut(1500);
+            }, 800);
+        }
+        else{
+            currentFolio = folioNum;
+            focusItem = [null, null];  
+            loadTranscriptionCanvas(transcriptionFolios[canvasToJumpTo], "");
+        } 
     }
     else{
         //console.log("Loaded current or invalid page");
@@ -3112,6 +3155,7 @@ function toggleLineCol(){
                         annoListTester.resources[index] = dbLine;
                         currentFolio = parseInt(currentFolio);
                         annoLists[currentFolio - 1]= "hello/annoList/5";
+                        $("#parsingCover").hide();
                     }
                 });
             }
@@ -3266,6 +3310,10 @@ function toggleLineCol(){
                                 if(lineBefore !== undefined && lineBefore !== null){
                                     //This is the good case.  We called split line and saved the new line, now we need to update the other one. 
                                     updateLine(lineBefore);
+                                    $("#parsingCover").hide(); //doesnt always fire, so this is to be sure
+                                }
+                                else{
+                                    $("#parsingCover").hide();
                                 }
                             });
                         });
@@ -3307,11 +3355,11 @@ function toggleLineCol(){
                                     "linenum" : $(".parsing").length
                                 }).removeClass("newColumn");
                                 newLine.attr("lineserverid", dbLine["@id"]);
+                                $("#parsingCover").hide();
                             });
                     });
                 }
-                else if(currentAnnoList == "noList"){ //noList means there was no otherContent field with the canvas.  this is an invalid object.  its possible annos are directly
-                    //in resoucres[] for the canvas.  this is a classic T-PEN scenario.
+                else if(currentAnnoList == "noList"){ //noList is a special scenario for handling classic T-PEN objects.
                     if(beforeIndex == -1){ //New line vs new column
                         $(".newColumn").attr({
                             "lineserverid" : dbLine["@id"],
@@ -3326,6 +3374,7 @@ function toggleLineCol(){
                         currentFolio = parseInt(currentFolio);
                         transcriptionFolios[currentFolio - 1].resources.splice(beforeIndex + 1, 0, dbLine);
                     }
+                    $("#parsingCover").hide();
                     //should we write to the DB here?  This would be in support of old data.  
                 }
                 cleanupTranscriptlets(true);
@@ -3492,6 +3541,7 @@ function toggleLineCol(){
      function removeTranscriptlet(lineid, updatedLineID, draw, cover){
         // if(!isMember && !permitParsing)return false;
         //update remaining line, if needed
+        $("#parsingCover").show();
         var updateText = "";
         if (lineid !== updatedLineID){
             var updatedLine =   $(".parsing[lineserverid='"+updatedLineID+"']");
@@ -3684,7 +3734,7 @@ function toggleLineCol(){
               $("#parsingSplit").find('.fullScreenTrans').bind("click", function(){
                 fullPage(); 
                 currentFolio = parseInt(currentFolio);
-                drawLinesToCanvas(transcriptionFolios[currentFolio-1], true);
+                drawLinesToCanvas(transcriptionFolios[currentFolio-1], "");
               });
           }
 

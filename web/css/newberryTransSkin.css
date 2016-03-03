@@ -489,6 +489,12 @@ body{
     display: block;
 /*    line-height: 35px;*/
 }
+.tpenButton[disabled]{
+    background-color: red;
+}
+.tpenButton[disabled]:hover{
+    background-color: red;
+}
 .parsingToolButtons .tpenButton{
     display: block;
     margin-bottom: 5px;
@@ -500,6 +506,13 @@ body{
 
 #parsingBtn{
     display: none;
+}
+
+#parsingBtn[disabled]{
+    background-color: red;
+}
+#parsingBtn[disabled]:hover{
+    background-color: red;
 }
 
 #ctrlColumns, #ctrlLines, .tpenButton{
