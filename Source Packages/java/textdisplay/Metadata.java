@@ -202,7 +202,7 @@ public class Metadata {
             title = rs.getString("title");
             subtitle = rs.getString("subtitle");
             //we could decode here.
-            System.out.println("title from metadata table for project "+projectID+" put into Metadata object: "+title);
+          //  System.out.println("title from metadata table for project "+projectID+" put into Metadata object: "+title);
             msIdentifier = rs.getString("msIdentifier");
             msSettlement = rs.getString("msSettlement");
             msRepository = rs.getString("msRepository");

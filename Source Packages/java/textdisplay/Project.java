@@ -465,7 +465,7 @@ public class Project {
     */
    public String getProjectName() throws SQLException {
       String toret = new Metadata(this.projectID).getTitle();
-      System.out.println("metadata from project "+this.projectID+". title must have a value or it will use project name: "+toret);
+ //     System.out.println("metadata from project "+this.projectID+". title must have a value or it will use project name: "+toret);
       if (toret.compareTo("") == 0) {
           System.out.println("non title, gotta get name: "+this.projectName);
          toret = this.projectName;

@@ -223,6 +223,7 @@
             "on" : "http://t-pen.org/Tradamus+Simple/canvas/100r"
         }
     
+    /* Load the interface to the first page of the manifest. */
     function firstFolio(parsing){
         currentFolio = parseInt(currentFolio);
         if(parseInt(currentFolio) !== 1){
@@ -247,6 +248,7 @@
         }
     }
     
+    /* Load the interface to the last page of the manifest. */
     function lastFolio(parsing){
         currentFolio = parseInt(currentFolio);
         var lastFolio = transcriptionFolios.length;
@@ -269,6 +271,7 @@
             }
         }
     }
+    /* Load the interface to the previous page from the one you are on. */
     function previousFolio(parsing){
         currentFolio = parseInt(currentFolio);
         if(parseInt(currentFolio) > 1){
@@ -294,6 +297,7 @@
         }
     }
     
+    /* Load the interface to the next page from the one you are on. */
     function nextFolio(parsing){
         currentFolio = parseInt(currentFolio);
         if(parseInt(currentFolio) !== transcriptionFolios.length){
@@ -409,6 +413,7 @@
         }
     }
     
+    /* Gather the annotations for a canvas and populate the preview interface with them. */
     function gatherAndPopulate(currentOn, pageLabel, currentPage, i){
         //console.log("get annos on "+currentOn);
         var annosURL = "getAnno";
@@ -422,6 +427,8 @@
 
          });
     }
+    
+    /* Check for which annotation list to use either by project ID or if its the master */
     function checkForMaster(annoList, pageLabel, currentPage, j){
         var lines = [];
         var masterList = undefined;
@@ -456,7 +463,7 @@
         }
     }
     
-    
+    /* Populate the line preview interface. */
     function populatePreview(lines, pageLabel, currentPage, order){
         var letterIndex = 0;
         var letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -524,9 +531,9 @@
     }
     
     function populateXML(xmlTags){
-        xmlTags = xmlTags.split("</span>"); // make a array by </span>
+        xmlTags = xmlTags.split("</span>"); 
         var tagsInOrder = [];
-        for (var tag = 0; tag < xmlTags.length; tag++){ //FIXME!!!How can I get these in order?  Order them after they are in the DOM?
+        for (var tag = 0; tag < xmlTags.length; tag++){
 //                        var thisTag = xmlTags[tag];
 //                        var position1 = thisTag.position;
 //                        var tagText = thisTag.text;
@@ -549,7 +556,6 @@
      */
     function loadTranscription(){
         //Object validation here.
-        //Project ID is not part of the manifest data.  When a user gets to transcription, we already need to know the project ID.
         console.log("LOAD")
             projectID = 4080;
             var userTranscription = $('#transcriptionText').val();
@@ -585,9 +591,8 @@
                             var getURLfromThis = activeProject.ls_ms;
                             getURLfromThis = JSON.parse(getURLfromThis);
                             url  = getURLfromThis[0].archive; //This is the manifest inside the project data
-                            if(url.indexOf("http") < 0){ //Then this is a newberry created newberry project
+                            if(url.indexOf("http") < 0){
                                 //create the newberry url
-                                //console.log("gunna call project servlet because http was not present in this url");
                                 url = "project/"+projectID;
                             }
                             $.ajax({ /* Causes CORS */
@@ -1086,6 +1091,7 @@
         }
     }
     
+    /* Take line data, turn it into HTML elements and put them to the DOM */
     function linesToScreen(lines){
         $("#noLineWarning").hide();
         var letterIndex = 0;
@@ -1302,6 +1308,7 @@
         });
     }
     
+    /* Make the transcription interface focus to the transcriptlet passed in as the parameter. */
     function updatePresentation(transcriptlet) {
         if(transcriptlet === undefined || transcriptlet === null){
             $("#imgTop").css("height", "0%");
@@ -1370,8 +1377,9 @@
     //            focusItem[1].find('.theText')[0].focus();
     //        }
       };
-      
-     function setPositions() {
+     
+    /* Helper for position focus onto a specific transcriptlet */
+    function setPositions() {
     //Determine size of section above workspace
         var bottomImageHeight = $("#imgBottom img").height();
         if (focusItem[1].attr("lineHeight") !== null) {
@@ -1402,7 +1410,7 @@
 //          bookmarkHeight: currentLineHeight
         };
         return positions;
-  };
+    };
   
   /**
    * Removes previous textarea and slides in the new focus.
@@ -1483,32 +1491,33 @@
           
     }  
    
+   /* Update the line information of the line currently focused on, then load the focus to a line that was clicked on */
    function loadTranscriptlet(lineid){
-       var currentLineServerID = focusItem[1].attr("lineserverid");
-          if($('#transcriptlet_'+lineid).length > 0){
-              if(loggedInUser){
-                  var lineToUpdate = $(".transcriptlet[lineserverid='"+currentLineServerID+"']")
-                  updateLine(lineToUpdate, "no");
-                  updatePresentation($('#transcriptlet_'+lineid));
-              }
-              else{
-                var captionText1 = $("#captionsText").html();
-                $("#captionsText").html("You are not logged in.");
-                $('#captionsText').css("background-color", 'red');
-                setTimeout(function(){ $('#captionsText').css("background-color", '#E6E7E8'); }, 500);
-                setTimeout(function(){ $('#captionsText').css("background-color", 'red'); }, 1000);
-                setTimeout(function(){ $('#captionsText').css("background-color", '#E6E7E8');  $("#captionsText").html(captionText1); }, 1500);
-              }
-              
-          }
-          else{ //blink a caption warning
-              var captionText = $("#captionsText").html();
-              $("#captionsText").html("Cannot load this line.");
+        var currentLineServerID = focusItem[1].attr("lineserverid");
+        if($('#transcriptlet_'+lineid).length > 0){
+            if(loggedInUser){
+                var lineToUpdate = $(".transcriptlet[lineserverid='"+currentLineServerID+"']");
+                updateLine(lineToUpdate, "no");
+                updatePresentation($('#transcriptlet_'+lineid));
+            }
+            else{
+              var captionText1 = $("#captionsText").html();
+              $("#captionsText").html("You are not logged in.");
               $('#captionsText').css("background-color", 'red');
               setTimeout(function(){ $('#captionsText').css("background-color", '#E6E7E8'); }, 500);
               setTimeout(function(){ $('#captionsText').css("background-color", 'red'); }, 1000);
-              setTimeout(function(){ $('#captionsText').css("background-color", '#E6E7E8');  $("#captionsText").html(captionText); }, 1500);
-          }
+              setTimeout(function(){ $('#captionsText').css("background-color", '#E6E7E8');  $("#captionsText").html(captionText1); }, 1500);
+            }
+
+        }
+        else{ //blink a caption warning
+            var captionText = $("#captionsText").html();
+            $("#captionsText").html("Cannot load this line.");
+            $('#captionsText').css("background-color", 'red');
+            setTimeout(function(){ $('#captionsText').css("background-color", '#E6E7E8'); }, 500);
+            setTimeout(function(){ $('#captionsText').css("background-color", 'red'); }, 1000);
+            setTimeout(function(){ $('#captionsText').css("background-color", '#E6E7E8');  $("#captionsText").html(captionText); }, 1500);
+        }
    }
   
     /*
@@ -1619,6 +1628,7 @@
         //$(document).mouseup();
     }
     /** 
+     * 
      * Allows workspace to be moved up and down on the screen.
      * Requires shift key to be held down.
      */
@@ -1658,6 +1668,7 @@
         });
     };
     
+    /* Start event listening to move the image in the transcirption interface */
      function startMoveImg(){
        if($(".transcriptlet:first").hasClass("moveImage")){
            $("#moveImage").removeClass("selected");
@@ -2054,20 +2065,12 @@
         return lineOverlay;
     }
 
+    /* Reset the interface to the full screen transcription view. */
     function fullPage(){;
         if ($("#overlay").is(":visible")) {
             $("#overlay").click();
             return false;
         }
-//        if ($(".parsing").size() === 0 && $(".transcriptlet").size() === 0) {
-//            // no lines to transcribe
-//            var cfrm = confirm("There are no longer any lines on this page. Click 'OK' to reload the page or 'Cancel' to parse manually.");
-//            if (cfrm) {
-//                window.location.reload();
-//            } else {
-//                $('#parsingBtn').click();
-//            }
-//        }
         $(".line, .parsing, .adjustable,.parsingColumn").remove();
         isUnadjusted = isFullscreen = true;
         //currentFocus = "transcription" + focusItem[1].attr('id').substring(1);
@@ -2113,11 +2116,8 @@
     }
 
     function splitPage(event, tool) {
-        //TODO imgBottom img top needs to resize with the split (as well as the lineIndicatorArea
 //        //console.log("SPLIT PAGWE!");
         liveTool = tool;
-        //originalCanvasHeight2 = $("#imgTop img").height(); //make sure these are set correctly
-        //originalCanvasWidth2 = $("#imgTop img").width(); //make sure these are set correctly
         originalCanvasHeight = $("#transcriptionCanvas").height(); //make sure these are set correctly
         originalCanvasWidth = $("#transcriptionCanvas").width(); //make sure these are set correctly
         var ratio = originalCanvasWidth/originalCanvasHeight;
@@ -2396,6 +2396,8 @@
             cleanupTranscriptlets(true);
         }
     }
+    
+    /* Make parsing interface turn the lines in the view into columns */
     function linesToColumns(){
         //update lines in case of changes
         gatheredColumns = []; //The array built by gatherColumns()
@@ -2901,6 +2903,8 @@ function togglePageJump(){
        $("#pageJump .folioJump").fadeIn(400).css("display", "block"); 
     }
 }
+
+/* Change the page to the specified page from the drop down selection. */
 function pageJump(page,parsing){
     var folioNum = parseInt(page); //1,2,3...
     var canvasToJumpTo = folioNum - 1; //0,1,2...
@@ -2926,10 +2930,12 @@ function pageJump(page,parsing){
         //console.log("Loaded current or invalid page");
     }
 }
+
 function compareJump(folio){
     populateCompareSplit(folio);
 }
 
+/* Change color of lines on screen */
 function markerColors(){
     /*
      * This function allows the user to go through annotation colors and decide what color the outlined lines are.
@@ -2948,6 +2954,8 @@ function markerColors(){
     $('.lineColOnLine').css({'border-left':'1px solid '+borderColor, 'color':lineColor});
     $('.activeLine').css('box-shadow', '0px 0px 15px 8px '+colorThisTime); //keep this color opacity .4 until imgTop is hovered.
 }
+
+/* Toggle the line/column indicators in the transcription interface. (A1, A2...) */
 function toggleLineMarkers(){
     if($('.lineColIndicator:first').is(":visible") && $('.lineColIndicator:eq(1)').is(":visible")){ //see if a pair of lines are visible just in case you checked the active line first. 
         $('.lineColIndicator').hide();
@@ -2958,7 +2966,9 @@ function toggleLineMarkers(){
         $(".lineColIndicator").removeClass("linesHidden");
         $.each($(".lineColOnLine"),function(){$(this).css("line-height", $(this).height()+"px");});
     }
-}   
+}  
+
+/* Toggle the drawn lines in the transcription interface. */
 function toggleLineCol(){
     if($('.lineColOnLine:first').is(":visible")){ 
         $('.lineColOnLine').hide();
@@ -2968,6 +2978,7 @@ function toggleLineCol(){
         $.each($(".lineColOnLine"),function(){$(this).css("line-height", $(this).height()+"px");});
     }
 }
+
 //saves/updates all available transcriptlets.
 // function saveTransLines(fromParse){
 //        if(fromParse == "parsing"){
@@ -3016,6 +3027,7 @@ function toggleLineCol(){
         columnUpdate(linesToUpdate);  
     }
     
+    /* Bulk update for lines in a column. */
     function columnUpdate(linesInColumn){
         //console.log("Doing batch update from column resize")
         var onCanvas = $("#transcriptionCanvas").attr("canvasid");
@@ -3108,6 +3120,7 @@ function toggleLineCol(){
         
     }
     
+    /* Update line information for a particular line. */
     function updateLine(line, cleanup){
         var onCanvas = $("#transcriptionCanvas").attr("canvasid");
         currentFolio = parseInt(currentFolio);
@@ -3624,6 +3637,7 @@ function toggleLineCol(){
     
      }
      
+     /* Remove all transcriptlets in a column */
      function removeColumnTranscriptlets(lines, recurse){
         var index = -1;
         currentFolio = parseInt(currentFolio);
@@ -3725,6 +3739,7 @@ function toggleLineCol(){
          
      }
     
+    /* Re draw transcriptlets from the Annotation List information. */
     function cleanupTranscriptlets(draw) {
         var transcriptlets = $(".transcriptlet");
           if(draw){
@@ -3739,7 +3754,8 @@ function toggleLineCol(){
           }
 
     }
-    
+ 
+ /* Make some invalid information inside of folios valid empties */
 function scrubFolios(){
     //you could even force create anno lists off of the existing resource here if you would like.  
     var cnt1 = -1;
@@ -3767,6 +3783,7 @@ function scrubFolios(){
         });
 }
 
+/* Control the hiding and showing of the image tools in the transcription interface. */
 function toggleImgTools(){
     if($("#imageTools").attr("class")!==undefined && $("#imageTools").attr("class").indexOf("activeTools") > -1){
         $('.toolWrap').hide();

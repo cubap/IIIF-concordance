@@ -54,7 +54,11 @@ public class ProjectServlet extends HttpServlet {
             try {
                 String check = "transcribe";
                 String redirect = req.getPathInfo().substring(1);
+                System.out.println("What is redirect??????");
+                System.out.println(redirect);
                 if (redirect.contains(check)) {
+                    System.out.println("After checking???????");
+                    System.out.println(redirect.replace("/" + check, ""));
                     projID = Integer.parseInt(redirect.replace("/" + check, ""));
                     String redirectURL = req.getContextPath() + "/newberryTrans.html?projectID=" + projID;
                     resp.sendRedirect(redirectURL);

@@ -109,10 +109,19 @@ public class CopyProjectAndAnnos extends HttpServlet {
                             readerAnnoLs.close();
                             ucAnnoLs.disconnect();
                             //transfer annotation list string to annotation list JSON Array. 
-                            JSONArray ja_allAnnoLists = JSONArray.fromObject(sbAnnoLs.toString()); //This is the list of all AnnotatationLists attached to this folio.
+                            JSONArray ja_allAnnoLists = new JSONArray();
+                            String getAnnoResponse ="";
+                            try{
+                               getAnnoResponse = sbAnnoLs.toString();
+                            }catch(Exception e){
+                               System.out.println("Reponse will not cast to string.");
+                               getAnnoResponse = "[]";
+                            }
+                            System.out.println("All annos lists for folio gathered.");
+                            ja_allAnnoLists = JSONArray.fromObject(getAnnoResponse); //This is the list of all AnnotatationLists attached to this folio.
                             JSONObject jo_annotationList = new JSONObject();
                             JSONObject jo_masterList = new JSONObject();
-                            System.out.println("SIZE OF ANNO LIST LIST    "+ja_allAnnoLists.size());
+                           // System.out.println("SIZE OF ANNO LIST LIST    "+ja_allAnnoLists.size());
                             if(ja_allAnnoLists.size() > 0){
                                 //System.out.println(ja_allAnnoLists);
                                 //find the annotations list whose proj matches or use the master ([0])
@@ -122,8 +131,8 @@ public class CopyProjectAndAnnos extends HttpServlet {
 //                                    System.out.println(current_list.getString("@id"));
                                     if(null!=current_list.get("proj")){ //make sure this list has proj field
                                         String current_proj = current_list.getString("proj");
-                                        System.out.println("CURRENT PROJ: "+current_proj+" == "+templateProject.getProjectID()+"?");
-                                        System.out.println(current_proj.equals("master"));
+                                     //   System.out.println("CURRENT PROJ: "+current_proj+" == "+templateProject.getProjectID()+"?");
+                                     //   System.out.println(current_proj.equals("master"));
                                         if(current_proj.equals("master")){
                                             jo_masterList = current_list;
                                         }
@@ -151,12 +160,22 @@ public class CopyProjectAndAnnos extends HttpServlet {
                                     
                                     JSONArray resources = new JSONArray();
                                     JSONArray new_resources = new JSONArray();
+                                    System.out.println("Does the object have resources?");
                                     if(jo_annotationList.size() > 0){
                                         if(null == jo_annotationList.get("resources")){
                                         //let it be empty
+                                            System.out.println("Couldnt find resources, so its OK to define it as '[]'. ");
                                         }
                                         else{
-                                            resources = (JSONArray) jo_annotationList.get("resources");
+                                            System.out.println("I can set resources and try to make a JSON ARRAY out of them.");
+                                            System.out.println(jo_annotationList.get("resources"));
+                                            try{
+                                                resources = (JSONArray) jo_annotationList.get("resources");
+                                            }
+                                            catch(Exception e){
+                                                System.out.println("Could not parse the resources from this object into a JSON ARRAY !!! !.  Define it as a new empty list.");
+                                            }
+                                            
                                         }
                                         URL postUrlCopyAnno = new URL(Constant.ANNOTATION_SERVER_ADDR + "/anno/batchSaveFromCopy.action");
                                         HttpURLConnection ucCopyAnno = (HttpURLConnection) postUrlCopyAnno.openConnection();
@@ -196,7 +215,7 @@ public class CopyProjectAndAnnos extends HttpServlet {
                                     }
                                        
                                     //Send the annotation resources in to be bulk saved.  The response will be the resources with updated @id fields as a BSONObject
-                                    
+                                   
                                     JSONObject canvasList = CreateAnnoListUtil.createEmptyAnnoList(thisProject.getProjectID(), canvasID, new_resources);
                                     canvasList.element("copiedFrom", request.getParameter("projectID"));
                                     URL postUrl = new URL(Constant.ANNOTATION_SERVER_ADDR + "/anno/saveNewAnnotation.action");
@@ -215,6 +234,7 @@ public class CopyProjectAndAnnos extends HttpServlet {
                                     BufferedReader reader = new BufferedReader(new InputStreamReader(uc.getInputStream(),"utf-8")); 
                                     reader.close();
                                     uc.disconnect();
+                                    System.out.println("Empty list created and saved.");
                         }
                     }
                     String propVal = textdisplay.Folio.getRbTok("CREATE_PROJECT_RETURN_DOMAIN"); 
