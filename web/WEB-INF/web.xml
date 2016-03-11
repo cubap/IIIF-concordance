@@ -440,7 +440,8 @@
         <servlet-name>LogoutHookServlet</servlet-name>
         <servlet-class>edu.slu.tpen.servlet.LogoutHookServlet</servlet-class>
     </servlet>
-<!--    <servlet>
+<!-- Depricated.  This turned in to CopyProjectAndAnnos    
+    <servlet>
         <servlet-name>copyProjWithAnnoServlet</servlet-name>
         <servlet-class>edu.slu.tpen.servlet.CopyProjWithAnnoServlet</servlet-class>
     </servlet>-->
@@ -552,17 +553,11 @@
         <servlet-name>LogoutHookServlet</servlet-name>
         <url-pattern>/logoutHook</url-pattern>
     </servlet-mapping>
-<!-- Depricated Copy Project servlet    
-    <servlet-mapping>
-        <servlet-name>copyProjWithAnnoServlet</servlet-name>
-        <url-pattern>/copyProjectWithAnnotations</url-pattern>
-    </servlet-mapping>-->
     <servlet-mapping>
         <servlet-name>CopyProjectAndAnnos</servlet-name>
         <url-pattern>/copyProjectWithAnnotations</url-pattern>
     </servlet-mapping>
     <!-- tpen webservices for newberry ends -->
-    
     <session-config>
         <session-timeout>3000</session-timeout>
     </session-config>
