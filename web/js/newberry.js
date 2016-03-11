@@ -1168,7 +1168,7 @@
                     if(parseInt(lastLineTop) + parseInt(lastLineHeight) !== numberArray[1]){
                         //check for slight variance in top position.  Happens because of rounding percentage math that gets pixels to be an integer.
                         var num1 = parseInt(lastLineTop) + parseInt(lastLineHeight);
-                        if(Math.abs(num1 - numberArray[1]) <= 2 && Math.abs(num1 - numberArray[1])!==0){
+                        if(Math.abs(num1 - numberArray[1]) <= 4 && Math.abs(num1 - numberArray[1])!==0){
                             numberArray[1] = num1;
                             var newString = numberArray[0]+","+num1+","+numberArray[2]+","+numberArray[3];
                             if(i>0){
