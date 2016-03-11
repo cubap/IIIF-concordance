@@ -78,7 +78,6 @@ public class CopyProjectAndAnnos extends HttpServlet {
                             //String canvasID = Constant.PALEO_CANVAS_ID_PREFIX + imageURL.replaceAll("^.*(paleography[^/]+).*$", "/$1"); //for paleo
                             String canvasID = Folio.getRbTok("SERVERURL") + templateProject.getProjectName() + "/canvas/" + URLEncoder.encode(folio.getPageName(), "UTF-8"); // for slu testing
                             annoLsQuery.element("on", canvasID);
-                           
                             //System.out.println(annoLsQuery.toString());
                             URL postUrlannoLs = new URL(Constant.ANNOTATION_SERVER_ADDR + "/anno/getAnnotationByProperties.action");
                             HttpURLConnection ucAnnoLs = (HttpURLConnection) postUrlannoLs.openConnection();
@@ -114,20 +113,17 @@ public class CopyProjectAndAnnos extends HttpServlet {
                             try{
                                getAnnoResponse = sbAnnoLs.toString();
                             }catch(Exception e){
-                               System.out.println("Reponse will not cast to string.");
                                getAnnoResponse = "[]";
                             }
-                            System.out.println("All annos lists for folio gathered.");
                             ja_allAnnoLists = JSONArray.fromObject(getAnnoResponse); //This is the list of all AnnotatationLists attached to this folio.
                             JSONObject jo_annotationList = new JSONObject();
                             JSONObject jo_masterList = new JSONObject();
                            // System.out.println("SIZE OF ANNO LIST LIST    "+ja_allAnnoLists.size());
                             if(ja_allAnnoLists.size() > 0){
                                 //System.out.println(ja_allAnnoLists);
-                                //find the annotations list whose proj matches or use the master ([0])
+                                //find the annotations list whose proj matches or use the master
                                 for(int x =0; x<ja_allAnnoLists.size(); x++){
                                     JSONObject current_list = ja_allAnnoLists.getJSONObject(x);
-//                                    System.out.println("WHICH LIST ARE WE ON?");
 //                                    System.out.println(current_list.getString("@id"));
                                     if(null!=current_list.get("proj")){ //make sure this list has proj field
                                         String current_proj = current_list.getString("proj");
@@ -157,84 +153,81 @@ public class CopyProjectAndAnnos extends HttpServlet {
                                     }
                                 }
                             }
-                                    
-                                    JSONArray resources = new JSONArray();
-                                    JSONArray new_resources = new JSONArray();
-                                    System.out.println("Does the object have resources?");
-                                    if(jo_annotationList.size() > 0){
-                                        if(null == jo_annotationList.get("resources")){
-                                        //let it be empty
-                                            System.out.println("Couldnt find resources, so its OK to define it as '[]'. ");
-                                        }
-                                        else{
-                                            System.out.println("I can set resources and try to make a JSON ARRAY out of them.");
-                                            System.out.println(jo_annotationList.get("resources"));
-                                            try{
-                                                resources = (JSONArray) jo_annotationList.get("resources");
-                                            }
-                                            catch(Exception e){
-                                                System.out.println("Could not parse the resources from this object into a JSON ARRAY !!! !.  Define it as a new empty list.");
-                                            }
-                                            
-                                        }
-                                        URL postUrlCopyAnno = new URL(Constant.ANNOTATION_SERVER_ADDR + "/anno/batchSaveFromCopy.action");
-                                        HttpURLConnection ucCopyAnno = (HttpURLConnection) postUrlCopyAnno.openConnection();
-                                        ucCopyAnno.setDoInput(true);
-                                        ucCopyAnno.setDoOutput(true);
-                                        ucCopyAnno.setRequestMethod("POST");
-                                        ucCopyAnno.setUseCaches(false);
-                                        ucCopyAnno.setInstanceFollowRedirects(true);
-                                        ucCopyAnno.addRequestProperty("content-type", "application/x-www-form-urlencoded");
-                                        ucCopyAnno.connect();
-                                        DataOutputStream dataOutCopyAnno = new DataOutputStream(ucCopyAnno.getOutputStream());
-                                        String str_resources = "";
-                                        if(resources.size() > 0){
-                                            str_resources = resources.toString();
-                                        }
-                                        else{
-                                            str_resources = "[]";
-                                        }
-                                        dataOutCopyAnno.writeBytes("content=" + URLEncoder.encode(str_resources, "utf-8"));
-                                        dataOutCopyAnno.flush();
-                                        dataOutCopyAnno.close();
-                                        BufferedReader returnedAnnoList = new BufferedReader(new InputStreamReader(ucCopyAnno.getInputStream(),"utf-8"));
-                                        String lines = "";
-                                        StringBuilder sbAnnoLines = new StringBuilder();
-                                        while ((lines = returnedAnnoList.readLine()) != null){
-            //                                    System.out.println(lineAnnoLs);
-                                            sbAnnoLines.append(lines);
-                                        }
-                                        returnedAnnoList.close();
-                                        String parseThis = sbAnnoLines.toString();
-                                        //This comes out as a BasicDBObject.  Use JSON.fromObject() to convert into a json object to use.
-                                        JSONObject batchSaveResponse = JSONObject.fromObject(parseThis);
-                                        new_resources = batchSaveResponse.getJSONArray("new_resources");
-                                    }
-                                    else{
-                                        System.out.println("No annotation list for this canvas.  do not call batch save.  just save empty list.");
-                                    }
+                            JSONArray new_resources = new JSONArray();
+                            JSONArray resources = new JSONArray();
+                            //locally, passing '[]' into batch save is successful.  It does not work running off the server.  To get around this, when we know we will end up creating an empty list,
+                            //we can skip batch save entirely.  Still don't know why this happened, there were no errors in the log for this specific error, just that it threw a 500.
+                            if(jo_annotationList.size() > 0 || (null != jo_annotationList.get("resources") && !jo_annotationList.get("resources").toString().equals("[]"))){
+                                try{
+                                    resources = (JSONArray) jo_annotationList.get("resources");
+                                }
+                                catch(JSONException e){
+                                    //If this list can't be parsed, the copied list will have errors.  Just define it as empty as the fail.  
+                                }
+                                URL postUrlCopyAnno = new URL(Constant.ANNOTATION_SERVER_ADDR + "/anno/batchSaveFromCopy.action");
+                                HttpURLConnection ucCopyAnno = (HttpURLConnection) postUrlCopyAnno.openConnection();
+                                ucCopyAnno.setDoInput(true);
+                                ucCopyAnno.setDoOutput(true);
+                                ucCopyAnno.setRequestMethod("POST");
+                                ucCopyAnno.setUseCaches(false);
+                                ucCopyAnno.setInstanceFollowRedirects(true);
+                                ucCopyAnno.addRequestProperty("content-type", "application/x-www-form-urlencoded");
+                                ucCopyAnno.connect();
+                                DataOutputStream dataOutCopyAnno = new DataOutputStream(ucCopyAnno.getOutputStream());
+                                String str_resources = "";
+                                if(resources.size() > 0){
+                                    str_resources = resources.toString();
+                                }
+                                else{
+                                    str_resources = "[]";
+                                }
+                                dataOutCopyAnno.writeBytes("content=" + URLEncoder.encode(str_resources, "utf-8"));
+                                dataOutCopyAnno.flush();
+                                dataOutCopyAnno.close();
+                                BufferedReader returnedAnnoList = new BufferedReader(new InputStreamReader(ucCopyAnno.getInputStream(),"utf-8"));
+                                String lines = "";
+                                StringBuilder sbAnnoLines = new StringBuilder();
+                                while ((lines = returnedAnnoList.readLine()) != null){
+    //                                    System.out.println(lineAnnoLs);
+                                    sbAnnoLines.append(lines);
+                                }
+                                returnedAnnoList.close();
+                                String parseThis = sbAnnoLines.toString();
+                                //This comes out as a BasicDBObject.  Use JSON.fromObject() to convert into a json object to use.
+                                JSONObject batchSaveResponse = JSONObject.fromObject(parseThis);
+
+                                try{
+                                    new_resources = (JSONArray) batchSaveResponse.get("new_resources");
+                                }
+                                catch(JSONException e){
+                                    System.out.println("Batch save response does not contain JSONARRAY in new_resouces.");
+                                }
+
+                            }
+                            else{
+                                System.out.println("No annotation list for this canvas.  do not call batch save.  just save empty list.");
+                            }
                                        
-                                    //Send the annotation resources in to be bulk saved.  The response will be the resources with updated @id fields as a BSONObject
-                                   
-                                    JSONObject canvasList = CreateAnnoListUtil.createEmptyAnnoList(thisProject.getProjectID(), canvasID, new_resources);
-                                    canvasList.element("copiedFrom", request.getParameter("projectID"));
-                                    URL postUrl = new URL(Constant.ANNOTATION_SERVER_ADDR + "/anno/saveNewAnnotation.action");
-                                    HttpURLConnection uc = (HttpURLConnection) postUrl.openConnection();
-                                    uc.setDoInput(true);
-                                    uc.setDoOutput(true);
-                                    uc.setRequestMethod("POST");
-                                    uc.setUseCaches(false);
-                                    uc.setInstanceFollowRedirects(true);
-                                    uc.addRequestProperty("content-type", "application/x-www-form-urlencoded");
-                                    uc.connect();
-                                    DataOutputStream dataOut = new DataOutputStream(uc.getOutputStream());
-                                    dataOut.writeBytes("content=" + URLEncoder.encode(canvasList.toString(), "utf-8"));
-                                    dataOut.flush();
-                                    dataOut.close();
-                                    BufferedReader reader = new BufferedReader(new InputStreamReader(uc.getInputStream(),"utf-8")); 
-                                    reader.close();
-                                    uc.disconnect();
-                                    System.out.println("Empty list created and saved.");
+                            //Send the annotation resources in to be bulk saved.  The response will be the resources with updated @id fields as a BSONObject                                 
+                            JSONObject canvasList = CreateAnnoListUtil.createEmptyAnnoList(thisProject.getProjectID(), canvasID, new_resources);
+                            canvasList.element("copiedFrom", request.getParameter("projectID"));
+                            URL postUrl = new URL(Constant.ANNOTATION_SERVER_ADDR + "/anno/saveNewAnnotation.action");
+                            HttpURLConnection uc = (HttpURLConnection) postUrl.openConnection();
+                            uc.setDoInput(true);
+                            uc.setDoOutput(true);
+                            uc.setRequestMethod("POST");
+                            uc.setUseCaches(false);
+                            uc.setInstanceFollowRedirects(true);
+                            uc.addRequestProperty("content-type", "application/x-www-form-urlencoded");
+                            uc.connect();
+                            DataOutputStream dataOut = new DataOutputStream(uc.getOutputStream());
+                            dataOut.writeBytes("content=" + URLEncoder.encode(canvasList.toString(), "utf-8"));
+                            dataOut.flush();
+                            dataOut.close();
+                            BufferedReader reader = new BufferedReader(new InputStreamReader(uc.getInputStream(),"utf-8")); 
+                            reader.close();
+                            uc.disconnect();
+                            System.out.println("Empty list created and saved.");
                         }
                     }
                     String propVal = textdisplay.Folio.getRbTok("CREATE_PROJECT_RETURN_DOMAIN"); 
