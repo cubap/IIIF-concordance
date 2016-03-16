@@ -452,6 +452,7 @@
                 //console.log("must default to master");
                 if(masterList !== undefined){
                     lines = masterList.resources;
+                    //TODO we do not want a user who is not an admin to alter this list.  A general user could end up being able to edit the master list.
                     populatePreview(lines, pageLabel, currentPage, j);
                 }
                 else{
@@ -1042,6 +1043,7 @@
                                 masterList = this;
                                 lines = this.resources;
                                 currentList = this;
+                                //TODO we do not want someone who is not an admin to be able to edit this list.  Do a check here and make annoLists[currentFolio -1] = "master" so it cannot be written to.
                                 annoLists[currentFolio -1] = this["@id"];
                             }
                             if(this.proj !== undefined && this.proj!=="" && this.proj == theProjectID){
