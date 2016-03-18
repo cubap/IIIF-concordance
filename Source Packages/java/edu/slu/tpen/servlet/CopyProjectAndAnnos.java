@@ -46,7 +46,8 @@ public class CopyProjectAndAnnos extends HttpServlet {
     	String result = "";
     	int uID = ServletUtils.getUID(request, response);
         if(null != request.getParameter("projectID") && uID != -1){
-            Integer projectID = Integer.parseInt(request.getParameter("projectID"));         
+            Integer projectID = Integer.parseInt(request.getParameter("projectID"));      
+            System.out.println("Copy project and annos for "+projectID);
             try {
                 //find original project and copy to a new project. 
                 Project templateProject = new Project(projectID);
@@ -63,10 +64,12 @@ public class CopyProjectAndAnnos extends HttpServlet {
                     thisProject.copyHotkeysFromProject(conn, theTemplate.getTemplateProject());
                     conn.commit();
                     Folio[] folios = thisProject.getFolios();
+                    System.out.println("Created a new project template.  What was the ID assigned to it: "+thisProject.getProjectID());
                     if(null != folios && folios.length > 0)
                     {
                         for(int i = 0; i < folios.length; i++)
                         {
+                            System.out.println("Starting copy for canvas");
                             Folio folio = folios[i];
                             //get annotation list for each canvas
                             JSONObject annoLsQuery = new JSONObject();
@@ -207,7 +210,9 @@ public class CopyProjectAndAnnos extends HttpServlet {
                                 System.out.println("No annotation list for this canvas.  do not call batch save.  just save empty list.");
                             }
                                        
-                            //Send the annotation resources in to be bulk saved.  The response will be the resources with updated @id fields as a BSONObject                                 
+                            //Send the annotation resources in to be bulk saved.  The response will be the resources with updated @id fields as a BSONObject        
+                            System.out.println("bulk save in new annotations.  What proj has been assigned to this project: "+thisProject.getProjectID());
+                            System.out.println(new_resources.size());
                             JSONObject canvasList = CreateAnnoListUtil.createEmptyAnnoList(thisProject.getProjectID(), canvasID, new_resources);
                             canvasList.element("copiedFrom", request.getParameter("projectID"));
                             URL postUrl = new URL(Constant.ANNOTATION_SERVER_ADDR + "/anno/saveNewAnnotation.action");
@@ -226,9 +231,10 @@ public class CopyProjectAndAnnos extends HttpServlet {
                             BufferedReader reader = new BufferedReader(new InputStreamReader(uc.getInputStream(),"utf-8")); 
                             reader.close();
                             uc.disconnect();
-                            System.out.println("Empty list created and saved.");
+                            System.out.println("Finished this canvas.");
                         }
                     }
+                    System.out.println("Copy proj and annos finished.  Whats the ID to return: "+thisProject.getProjectID());
                     String propVal = textdisplay.Folio.getRbTok("CREATE_PROJECT_RETURN_DOMAIN"); 
                     result = propVal + "/project/" + thisProject.getProjectID();
                 }

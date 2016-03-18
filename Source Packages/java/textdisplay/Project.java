@@ -678,6 +678,7 @@ public class Project {
       //if (containsUserUploadedManuscript()) {
       //   throw new Exception("Cannot copy a project with user uploaded images!");
       //}
+      System.out.println("Creating a project template from "+projectName);
       Group g = new Group(conn, projectName, leaderUID);
       int groupID = this.getGroupID();
       //find group leaders from template group, and if they are not in the new group, add them into new group. 
@@ -689,11 +690,13 @@ public class Project {
         }
       }
       
+      
       Project p = new Project(conn, projectName, g.getGroupID());
       p.setFolios(conn, getFolios());
       p.copyButtonsFromProject(conn, this);
       p.copyHotkeysFromProject(conn, this);
       p.setSchemaURL(conn, getSchemaURL());
+      System.out.println("Done.  What is the ID:  "+p.projectID);
 
       try (PreparedStatement selectStmt = conn.prepareStatement("select * from transcription where projectID=?")) {
          selectStmt.setInt(1, projectID);

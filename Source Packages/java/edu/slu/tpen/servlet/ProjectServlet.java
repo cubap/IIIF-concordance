@@ -55,7 +55,7 @@ public class ProjectServlet extends HttpServlet {
                 String check = "transcribe";
                 String redirect = req.getPathInfo().substring(1);
                 System.out.println("What is redirect??????");
-                System.out.println(redirect);
+                System.out.println(req.getPathInfo());
                 if (redirect.contains(check)) {
                     System.out.println("After checking???????");
                     System.out.println(redirect.replace("/" + check, ""));
