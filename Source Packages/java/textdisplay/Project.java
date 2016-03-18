@@ -697,6 +697,7 @@ public class Project {
       p.copyHotkeysFromProject(conn, this);
       p.setSchemaURL(conn, getSchemaURL());
       System.out.println("Done.  What is the ID:  "+p.projectID);
+      System.out.println("Get project id method: "+p.getProjectID());
 
       try (PreparedStatement selectStmt = conn.prepareStatement("select * from transcription where projectID=?")) {
          selectStmt.setInt(1, projectID);
