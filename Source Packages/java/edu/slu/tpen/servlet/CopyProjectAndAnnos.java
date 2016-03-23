@@ -5,8 +5,6 @@
  */
 package edu.slu.tpen.servlet;
 
-//import com.mongodb.util.JSON;
-import com.mongodb.BasicDBList;
 import edu.slu.tpen.servlet.util.CreateAnnoListUtil;
 import edu.slu.util.ServletUtils;
 import java.io.BufferedReader;
@@ -22,7 +20,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.sf.json.*;
-import com.mongodb.util.JSON;
 import textdisplay.Folio;
 import textdisplay.PartnerProject;
 import textdisplay.Project;
@@ -30,6 +27,9 @@ import textdisplay.Project;
 /**
  *
  * @author bhaberbe
+ * 
+ * Copy all project metadata and the annotation list with its annotations for each canvas (here named folio).  Makes use of Mongo Bulk operation capabilities
+ * to limit the amount of necessary http connections which greatly improved speed.
  */
 public class CopyProjectAndAnnos extends HttpServlet {
 
@@ -47,7 +47,7 @@ public class CopyProjectAndAnnos extends HttpServlet {
     	int uID = ServletUtils.getUID(request, response);
         if(null != request.getParameter("projectID") && uID != -1){
             Integer projectID = Integer.parseInt(request.getParameter("projectID"));      
-            System.out.println("Copy project and annos for "+projectID);
+            //System.out.println("Copy project and annos for "+projectID);
             try {
                 //find original project and copy to a new project. 
                 Project templateProject = new Project(projectID);
@@ -64,12 +64,12 @@ public class CopyProjectAndAnnos extends HttpServlet {
                     thisProject.copyHotkeysFromProject(conn, theTemplate.getTemplateProject());
                     conn.commit();
                     Folio[] folios = thisProject.getFolios();
-                    System.out.println("Created a new project template.  What was the ID assigned to it: "+thisProject.getProjectID());
+                    //System.out.println("Created a new project template.  What was the ID assigned to it: "+thisProject.getProjectID());
                     if(null != folios && folios.length > 0)
                     {
                         for(int i = 0; i < folios.length; i++)
                         {
-                            System.out.println("Starting copy for canvas");
+                            //System.out.println("Starting copy for canvas");
                             Folio folio = folios[i];
                             //get annotation list for each canvas
                             JSONObject annoLsQuery = new JSONObject();
@@ -157,8 +157,6 @@ public class CopyProjectAndAnnos extends HttpServlet {
                             }
                             JSONArray new_resources = new JSONArray();
                             JSONArray resources = new JSONArray();
-                            //locally, passing '[]' into batch save is successful.  It does not work running off the server.  To get around this, when we know we will end up creating an empty list,
-                            //we can skip batch save entirely.  Still don't know why this happened, there were no errors in the log for this specific error, just that it threw a 500.
                             if(jo_annotationList.size() > 0 || (null != jo_annotationList.get("resources") && !jo_annotationList.get("resources").toString().equals("[]"))){
                                 try{
                                     resources = (JSONArray) jo_annotationList.get("resources");
@@ -195,24 +193,22 @@ public class CopyProjectAndAnnos extends HttpServlet {
                                 }
                                 returnedAnnoList.close();
                                 String parseThis = sbAnnoLines.toString();
-                                //This comes out as a BasicDBObject.  Use JSON.fromObject() to convert into a json object to use.
                                 JSONObject batchSaveResponse = JSONObject.fromObject(parseThis);
 
                                 try{
                                     new_resources = (JSONArray) batchSaveResponse.get("new_resources");
                                 }
                                 catch(JSONException e){
-                                    System.out.println("Batch save response does not contain JSONARRAY in new_resouces.");
+                                   // System.out.println("Batch save response does not contain JSONARRAY in new_resouces.");
                                 }
 
                             }
                             else{
-                                System.out.println("No annotation list for this canvas.  do not call batch save.  just save empty list.");
+                                //System.out.println("No annotation list for this canvas.  do not call batch save.  just save empty list.");
                             }
                                        
                             //Send the annotation resources in to be bulk saved.  The response will be the resources with updated @id fields as a BSONObject        
-                            System.out.println("bulk save in new annotations.  What proj has been assigned to this project: "+thisProject.getProjectID());
-                            System.out.println(new_resources.size());
+                            //System.out.println("bulk save in new annotations.  What proj has been assigned to this project: "+thisProject.getProjectID());
                             JSONObject canvasList = CreateAnnoListUtil.createEmptyAnnoList(thisProject.getProjectID(), canvasID, new_resources);
                             canvasList.element("copiedFrom", request.getParameter("projectID"));
                             URL postUrl = new URL(Constant.ANNOTATION_SERVER_ADDR + "/anno/saveNewAnnotation.action");
@@ -231,10 +227,10 @@ public class CopyProjectAndAnnos extends HttpServlet {
                             BufferedReader reader = new BufferedReader(new InputStreamReader(uc.getInputStream(),"utf-8")); 
                             reader.close();
                             uc.disconnect();
-                            System.out.println("Finished this canvas.");
+                            //System.out.println("Finished this canvas.");
                         }
                     }
-                    System.out.println("Copy proj and annos finished.  Whats the ID to return: "+thisProject.getProjectID());
+                    //System.out.println("Copy proj and annos finished.  Whats the ID to return: "+thisProject.getProjectID());
                     String propVal = textdisplay.Folio.getRbTok("CREATE_PROJECT_RETURN_DOMAIN"); 
                     result = propVal + "/project/" + thisProject.getProjectID();
                 }

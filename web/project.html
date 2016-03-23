@@ -11,10 +11,6 @@ Open the project management section for a given project ID.
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.js"></script> 
         <script type="text/javascript" src="js/newberry.js"></script>
         <link rel="stylesheet" href="css/newberryTransSkin.css" type="text/css">
-        <!--
-        <link rel="stylesheet" href="css/print.css" type="text/css" media="print">
-        -->
-
         <style type="text/css" >
             
             #folioManagement{
@@ -396,11 +392,8 @@ Open the project management section for a given project ID.
         <div class='pageCover'></div>
         <input type="hidden" id="activeProjectID" />
         <div id="wrapper">
-            <!--<div id="header"><p align="center" class="tagline">transcription for paleographical and editorial notation</p></div>-->
             <div id="content">
                 <h1 class='projectTitle'>Project Management</h1>
-<!--                <p class='projectTitle'>Use this page to view and alter information about the projects you are a part of.</p> 
-                <p class='projectTitle'>Admins can control project settings and general users can control their involvement in projects.  </p>-->
                 <div id="editProjectMetadata"></div>
                 
                 <div id="tabs">
@@ -415,7 +408,6 @@ Open the project management section for a given project ID.
                         <ul id="project" class="ui-helper-reset">
                             <li class="ui-widget-content ui-corner-tr ui-corner-bl tall">
                                 <h3>Project Selection</h3>
-                                <!-- Only show this if user is not a member of the project -->
                                 <p id="publicProjectNotice" class="ui-state-highlight">You are viewing public project, <span id="publicProjectName" class="loud bold">THIS PROJECT's NAME</span>. To manage one of your own projects, click below.</p>
                                 
                                 <p id="activeProject">Active project is <span id="activeProjectName" class="loud"></span>.</p>
@@ -425,23 +417,9 @@ Open the project management section for a given project ID.
                                 <ul id="projectList">
                                     
                                 </ul>
-<!--                                <div class="permitModify isMember">
-                                    <h3>Start Another Project</h3>
-                                    <a id="addManuscript" class="tpenButton mustBeAdmin" href="#"><span class="ui-icon ui-icon-plus right"></span>Get A Manuscript</a>
-                                    <div id="uploadImagesDiv" class="mustBeAdmin"></div>
-                                </div>-->
                             </li>
                             <li class="left ui-widget-content ui-corner-tr ui-corner-bl tall">
-                                <h3>Current Metadata Summary</h3>
-                                    <!-- Check if user is a project memeber or allowed to see the metadata -->
-                                    
-                                    <!-- Check for a custom hedaer -->
-<!--                                    <a class="tpenButton ui-button" href="projectMetadata.jsp?resetHeader=true&projectID=PROJECTID>" id="emptyHeader">Remove Custom Header</a>
-                                    <p>You have uploaded a custom header for this project, which is displayed below. This header is read-only. To change it, remove the current header and upload a new file.</p>
-                                    <span id='customHeader'>Custom Header Goes Here</span>
-                                     Check for header limitation 
-                                  <span id="lineBreakNotice" class='ui-state-error-text'></span>-->
-                                    
+                                <h3>Current Metadata Summary</h3>                                    
                                 <p style='max-width: 95%;'>
                                     <span class="label">Title: </span><span class="val metadataTitle"></span><br />
                                     <span class="label">Subtitle:</span> <span class="val metadataSubtitle"></span><br />
@@ -459,42 +437,17 @@ Open the project management section for a given project ID.
                                     <span class="label ">Description:</span> <span class="val metadataDescription"></span><br>
                                 </p>
                                 
-                                <!-- Make sure user can update information -->
                                 <div style='max-width: 95%;' class="permitMetadata isMember">
                                     <p class="mustBeAdmin">To update any of this information:</p>
                                     <a class="tpenButton mustBeAdmin" onclick="$('#projectMetadataWrapper').show(); $('.pageCover').show();"><span class="ui-icon ui-icon-tag right"></span>Update Metadata</a>
                                 </div>
                          </li> 
-<!--                            <div class="tall">
-                                <li class="left ui-widget-content ui-corner-tr ui-corner-bl loadingBook">
-                                     check for recently modified folios int recentFolio = thisProject.getLastModifiedFolio(); 
-                                <a class='tpenButton' href='transcription.jsp?projectID=" + projectID + "&p=" + recentFolio + "'><span class='ui-icon ui-icon-pencil right'></span>Resume Transcribing</a> 
-                                <a class='tpenButton' href='transcription.jsp?projectID=" + projectID + "'><span class='ui-icon ui-icon-pencil right'></span>First Page</a> 
-                                 if(permitRead || permitModify || permitNotes || isMember) 
-                                <div class="permitRead permitModify permitNotes isMember">   
-                                    <select class="clear folioDropdown" style="margin: 10% 10%;text-align: center;max-width: 80%;" onchange="navigateTo(this);">
-                                        <option SELECTED>Jump to page</option>
-                                    </select>
-                                </div>
-                                </li>
-                                 if(permitModify || isMember)
-                                <div class="permitModify isMember">
-                                    <li class="left ui-widget-content ui-corner-tr ui-corner-bl"><a class="tpenButton" onclick="$('#folioManagement').show();"><span class="ui-icon ui-icon-image right"></span>Modify image sequence</a>
-                                </div>
-                                <p>Change the order of or remove pages within this project.</p></li>
-                            </div>-->
                         </ul>
                     </div>
                     <div id="tabs-3">
                         <ul id="team" class="ui-helper-reset">
                             <li class="left ui-widget-content ui-corner-tr ui-corner-bl tall">
                                 <div id="inviteFeedback"></div>
-                                
-<!--                                    User[] groupMembers = thisGroup.getMembers();
-                                    User[] groupLeader = thisGroup.getLeader();
-                                if ((UID == groupLeader[0].getUID()) && !thisProject.containsUserUploadedManuscript()){-->
-                                <!--<a class="tpenButton mustBeAdmin" href="#publicOptions" onclick="$('#publicOptions').fadeIn('normal');return false;"><span class="ui-icon ui-icon-unlocked right"></span>Share Publicly</a>-->
-<!--                                    if(isMember)-->
                                 <a style="width: 200px;" class="tpenButton isMember" onclick="showTeamMemberManagement();"><span class="ui-icon ui-icon-person right"></span>Modify Project Team</a>
                                 <p>Add, delete, or just check your group membership on this project.</p>
                                 
@@ -514,97 +467,11 @@ Open the project management section for a given project ID.
                                     <button type="submit" value="Register" name="invite" class="ui-button tpenButton"><span class="ui-icon ui-icon-person right"></span>Invite</button>
                                 </form>
                             </li>
-
-<!--                            <li class="left ui-widget-content ui-corner-tr ui-corner-bl tall mustBeAdmin">
-                                <h3>Recent Activity on this Project</h3>
-                                <a id="popupNote" class="tpenButton" href="#"><span class="ui-icon ui-icon-comment right"></span>Add a note to the log</a>
-                                <div id="projectLog" class="ui-corner-all">
-                                    <%
-                                        if (request.getParameter("submitted") != null) {
-                                           try (Connection conn = ServletUtils.getDBConnection()) {
-                                              String content = request.getParameter("logContent");
-                                              thisProject.addLogEntry(conn, "<span class='log_user'></span>"+content, UID); // ,"userAdded"
-                                           }
-                                        }
-                                        out.print(thisProject.getProjectLog());
-                                    %>
-                                </div>
-                                    <div id="noteForm" class="ui-corner-all" style="display:none;">
-                                        <form action="project.jsp?selecTab=2&projectID=<%out.print(projectID);%>" method="POST">
-                                            <textarea name="logContent" id="logContent"></textarea><br>
-                                            <button class="tpenButton left" type="submit" name="submitted" value="add comment" >Submit</button>
-                                            <button class="tpenButton left" id="clearNote" name="cancel">Cancel</button>
-                                        </form>
-                                    </div>
-                                            <div id="logFilter">
-                                        Filters: userAdded, transcription, addMS, parsing           
-                                    <a href="#" id="userAdded" filter="log_user" class="tpenButton" title="Filter notes added by users"><span class="right ui-icon ui-icon-person"></span>User Comment</a>
-                                    <a href="#" id="transcription" filter="log_transcription" class="tpenButton" title="Filter automatic notes about new transcriptions"><span class="right ui-icon ui-icon-note"></span>Transcription</a>
-                                    <a href="#" id="addMS" filter="log_manuscript" class="tpenButton" title="Filter automatic notes about additions to project"><span class="right ui-icon ui-icon-plus"></span>New Manuscript</a>
-                                    <a href="#" id="parsing" filter="log_parsing" class="tpenButton" title="Filter automatic notes about changes in parsing"><span class="right ui-icon ui-icon-wrench"></span>Parsing Update</a>
-                                    <a href="projectlog.jsp?projectID=<%out.print(projectID);%>" target="_blank" class="tpenButton clear" id="openNote"><span class="right ui-icon ui-icon-newwin"></span>View Log in a new window</a>
-                                </div></li>-->
                         </ul>
                     </div>
                     <div id="tabs-4">
                         <ul id="options" class="ui-helper-reset">
                             <li class="left ui-widget-content ui-corner-tr ui-corner-bl tall permitModify isMember">
-<!--                                <%if(isMember || permitModify){%>
-                                Import XML schema, validate projects, and customize buttons.
-                                <div id="xmlImportDiv">
-                                    <div id="xmlImportBtn" class="tpenButton"><span class="ui-icon ui-icon-script right"></span>
-                                        Link a schema to this project
-                                    </div>
-                                    <a class="tpenButton" href="buttons.html"><span class="ui-icon ui-icon-gear right"></span>Button Management</a>
-                                    <form id="xmlImport" name="xmlImport" class="ui-corner-all" action="project.jsp" method="POST">
-                                        <input type="hidden" name="selecTab" value="3"/>
-                                        <input type="hidden" name="projectID" value="PROJECTID"/>
-                                        URL of schema:<input name="url" style="width:100%;margin:2px 0px 2px -1px" title="Link directly to a valid file" type="text" placeholder="enter complete file URL"/>
-                                        <input class="tpenButton right" name="xmlImport" value="Link XML" type="submit" />
-                                    </form>
-                                </div>
-                                <%}
-                    if (thisProject.getSchemaURL().length() > 5) {%>
-                                <div id="xmlValidateDiv">
-                                    <div id="xmlValidateBtn" class="tpenButton"><span class="ui-icon ui-icon-script right"></span>
-                                        Validate XML for this project
-                                    </div>
-                                    <form id="xmlValidate" class="ui-corner-all" action="validate" method="POST">
-                                        <input type="hidden" name="selecTab" value="3"/>
-                                        <input type="hidden" name="projectID" value="PROJECTID"/>
-                                        URL of schema for validation: <div style="width:100%;margin:2px 0px 2px -1px">thisProject.getSchemaURL()></div>
-                                        <input class="tpenButton right" name="xmlValidate" value="Validate" type="submit" />
-                                    </form>
-                                </div>
-                                        <%if (isMember || permitButtons){%>
-                                <a id="importBtnFromSchemaBtn" class="tpenButton permitButtons isMember" href="buttonSchemaImport.jsp?projectID=<%out.print(projectID);%>"><span class="ui-icon ui-icon-transfer-e-w right"></span>Import Buttons from Linked Schema</a>
-                                <%}
-                                }
-                                if (isMember || permitButtons){%>
-                                <a class="tpenButton permitButtons isMember" href="buttons.jsp?projectID=<%out.print(projectID);%>"><span class="ui-icon ui-icon-gear right"></span>Button Management</a>
-                                <p>The <span title="Any unicode character can be attached to one of these buttons for use in your project." class="loud">Special Character</span> and <span title="Multiple custom tags with parameters can be added to this project." class="loud">Custom xml Tags</span> you define will remain specific to each project. These buttons are accessible on the transcription pages. Characters assigned to the numbered buttons can be inserted simply by holding CTRL and pressing the corresponding number on the keyboard.</p>
-                           <%} else {%>
-                               <p>Button management is restricted to group members on this public project. The current button pallete is displayed to the right.</p>
-                           <%}
-                           if ((isMember || permitCopy) && !thisProject.containsUserUploadedManuscript()){
-         %>
-                                <a id="copyProjectBtn" class="tpenButton permitCopy isMember" href="index.jsp?projectID=<%out.print(projectID);%>&makeCopy=true"><span class="ui-icon ui-icon-copy right"></span>Create a Copy</a>
-                                <p>Create a new project with the same set of images, transcriptions, and buttons. Once copied, the projects will not synchronize cannot be recombined in T&#8209;PEN.</p>
-                                <div id="publicOptions" class="ui-widget-content ui-corner-all mustBeAdmin">
-                                    <a id="closePublicOption" href="#" onclick="$('#publicOptions').fadeOut('normal');return false;" class="right tpenButton ui-button">Close<span class="ui-icon ui-icon-close right"></span></a>
-
-                                    <span id="publicOptionResult" class="right">Changes saved<span class="ui-icon ui-icon-check right"></span></span>
-
-                                                        <%
-                                    LET USER KNOW WHAT WILL HAPPEN IF THEY EDIT THESE OPTIONS AND THE PROJECT IS NOT PUBLIC
-                                    %>
-                                    <p class="ui-state-error ui-corner-all">
-                                        <span class="ui-icon ui-icon-alert"></span>
-                                        By default, only group members have access to the transcription and related project data. Changing any of these options will place this project on the Public Projects list.<br/>
-                                        <span class="tpenButton ui-button center" onclick="$(this).parent().slideUp();">Acknowledged, thank you</span>
-                                    </p>
-
--->
                                         <div id="publicOptionsSelection" class="mustBeAdmin">
                                             <h2>Public Access Options</h2>
                                             <div id="publicOptionsForm">
@@ -789,213 +656,53 @@ Open the project management section for a given project ID.
                                             </div>
                                         <input type="hidden" name="selecTab" id="selecTab" value="0"/>
                                         </li>
-                                        <!--<li class="left ui-widget-content ui-corner-tr ui-corner-bl tall permitModify isMember">
-                                       <h3>Transcription Tools</h3>
-                                        <div id="userTools">
-                                            <h4 class="clear-left" title="These options are unique to each user">User Tools</h4>
-                                            <label class='userTools'><input name="userTool" type="checkbox"  value="abbreviations"/>Cappelli Abbreviations</label>
-                                            <label class='userTools'><input name="userTool" type="checkbox"  value="compare" />Compare Pages</label>
-                                            <label class='userTools'><input name="userTool" type="checkbox"  value="parsing" />Parsing Adjustment</label>
-                                            <label class='userTools'><input name="userTool" type="checkbox"  value="preview" />Preview Tool</label>
-                                            <label class='userTools'><input name="userTool" type="checkbox"  value="history" />History Tool</label>
-                                            <label class='userTools'><input name="userTool" type="checkbox"  value="linebreak" />Linebreaking Tool</label>
-                                            <label class='userTools'><input name="userTool" type="checkbox"  value="paleography" />Glyph Matching</label>
-                                            <label class='userTools'><input name="userTool[]" type="checkbox" < %out.print(toolCheck[7]);% > value="sciat" />Annotations</label> 
-
-                                        </div>
-                                        <div id="projectTools">
-                                            <span class="ui-helper-clearfix"></span><h4 id="projectTools" class="clear-left" title="These options are tied to each project">Project Tools
-                                            <a class="ui-icon ui-icon-plusthick" id="addTool" title="Add a Tool" onclick="$('#addingTools').fadeIn();">Add a Tool</a>
-                                            <span class="left clear-left small">(Click on a label to edit the button name)</span></h4>
-                                        </div>
-                                    </li>-->
+                                        
                                 </ul>
                             </div>
-                               <!--<%}%>-->
-                    <!--<%if (isMember || permitExport){%>-->
-<!--                        <div id="tabs-5">
-                            <%@include file="WEB-INF/includes/switchboardSubmit.jspf" %>
-                        <%
-                                }
-                            }%>
-                        <form action="export" method="get" onsubmit="return Export.validForm();">
-                            <ul id="export" class="ui-helper-reset">
-                                <li class="left ui-widget-content ui-corner-tr ui-corner-bl tall">
-                                    <button class="ui-state-default ui-button listBegin left" type="submit" value="Download File"><span class="ui-icon ui-icon-disk right"></span>Download File</button>
-                                    <button class="ui-state-default ui-button left" type="submit" value="Open File"><span class="ui-icon ui-icon-document right"></span>Open File</button>
-                                    <button class="ui-state-default ui-button listEnd" type="button" onclick="window.location.href='exportUI.jsp?projectID=<%out.print(projectID);%>&p=<%out.print(pageno);%>';return false;" title="Adjust settings in the browser for a highly customizable and portable document"><span class="ui-icon ui-icon-suitcase right"></span>HTML Export</button>
-                                    <h3>File Format</h3>
-                                    <label for="pdf" title="Portable Document Format"><input id="pdf" type="radio" checked name="type" value="pdf"/>PDF</label><br />
-                                    <label for="rtf" title="Rich Text Format"><input id="rtf" type="radio" name="type" value="rtf">RTF</label><br />
-                                    <label for="xml" title="XML/Plaintext"><input id="xml" type="radio" name="type" value="xml">XML/Plaintext</label><br />
-                                                            </span>
-                                                        <span class='label left clear-left'>Colors:</span>
-                                                            <span class="left">
-                                                                <label for="bw" title="Standard output"><input id="bw" type="radio" checked name="color" value="bw"/>Black &amp; White</label><br />
-                                                                <label for="color" title="Colors are defined by the project buttons"><input disabled id="color" type="radio" name="color" value="color">Color Tags</label><br />
-                                    <h3 class="clear">Metadata and Page Labels</h3>
-                                    <p class="xmlDisclaimer">Metadata export and page labels are not supported in plaintext.</p>
-                                    <span class="xmlHide">
-                                        <label class="clear" id="paginationOption" for="paginationSelect" title="Include page labels in the exported document"><input id="paginationSelect" type="checkbox" name="pageLabels" checked />Check to Include Page Labels</label><br />
-<%if (thisProject.getHeader().length()>0){%>
-<label class="clear" id="metadataOption" for="metadataSelect" title="Include custom header in the exported document"><input id="metadataSelect" type="checkbox" name="metadata" checked />Check to Include Custom Header</label><br />
-<%}else{%>
-<label class="clear" id="metadataOption" for="metadataSelect" title="Include project metadata in the exported document"><input id="metadataSelect" type="checkbox" name="metadata" checked />Check to Include Project Metadata</label><br />
-<%}%>
-                                    </span>
-                                    <label class="clear xmlDisclaimer" id="imageWrapOption" for="imageWrapSelect" title="Place an XML tag to indicate the reference image at each pagebreak"><input id="imageWrapSelect" type="checkbox" name="imageWrap" checked />Check to Include Image Tags</label><br />
-                                    <h3 class="clear">Export Range</h3>
-                                    <div id="pageRange">
-                                        <label class="clear" for="beginFolio">Start with folio:<select id='beginFolio' class="beginFolio folioDropdown" name='beginFolio'></select></label><br/>
-                                        <label class="clear" for="endFolio">End with folio:<select id='endFolio' class='endFolio folioDropdown' name='endFolio'></select></label>
-                                    </div>
-                                    <script type="text/javascript">
-                                        var folioDropdown = $('<div />').append('<%
-                                        String fdrop = "";
-                                        try {
-                                            fdrop = ESAPI.encoder().decodeFromURL(thisProject.getFolioDropdown());
-                                                    } catch (Error e) {
-                                                        fdrop = "<option>" + e.getLocalizedMessage() + "</option>";
-                                                    } finally {
-                                        out.print(fdrop.replace("'", "&apos;"));
-                                        }%>');
-                                        $(".folioDropdown").append(folioDropdown.html());
-                                        $("#pageRange").find("select")
-                                        .children("option").val(function(){
-                                            return parseInt($(this).val(),10);
-                                        }).end()
-                                        .filter(":first").children("option:first").attr("selected",true).end().end()
-                                        .filter(":last").children("option:last").attr("selected",true);
-                                    </script>
-                                </li>
-                                <li id="exportTags" class="left ui-widget-content ui-corner-tr ui-corner-bl tall permitExport isMember">
-                                    <h3>XML Tag Options</h3>
-                                    <p class="xmlDisclaimer">Formatting XML tags is not possible with plaintext export.</p>
-                                    <%
-                                        textdisplay.TagFilter f = new textdisplay.TagFilter(textdisplay.Manuscript.getFullDocument(thisProject, true));
-                                        String[] tags = f.getTags();
-                                        out.print(tags.length + "</span> XML tags were detected in this text:<br />");
-                                        out.print("<input type='hidden' name='projectID' value=" + projectID + " />");
-                                        out.print("<span class='ui-button tpenButton xmlDisclaimer' state='off' id='xmlSelectAll'>Select All</span>");                                       
-                                        for (int i = tags.length - 1; i > -1; i--) {
-                                            out.print("<span class='xmlDisclaimer'><label for='removeTag" + (i + 1) + "' title='Check this box to remove the tag and its contents'><input type='checkbox' name='removeTag" + (i + 1) + "' />Remove &lt;" + tags[i] + "&gt;</label></span>");
-                                            out.print("<span class='xmlHide'><label>" + tags[i] + "");
-                                            out.print("<select name='style" + (i + 1) + "' >");
-                                            out.print("<option value='none' selected>No Change</option>");
-                                            out.print("<option value='italic' >Italic</option>");
-                                            out.print("<option value='bold' >Bold</option>");
-                                            out.print("<option value='underlined'>Underlined</option>");
-                                            out.print("<option value='paragraph'>New Paragraph</option>");
-                                            out.print("<option value='remove' >Remove</option>");
-                                            out.print("</select></label><label for='stripTag" + (i + 1) + "' title='Check this box to strip this tag from around its content' class='right'><input type='checkbox' checked id='stripTag" + (i + 1) + "' name='stripTag" + (i + 1) + "' />Hide " + ESAPI.encoder().encodeForHTML("<tag>") + "</label><br><input type='hidden' name='tag" + (i + 1) + "' value='" + tags[i] + "'></span>");
-                                        }
-                                    %>
-                                </li>
-                                <li class="left ui-widget-content ui-corner-tr ui-corner-bl tall">
-                                    <div class="ui-state-error ui-corner-all" id="exportAlert"><span class="left ui-icon ui-icon-alert"></span>Notes cannot be displayed in continuous text at this time.</div>
-                                    <h3>Notes</h3>
-                                    <p class="xmlDisclaimer">Notes are not supported with plaintext export.</p>
-                                    <span class="xmlHide">
-                                                                <label id="sideBySide" for="notesSideBySide" title="Show notes to the side of each line"><input id="notesSideBySide" type="radio" name="notes" value="sideBySide"  />Side-by-side</label><br />
-                                        <label id="noteLine" for="notesLine" title="Show notes underneath each line"><input id="notesLine" type="radio" name="notes" value="line" checked />Beneath each line</label><br />
-                                        <label id="endnote" for="notesEndnote" title="Show notes at the end of the document"><input id="notesEndnote" type="radio" name="notes" value="endnote" />Endnotes</label><br />
-                                        <label id="footnote" for="notesFootnote" title="Show notes after each page of the manuscript"><input id="notesFootnote" type="radio" name="notes" value="footnote" />Footnotes</label><br />
-                                        <label id="noteRemove" for="notesRemove" title="Remove notes from exported document"><input id="notesRemove" type="radio" name="notes" value="remove" />Remove</label>
-                                    </span>
-                                    <h3 class="clear">Linebreaking Layout</h3>
-                                    <label id="linebreakLine" class="xmlHide" title="Start each line of transcription on a new line" for="newline"><input id="newline" type="radio" name="linebreak" value="newline" checked />Start a new line</label><br />
-                                                        <label id="linebreakPage" class="xmlHide" title="Linebreak only at a new page" for="pageonly"><input id="pageonly" type="radio" name="linebreak" value="pageonly" />Page break only</label><br />
-                                    <label id="linebreakContinuous" title="Remove all linebreaks" for="inline"><input id="inline" type="radio" name="linebreak" value="inline" />Continuous text</label><br />
-                                    <label id="exportHyphenation" class="" title="Use hyphenation to join words broken across lines" for="exportWordbreak"><input id="exportWordbreak" name="exportWordbreak" type="text" placeholder="/-/" value="<%//out.print(p.getWordbreakString);%>" /> custom word break string</label><br />
-                                    <label id="exportLinebreak" class="" title="Use this string with linebreaking" for="exportLinebreakString"><input id="exportLinebreakString" name="exportLinebreakString" type="text" placeholder="&lsaquo;lb /&rsaquo;" value="<%//out.print(p.getLinebreakString);%>" /> custom line break string</label><br />
-                                    <label id="exportUseLinebreakString" class="" for="useLinebreakingString" title="Use this string in exported document"><input id="useLinebreakingString" type="checkbox"  value="true"/>Use linebreak string in exported document</label>
-                                </li>
-                            </ul>   
-                        </form>
-                    </div>-->
-<!--                                    <%}%>-->
-                </div>
-                <!--<a class="returnButton" href="/">Return to TPEN Homepage</a><br>-->
-                <!--<a class="returnButton returnToTrans" href="">Go To Project Transcription</a>-->
-            </div>
-        </div>
-<!--<%if(isMember||permitModify){%>-->
-            <div id="addToProject"> <!-- container for adding to projects -->
-            <div class="callup" id="form"> <!-- add to project -->
-                <span id="closePopup" class="right caps">close<a class="right ui-icon ui-icon-closethick" title="Close this window">cancel</a></span>
-<!--                <%    //Attach arrays of AllCities and AllRepositories represented on newberry
-                    String[] cities = Manuscript.getAllCities();
-                    String[] repositories = Manuscript.getAllRepositories();
-                %>-->
-                <label class="left" for="cities">City: </label>
-                <select class="left" name="cities" onchange="Manuscript.filteredCity();scrubListings();" id="cities">
-                    <option selected value="">Select a City</option>
-<!--                    <%  //Generate dropdown menus for available cities.
-                        for (int i = 0; i < cities.length; i++) {
-                            out.print("<option value=\"" + (cities[i]) + "\">" + cities[i] + "</option>");
-                        }
-                    %>-->
-                </select>
-                <label class="left clear" for="repositories">Repository: </label>
-                <select class="left" name="repository" onchange="Manuscript.filteredRepository();scrubListings();" id="repositories">
-                    <option selected value="">Select a Repository</option>
-<!--                    <%  //Generate dropdown menus for available repositories.
-                        for (int i = 0; i < repositories.length; i++) {
-                            out.print("<option class=\"" + (i + 1) + "\" value=\"" + (repositories[i]) + "\">" + repositories[i] + "</option>");
-                        }
-                    %>-->
-                </select>
-                <div id="listings" class="center clear"  style="height:355px;overflow: auto;">
-                    <div class="ui-state-active ui-corner-all" align="center">
-                        Select a city or repository above to view available manuscripts.
-                    </div>
-
+                               
                 </div>
             </div>
         </div>
 
+        <div id="addingTools" class="ui-corner-all ui-widget ui-widget-content">
+            <a id="closeAddingTools" href="#" onclick="$('#addingTools').fadeOut('normal');return false;" class="right tpenButton ui-button">Close<span class="ui-icon ui-icon-close right"></span></a>
+            <h3>Add an iFrame Tool</h3>
+        <!--                    <iframe src="iframe.html" id="addToolFrame"></iframe>-->
+            <input id="addToolName" type="text" maxlength="25" placeholder="Tool Name" />
+            <input id="addToolURL" type="text" placeholder="Full URL of tool" />
+            <a class="tpenButton" id="addToolPreview" 
+               onclick="$('#addToolFrame').attr('src',$('#addToolURL').val());">
+                Test Link
+            </a>
+            <a class="tpenButton" id="addToolCommit"
+               onclick="addProjectTool();">
+                Add
+            </a><br>
+            <div id="addToolInfo" class="clear-left">
+                <p>
+                    Add a useful name and complete URL of the page you would like loaded as a tool.
+                </p>
+                <p>
+                    Some pages will not allow themselves to be loaded into an iFrame, so you should test your tool before adding it.
+                </p>
+                <p>
+                    These tools are connected to specific projects and will be available for all group members.
+                </p>
+            </div>
+        </div>
 
-<div id="addingTools" class="ui-corner-all ui-widget ui-widget-content">
-    <a id="closeAddingTools" href="#" onclick="$('#addingTools').fadeOut('normal');return false;" class="right tpenButton ui-button">Close<span class="ui-icon ui-icon-close right"></span></a>
-    <h3>Add an iFrame Tool</h3>
-<!--                    <iframe src="iframe.html" id="addToolFrame"></iframe>-->
-    <input id="addToolName" type="text" maxlength="25" placeholder="Tool Name" />
-    <input id="addToolURL" type="text" placeholder="Full URL of tool" />
-    <a class="tpenButton" id="addToolPreview" 
-       onclick="$('#addToolFrame').attr('src',$('#addToolURL').val());">
-        Test Link
-    </a>
-    <a class="tpenButton" id="addToolCommit"
-       onclick="addProjectTool();">
-        Add
-    </a><br>
-    <div id="addToolInfo" class="clear-left">
-        <p>
-            Add a useful name and complete URL of the page you would like loaded as a tool.
-        </p>
-        <p>
-            Some pages will not allow themselves to be loaded into an iFrame, so you should test your tool before adding it.
-        </p>
-        <p>
-            These tools are connected to specific projects and will be available for all group members.
-        </p>
-    </div>
-</div>
+        <div id="projectUserManagement">
+            <div class="closeBtn" onclick="$('#projectUserManagement').hide(); $('.pageCover').hide();">X</div>
+        </div>
 
-<div id="projectUserManagement">
-    <div class="closeBtn" onclick="$('#projectUserManagement').hide(); $('.pageCover').hide();">X</div>
-</div>
+        <div id="folioManagement">
 
-<div id="folioManagement">
-   
-</div>
+        </div>
 
-<div id="buttonManagement">
-    
-</div>
+        <div id="buttonManagement">
+
+        </div>
 </body>
-<!--        <%@include file="WEB-INF/includes/privateUpload.jspf" %>
-        <%@include file="WEB-INF/includes/projectTitle.jspf" %>-->
 <script type="text/javascript">
     
 var currentProjectID = 4351; 
@@ -1158,21 +865,6 @@ function updatePublicOptions(){
         }
     });
     $.post(url, params);
-//if(jqXHR.status && jqXHR.status==403){
-//                 alert("The project to modify user permission does not exist."); 
-//            }
-//            else if(jqXHR.status && jqXHR.status==406){
-//                 alert("The role name or permission to modify was invalid.");
-//            }
-//            else if(jqXHR.status && jqXHR.status==0){
-//                alert('User is not a member of this site.')
-//            }
-//            else if(jqXHR.status && jqXHR.status==1){
-//                //Success?
-//            }
-//            else if(jqXHR.status && jqXHR.status==11){
-//                alert('User is already a memeber of this project.')
-//            }
 }
 
 function showTeamMemberManagement(){
@@ -1188,18 +880,11 @@ function showTeamMemberManagement(){
 function populateEditableXML(xmlTags){
     xmlTags = xmlTags.split("</span>"); // make a array by </span?
     var tagsInOrder = [];
-    for (var tag = 0; tag < xmlTags.length; tag++){ //FIXME!!!How can I get these in order?  Order them after they are in the DOM?
-//                        var thisTag = xmlTags[tag];
-//                        var position1 = thisTag.position;
-//                        var tagText = thisTag.text;
-//                        var description = thisTag.description;
-//                        var color = thisTag.color;
+    for (var tag = 0; tag < xmlTags.length; tag++){ 
         var newTagBtn = xmlTags[tag];
         if(newTagBtn!=="" && newTagBtn!==" "){
              tagsInOrder.push(newTagBtn + "</span>");
         }
-
-        //tagsInOrder[position1] = newTagBtn;
     }
 }
     
@@ -1452,13 +1137,8 @@ function getActiveProjectMetadata(currentProjectID){
             }
        }
     });
-    
-
-//    $("#buttonManagement").load("buttons.html"); //include button management popover
-    
+        
 }
-
-
 
 
 function deleteProject(projID, elem){
@@ -1521,29 +1201,7 @@ function modifyUserPermissions(act){
         dataObject.act = "changerole";
         dataObject.role = roleName;
     }
-//    else if (act === "cpm"){
-//        var cpmCommand = "";
-//        dataObject.act = "cpm";
-//        //Create cpmCommand string based on UI selection. 
-//        url += "";
-//    }
     $.post(url, dataObject);
-//if(jqXHR.status && jqXHR.status==403){
-//                 alert("The project to modify user permission does not exist."); 
-//            }
-//            else if(jqXHR.status && jqXHR.status==406){
-//                 alert("The role name or permission to modify was invalid.");
-//            }
-//            else if(jqXHR.status && jqXHR.status==0){
-//                alert('User is not a member of this site.')
-//            }
-//            else if(jqXHR.status && jqXHR.status==1){
-//                //Success?
-//            }
-//            else if(jqXHR.status && jqXHR.status==11){
-//                alert('User is already a memeber of this project.')
-//            }
-
 }
 
 

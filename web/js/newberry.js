@@ -20,208 +20,6 @@
     var userIsAdmin = false;
     var adjustRatio = 0;
     //var basePath = window.location.protocol + "//" + window.location.host;
-
-    var annoListTester = 
-            {
-            "@id" : "http://www.example.org/iiif/LlangBrev/annoList/5",
-            "@type" : "sc:AnnotationLists",
-            "label" : "100r",
-            "resources" : [
-                {
-                "@id" : "http://t-pen.org/Tradamus+Simple/line/101083792",
-                "@type" : "oa:Annotation",
-                "motivation" : "sc:painting",
-                "resource" : {
-                  "@type" : "cnt:ContentAsText",
-                  "cnt:chars" : "Infesto Trinitatis8 asdf"
-                },
-                "on" : "http://t-pen.org/Tradamus+Simple/canvas/100r#xywh=148,60,409,18"
-              }, {
-                "@id" : "http://t-pen.org/Tradamus+Simple/line/101083842",
-                "@type" : "oa:Annotation",
-                "motivation" : "sc:painting",
-                "resource" : {
-                  "@type" : "cnt:ContentAsText",
-                  "cnt:chars" : "tralalalal lalaal alala afaf"
-                },
-                "on" : "http://t-pen.org/Tradamus+Simple/canvas/100r#xywh=148,78,409,31"
-              }, {
-                "@id" : "http://t-pen.org/Tradamus+Simple/line/101083841",
-                "@type" : "oa:Annotation",
-                "motivation" : "sc:painting",
-                "resource" : {
-                  "@type" : "cnt:ContentAsText",
-                  "cnt:chars" : "Alleluia benedict-"
-                },
-                "on" : "http://t-pen.org/Tradamus+Simple/canvas/100r#xywh=148,109,409,25"
-              }
-              ,
-              {
-                "@id" : "http://t-pen.org/Tradamus+Simple/line/101083794",
-                "@type" : "oa:Annotation",
-                "motivation" : "sc:painting",
-                "resource" : {
-                  "@type" : "cnt:ContentAsText",
-                  "cnt:chars" : "tralalalal lalaal alala"
-                },
-                "on" : "http://t-pen.org/Tradamus+Simple/canvas/100r#xywh=148,134,409,34"
-              }, {
-                "@id" : "http://t-pen.org/Tradamus+Simple/line/101083795",
-                "@type" : "oa:Annotation",
-                "motivation" : "sc:painting",
-                "resource" : {
-                  "@type" : "cnt:ContentAsText",
-                  "cnt:chars" : "es domine deus patrii nostros et"
-                },
-                "on" : "http://t-pen.org/Tradamus+Simple/canvas/100r#xywh=148,168,409,27"
-              }, {
-                "@id" : "http://t-pen.org/Tradamus+Simple/line/101083796",
-                "@type" : "oa:Annotation",
-                "motivation" : "sc:painting",
-                "resource" : {
-                  "@type" : "cnt:ContentAsText",
-                  "cnt:chars" : "tralalalal <temp>lalaal</temp> alala"
-                },
-                "on" : "http://t-pen.org/Tradamus+Simple/canvas/100r#xywh=148,195,409,34"
-              }, {
-                "@id" : "http://t-pen.org/Tradamus+Simple/line/101083840",
-                "@type" : "oa:Annotation",
-                "motivation" : "sc:painting",
-                "resource" : {
-                  "@type" : "cnt:ContentAsText",
-                  "cnt:chars" : "laudabilis in leaila Alle-"
-                },
-                "on" : "http://t-pen.org/Tradamus+Simple/canvas/100r#xywh=148,229,409,28"
-              }, {
-                "@id" : "http://t-pen.org/Tradamus+Simple/line/101083797",
-                "@type" : "oa:Annotation",
-                "motivation" : "sc:painting",
-                "resource" : {
-                  "@type" : "cnt:ContentAsText",
-                  "cnt:chars" : "tralalalal lalaal alala"
-                },
-                "on" : "http://t-pen.org/Tradamus+Simple/canvas/100r#xywh=148,257,409,36"
-              }, {
-                "@id" : "http://t-pen.org/Tradamus+Simple/line/101083798",
-                "@type" : "oa:Annotation",
-                "motivation" : "sc:painting",
-                "resource" : {
-                  "@type" : "cnt:ContentAsText",
-                  "cnt:chars" : "luia <temp>ÐæȜð</temp> Diu niuinte are deiaulul"
-                },
-                "on" : "http://t-pen.org/Tradamus+Simple/canvas/100r#xywh=148,293,409,23"
-              }, {
-                "@id" : "http://t-pen.org/Tradamus+Simple/line/101083799",
-                "@type" : "oa:Annotation",
-                "motivation" : "sc:painting",
-                "resource" : {
-                  "@type" : "cnt:ContentAsText",
-                  "cnt:chars" : "tralalalal lalaal alala"
-                },
-                "on" : "http://t-pen.org/Tradamus+Simple/canvas/100r#xywh=148,316,409,32"
-              }, {
-                "@id" : "http://t-pen.org/Tradamus+Simple/line/101083800",
-                "@type" : "oa:Annotation",
-                "motivation" : "sc:painting",
-                "resource" : {
-                  "@type" : "cnt:ContentAsText",
-                  "cnt:chars" : "ape nota trinitas al-"
-                },
-                "on" : "http://t-pen.org/Tradamus+Simple/canvas/100r#xywh=148,348,409,29"
-              }, {
-                "@id" : "http://t-pen.org/Tradamus+Simple/line/101083801",
-                "@type" : "oa:Annotation",
-                "motivation" : "sc:painting",
-                "resource" : {
-                  "@type" : "cnt:ContentAsText",
-                  "cnt:chars" : "tralalalal lalaal alala"
-                },
-                "on" : "http://t-pen.org/Tradamus+Simple/canvas/100r#xywh=148,377,409,34"
-              }, {
-                "@id" : "http://t-pen.org/Tradamus+Simple/line/101083802",
-                "@type" : "oa:Annotation",
-                "motivation" : "sc:painting",
-                "resource" : {
-                  "@type" : "cnt:ContentAsText",
-                  "cnt:chars" : "uia tibi gloria et laus e"
-                },
-                "on" : "http://t-pen.org/Tradamus+Simple/canvas/100r#xywh=148,411,409,29"
-              }, {
-                "@id" : "http://t-pen.org/Tradamus+Simple/line/101083803",
-                "@type" : "oa:Annotation",
-                "motivation" : "sc:painting",
-                "resource" : {
-                  "@type" : "cnt:ContentAsText",
-                  "cnt:chars" : "tralalalal lalaal alala"
-                },
-                "on" : "http://t-pen.org/Tradamus+Simple/canvas/100r#xywh=148,440,409,29"
-              }, {
-                "@id" : "http://t-pen.org/Tradamus+Simple/line/101083839",
-                "@type" : "oa:Annotation",
-                "motivation" : "sc:painting",
-                "resource" : {
-                  "@type" : "cnt:ContentAsText",
-                  "cnt:chars" : "trua Benedictus sitirus"
-                },
-                "on" : "http://t-pen.org/Tradamus+Simple/canvas/100r#xywh=148,469,409,30"
-              }, {
-                "@id" : "http://t-pen.org/Tradamus+Simple/line/101083804",
-                "@type" : "oa:Annotation",
-                "motivation" : "sc:painting",
-                "resource" : {
-                  "@type" : "cnt:ContentAsText",
-                  "cnt:chars" : "tralalalal lalaal alala"
-                },
-                "on" : "http://t-pen.org/Tradamus+Simple/canvas/100r#xywh=148,499,409,34"
-              }, {
-                "@id" : "http://t-pen.org/Tradamus+Simple/line/101083838",
-                "@type" : "oa:Annotation",
-                "motivation" : "sc:painting",
-                "resource" : {
-                  "@type" : "cnt:ContentAsText",
-                  "cnt:chars" : "pater unigraitus quam te i"
-                },
-                "on" : "http://t-pen.org/Tradamus+Simple/canvas/100r#xywh=148,533,409,28"
-              }, {
-                "@id" : "http://t-pen.org/Tradamus+Simple/line/101083807",
-                "@type" : "oa:Annotation",
-                "motivation" : "sc:painting",
-                "resource" : {
-                  "@type" : "cnt:ContentAsText",
-                  "cnt:chars" : "tralalalal lalaal alala"
-                },
-                "on" : "http://t-pen.org/Tradamus+Simple/canvas/100r#xywh=148,561,409,35"
-              }, {
-                "@id" : "http://t-pen.org/Tradamus+Simple/line/101083809",
-                "@type" : "oa:Annotation",
-                "motivation" : "sc:painting",
-                "resource" : {
-                  "@type" : "cnt:ContentAsText",
-                  "cnt:chars" : "filius lauitus quo quam ipin"
-                },
-                "on" : "http://t-pen.org/Tradamus+Simple/canvas/100r#xywh=148,596,409,27"
-              }, {
-                "@id" : "http://t-pen.org/Tradamus+Simple/line/101083810",
-                "@type" : "oa:Annotation",
-                "motivation" : "sc:painting",
-                "resource" : {
-                  "@type" : "cnt:ContentAsText",
-                  "cnt:chars" : "tralalalal lalaal alala"
-                },
-                "on" : "http://t-pen.org/Tradamus+Simple/canvas/100r#xywh=148,623,409,33"
-              }, {
-                "@id" : "http://t-pen.org/Tradamus+Simple/line/101083811",
-                "@type" : "oa:Annotation",
-                "motivation" : "sc:painting",
-                "resource" : {
-                  "@type" : "cnt:ContentAsText",
-                  "cnt:chars" : "tus quia te at nobilauuuleri"
-                },
-                "on" : "http://t-pen.org/Tradamus+Simple/canvas/100r#xywh=148,656,409,36"
-              }
-            ],
-            "on" : "http://t-pen.org/Tradamus+Simple/canvas/100r"
-        }
     
     /* Load the interface to the first page of the manifest. */
     function firstFolio(parsing){
@@ -380,7 +178,7 @@
     
     /* Populate the split page for Text Preview.  These are the transcription lines' text. */
     function createPreviewPages(){  
-        console.log("Creating preview pages");
+       // console.log("Creating preview pages");
         $(".previewPage").remove();
         var noLines = true;
         var pageLabel = "";
@@ -398,7 +196,7 @@
                 populatePreview(lines, pageLabel, currentPage);    
            }
            else{
-               if(currentFolioToUse.otherContent && currentFolioToUse.otherContent.length>0 && currentFolioToUse.otherContent[0].indexOf("/annoList/5") > -1){
+               if(currentFolioToUse.otherContent && currentFolioToUse.otherContent.length>0){
 //                //console.log("this is the tester")
                     lines = annoListTester.resources;
                     pageLabel = annoListTester.label;
@@ -456,7 +254,7 @@
                     populatePreview(lines, pageLabel, currentPage, j);
                 }
                 else{
-                    console.log("No matching list by projectID and no master found for "+pageLabel);
+                 //   console.log("No matching list by projectID and no master found for "+pageLabel);
                 }
                 
                 return false;
@@ -535,16 +333,10 @@
         xmlTags = xmlTags.split("</span>"); 
         var tagsInOrder = [];
         for (var tag = 0; tag < xmlTags.length; tag++){
-//                        var thisTag = xmlTags[tag];
-//                        var position1 = thisTag.position;
-//                        var tagText = thisTag.text;
-//                        var description = thisTag.description;
-//                        var color = thisTag.color;
             var newTagBtn = xmlTags[tag];
             if(newTagBtn!=="" && newTagBtn!==" "){
                  tagsInOrder.push("<option>"+newTagBtn + "</span></option>");
             }
-
             //tagsInOrder[position1] = newTagBtn;
         }
         $.each(tagsInOrder, function(){
@@ -557,7 +349,6 @@
      */
     function loadTranscription(){
         //Object validation here.
-        console.log("LOAD")
             projectID = 4080;
             var userTranscription = $('#transcriptionText').val();
             currentFolio = 1;
@@ -579,7 +370,7 @@
                         leaders = JSON.parse(leaders);
                         $.each(leaders, function(){
                             if(this.UID === parseInt(currentUser)){
-                                console.log("This user is a leader.");
+                                //console.log("This user is a leader.");
                                 userIsAdmin = true;
                                 $("#parsingBtn").show();
                                 var message = $('<span>This canvas has no lines.  If you would like to create lines</span> <span style="color: blue;" onclick="hideWorkspaceForParsing()">click here</span>.\n\
@@ -1012,7 +803,7 @@
             linesToScreen(lines);
         }
         else{ //we have the anno list for this canvas (potentially), so query for it.  If not found, then consider this an empty canvas.
-            if(canvasObj.otherContent && canvasObj.otherContent.length>0 && canvasObj.otherContent[0].indexOf("/annoList/5") > -1){
+            if(canvasObj.otherContent && canvasObj.otherContent.length>0){
 //                //console.log("this is the tester")
                 lines = annoListTester.resources;
                 linesToScreen(lines);
@@ -1116,9 +907,9 @@
         //should be the same as originalCanvasWidth2/originalCanvasBeight2
         ratio = theWidth / theHeight;
         adjustRatio = ratio;
-        console.log("ratio for lines to screen");
-        console.log(theWidth + "/" +theHeight);
-        console.log(ratio);
+//        console.log("ratio for lines to screen");
+//        console.log(theWidth + "/" +theHeight);
+//        console.log(ratio);
         for(var i=0; i<lines.length;i++){
             //("line "+i);
             var line = lines[i];
@@ -1358,7 +1149,6 @@
         if ((focusItem[0] === null) || (focusItem[0].attr("id") !== focusItem[1].attr("id"))) {
           this.adjustImgs(this.setPositions());
           this.swapTranscriptlet();
-//          this.updateCaptions();
           //show previous line transcription
           $('#captions').animate({
             opacity: 1
@@ -1372,12 +1162,6 @@
         }
         //prevent textareas from going invisible and not moving out of the workspace
         focusItem[1].removeClass("transcriptletBefore transcriptletAfter");
-        
-        
-    //        if(document.activeElement.id === "transcriptionPage"){
-    //            // nothing is focused on somehow
-    //            focusItem[1].find('.theText')[0].focus();
-    //        }
       };
      
     /* Helper for position focus onto a specific transcriptlet */
@@ -1460,14 +1244,6 @@
             top: positions.topImgPositionPx + "px",
             left: "0px"
           },250);
-//          positions.bookmarkLeft = $(focusItem[1]).attr('lineLeft');
-//          positions.bookmarkWidth = $(focusItem[1]).attr('lineWidth');
-//          $('#bookmark').animate({
-//            left: positions.bookmarkLeft + "%",
-//            top: positions.bookmarkTop,
-//            height: positions.bookmarkHeight + "%",
-//            width: positions.bookmarkWidth + "%"
-//          },350);
           $("#imgBottom").find("img").animate({
             top: positions.bottomImgPositionPx  + "px",
             left: "0px"
@@ -1620,16 +1396,6 @@
   
     
     /** 
-     * Restores interface after shift key is released.
-     */
-    function unShiftInterface(){
-       // $("#entry,.workspaceHandle,#imgTop,#imgBottom").unbind("mousedown")
-        //.css("cursor","");
-//        $("#bookmark").resizable("option","disabled",true)
-//        .find("ui-resizable-handle").hide();
-        //$(document).mouseup();
-    }
-    /** 
      * 
      * Allows workspace to be moved up and down on the screen.
      * Requires shift key to be held down.
@@ -1696,18 +1462,13 @@
      * Bookmark bounding box moves with top image.
      */
      function moveImg(event){
-//        if($(event.target).hasClass("ui-resizable-handle")) return true; //user is trying to resize the bookmark
-//        if($(event.target).attr('id')=="workspace" || $(event.target).parents("#transWorkspace").length > 0) return true; //user is trying to move the workspace or resize the bookmark
         var startImgPositionX = parseFloat($("#imgTop img").css("left"));
         var startImgPositionY = parseInt($("#imgTop img").css("top"));
         var startBottomImgPositionX = parseInt($("#imgBottom img").css("left"));
         var startBottomImgPositionY = parseInt($("#imgBottom img").css("top"));
-//        var startBookmarkX = parseInt($("#bookmark").css("left"));
-//        var startBookmarkY = parseInt($("#bookmark").css("top"));
         var mousedownPositionX = event.pageX;
         var mousedownPositionY = event.pageY;
         event.preventDefault();
-//        $(dragHelper).appendTo("body");
         $("#imgTop img,#imgBottom img,#imgTop .lineColIndicatorArea, #imgBottom .lineColIndicatorArea, #bookmark").addClass('noTransition');
         $("#imgTop, #imgBottom").css("cursor", "url(images/close_grab.png),auto" );
         $(document)
@@ -1729,15 +1490,6 @@
                 top :   startBottomImgPositionY + event.pageY - mousedownPositionY,
                 left:   startBottomImgPositionX + event.pageX - mousedownPositionX
             });
-//            $("#dragHelper").css({
-//                top :   event.pageY - 90,
-//                left:   event.pageX - 90
-//            });
-            //$("#previewBtn").html((startBookmarkX + event.pageX - mousedownPositionX)+","+(startBookmarkY + event.pageY - mousedownPositionY));//debug
-//            $("#bookmark").css({
-//                top :   startBookmarkY + event.pageY - mousedownPositionY,
-//                left:   startBookmarkX + event.pageX - mousedownPositionX
-//            });
             if(!event.altKey) unShiftInterface();
         })
         .mouseup(function(){
@@ -1761,7 +1513,6 @@
             updatePresentation(focusItem[1]);
             $(".hideMe").show();
             $(".showMe").hide();
-            //$("#pageJump").attr("onclick", "togglePageJump();")
             var pageJumpIcons = $("#pageJump").parent().find("i");
             pageJumpIcons[0].setAttribute('onclick', 'firstFolio();');
             pageJumpIcons[1].setAttribute('onclick', 'previousFolio();');
@@ -1769,15 +1520,12 @@
             pageJumpIcons[3].setAttribute('onclick', 'lastFolio();');
             $("#prevCanvas").attr("onclick", "previousFolio();");
             $("#nextCanvas").attr("onclick", "nextFolio();");
-            //$("#pageJump").siblings().css("color", "white");
             $("#pageJump").removeAttr("disabled");
         }
         
     
     
     function hideWorkspaceToSeeImage(){
-//        imgBottomOriginal = $("#imgBottom img").css("top");
-//        imgTopOriginalTop = $("#imgTop img").css("top");
         $("#transWorkspace").hide();
         $("#imgTop").hide();
         $("#imgBottom img").css({
@@ -1792,7 +1540,6 @@
     }
     
     function magnify(img, event){
-//        $("#"+img).on("mousemove",function(event){
 //For separating out different imgs on which to zoom.  Right now it is just the transcription canvas.
         if(img === "trans"){
             img = $("#transcriptionTemplate");
@@ -1820,8 +1567,6 @@
         hideWorkspaceToSeeImage();
         $(".lineColIndicatorArea").hide();
         liveTool = "image";
-//        imgBottomOriginal = $("#imgBottom img").css("top");
-//        imgTopOriginalTop = $("#imgTop img").css("top");
         mouseZoom(img,event);
 //        });
     };
@@ -1851,11 +1596,6 @@
             "background-size"     : imgDims[2] * zoomMultiplier+"px",
             "background-image"    : "url('"+imgURL+"')"
         });
-        //TODO add to current tool so clickthrough is not needed - change positioning to accomodate
-        //.appendTo(toolDiv)
-//        .show().on("click",function(event){
-//            Interaction.clickThrough(event, $(this),$("#tools"));
-//        });
         $(document).on({
                 mousemove: function(event){
                   if (liveTool !== "image" && liveTool !== "compare") {
@@ -1871,11 +1611,6 @@
                     "background-size"     : imgDims[2] * zoomMultiplier+"px",
                     "background-position" : imgPos[0]+"px " + imgPos[1]+"px"
                 });
-//                if ((mouseAt[0] < imgDims[0]) || (mouseAt[0] > imgDims[0] + imgDims[2]) || (mouseAt[1] < imgDims[1]) || (mouseAt[1] > imgDims[1] + imgDims[3])){
-//                    $(document).unbind("mousemove");
-//                    isMagnifying = false;
-//                    $("#zoomDiv").fadeOut();
-//                }
             }
           }, $img
         );
@@ -1932,7 +1667,6 @@
      * for the selected tool. 
      */
      function hideWorkspaceForParsing(){
-//        imgBottomOriginal = $("#imgBottom img").css("top");
         $("#parsingBtn").css("box-shadow: none;");
         originalCanvasHeight = $("#transcriptionCanvas").height();
         originalCanvasWidth = $("#transcriptionCanvas").width();
@@ -1949,6 +1683,7 @@
         //$("#pageJump").siblings().removeAttr("onclick").css("color", "red");
 //        bookmarkInfo = {"top": $("#bookmark").position().top, "left":$("#bookmark").position().left,
 //            "height": $("#bookmark").height()+"px", "width":$("#bookmark").width+"px"};
+
         $("#imgTop").addClass("fixingParsing");
         var topImg = $("#imgTop img");
         imgRatio = topImg.width() / topImg.height();
@@ -1981,7 +1716,6 @@
               maxWidth: window.innerWidth * .75,
               start: function(event, ui){
                   originalRatio = $("#transcriptionCanvas").width() / $("#transcriptionCanvas").height();
-                  //originalRatio = originalCanvasWidth2 / originalCanvasHeight2;
               },
               resize: function(event, ui) {
                   var width = ui.size.width;
@@ -2006,18 +1740,14 @@
                 $("#imgTop").css("width" , $("#imgTop img").width());
                 $("#imgTop").css("height" , $("#imgTop img").height());
                 //At this point, transcription canvas is the original height and width of the full page image.  We can use that for when we resume transcription. 
-               // $("#transcriptionCanvas").css("width" , $("#imgTop img").width()); //This causes the resize function to bust
                 $("#transcriptionCanvas").css("height" , $(window).innerHeight());
                 $(".lineColIndicatorArea").css("height", $(window).innerHeight());
                 $("#transcriptionCanvas").css("display" , "block");
-                //$("#parsingSplit").css("top", "-"+($("#imgTop img").height()+32)+"px");
             }, 500);
             window.setTimeout(function(){
                 //in here we can control what interface loads up.  writeLines draws lines onto the new full size transcription image.
                 $('.lineColIndicatorArea').hide();
                 writeLines($("#imgTop img"));
-                var firstLine = $(".parsing").filter(":first");
-                //var correctHeight = (topImg.height() > $("#transcriptionTemplate").height()) ? -999 : firstLine.attr("lineheight") * topImg.height() / 1000;
             },1200);
          
     };
@@ -2045,9 +1775,6 @@
         var X = parseFloat(thisLine.attr("lineLeft"));
         var H = parseFloat(thisLine.attr("lineHeight"));
         var W = parseFloat(thisLine.attr("lineWidth"));
-//        var oH = ($.browser.opera) ?
-//            [-1/$("#imgTop img").width(),2/$("#imgTop img").height()] : 
-//            [0,0]; //opera hack
         var newY = (Y);
         var newX = (X);
         var newH = (H);
@@ -2110,8 +1837,6 @@
               $(this).css("line-height", $(this).height()+"px");
           });
           if(focusItem[0] == null && focusItem[1] == null){
-//            focusItem[0] = focusItem[1];
-//            focusItem[1] = $("#transcriptlet_1");
               updatePresentation($("#transcriptlet_1"));
         }
         
@@ -2279,11 +2004,9 @@
             //$("#toolLinks").show();
             break;
           case "facing":
-            //??
               $("#facingSplit").css("display", "block");
             break;
           case "maps":
-            //??
               $("#mapsSplit").css("display", "inline-table");
             break;
           case "start":
@@ -2381,8 +2104,6 @@
         lines.addClass("deletable");
         removeColumnTranscriptlets(lines);
         column.remove();
-
-        //TODO: update the removal of all the lines in testManifest and the db.
      
     }
     
@@ -2417,12 +2138,6 @@
         var columns = [];
         for (j = 0;j<gatheredColumns.length;j++){
             var parseImg = document.getElementById("imgTop").getElementsByTagName("img");
-//            var originalX = parseImg.width/parseImg.height*1000;
-//            var scaledX = Page.convertPercent(columnParameters[j][0]/originalX,2);
-//            var scaledY = Page.convertPercent(columnParameters[j][1]/1000,2);
-//            var scaledW = Page.convertPercent(columnParameters[j][2]/originalX,2);
-//            var scaledH = Page.convertPercent(columnParameters[j][3]/1000,2);
-//            
             var scaledX = gatheredColumns[j][0];
             var scaledY = gatheredColumns[j][1];
             var scaledW = gatheredColumns[j][2];
@@ -2472,7 +2187,6 @@
         $(parseImg).before(columns.join(""));
         // avoid events on .lines
         $('#imgTop').find('.parsing').css({
-          //'pointer-events': 'none',
           'z-index': '-10'
         });
         
@@ -2492,7 +2206,6 @@
                 $("#lineInfo").hide();
             })
             .click(function(event){
-                //Screen.clickedLine(this,event);
             });
         }
     
@@ -2522,14 +2235,6 @@
             handles     : "n,s,w,e",
             containment : 'parent',
             start       : function(event,ui){
-    //                    originalX = ui.originalPosition.left;
-    //                    originalY = ui.originalPosition.top;
-    //                    originalW = ui.originalSize.width;
-    //                    originalH = ui.originalSize.height;
-    //                    var newX = ui.position.left;
-    //                    var newY = ui.position.top;
-    //                    var newW = ui.size.width;
-    //                    var newH = ui.size.height;
                 $("#progress").html("Adjusting Columns - unsaved").fadeIn();
                 $("#columnResizing").show();
                 $("#sidebar").fadeIn();
@@ -2563,13 +2268,11 @@
             },
             stop        : function(event,ui){
                 $("#progress").html("Column Resized - Saving...");
-               //var parseRatio2 = $("#transcriptionCanvas").width() / $("#transcriptionCanvas").height();
-               // var parseRatio1 = originalCanvasWidth2 / originalCanvasHeight2;
+               
                 var parseRatio = $("#imgTop img").width() / $("#imgTop img").height();
-                //var parseRatio = adjustRatio;
-                console.log("ratio for adjust");
-                console.log($("#imgTop img").width()+"/"+$("#imgTop img").height());
-                console.log(parseRatio);
+//                console.log("ratio for adjust");
+//                console.log($("#imgTop img").width()+"/"+$("#imgTop img").height());
+//                console.log(parseRatio);
                 var originalX = ui.originalPosition.left;
                 var originalY = ui.originalPosition.top;
                 var originalW = ui.originalSize.width;
@@ -2666,10 +2369,6 @@
                                 });
                                 thisColumn.attr("endid", endLine.attr("lineserverid"));
                         };
-//                        $(".transcriptlet[lineserverid='"+thisColumnID[1]+"']")
-//                            .find(".lineTop").val(endLine.attr("linetop")).end()
-//                            .find(".lineHeight").val(endLine.attr("lineheight"));
-//                            updateLine(endLine);
                             $("#progress").html("Column Saved").delay(3000).fadeOut(1000);
                     }
                     else if(adjustment=="left"){
@@ -2680,8 +2379,6 @@
                             var ratio2 = originalPercentX/ originalX;
                             newWidth = newW * ratio1;
                             newLeft = newX * ratio2;
-                            //newWidth = newW/(parseRatio * 10);
-                            //newLeft = (newX/parseRatio) / 10;
                             $(".parsing[lineleft='"+oldLeft+"']").each(function(){
                                 $(this).attr({
                                     "lineleft" : newLeft,
@@ -2722,7 +2419,6 @@
                         $("#lineResizing").delay(3000).fadeOut(1000);
                         adjustment = "";
                         
-                        //updateLinesInColumn(event.target);
                     }
             });
      }
@@ -2736,13 +2432,13 @@
         //Stop ability to make a new line until the update from this process is complete.
         if ($(e).hasClass("parsing")){
             if ($("#addLines").hasClass('active')||$("#removeLines").hasClass('active')){
-                console.log("show parsing cover");
+                //console.log("show parsing cover");
                 $("#parsingCover").show();
                 lineChange(e,event);
             }
         }
         else{
-            //$("#transcription"+($(e).index(".line")+1)).focus();
+            
         }
     }
     
@@ -2797,13 +2493,12 @@
                 }).text("/"+tagName);
                 focusItem[1].children(".xmlClosingTags").append(closeTag);
             });
-        //orderTags()
-        //FIXME: tags not in the right order, just the order they are added 
+        
     }
     
     function addchar(theChar, closingTag)
     {
-        console.log("Add Char Called");
+        //console.log("Add Char Called");
         var closeTag = (closingTag == undefined) ? "" : closingTag;
         var e = focusItem[1].find('textarea')[0];
         if(e!=null) {
@@ -2869,13 +2564,11 @@
                     + unescape(myValue)
                     + myField.value.substring(startPos, myField.value.length);
                 myField.focus();
-                //Preview.updateLine(myField);
                 return startPos+unescape(myValue).length;
             }
         } else {
             myField.value += unescape(myValue);
             myField.focus();
-            //Preview.updateLine(myField);
             return myField.length;
         }
     }
@@ -2980,33 +2673,6 @@ function toggleLineCol(){
         $.each($(".lineColOnLine"),function(){$(this).css("line-height", $(this).height()+"px");});
     }
 }
-
-//saves/updates all available transcriptlets.
-// function saveTransLines(fromParse){
-//        if(fromParse == "parsing"){
-//            $('.parsing').each(function(){
-//                var currentLineServerID = $(this).attr('lineServerID');
-//                var currentLineText = $(this).find('textarea').val();
-//                var url = "http://localhost:8080/updateLine?text="+currentLineText+"&projectID="+projectID+"&line="+currentLineServerID;
-//                var updateRequest = new XMLHttpRequest();
-//                updateRequest.open("POST", url, true);
-//      //          updateRequest.setRequestHeader("Access-Control-Allow-Origin", "Access-Control-Allow_Origin:*");
-//                updateRequest.send();
-//            });
-//        }
-//        else{
-//            $('.transcriptlet').each(function(){
-//                var currentLineServerID = $(this).attr('lineServerID');
-//                var currentLineText = $(this).find('textarea').val();
-//                var url = "http://localhost:8080/updateLine?text="+currentLineText+"&projectID="+projectID+"&line="+currentLineServerID;
-//                var updateRequest = new XMLHttpRequest();
-//                updateRequest.open("POST", url, true);
-//      //          updateRequest.setRequestHeader("Access-Control-Allow-Origin", "Access-Control-Allow_Origin:*");
-//                updateRequest.send();
-//            });
-//        }
-//        
-//    }
 
     //updates lines
     function updateLinesInColumn(column){
@@ -3163,49 +2829,36 @@ function toggleLineCol(){
         var index = -1;
         
         if(currentAnnoListID !== "noList" && currentAnnoListID !== "empty"){ // if its IIIF, we need to update the list
-            if(currentAnnoListID.indexOf("/annoList/5") > -1){
-                $.each(annoListTester.resources, function(){
+            var annosURL = "getAnno";
+            var properties = {"@id": currentAnnoListID};
+            var paramOBJ = {"content": JSON.stringify(properties)};
+            //console.log("Query for list...")
+            $.post(annosURL, paramOBJ, function(annoList){
+                //console.log("got list");
+                annoList = JSON.parse(annoList);
+                var annoListID = currentAnnoListID;
+                currentAnnoList = annoList[0];
+                //console.log(currentAnnoList);
+                //console.log("Check list resources...");
+               $.each(currentAnnoList.resources, function(){
                     index++;
                     if(this["@id"] == currentLineServerID){
-                        annoListTester.resources[index] = dbLine;
-                        currentFolio = parseInt(currentFolio);
-                        annoLists[currentFolio - 1]= "hello/annoList/5";
-                        $("#parsingCover").hide();
+                        //console.log("update current anno list "+annoListID+" index " + index);
+                        currentAnnoList.resources[index] = dbLine;
+                        var url = "updateAnnoList";
+                        var paramObj = {"@id":annoListID, "resources": currentAnnoList.resources};
+                        var params = {"content":JSON.stringify(paramObj)};
+                        $.post(url, params, function(data){
+                            //console.log("list updated");
+                            //console.log(currentAnnoList.resources)
+                            currentFolio = parseInt(currentFolio);
+                            annoLists[currentFolio - 1]= annoListID;
+                            console.log("hide cover");
+                            $("#parsingCover").hide();
+                        });
                     }
-                });
-            }
-            else{
-                var annosURL = "getAnno";
-                var properties = {"@id": currentAnnoListID};
-                var paramOBJ = {"content": JSON.stringify(properties)};
-                //console.log("Query for list...")
-                $.post(annosURL, paramOBJ, function(annoList){
-                    //console.log("got list");
-                    annoList = JSON.parse(annoList);
-                    var annoListID = currentAnnoListID;
-                    currentAnnoList = annoList[0];
-                    //console.log(currentAnnoList);
-                    //console.log("Check list resources...");
-                   $.each(currentAnnoList.resources, function(){
-                        index++;
-                        if(this["@id"] == currentLineServerID){
-                            //console.log("update current anno list "+annoListID+" index " + index);
-                            currentAnnoList.resources[index] = dbLine;
-                            var url = "updateAnnoList";
-                            var paramObj = {"@id":annoListID, "resources": currentAnnoList.resources};
-                            var params = {"content":JSON.stringify(paramObj)};
-                            $.post(url, params, function(data){
-                                //console.log("list updated");
-                                //console.log(currentAnnoList.resources)
-                                currentFolio = parseInt(currentFolio);
-                                annoLists[currentFolio - 1]= annoListID;
-                                console.log("hide cover");
-                                $("#parsingCover").hide();
-                            });
-                        }
-                    });                    
-                });
-            }
+                });                    
+            });
         }
         else if(currentAnnoList == "empty"){
            //cannot update an empty list
@@ -3579,47 +3232,36 @@ function toggleLineCol(){
         var currentAnnoList = annoLists[currentFolio -1];
         
          if(currentAnnoList !== "noList" && currentAnnoList !== "empty"){ // if it IIIF, we need to update the list
-            if(currentAnnoList.indexOf("/annoList/5") > -1){              
-               $.each(annoListTester.resources, function(){
-                    index++;
-                    if(this["@id"] == lineid){
-                        annoListTester.resources.splice(index, 1);
-                        annoLists[currentFolio - 1] = "hello/annoList/5";
-                    }
+            //console.log("Get annos for removal");
+            var annosURL = "getAnno";
+                var properties = {"@id": currentAnnoList};
+                var paramOBJ = {"content": JSON.stringify(properties)};
+                $.post(annosURL, paramOBJ, function(annoList){
+                    annoList = JSON.parse(annoList);
+                    var annoListID = currentAnnoList;
+                    currentAnnoList = annoList[0];
+                    //console.log("got them");
+                    //console.log(currentAnnoList.resources);
+                    $.each(currentAnnoList.resources, function(){
+                        index++;
+                        //console.log(this["@id"]+" == "+lineid+"?  Index = "+index);
+                        if(this["@id"] == lineid){
+                            currentAnnoList.resources.splice(index, 1);
+                            //console.log("Delete from list " + lineid+" at index "+index+".  Then update with the new list: ");
+                            //console.log(currentAnnoList);
+                            var url = "updateAnnoList";
+                            var paramObj = {"@id":annoListID, "resources": currentAnnoList.resources};
+                            var params = {"content":JSON.stringify(paramObj)};
+                            $.post(url, params, function(data){
+                                //console.log("update from delete finished");
+                                currentFolio = parseInt(currentFolio);
+                                annoLists[currentFolio - 1] = annoListID;
+                                console.log("hide cover");
+                                $("#parsingCover").hide();
+                            });
+                        }
+                    });                       
                 });
-            }
-            else{
-                //console.log("Get annos for removal");
-                var annosURL = "getAnno";
-                    var properties = {"@id": currentAnnoList};
-                    var paramOBJ = {"content": JSON.stringify(properties)};
-                    $.post(annosURL, paramOBJ, function(annoList){
-                        annoList = JSON.parse(annoList);
-                        var annoListID = currentAnnoList;
-                        currentAnnoList = annoList[0];
-                        //console.log("got them");
-                        //console.log(currentAnnoList.resources);
-                        $.each(currentAnnoList.resources, function(){
-                            index++;
-                            //console.log(this["@id"]+" == "+lineid+"?  Index = "+index);
-                            if(this["@id"] == lineid){
-                                currentAnnoList.resources.splice(index, 1);
-                                //console.log("Delete from list " + lineid+" at index "+index+".  Then update with the new list: ");
-                                //console.log(currentAnnoList);
-                                var url = "updateAnnoList";
-                                var paramObj = {"@id":annoListID, "resources": currentAnnoList.resources};
-                                var params = {"content":JSON.stringify(paramObj)};
-                                $.post(url, params, function(data){
-                                    //console.log("update from delete finished");
-                                    currentFolio = parseInt(currentFolio);
-                                    annoLists[currentFolio - 1] = annoListID;
-                                    console.log("hide cover");
-                                    $("#parsingCover").hide();
-                                });
-                            }
-                        });                       
-                    });
-            }
         }
         else if(currentAnnoList == "empty"){
             //There is no anno list assosiated with this anno.  This is an error.
@@ -3647,20 +3289,40 @@ function toggleLineCol(){
         //console.log("removing transcriptlets from this list");
         //console.log(currentAnnoList);
          if(currentAnnoList !== "noList" && currentAnnoList !== "empty"){ // if it IIIF, we need to update the list
-            if(currentAnnoList.indexOf("/annoList/5") > -1){
-              for(var l=lines.length-1; l>=0; l--){
-                  var theLine = $(lines[l]);
-                  //console.log("remove this line");
-                  //console.log(theLine);
-                  $.each(annoListTester.resources, function(){
-                        index++;
-                        if(this["@id"] == theLine.attr("lineserverid")){
-                            annoListTester.resources.splice(index, 1);
+        //console.log("Get annos for column removal");
+            var annosURL = "getAnno";
+            var properties = {"@id": currentAnnoList};
+            var paramOBJ = {"content": JSON.stringify(properties)};
+            $.post(annosURL, paramOBJ, function(annoList){
+                annoList = JSON.parse(annoList);
+                var annoListID = currentAnnoList;
+                currentAnnoList = annoList[0];
+                //console.log("got them");
+                //console.log(currentAnnoList.resources);
+                for(var l=lines.length-1; l>=0; l--){
+                    var theLine = $(lines[l]);
+                    var index2 = -1;
+                     $.each(currentAnnoList.resources, function(){
+                        var currentResource = this;
+                        index2++;
+                        //console.log(currentResource["@id"] +" == "+ theLine.attr("lineserverid")+"?")
+                        if(currentResource["@id"] == theLine.attr("lineserverid")){
+                            currentAnnoList.resources.splice(index2, 1);
+                            //console.log(theLine);
+                            //console.log("Delete from list " + theLine.attr("lineserverid")+" at index "+index2+".");
                             theLine.remove();
                         }
-                        });
-                        if(l === 0){
-                            annoLists[currentFolio - 1] = "hello/annoList/5";
+                     });
+
+                    if(l===0){
+                        //console.log("last line in column, update list");
+                        //console.log(currentAnnoList.resources);
+                        var url = "updateAnnoList";
+                        var paramObj = {"@id":annoListID, "resources": currentAnnoList.resources};
+                        var params = {"content":JSON.stringify(paramObj)};
+                        $.post(url, params, function(data){
+                            //console.log("update from delete finished");
+                            annoLists[currentFolio - 1] = annoListID;
                             if(recurse){
                                 nextColumnToRemove.remove();
                                 destroyPage();
@@ -3668,58 +3330,12 @@ function toggleLineCol(){
                             else{
                                 cleanupTranscriptlets(true);
                             }
-                        }
-                }
-               
-            }
-            else{
-                //console.log("Get annos for column removal");
-                var annosURL = "getAnno";
-                    var properties = {"@id": currentAnnoList};
-                    var paramOBJ = {"content": JSON.stringify(properties)};
-                    $.post(annosURL, paramOBJ, function(annoList){
-                        annoList = JSON.parse(annoList);
-                        var annoListID = currentAnnoList;
-                        currentAnnoList = annoList[0];
-                        //console.log("got them");
-                        //console.log(currentAnnoList.resources);
-                        for(var l=lines.length-1; l>=0; l--){
-                            var theLine = $(lines[l]);
-                            var index2 = -1;
-                             $.each(currentAnnoList.resources, function(){
-                                var currentResource = this;
-                                index2++;
-                                //console.log(currentResource["@id"] +" == "+ theLine.attr("lineserverid")+"?")
-                                if(currentResource["@id"] == theLine.attr("lineserverid")){
-                                    currentAnnoList.resources.splice(index2, 1);
-                                    //console.log(theLine);
-                                    //console.log("Delete from list " + theLine.attr("lineserverid")+" at index "+index2+".");
-                                    theLine.remove();
-                                }
-                             });
 
-                            if(l===0){
-                                //console.log("last line in column, update list");
-                                //console.log(currentAnnoList.resources);
-                                var url = "updateAnnoList";
-                                var paramObj = {"@id":annoListID, "resources": currentAnnoList.resources};
-                                var params = {"content":JSON.stringify(paramObj)};
-                                $.post(url, params, function(data){
-                                    //console.log("update from delete finished");
-                                    annoLists[currentFolio - 1] = annoListID;
-                                    if(recurse){
-                                        nextColumnToRemove.remove();
-                                        destroyPage();
-                                    }
-                                    else{
-                                        cleanupTranscriptlets(true);
-                                    }
-                                    
-                                });
-                            }
-                        }
-                    });
+                        });
+                    }
                 }
+            });
+                
          }
          else{
              //It was not a part of the list, but we can still cleanup the transcriptlets from the interface.  This could happen when a object is fed to the 

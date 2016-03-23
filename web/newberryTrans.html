@@ -100,16 +100,10 @@
         </div>
         
         <button id="loadBtn" class="hideme" onclick="loadTranscription();"> Load Transcription </button> 
-        <!--<button id="loadBtn" class="hideme" onclick="createBryan();"> TEST CREATION </button>-->
         
         <div id="transcriptionTemplate">
             <div id="parsingCover"></div>
             <div id="transcriptionCanvas">
-<!--                <div id="magnifyTools">
-                    <div onclick="$('.magnifyTool').toggle();">Magnify</div>
-                    <i class="magnifyTool">+</i>
-                    <i class="magnifyTool">-</i>
-                </div>-->
                 <div id="noLineWarning">
                     <div id="noLineConfirmation">This canvas has no lines. You must be a leader for this project to create lines.
                     <span style="color: red;" onclick="$('#noLineWarning').hide()">dismiss this message</span>.</div>
@@ -134,12 +128,12 @@
                 </div><br>
                 <div class="bottomButtons">
                     <select id="charactersPopin" class="specialCharacters"  title="Special Characters" >
-                        <option id="activeCharacters" >Characters</option> <!-- onclick="toggleCharacters();" -->
+                        <option id="activeCharacters" >Characters</option> 
                     </select>
                     <select id="xmlTagPopin" class="xmlTags" title="Custom XML Tags">
-                        <option id="activeTags">XML Tags</option> <!-- onclick="toggleTags();" -->
+                        <option id="activeTags">XML Tags</option> 
                     </select>
-                    <select id="splitScreenTools" > <!-- onclick="$('.splitTool').fadeToggle(400);" -->
+                    <select id="splitScreenTools" > 
                          <option id="activeSplitTool" >Split Page Tools</option> 
                          <option splitter='start' class="splitTool" >Get Started</option>
                          <option splitter='essay' class="splitTool" >Background Essay</option>
@@ -158,10 +152,8 @@
                          <option splitter='abbreviations' class="splitTool" >Abbreviations</option>
                          <option splitter='maps' class="splitTool" >Historical Maps</option>
                          <option splitter='preview' class="splitTool" >Text Preview</option>
-                         <!--<option splitter='history' class="splitTool" >History</option>-->
                          <option splitter='fullPage' class="splitTool"  >View Full Page</option>
                          <option splitter='compare' class="splitTool" >Compare Page</option>
-                         <!--<option splitter='facing' class="splitTool" >Facing Page</option>-->
                      </select>  
                 </div>
                 <div class="bottomButtons" style="width: 201px; top:-4px;">
@@ -183,7 +175,7 @@
                      <button class="magnifyBtn" magnifyImg="trans" title="Magnify Transcription Image" >Magnify</button> <!--Page event on the listener for this class in js.-->
                      <button id="moveImage" title="Move Transcription Image" onclick="startMoveImg();">Move Img</button>
                      <button id="parsingBtn" title="Correct Page Parsing" >Correct Parsing</button> <!--Page event on the listener for this class in js.--> 
-                     <!--<button id="linebreakBtn">Linebreak</button>TODO-->
+                     <!--<button id="linebreakBtn">Linebreak</button>-->
                     <div  id="lineColControls">
                         <div title="Control Drawn Line Settings" id="lineCtrlLabel">Line Control</div>
                         <span style="top:14px;" title="Toggle Entire Lines" class="linehdr">Lines</span><input style="top:14px;" title="Toggle Lines" type="checkbox" onchange="toggleLineMarkers();" checked="checked"><br>
@@ -211,7 +203,6 @@
                         <h3 class="parsingHdr">Line Parsing</h3>
                         <div id="ctrlColumnsInst" class="actions">
                             <h4 id="ctrlColumns" title="Make adjustments at the column level" class="clear-left">Column Controls</h4>
-                                <!--<p class="loud">Create, destroy, adjust, or reparse columns.</p>-->
                                 <div class="parsingToolButtons">
                                     <span id="createColumn" class="tpenButton" title="Create new columns by clicking and dragging" show="createColumnInst">Adjust or Create Columns</span>
                                     <span id="destroyColumn" class="tpenButton" title="Remove an entire column and its data with a click" show="destroyColumnInst">Destroy Columns</span>
@@ -225,8 +216,6 @@
                                             <dt>Adjustments:</dt>
                                             <dd>Drag the edges of an existing column</dd>
                                         </dl>
-<!--                                        <p class="small"><span class="inline ui-icon ui-icon-check"></span>
-                                            This method does not destroy any <acronym title="Text, markup, and notes saved for lines within this column will remain attached.">transcription information</acronym>.<br />-->
                                     </div>
                                     <div class="startHide" id="destroyColumnInst">
                                         <p class="">Click a column to remove all lines and transcription data it contains from the project.</p>
@@ -239,22 +228,9 @@
                                          </p>
                                     </div>
                                 </div>
-                                
-<!--  Deactivated for now.                              
-                                <span id="reparseColumns" class="tpenButton" title="Reparse all columns, removing any associated lines">Reparse All Columns</span>
-                                <div class="startHide" id="reparseColumnsInst">
-                                    <p class="">Click to remove all transcription data and lines from this page, automatically parsing based on the columns shown.</p>
-                                    <span id="reparseColumn" class="tpenButton ui-state-error" title="Reparse all columns on this page"><span class="left ui-icon ui-icon-refresh"></span>Submit for Reparsing</span>
-                                    <p class="small"><span class="inline ui-icon ui-icon-trash"></span>Destroy all manual changes with the alternative <span id="reparsePage" class="loud caps">Reparse Entire Page</span>.<br />
-                                    <span class="inline ui-icon ui-icon-check"></span>You will be warned before destroying any <acronym title="Text, markup, and notes saved for lines on this page.">transcription information</acronym>.<br />
-                                    <span class="inline ui-icon ui-icon-info"></span>Make any adjustments to your columns before resubmitting.<br />
-                                    <span class="ui-state-error-text"><span class="inline ui-icon ui-icon-alert"></span>This is a destructive process and cannot be undone.</span></p>
-                                </div>
--->
                         </div>
                         <div id="ctrlLinesInst" class="actions">
                             <h4 id="ctrlLines" title="Make adjustments at the line level" class="clear-left">Line Controls</h4>
-                                <!--<p class="loud">Make adjustments to the way lines are defined within the columns</p>-->
                                 <div class="parsingToolButtons">
                                     <span id="addLines" class="tpenButton" title="Split lines to create new ones in a column" show="addLinesInst">Add Lines</span>
                                     <span id="removeLines" class="tpenButton" title="Merge two lines or remove the last line from a column" show="removeLinesInst">Delete/Merge Lines</span>
@@ -347,10 +323,6 @@
                  width="900"
                  height="700">
                 </iframe>
-
-<!--                <script type="text/javascript">
-                 
-                </script>-->
             </div>
         
             <div id="abbrevSplit" class="split" >
@@ -382,29 +354,6 @@
            <div id="linebreakSplit" class="ui-widget ui-widget-content split">
                <button class="fullScreenTrans">Full Screen Transcription</button>
                 <h3>Linebreak Existing Transcription (In Development)</h3>
-<!--TODO : FIXME                
-                <div>
-                    This project has text stored for linebreaking:
-                    <div id="linebreakText">
-                        <span id="lbText"></span>
-                        <div id='charLimit' class='ui-corner-all ui-state-error-text small clear'>Showing the first "+thisProject.getLinebreakCharacterLimit()+" characters</div>
-                    </div>
-                        <script type="text/javascript">
-                            var leftovers = "<%out.print(StringEscapeUtils.escapeJavaScript(thisProject.getLinebreakText()));%>";
-                            $("#lbText").html(unescape(leftovers));
-                        </script>
-                    <div id="linebreakOptions">
-                        <span id="useText" class="tpenButton" title="Insert this text at the current line">Insert Text Here</span>
-                        <span onclick="alert('Sorry, this feature is not yet implemented.\n\nAny new file you upload will overwrite the old data.')" id="removeText" class="tpenButton ui-state-disabled" title="Remove this text from the database">Remove Text from Database</span>
-                        <span onclick="document.location.href='uploadText.jsp?p=';" id="newText" class="tpenButton" title="Upload a new file to linebreak">Upload New File</span>                       
-                        <span id="linebreakStringBtn" class="tpenButton" title="Attempt linebreaking using this string">Preview Automatic Linebreaks
-                            <input name="linebreakString" id="linebreakString" type="text" placeholder="<lb />" value="" />
-                        </span>                       
-                        <span id="useLinebreakText" class="tpenButton" title="Automatically linebreak this page">Use Automatic Linebreaking
-                            <span id="linesDetected"></span>
-                        </span>                       
-                    </div>
-               </div>-->
            </div>
             <div id="compareSplit" class="split">
                 <div class="toolLinks">      
@@ -425,12 +374,6 @@
                     <button class="showMe" onclick="restoreWorkspace();">Show Workspace</button>    
                     <button class="hideMe" style="position: relative;" onclick="hideWorkspaceToSeeImage();" >Hide Workspace</button>          
                 </div> 
-<!--   TODO : FIXME             
-                <div class="toolLinks">
-                    <a class="exitPage" id="exportLink" href=""><span class="right ui-icon ui-icon-disk"></span>Export Transcription</a>
-                    <a id="previewNotes"><span class="right ui-icon ui-icon-note"></span>Show Notes</a>
-                </div>
--->
                 <div id="previewDiv">
 
                 </div>
@@ -460,6 +403,8 @@
 </html>
 <script>
     var theProjectID = -1;
+    
+    //Must explicitly set new height and width for percentages values in the DOM to take effect.
     window.onresize = function(event) {
         var newHeight = $("#imgBottom img").height();
         $("#transcriptionCanvas").css("height",newHeight+"px");
@@ -468,8 +413,9 @@
               $(this).css("line-height", $(this).height()+"px");
           });
     };
+    
+    //Page load event triggers and attached here.
     $(document).ready(function(){
-        //set loading spinny.  Spinny stops in loadTranscriptionCanvas();
         $("#imgTop, #imgBottom").css("height", "400px");
         $("#imgTop img, #imgBottom img").css("height", "400px");
         $("#imgTop img, #imgBottom img").css("width", "auto");
@@ -913,7 +859,6 @@
                         var thisLineID = -1;
                         var originalW = 1;
                         var thisLine;
-                        //writeLines($("#imgTop img"));
                         $(".parsing").addClass("adjustable").removeClass("line");
                         if($(".adjustable").hasClass("ui-resizable")){
                           $(".adjustable").has(".ui-resizable").resizable("enable");
@@ -1066,6 +1011,7 @@
         });
     });
     
+    /* Allows users to slightly adjust a line within a column while within the transcription interface. */
     function bumpLine(direction, activeLine){
         //values are in pixel, not percentage.
         var id = activeLine.attr("lineserverid");
@@ -1099,6 +1045,7 @@
        
     }
     
+    //UI effects for when a user decides to edit a line within the preview split tool. 
     function edit(line){
         var focusLineID = $(line).siblings(".previewLineNumber").attr("lineserverid");
         //var focusFolio = $(line).parent(".previewPage").attr("data-pagenumber");
@@ -1153,6 +1100,8 @@
           newFilter = "filter:";
         } 
         else {
+            //Uncomment this code to alert the user that their browser does not support these CSS3 Filter tools.
+            
 //          alert("This tool is not supported by your browser.  The supported browsers are:\n\n\
 //                Google Chrome\n Microsoft Internet Explorer\nOpera\nLatest version of Firefox");
 //          return false;
@@ -1213,6 +1162,7 @@
         imgBtm.setAttribute("style",alteredStyleBottom); //set the style attribute with the appropriate filter string attached to it. 
     }
     
+    /* Toggle grayscale and invert image CSS filters.v   */
     function toggleFilter(which){
         /*
          * The grayscale/invert toggle classes CANNOT BE DEFINED as the same object being given the brightness/contrast filters or they ALL BREAK
@@ -1231,6 +1181,8 @@
           $("button[which='"+which+"']").addClass("selected");
         }
     }
+    
+    //Make sure the value entered into the area that allows a user to define a custom ruler color is a valida color string.  
     function validTextColour(stringToTest) {
         //Alter the following conditions according to your need.
         if (stringToTest === "") { return false; }
@@ -1245,6 +1197,8 @@
         image.style.color = stringToTest;
         return image.style.color !== "rgb(255, 255, 255)";
     }
+    
+    //Change the ruler color.
     function rulerColor(color){
         if(color==="custom"){
             color=$("#customRuler").val();
@@ -1260,6 +1214,8 @@
         $("#ruler2").css("color", color).css("background", color);
         $("#sampleRuler").css("color", color).css("background", color);
     }
+    
+    //Turn the ruler on
     function applyRuler(line){
             //var sRCbkp = selectRulerColor; //select Ruler Color backup
             $("#imageTip").html("Add a Line");
@@ -1311,6 +1267,7 @@
         $('#ruler2').hide();
     }
     
+    //Triggered when a user alters a line to either create a new one or destroy one.
     function lineChange(e,event){
         //console.log("show parsing cover");
         $("#parsingCover").show();
@@ -1324,88 +1281,6 @@
             removeLine(e);
         }
         
-    }
-    
-    
-    /* Used to test the create function and create a simple project, one that is easily copied. */
-    
-//    function createBryan(){
-//        var newobj = {
-//            "@context" : "http://www.shared-canvas.org/ns/context.json",
-//            "@id" : "t-pen.org/TPEN/Testing4/manifest.json",
-//            "@type" : "sc:Manifest",
-//            "label" : "Encoding Test",
-//            "sequences" : [{
-//              "@id" : "http://t-pen.org/Testing4/sequence/normal",
-//              "@type" : "sc:Sequence",
-//              "label" : "Current Page Order",
-//              "canvases" : [{
-//                "@id":"http://t-pen.org/Testing4/canvas/100r",
-//                "@type" : "sc:Canvas",
-//                "label" : "100r",
-//                "height" : 1000,
-//                "width" : 667,
-//                "resources" : [],
-//                "images":[{
-//                          "@type":"oa:Annotation",
-//                          "motivation":"sc:painting",
-//                          "resource":{
-//                              "@id":"http://norman.hrc.utexas.edu/graphics/mswaste/160 h612e 617/160_h612e_617_001.jpg",
-//                              "@type":"dctypes:Image",
-//                              "format":"image/jpeg"
-//                          },
-//                          "on":"http://t-pen.org/Testing4/canvas/100r"
-//                }],
-//              }, {
-//                "@id" : "http://t-pen.org/Testing4/canvas/100v",
-//                "@type" : "sc:Canvas",
-//                "label" : "100v",
-//                "height" : 1000,
-//                "width" : 667,
-//                "resources" : [],
-//                "images":[{
-//                          "@type":"oa:Annotation",
-//                          "motivation":"sc:painting",
-//                          "resource":{
-//                              "@id":"http://norman.hrc.utexas.edu/graphics/mswaste/br 65 d62 l3 1502/br_65_d62_l3_1502_001.jpg",
-//                              "@type":"dctypes:Image",
-//                              "format":"image/jpeg"
-//                          },
-//                          "on":"http://t-pen.org/Testing4/canvas/100v"
-//                }]
-//              }, {
-//                "@id" : "http://t-pen.org/Testing4/canvas/101r",
-//                "@type" : "sc:Canvas",
-//                "label" : "101r",
-//                "height" : 1000,
-//                "width" : 667,
-//                "resources" : [ ],
-//                "images":[{
-//                          "@type":"oa:Annotation",
-//                          "motivation":"sc:painting",
-//                          "resource":{
-//                              "@id":"http://norman.hrc.utexas.edu/graphics/mswaste/br 332 a83 1526/br_332_a83_1526_001.jpg",
-//                              "@type":"dctypes:Image",
-//                              "format":"image/jpeg"
-//                          },
-//                          "on":"http://t-pen.org/Testing4/canvas/101r"
-//                }]
-//              }]
-//            }]
-//          };
-//          var manifest = JSON.stringify(newobj);
-//          var city = "STL,MO";
-//          var title = "Encoding Test & Stuff";
-//          var params = {"city":city, "title":title, "scmanifest":manifest};
-//          var url = "createProject";
-//          $.post(url, params)
-//          .done(function(){
-//            console.log("CREATED");
-//          })
-//          .fail(function(){
-//            console.log("FAILED");
-//          });
-//    }
-        
+    }    
     
 </script>
