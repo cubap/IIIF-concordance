@@ -75,9 +75,9 @@ public class LoginServlet extends HttpServlet {
             if (u.getUID() > 0) {
                HttpSession sess = req.getSession(true);
                sess.setAttribute("UID", u.getUID());
-               System.out.println("HAve UID!!!!!!!!!!");
-               System.out.println(u.getUID());
-               System.out.println(sess.getAttribute("UID"));
+//               System.out.println("HAve UID!!!!!!!!!!");
+//               System.out.println(u.getUID());
+//               System.out.println(sess.getAttribute("UID"));
                PrintWriter writer = resp.getWriter();
                writer.print(sess.getId());
             } else {
@@ -85,7 +85,7 @@ public class LoginServlet extends HttpServlet {
             }
          } else if (mail == null && password == null) {
             // Passing null data indicates a logout.
-             System.out.println("Email and pwd null   !!!!!!!!!!");
+            // System.out.println("Email and pwd null   !!!!!!!!!!");
             HttpSession sess = req.getSession(true);
             sess.removeAttribute("UID");
             resp.setStatus(HttpServletResponse.SC_NO_CONTENT);

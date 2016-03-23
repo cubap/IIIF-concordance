@@ -67,7 +67,7 @@ public class SaveNewTransLineServlet extends HttpServlet {
     //            System.out.println("=============================");  
                 while ((line = reader.readLine()) != null){  
                     //line = new String(line.getBytes(), "utf-8");  
-                    System.out.println(line);
+                    //System.out.println(line);
                     sb.append(line);
                 }
     //            System.out.println("=============================");  

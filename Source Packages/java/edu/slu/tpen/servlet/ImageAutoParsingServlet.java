@@ -75,7 +75,7 @@ public class ImageAutoParsingServlet extends HttpServlet {
                 tl.setW(l.getWidth());
                 tl.setH(l.getDistance());
                 ls_transLine.add(tl);
-                System.out.println(l.toString());
+                //System.out.println(l.toString());
             }
         }
         JSONObject jo_canvas = new JSONObject();
@@ -119,7 +119,7 @@ public class ImageAutoParsingServlet extends HttpServlet {
                 tl.setW(l.getWidth());
                 tl.setH(l.getDistance());
                 ja_line.add(tl.toJSON());
-                System.out.println(l.toString());
+                //System.out.println(l.toString());
             }
         }
         jo_otherContent.element("resources", ja_line);
