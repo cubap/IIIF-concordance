@@ -472,194 +472,192 @@ Open the project management section for a given project ID.
                     <div id="tabs-4">
                         <ul id="options" class="ui-helper-reset">
                             <li class="left ui-widget-content ui-corner-tr ui-corner-bl tall permitModify isMember">
-                                        <div id="publicOptionsSelection" class="mustBeAdmin">
-                                            <h2>Public Access Options</h2>
-                                            <div id="publicOptionsForm">
-                                                <input type="hidden" value="PROJECTID">
-                                                <input type="hidden" value="2" name="selecTab" />
-                                                <!--<h6>External Access</h6>-->
-                                                <label for="OACr" class="publicLabel">
-                                                    <div class="publicDesc">
-                                                        <h4 class="noBottom">Open Annotation Collaboration</h4>
-                                                        <input id="OACr" name="OACr" type="checkbox" value="true" />OAC Read<br>
-                                                        <code>Read Permission</code>
-                                                            <p>This setting allows external (not originating from t&#8209;pen.org) tools and services to <strong>read</strong> data from the T&#8209;PEN database. Projects with this permission can load annotations and transcriptions into other tools and interfaces for in-depth processing not available on T&#8209;PEN.</p>
-                                                        <span class="ui-state-error-text"><span class="left ui-icon ui-icon-unlocked"></span>This setting exposes your data <em>without authentication</em>.</span>
-                                                        <span class=""><span class="left ui-icon ui-icon-info"></span>Original project data cannot be changed with a <code>read</code> permission.</span>
-                                                        <span class=""><span class="left ui-icon ui-icon-notice"></span>Allowing this is not recommended unless you have a specific need in mind.</span>
-                                                    </div>
-                                                </label>
-                                                <label for="OACw" class="publicLabel">
-                                                    <div class="publicDesc">
-                                                        <h4 class="noBottom">Open Annotation Collaboration</h4>
-                                                        <input id="OACw" name="OACw" type="checkbox"  value="true" />OAC Write<br>
-                                                            <code>Write Permission</code>
-                                                            <p>This setting allows external (not originating from t&#8209;pen.org) tools and services to write data from the T&#8209;PEN database. Projects with this permission can load annotations and transcriptions into other tools <em>and changes saved</em> for in-depth processing not available on T&#8209;PEN.</p>
-                                                        <span class="ui-state-error-text"><span class="left ui-icon ui-icon-unlocked"></span>This setting exposes your data <em>without authentication</em>.</span>
-                                                        <span class="ui-state-error-text"><span class="left ui-icon ui-icon-alert"></span>Original project data can be changed with a <code>write</code> permission.</span>
-                                                        <span class=""><span class="left ui-icon ui-icon-notice"></span>Allowing this is not recommended unless you have a specific need in mind.</span>
-                                                    </div>
-                                                </label>
-                                                <!--<%if(permitRead)out.print("checked");%>-->
-                                                <label for="readTrans" class="publicLabel">
-                                                    <div class="publicDesc">
-                                                        <h4 class="noBottom">View Project</h4>
-                                                        <input id="readTrans" name="readTrans" type="checkbox"  value="true" />View Project<br>
-                                                            <code>Read Permission</code>
-                                                            <p>This setting allows users logged into T&#8209;PEN to <strong>view</strong> this project in the transcription interface. Users cannot make any changes or view any data not revealed in the interface.</p>
-                                                        <span class="ui-state-error-text"><span class="left ui-icon ui-icon-unlocked"></span>This setting does not track viewers and provides no protections against manual copying.</span>
-                                                        <span class=""><span class="left ui-icon ui-icon-info"></span>Original project data cannot be changed with a <code>read</code> permission.</span>
-                                                        <span class=""><span class="left ui-icon ui-icon-check"></span>This is the most restrictive way to make a project public.</span>
-                                                    </div>
-                                                </label>
-                                                <label for="publicExport" class="publicLabel">
-                                                    <div class="publicDesc">
-                                                        <h4 class="noBottom">Export Project</h4>
-                                                        <input id="publicExport" name="publicExport" type="checkbox"  value="true" />Export Project<br>
-                                                            <code>Read Permission</code>
-                                                            <p>This setting allows users logged into T&#8209;PEN to <strong>export</strong> this project through the T&#8209;PEN interface. Users cannot make any changes to original data.</p>
-                                                        <span class="ui-state-error-text"><span class="left ui-icon ui-icon-unlocked"></span>This setting does not track exports and provides no protections against copying.</span>
-                                                        <span class=""><span class="left ui-icon ui-icon-info"></span>Original project data cannot be changed with a <code>read</code> permission.</span>
-                                                        <span class=""><span class="left ui-icon ui-icon-notice"></span>Even without this permission, a clever and malicious user may capture data from any public project.</span>
-                                                    </div>
-                                                </label>
-                                                <label for="projectCopy" class="publicLabel">
-                                                    <!--<%if(permitCopy)out.print("checked");%> <%if(thisProject.containsUserUploadedManuscript())out.print("disabled title='This project contains private images.'");%>-->
-                                                    <div class="publicDesc">
-                                                        <h4 class="noBottom">Copy Project</h4>
-                                                        <input id="projectCopy" name="projectCopy" type="checkbox"  value="true" />Copy Project<br>
-                                                            <code>Read Permission</code>
-                                                            <p>This setting allows users logged into T&#8209;PEN to <strong>copy</strong> this project and work independently. Users cannot make any changes to original data.</p>
-                                                        <span class="ui-state-error-text"><span class="left ui-icon ui-icon-unlocked"></span>This setting does not track copies and does not prevent a user from making the copy more public than the original.</span>
-                                                        <span class=""><span class="left ui-icon ui-icon-info"></span>Original project data cannot be changed with a <code>read</code> permission.</span>
-                                                        <span class=""><span class="left ui-icon ui-icon-notice"></span>There is no way to merge or collate different branches of an original project.</span>
-                                                        <span class=""><span class="left ui-icon ui-icon-notice"></span>Projects containing private images cannot be copied.</span>
-                                                    </div>
-                                                </label>
-                                                <!--<h6>Public Modifications</h6>-->
-                                                <label for="modNotes" class="publicLabel">
-                                                    <!--<%if(permitNotes)out.print("checked");%>-->
-                                                    <div class="publicDesc">
-                                                        <h4 class="noBottom">Modify Notes</h4>
-                                                        <input id="modNotes" name="modNotes" type="checkbox"  value="true" />Modify Notes<br>
-                                                            <code>Write Permission</code>
-                                                            <p>This setting allows users logged into T&#8209;PEN to <strong>modify</strong> any data in the notes fields. Changes are not restricted, but are tracked in the History with a username and timestamp.</p>
-                                                        <span class="ui-state-error-text"><span class="left ui-icon ui-icon-alert"></span>Original project data can be changed with a <code>write</code> permission.</span>
-                                                        <span class=""><span class="left ui-icon ui-icon-info"></span>The transcription and notes fields are controlled by separate permissions.</span>
-                                                    </div>
-                                                </label>
-                                                <label for="modTrans" class="publicLabel">
-                                                    <!--<%if(permitModify)out.print("checked");%>-->
-                                                    <div class="publicDesc">
-                                                        <h4 class="noBottom">Modify Transcription</h4>
-                                                        <input id="modTrans" name="modTrans" type="checkbox"  value="true" />Modify Transcription<br>
-                                                            <code>Write Permission</code>
-                                                            <p>This setting allows users logged into T&#8209;PEN to <strong>modify</strong> any data in the transcription fields. Changes are not restricted, but are tracked in the History with a username and timestamp.</p>
-                                                        <span class="ui-state-error-text"><span class="left ui-icon ui-icon-alert"></span>Original project data can be changed with a <code>write</code> permission.</span>
-                                                        <span class=""><span class="left ui-icon ui-icon-info"></span>The transcription and notes fields are controlled by separate permissions.</span>
-                                                    </div>
-                                                </label>
-                                                <label for="modAnno" class="publicLabel">
-                                                    <!--<%if(permitAnnotation)out.print("checked");%>-->
-                                                    <div class="publicDesc">
-                                                        <h4 class="noBottom">Modify Annotations</h4>
-                                                        <input id="modAnno" name="modAnno" type="checkbox"  value="true" />Modify Annotations<br>
-                                                            <code>Write Permission</code>
-                                                            <p>This setting allows users logged into T&#8209;PEN to <strong>modify</strong> any annotation. This includes insertion, deletion, and modification.</p>
-                                                        <span class="ui-state-error-text"><span class="left ui-icon ui-icon-alert"></span>Original project data can be changed with a <code>write</code> permission.</span>
-                                                        <span class=""><span class="left ui-icon ui-icon-info"></span>Only annotation modifications are allowed with this permission.</span>
-                                                    </div>
-                                                </label>
-                                                <label for="modParsing" class="publicLabel">
-                                                    <!--<%if(permitParsing)out.print("checked");%>-->
-                                                    
-                                                    <div class="publicDesc">
-                                                        <h4 class="noBottom">Modify Line Parsing</h4>
-                                                        <input id="modParsing" name="modParsing" type="checkbox"  value="true" />Modify Line Parsing<br>
-                                                            <code>Write Permission</code>
-                                                            <p>This setting allows users logged into T&#8209;PEN to <strong>modify</strong> line parsing. This includes insertion, deletion, and modification.</p>
-                                                        <span class="ui-state-error-text"><span class="left ui-icon ui-icon-alert"></span>Original project data can be changed with a <code>write</code> permission.</span>
-                                                        <span class="ui-state-error-text"><span class="left ui-icon ui-icon-alert"></span>If a user deletes a column which contains transcription data, the attached data will also be removed.</span>
-                                                    </div>
-                                                </label>
-                                                <label for="modButton" class="publicLabel">
-                                                    <!--<%if(permitButtons)out.print("checked");%>-->
-                                                    
-                                                    <div class="publicDesc">
-                                                        <h4 class="noBottom">Modify Buttons</h4>
-                                                        <input id="modButton" name="modButton" type="checkbox"  value="true" />Modify Buttons and Tags<br>
-                                                            <code>Write Permission</code>
-                                                            <p>This setting allows users logged into T&#8209;PEN to <strong>modify</strong> any special character or XML tag buttons in the project (including addition and deletion).</p>
-                                                        <span class="ui-state-error-text"><span class="left ui-icon ui-icon-alert"></span>Original project data can be changed with a <code>write</code> permission.</span>
-                                                        <span class=""><span class="left ui-icon ui-icon-notice"></span>Changes to buttons are not tracked in the project log.</span>
-                                                    </div>
-                                                </label>
-                                                <label for="modMetadata" class="publicLabel">
-                                                    <!--<%if(permitMetadata)out.print("checked");%>-->
-                                                    <div class="publicDesc">
-                                                        <h4 class="noBottom">Modify Metadata</h4>
-                                                        <input id="modMetadata" name="modMetadata" type="checkbox"  value="true" />Modify Metadata<br>
-                                                            <code>Write Permission</code>
-                                                            <p>This setting allows users logged into T&#8209;PEN to <strong>modify</strong> project metadata or upload a custom header.</p>
-                                                        <span class="ui-state-error-text"><span class="left ui-icon ui-icon-alert"></span>Original project data can be changed with a <code>write</code> permission.</span>
-                                                        <span class=""><span class="left ui-icon ui-icon-notice"></span>Changes to metadata are not tracked in the project log.</span>
-                                                    </div>
-                                                </label>
-                                                    <input style="display: inline-block;" type="reset" value="Clear All" onclick="$('.publicLabel').children('input').prop('checked',false);return false;" class="tpenButton ui-button" />    
-                                                    <input style="display: inline-block;" onclick="updatePublicOptions();" type="button" name="publicOptions" value="Submit Changes"  class="tpenButton ui-button" />    
+                                <div id="publicOptionsSelection" class="mustBeAdmin">
+                                    <h2>Public Access Options</h2>
+                                    <div id="publicOptionsForm">
+                                        <input type="hidden" value="PROJECTID">
+                                        <input type="hidden" value="2" name="selecTab" />
+                                        <!--<h6>External Access</h6>-->
+                                        <label for="OACr" class="publicLabel">
+                                            <div class="publicDesc">
+                                                <h4 class="noBottom">Open Annotation Collaboration</h4>
+                                                <input id="OACr" name="OACr" type="checkbox" value="true" />OAC Read<br>
+                                                <code>Read Permission</code>
+                                                    <p>This setting allows external (not originating from t&#8209;pen.org) tools and services to <strong>read</strong> data from the T&#8209;PEN database. Projects with this permission can load annotations and transcriptions into other tools and interfaces for in-depth processing not available on T&#8209;PEN.</p>
+                                                <span class="ui-state-error-text"><span class="left ui-icon ui-icon-unlocked"></span>This setting exposes your data <em>without authentication</em>.</span>
+                                                <span class=""><span class="left ui-icon ui-icon-info"></span>Original project data cannot be changed with a <code>read</code> permission.</span>
+                                                <span class=""><span class="left ui-icon ui-icon-notice"></span>Allowing this is not recommended unless you have a specific need in mind.</span>
                                             </div>
-                                        </div>
-                                        </li>
-                                        <li class="left ui-widget-content ui-corner-tr ui-corner-bl tall">
+                                        </label>
+                                        <label for="OACw" class="publicLabel">
+                                            <div class="publicDesc">
+                                                <h4 class="noBottom">Open Annotation Collaboration</h4>
+                                                <input id="OACw" name="OACw" type="checkbox"  value="true" />OAC Write<br>
+                                                    <code>Write Permission</code>
+                                                    <p>This setting allows external (not originating from t&#8209;pen.org) tools and services to write data from the T&#8209;PEN database. Projects with this permission can load annotations and transcriptions into other tools <em>and changes saved</em> for in-depth processing not available on T&#8209;PEN.</p>
+                                                <span class="ui-state-error-text"><span class="left ui-icon ui-icon-unlocked"></span>This setting exposes your data <em>without authentication</em>.</span>
+                                                <span class="ui-state-error-text"><span class="left ui-icon ui-icon-alert"></span>Original project data can be changed with a <code>write</code> permission.</span>
+                                                <span class=""><span class="left ui-icon ui-icon-notice"></span>Allowing this is not recommended unless you have a specific need in mind.</span>
+                                            </div>
+                                        </label>
+                                        <!--<%if(permitRead)out.print("checked");%>-->
+                                        <label for="readTrans" class="publicLabel">
+                                            <div class="publicDesc">
+                                                <h4 class="noBottom">View Project</h4>
+                                                <input id="readTrans" name="readTrans" type="checkbox"  value="true" />View Project<br>
+                                                    <code>Read Permission</code>
+                                                    <p>This setting allows users logged into T&#8209;PEN to <strong>view</strong> this project in the transcription interface. Users cannot make any changes or view any data not revealed in the interface.</p>
+                                                <span class="ui-state-error-text"><span class="left ui-icon ui-icon-unlocked"></span>This setting does not track viewers and provides no protections against manual copying.</span>
+                                                <span class=""><span class="left ui-icon ui-icon-info"></span>Original project data cannot be changed with a <code>read</code> permission.</span>
+                                                <span class=""><span class="left ui-icon ui-icon-check"></span>This is the most restrictive way to make a project public.</span>
+                                            </div>
+                                        </label>
+                                        <label for="publicExport" class="publicLabel">
+                                            <div class="publicDesc">
+                                                <h4 class="noBottom">Export Project</h4>
+                                                <input id="publicExport" name="publicExport" type="checkbox"  value="true" />Export Project<br>
+                                                    <code>Read Permission</code>
+                                                    <p>This setting allows users logged into T&#8209;PEN to <strong>export</strong> this project through the T&#8209;PEN interface. Users cannot make any changes to original data.</p>
+                                                <span class="ui-state-error-text"><span class="left ui-icon ui-icon-unlocked"></span>This setting does not track exports and provides no protections against copying.</span>
+                                                <span class=""><span class="left ui-icon ui-icon-info"></span>Original project data cannot be changed with a <code>read</code> permission.</span>
+                                                <span class=""><span class="left ui-icon ui-icon-notice"></span>Even without this permission, a clever and malicious user may capture data from any public project.</span>
+                                            </div>
+                                        </label>
+                                        <label for="projectCopy" class="publicLabel">
+                                            <!--<%if(permitCopy)out.print("checked");%> <%if(thisProject.containsUserUploadedManuscript())out.print("disabled title='This project contains private images.'");%>-->
+                                            <div class="publicDesc">
+                                                <h4 class="noBottom">Copy Project</h4>
+                                                <input id="projectCopy" name="projectCopy" type="checkbox"  value="true" />Copy Project<br>
+                                                    <code>Read Permission</code>
+                                                    <p>This setting allows users logged into T&#8209;PEN to <strong>copy</strong> this project and work independently. Users cannot make any changes to original data.</p>
+                                                <span class="ui-state-error-text"><span class="left ui-icon ui-icon-unlocked"></span>This setting does not track copies and does not prevent a user from making the copy more public than the original.</span>
+                                                <span class=""><span class="left ui-icon ui-icon-info"></span>Original project data cannot be changed with a <code>read</code> permission.</span>
+                                                <span class=""><span class="left ui-icon ui-icon-notice"></span>There is no way to merge or collate different branches of an original project.</span>
+                                                <span class=""><span class="left ui-icon ui-icon-notice"></span>Projects containing private images cannot be copied.</span>
+                                            </div>
+                                        </label>
+                                        <!--<h6>Public Modifications</h6>-->
+                                        <label for="modNotes" class="publicLabel">
+                                            <!--<%if(permitNotes)out.print("checked");%>-->
+                                            <div class="publicDesc">
+                                                <h4 class="noBottom">Modify Notes</h4>
+                                                <input id="modNotes" name="modNotes" type="checkbox"  value="true" />Modify Notes<br>
+                                                    <code>Write Permission</code>
+                                                    <p>This setting allows users logged into T&#8209;PEN to <strong>modify</strong> any data in the notes fields. Changes are not restricted, but are tracked in the History with a username and timestamp.</p>
+                                                <span class="ui-state-error-text"><span class="left ui-icon ui-icon-alert"></span>Original project data can be changed with a <code>write</code> permission.</span>
+                                                <span class=""><span class="left ui-icon ui-icon-info"></span>The transcription and notes fields are controlled by separate permissions.</span>
+                                            </div>
+                                        </label>
+                                        <label for="modTrans" class="publicLabel">
+                                            <!--<%if(permitModify)out.print("checked");%>-->
+                                            <div class="publicDesc">
+                                                <h4 class="noBottom">Modify Transcription</h4>
+                                                <input id="modTrans" name="modTrans" type="checkbox"  value="true" />Modify Transcription<br>
+                                                    <code>Write Permission</code>
+                                                    <p>This setting allows users logged into T&#8209;PEN to <strong>modify</strong> any data in the transcription fields. Changes are not restricted, but are tracked in the History with a username and timestamp.</p>
+                                                <span class="ui-state-error-text"><span class="left ui-icon ui-icon-alert"></span>Original project data can be changed with a <code>write</code> permission.</span>
+                                                <span class=""><span class="left ui-icon ui-icon-info"></span>The transcription and notes fields are controlled by separate permissions.</span>
+                                            </div>
+                                        </label>
+                                        <label for="modAnno" class="publicLabel">
+                                            <!--<%if(permitAnnotation)out.print("checked");%>-->
+                                            <div class="publicDesc">
+                                                <h4 class="noBottom">Modify Annotations</h4>
+                                                <input id="modAnno" name="modAnno" type="checkbox"  value="true" />Modify Annotations<br>
+                                                    <code>Write Permission</code>
+                                                    <p>This setting allows users logged into T&#8209;PEN to <strong>modify</strong> any annotation. This includes insertion, deletion, and modification.</p>
+                                                <span class="ui-state-error-text"><span class="left ui-icon ui-icon-alert"></span>Original project data can be changed with a <code>write</code> permission.</span>
+                                                <span class=""><span class="left ui-icon ui-icon-info"></span>Only annotation modifications are allowed with this permission.</span>
+                                            </div>
+                                        </label>
+                                        <label for="modParsing" class="publicLabel">
+                                            <!--<%if(permitParsing)out.print("checked");%>-->
+
+                                            <div class="publicDesc">
+                                                <h4 class="noBottom">Modify Line Parsing</h4>
+                                                <input id="modParsing" name="modParsing" type="checkbox"  value="true" />Modify Line Parsing<br>
+                                                    <code>Write Permission</code>
+                                                    <p>This setting allows users logged into T&#8209;PEN to <strong>modify</strong> line parsing. This includes insertion, deletion, and modification.</p>
+                                                <span class="ui-state-error-text"><span class="left ui-icon ui-icon-alert"></span>Original project data can be changed with a <code>write</code> permission.</span>
+                                                <span class="ui-state-error-text"><span class="left ui-icon ui-icon-alert"></span>If a user deletes a column which contains transcription data, the attached data will also be removed.</span>
+                                            </div>
+                                        </label>
+                                        <label for="modButton" class="publicLabel">
+                                            <!--<%if(permitButtons)out.print("checked");%>-->
+
+                                            <div class="publicDesc">
+                                                <h4 class="noBottom">Modify Buttons</h4>
+                                                <input id="modButton" name="modButton" type="checkbox"  value="true" />Modify Buttons and Tags<br>
+                                                    <code>Write Permission</code>
+                                                    <p>This setting allows users logged into T&#8209;PEN to <strong>modify</strong> any special character or XML tag buttons in the project (including addition and deletion).</p>
+                                                <span class="ui-state-error-text"><span class="left ui-icon ui-icon-alert"></span>Original project data can be changed with a <code>write</code> permission.</span>
+                                                <span class=""><span class="left ui-icon ui-icon-notice"></span>Changes to buttons are not tracked in the project log.</span>
+                                            </div>
+                                        </label>
+                                        <label for="modMetadata" class="publicLabel">
+                                            <!--<%if(permitMetadata)out.print("checked");%>-->
+                                            <div class="publicDesc">
+                                                <h4 class="noBottom">Modify Metadata</h4>
+                                                <input id="modMetadata" name="modMetadata" type="checkbox"  value="true" />Modify Metadata<br>
+                                                    <code>Write Permission</code>
+                                                    <p>This setting allows users logged into T&#8209;PEN to <strong>modify</strong> project metadata or upload a custom header.</p>
+                                                <span class="ui-state-error-text"><span class="left ui-icon ui-icon-alert"></span>Original project data can be changed with a <code>write</code> permission.</span>
+                                                <span class=""><span class="left ui-icon ui-icon-notice"></span>Changes to metadata are not tracked in the project log.</span>
+                                            </div>
+                                        </label>
+                                            <input style="display: inline-block;" type="reset" value="Clear All" onclick="$('.publicLabel').children('input').prop('checked',false);return false;" class="tpenButton ui-button" />    
+                                            <input style="display: inline-block;" onclick="updatePublicOptions();" type="button" name="publicOptions" value="Submit Changes"  class="tpenButton ui-button" />    
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="left ui-widget-content ui-corner-tr ui-corner-bl tall">
 <!--                                            <h3>Current Button Summary</h3>
-                                            <h6>Special Character Buttons</h6>
-                                            <div class="specialCharacters"></div>
-                                            <br class="clear-left" />
-                                            <h6>XML Tags</h6>
-                                            <div class="xmlTags"></div>
-                                           <p class="clear-left permitButtons isMember">If you wish, you can copy XML tags between projects: <a href="buttonProjectImport.jsp?a=1<%out.print(projectAppend);%>" class="ui-button tpenButton">Copy XML Tags</a></p>-->
-                                           <div id="specChars">
-                                               <h2>Custom Characters</h2>
-                                                <div class="right" style="width:50%;">
+                                <h6>Special Character Buttons</h6>
+                                <div class="specialCharacters"></div>
+                                <br class="clear-left" />
+                                <h6>XML Tags</h6>
+                                <div class="xmlTags"></div>
+                               <p class="clear-left permitButtons isMember">If you wish, you can copy XML tags between projects: <a href="buttonProjectImport.jsp?a=1<%out.print(projectAppend);%>" class="ui-button tpenButton">Copy XML Tags</a></p>-->
+                               <div id="specChars">
+                                   <h2>Custom Characters</h2>
+                                    <div class="right" style="width:50%;">
 <!--                                                    <h2>Hotkeys</h2>
-                                                    <p>Enter the unicode value for each character.</p>
-                                                    <a id="codeSearch" target="_blank" class="tpenButton ui-button ui-button-text-only" href="http://www.ssec.wisc.edu/~tomw/java/unicode.html"><span class="left ui-icon ui-icon-search"></span>Search for Codes</a>
-                                                    <p>Buttons are mapped to the digits 1-9 on your keyboard. <span class="loud">Hold CTRL and press the corresponding number key</span> to insert one into your transcription.</p>
-                                                    <p>Rearrange by clicking on the blue box and dragging to a new position. Click the X to remove a button.</p>
-                                                    <p>You may add more than 9, but only the first 9 will be mapped to shortcuts.</p>-->
-                                                    <div class="noBottom" id="characterReview"><h4 class="noBottom">Current Special Characters</h4>
-                                                        <div class="specialCharacters"></div>
-                                                    </div>
-                                                </div>
-                                                    <ul id="sortable1" class="connectedSortable ui-helper-reset">
+                                        <p>Enter the unicode value for each character.</p>
+                                        <a id="codeSearch" target="_blank" class="tpenButton ui-button ui-button-text-only" href="http://www.ssec.wisc.edu/~tomw/java/unicode.html"><span class="left ui-icon ui-icon-search"></span>Search for Codes</a>
+                                        <p>Buttons are mapped to the digits 1-9 on your keyboard. <span class="loud">Hold CTRL and press the corresponding number key</span> to insert one into your transcription.</p>
+                                        <p>Rearrange by clicking on the blue box and dragging to a new position. Click the X to remove a button.</p>
+                                        <p>You may add more than 9, but only the first 9 will be mapped to shortcuts.</p>-->
+                                        <div class="noBottom" id="characterReview"><h4 class="noBottom">Current Special Characters</h4>
+                                            <div class="specialCharacters"></div>
+                                        </div>
+                                    </div>
+                                        <ul id="sortable1" class="connectedSortable ui-helper-reset">
 
-                                                </ul>
-                                                <input style="display: inline-block;" type="button" id="addH" name="addH" class="tpenButton ui-button" value="Add a Button"/>
-                                                <input style="display: inline-block;" type="submit" id="update" name="update" value="Save Changes" class="tpenButton ui-button"/><br><br>
-                                            </div>
-                                            <div id="custXML">
-                                                <div class="right" style="width:440px;">
-                                                    <h3>Custom XML Tags</h3>
-                                                    <p>Add each tag without &lsaquo;angle brackets&rsaquo;, any parameters including &quot;quotes&quot; in the next 5 fields, and a description in the final field. Text in the <span class="loud">"description"</span> field will become the title of your button. Seek conciseness.</p>
-                                                    <p>Rearrange by clicking on the blue box and dragging. Click the "X" icon to remove a button from the list. Add as many buttons as is useful. You will access them through the footer menu.</p>
-                                                    <div id="xmlReview"><h4 class="noBottom">Current Tags</h4>
-                                                        <div class="xmlTags"></div>
-                                                    </div>
-                                                </div>
-                                                <ul id="sortable2" class="connectedSortable ui-helper-reset">
+                                    </ul>
+                                    <input style="display: inline-block;" type="button" id="addH" name="addH" class="tpenButton ui-button" value="Add a Button"/>
+                                    <input style="display: inline-block;" type="submit" id="update" name="update" value="Save Changes" class="tpenButton ui-button"/><br><br>
+                                </div>
+                                <div id="custXML">
+                                    <div class="right" style="width:440px;">
+                                        <h3>Custom XML Tags</h3>
+                                        <p>Add each tag without &lsaquo;angle brackets&rsaquo;, any parameters including &quot;quotes&quot; in the next 5 fields, and a description in the final field. Text in the <span class="loud">"description"</span> field will become the title of your button. Seek conciseness.</p>
+                                        <p>Rearrange by clicking on the blue box and dragging. Click the "X" icon to remove a button from the list. Add as many buttons as is useful. You will access them through the footer menu.</p>
+                                        <div id="xmlReview"><h4 class="noBottom">Current Tags</h4>
+                                            <div class="xmlTags"></div>
+                                        </div>
+                                    </div>
+                                    <ul id="sortable2" class="connectedSortable ui-helper-reset">
 
 
-                                                </ul>
-                                                <input style="display: inline-block;" type="button" id="addT" name="addT" value="Add a Tag" class="tpenButton ui-button" onclick="document.getElementById('selecTab').value = 1;" />
-                                                <input style="display: inline-block;" type="submit" onclick="document.getElementById('selecTab').value = 1;" id="update" name="update" value="Save Changes" class="tpenButton ui-button"/><br><br>
-                                                <br />
-                                            </div>
-                                        <input type="hidden" name="selecTab" id="selecTab" value="0"/>
-                                        </li>
-                                        
-                                </ul>
-                            </div>
-                               
+                                    </ul>
+                                    <input style="display: inline-block;" type="button" id="addT" name="addT" value="Add a Tag" class="tpenButton ui-button" onclick="document.getElementById('selecTab').value = 1;" />
+                                    <input style="display: inline-block;" type="submit" onclick="document.getElementById('selecTab').value = 1;" id="update" name="update" value="Save Changes" class="tpenButton ui-button"/><br><br>
+                                    <br />
+                                </div>
+                            <input type="hidden" name="selecTab" id="selecTab" value="0"/>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
