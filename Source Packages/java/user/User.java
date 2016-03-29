@@ -1060,13 +1060,17 @@ DatabaseWrapper.closePreparedStatement(qry);
     but email failed, which is common on test systems and should produce a warning*/
     public int invite(String uname, String fname, String lname) throws SQLException
         {
+            System.out.println("Invite code.");
         Boolean emailFailure = false;
         User newUser = new User(uname, lname, fname, "");
+        System.out.println("Defined user to continue on.  Can we?");
         if (newUser.getUID() > 0)
             {
+                System.out.println("Yes.");
+                System.out.println(this.getFname() + " " + this.getLname() + " (" + this.getUname() + ") has invited  " + newUser.getFname() + " " + newUser.getLname() + " (" + newUser.getUname() + ") to join TPEN.");
+
             textdisplay.mailer m = new textdisplay.mailer();
             String body = this.getFname() + " " + this.getLname() + " (" + this.getUname() + ") has invited  " + newUser.getFname() + " " + newUser.getLname() + " (" + newUser.getUname() + ") to join TPEN, which needs your approval.\n";
-            body += "Proceed to http://t-pen.org/TPEN/admin.jsp to approve their account";
             try
                 {
                 m.sendMail(Folio.getRbTok("EMAILSERVER"), "TPEN@t-pen.org", Folio.getRbTok("NOTIFICATIONEMAIL"), "new user request", body);
@@ -1091,6 +1095,9 @@ DatabaseWrapper.closePreparedStatement(qry);
                 return 2;
                 }
             }
+        else{
+            System.out.println("No.");
+        }
 
         return 1;
         }

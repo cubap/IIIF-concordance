@@ -257,13 +257,14 @@ public class Group {
     * @throws SQLException
     */
    public void addMember(int UID) throws SQLException {
+       System.out.println("add member SQL stuff.  GID to be a member of: "+groupID);
       Connection j = null;
       PreparedStatement qry = null;
       qry = null;
       try {
          j = DatabaseWrapper.getConnection();
-
          qry = j.prepareStatement("insert into groupmembers (GID,UID,role) values(?,?,?)");
+         System.out.println("groupmembers row add with GID, UID, contributor: "+groupID+", "+UID+", contributor");
          qry.setInt(1, groupID);
          qry.setInt(2, UID);
          qry.setString(3, roles.Contributor.toString());
