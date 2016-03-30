@@ -47,13 +47,17 @@ public class AddUserToProjectServlet extends HttpServlet {
                 User thisUser = new user.User(UID);
                 if(null != request.getParameter("uname") && null != request.getParameter("projectID")){
                     Project thisProject = new Project(Integer.parseInt(request.getParameter("projectID")));
-                    System.out.println("This user is now inviting "+request.getParameter("uname")+","+ request.getParameter("fname")+","+ request.getParameter("lname"));
+                    System.out.println("Current logged in user is now inviting "+request.getParameter("uname")+","+ request.getParameter("fname")+","+ request.getParameter("lname"));
                     int result = thisUser.invite(request.getParameter("uname"), request.getParameter("fname"), request.getParameter("lname"));
                     System.out.println("RESULT FROM INVITE: "+result);
                     if (result == 0) {
                         //successfully send out email to user
                         Group g = new Group(thisProject.getGroupID());
                         System.out.println("This user passes admin check: "+g.isAdmin(thisUser.getUID()));
+                        System.out.println("We have invited a user that is NOT a part of T-PEN.  An email was sent.");
+                        System.out.println("*");
+                        System.out.println("*");
+                        System.out.println("*");
                         if (g.isAdmin(thisUser.getUID())) {
                             User newUser = new User(request.getParameter("uname"));
                             g.addMember(newUser.getUID());
@@ -65,7 +69,11 @@ public class AddUserToProjectServlet extends HttpServlet {
                     }else if (result == 2) {
                         //account created but email issue occured, usually happens in dev environments with no email server.
                         user.Group g = new user.Group(thisProject.getGroupID());
-                        System.out.println("This user passes admin check: "+g.isAdmin(thisUser.getUID()));
+                        System.out.println("Current logged in user passes admin check: "+g.isAdmin(thisUser.getUID()));
+                        System.out.println("We have invited a user that is NOT a part of T-PEN.  An email failed to send.");
+                        System.out.println("*");
+                        System.out.println("*");
+                        System.out.println("*");
                         if (g.isAdmin(thisUser.getUID())) {
                             User newUser = new User(request.getParameter("uname"));
                             g.addMember(newUser.getUID());
@@ -77,28 +85,37 @@ public class AddUserToProjectServlet extends HttpServlet {
                     }else if(result == 1){
                         //user exits
                         user.Group g = new user.Group(thisProject.getGroupID());
-                        System.out.println("This user passes admin check: "+g.isAdmin(thisUser.getUID()));
+                        System.out.println("current logged in user passes admin check: "+g.isAdmin(thisUser.getUID()));
+                        System.out.println("We have invited a user that is a part of T-PEN.  An email was NOT sent.");
+                        System.out.println("*");
+                        System.out.println("*");
+                        System.out.println("*");
                         if (g.isAdmin(thisUser.getUID())) {
                             User newUser = new User(request.getParameter("uname"));
                             g.addMember(newUser.getUID());
                             response.getWriter().print(newUser.getUID());
                         }else{
                             //if user is not admin, return unauthorized. 
+                            System.out.println("user not admin error");
                             response.getWriter().print(response.SC_UNAUTHORIZED);
                         }
                     }else{
                         //user doesn't exist
+                        System.out.println("user doesnt exist error");
                         response.getWriter().print(response.SC_NOT_ACCEPTABLE);
                     }
                 }else{
                     //if there is no uname
+                    System.out.println("There is no uname error.");
                     response.getWriter().print(response.SC_NOT_ACCEPTABLE);
                 }
             } catch (SQLException ex) {
+                System.out.println("SQL exception");
                 Logger.getLogger(AddUserToProjectServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
         }else{
             //if user doesn't log in, return unauthorized. 
+            System.out.println("No user logged in.");
             response.getWriter().print(response.SC_UNAUTHORIZED);
         }
     }

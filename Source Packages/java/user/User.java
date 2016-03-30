@@ -571,12 +571,15 @@ PreparedStatement qry=null;
         this.openID = openID;
         if (!this.exists())
             {
+            System.out.println("User being invited does NOT exist.  Create a new user.");
             this.commit(password);
             this.UID = new User(Uname).UID;
-            } else
-            {
+            } 
+        else
+        {
+            System.out.println("User being invited does exist.");
             this.UID = -1;
-            }
+        }
 
         }
 
@@ -1066,7 +1069,7 @@ DatabaseWrapper.closePreparedStatement(qry);
         System.out.println("Defined user to continue on.  Can we?");
         if (newUser.getUID() > 0)
             {
-                System.out.println("Yes.");
+                System.out.println("Yes.  We made a new user.");
                 System.out.println(this.getFname() + " " + this.getLname() + " (" + this.getUname() + ") has invited  " + newUser.getFname() + " " + newUser.getLname() + " (" + newUser.getUname() + ") to join TPEN.");
 
             textdisplay.mailer m = new textdisplay.mailer();
@@ -1087,6 +1090,7 @@ DatabaseWrapper.closePreparedStatement(qry);
                 {
                 emailFailure = true;
                 }
+            System.out.println("What is email failure: "+emailFailure);
             if (!emailFailure)
                 {
                 return 0;
@@ -1096,7 +1100,8 @@ DatabaseWrapper.closePreparedStatement(qry);
                 }
             }
         else{
-            System.out.println("No.");
+            //This is where invite did not have to make a new user.  The user being invited is already a part of T-PEN.  Send an email still?  Right now, no.  
+            System.out.println("No.  We did not make a new user, do not send an email.");
         }
 
         return 1;
