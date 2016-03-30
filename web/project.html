@@ -931,6 +931,7 @@ function getActiveProjectMetadata(currentProjectID){
                     userIsProjectAdmin = true;
                     leaderIDs.push(this.UID);
                     $('.mustBeAdmin').show();
+                    $('.isMember').show();
                 }
             });
             
@@ -1160,9 +1161,7 @@ function getUserProjects(projectID, userID, username){
             $.each(userProjects, function(){
                 //the project name is properly decoded here.
                 projectName = this.name;
-                console.log("project name from get user projects: "+projectName);
                 projectName=decodeURIComponent(projectName);
-                console.log("decoded: "+projectName);
                 var projectID = this.id;
                 projectID = projectID.replace("projects/", "");
                 //console.log('User is admin: '+userIsProjectAdmin)

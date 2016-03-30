@@ -41,23 +41,14 @@ public class AddUserToProjectServlet extends HttpServlet {
         System.out.println("Add user to project");
         if (session.getAttribute("UID") != null) {
             int UID = Integer.parseInt(session.getAttribute("UID").toString());
-            System.out.println("UID from session: "+UID);
-            System.out.println("Project ID from request: "+request.getParameter("projectID"));
             try {
                 User thisUser = new user.User(UID);
                 if(null != request.getParameter("uname") && null != request.getParameter("projectID")){
                     Project thisProject = new Project(Integer.parseInt(request.getParameter("projectID")));
-                    System.out.println("Current logged in user is now inviting "+request.getParameter("uname")+","+ request.getParameter("fname")+","+ request.getParameter("lname"));
                     int result = thisUser.invite(request.getParameter("uname"), request.getParameter("fname"), request.getParameter("lname"));
-                    System.out.println("RESULT FROM INVITE: "+result);
                     if (result == 0) {
                         //successfully send out email to user
                         Group g = new Group(thisProject.getGroupID());
-                        System.out.println("This user passes admin check: "+g.isAdmin(thisUser.getUID()));
-                        System.out.println("We have invited a user that is NOT a part of T-PEN.  An email was sent.");
-                        System.out.println("*");
-                        System.out.println("*");
-                        System.out.println("*");
                         if (g.isAdmin(thisUser.getUID())) {
                             User newUser = new User(request.getParameter("uname"));
                             g.addMember(newUser.getUID());
@@ -69,11 +60,6 @@ public class AddUserToProjectServlet extends HttpServlet {
                     }else if (result == 2) {
                         //account created but email issue occured, usually happens in dev environments with no email server.
                         user.Group g = new user.Group(thisProject.getGroupID());
-                        System.out.println("Current logged in user passes admin check: "+g.isAdmin(thisUser.getUID()));
-                        System.out.println("We have invited a user that is NOT a part of T-PEN.  An email failed to send.");
-                        System.out.println("*");
-                        System.out.println("*");
-                        System.out.println("*");
                         if (g.isAdmin(thisUser.getUID())) {
                             User newUser = new User(request.getParameter("uname"));
                             g.addMember(newUser.getUID());
@@ -85,11 +71,6 @@ public class AddUserToProjectServlet extends HttpServlet {
                     }else if(result == 1){
                         //user exits
                         user.Group g = new user.Group(thisProject.getGroupID());
-                        System.out.println("current logged in user passes admin check: "+g.isAdmin(thisUser.getUID()));
-                        System.out.println("We have invited a user that is a part of T-PEN.  An email was NOT sent.");
-                        System.out.println("*");
-                        System.out.println("*");
-                        System.out.println("*");
                         if (g.isAdmin(thisUser.getUID())) {
                             User newUser = new User(request.getParameter("uname"));
                             g.addMember(newUser.getUID());
