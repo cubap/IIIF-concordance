@@ -571,13 +571,13 @@ PreparedStatement qry=null;
         this.openID = openID;
         if (!this.exists())
             {
-            System.out.println("User being invited does NOT exist.  Create a new user.");
+            //System.out.println("User being invited does NOT exist.  Create a new user.");
             this.commit(password);
             this.UID = new User(Uname).UID;
             } 
         else
         {
-            System.out.println("User being invited does exist.");
+            //System.out.println("User being invited does exist.");
             this.UID = -1;
         }
 
@@ -1063,14 +1063,13 @@ DatabaseWrapper.closePreparedStatement(qry);
     but email failed, which is common on test systems and should produce a warning*/
     public int invite(String uname, String fname, String lname) throws SQLException
         {
-            System.out.println("Invite code.");
         Boolean emailFailure = false;
         User newUser = new User(uname, lname, fname, "");
-        System.out.println("Defined user to continue on.  Can we?");
+        //System.out.println("Defined user to continue on.  Can we?");
         if (newUser.getUID() > 0)
             {
-                System.out.println("Yes.  We made a new user.");
-                System.out.println(this.getFname() + " " + this.getLname() + " (" + this.getUname() + ") has invited  " + newUser.getFname() + " " + newUser.getLname() + " (" + newUser.getUname() + ") to join TPEN.");
+                //System.out.println("Yes.  We made a new user.");
+                //System.out.println(this.getFname() + " " + this.getLname() + " (" + this.getUname() + ") has invited  " + newUser.getFname() + " " + newUser.getLname() + " (" + newUser.getUname() + ") to join TPEN.");
 
             textdisplay.mailer m = new textdisplay.mailer();
             String body = this.getFname() + " " + this.getLname() + " (" + this.getUname() + ") has invited  " + newUser.getFname() + " " + newUser.getLname() + " (" + newUser.getUname() + ") to join TPEN, which needs your approval.\n";
@@ -1090,7 +1089,7 @@ DatabaseWrapper.closePreparedStatement(qry);
                 {
                 emailFailure = true;
                 }
-            System.out.println("What is email failure: "+emailFailure);
+            //System.out.println("What is email failure: "+emailFailure);
             if (!emailFailure)
                 {
                 return 0;
@@ -1101,7 +1100,7 @@ DatabaseWrapper.closePreparedStatement(qry);
             }
         else{
             //This is where invite did not have to make a new user.  The user being invited is already a part of T-PEN.  Send an email still?  Right now, no.  
-            System.out.println("No.  We did not make a new user, do not send an email.");
+            //System.out.println("No.  We did not make a new user, do not send an email.");
         }
 
         return 1;

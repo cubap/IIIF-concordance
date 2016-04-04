@@ -38,7 +38,7 @@ public class AddUserToProjectServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
-        System.out.println("Add user to project");
+        //System.out.println("Add user to project ID:"+request.getParameter("projectID"));
         if (session.getAttribute("UID") != null) {
             int UID = Integer.parseInt(session.getAttribute("UID").toString());
             try {

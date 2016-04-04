@@ -908,6 +908,8 @@ function populateEditableChars(specialCharacters){
 
 function getActiveProjectMetadata(currentProjectID){
     var isPublicProject = false;
+    var addedUIDs = [];
+    var leaderIDs = [];
     //console.log("GET METADATA");
     //Check if is public project and set this variable.
     var url = "getProjectTPENServlet?projectID="+currentProjectID;
@@ -919,24 +921,25 @@ function getActiveProjectMetadata(currentProjectID){
             //console.log(activeProject);
             var leader = activeProject.ls_leader;
             leader = JSON.parse(leader);
-            console.log("leaders");
-            console.log(leader);
-            var leaderIDs = [];
-            //console.log('ADMIN CHECK');
-            //console.log(leader[0].UID+"=="+currentUser.uid+"?");
-            
-            //check if current user is an admin
             $.each(leader, function(){
-                if(this.UID == currentUser.uid){
+                if(this.UID == currentUser.uid){ //check if current logged in user is an admin
                     userIsProjectAdmin = true;
                     leaderIDs.push(this.UID);
                     $('.mustBeAdmin').show();
                     $('.isMember').show();
                 }
+                if($.inArray(this.UID, addedUIDs) === -1){ //check if this user has already been added.
+                    var leaderTag = " (Admin) ";
+                    var removeUser = ""; //cannot remove admins from group, must demote first.
+                    var promoteUser = ""; //admin is already promoted, no need for this.
+                    var demoteUser = "<a class='demoteUser' title='Demote this user' onclick='demoteUser("+this.UID+", $(this));' > - </a>";
+                    $('#projectMembers').append("<li userID='"+this.UID+"'><span class='userFname'>"+this.fname+" </span><span class='userLname'>"+this.lname+"</span><span style='margin-left:5px;' class='userEmail'>("+this.Uname+")</span><span class='userFname'>"+leaderTag+"</span></li>");               
+                    $('#editProjectMembers').append("<li>"+promoteUser+" "+demoteUser+"<span>" + this.Uname + leaderTag + "</span>"+removeUser+"</li>");
+                    addedUIDs.push(this.UID);
+                }
             });
             
             $('.metadataLeader').html(leader[0].fname +"&nbsp;"+leader[0].lname+"&nbsp;&nbsp;("+leader[0].Uname+")");
-            
             var users = activeProject.ls_u;
             users=JSON.parse(users);
             $.each(users,function(){
@@ -944,9 +947,8 @@ function getActiveProjectMetadata(currentProjectID){
                 var removeUser = "<a class='removeUser' onclick=\"removeUserFromProject('"+this.Uname+"', $(this).parent());\">Remove member</a>";
                 var promoteUser = "<a class='promoteUser' title='Promote this user to Group Leader' onclick='promoteUserToAdmin("+this.UID+", $(this));' > + </a>";
                 var demoteUser = "<a class='demoteUser' title='Demote this user' onclick='demoteUser("+this.UID+", $(this));' > - </a>";
-                
                 if($.inArray(this.UID, leaderIDs) !== -1){ //if a user is an admin
-                    // leaders can demote others
+                        // leaders can demote others
                         removeUser = ""; //cannot remove admins from group
                         promoteUser = ""; //cannot promote admins
                         leaderTag = " (Admin) ";
@@ -954,10 +956,11 @@ function getActiveProjectMetadata(currentProjectID){
                 else{ //user is not an admin
                     demoteUser = ""; //already demoted
                 }
-                if(this.UID == currentUser.uid){
+                if(this.UID == currentUser.uid){ //If current logged in user is a member of the project
                     isMember = true;
                     $('.isMember').show();
-                    if(userIsProjectAdmin){ //cant do these things to yourself
+                    if(userIsProjectAdmin){ //The current user, and this user is an admin
+                        //Can't do these things to yourself, it must be another admin that does them to you.  
                         removeUser = "";
                         promoteUser="";
                         demoteUser="";
@@ -968,10 +971,12 @@ function getActiveProjectMetadata(currentProjectID){
                     promoteUser="";
                     demoteUser="";
                 }
-                
-               $('#projectMembers').append("<li userID='"+this.UID+"'><span class='userFname'>"+this.fname+" </span><span class='userLname'>"+this.lname+"</span><span style='margin-left:5px;' class='userEmail'>("+this.Uname+")</span><span class='userFname'>"+leaderTag+"</span></li>");               
-               //reference groups.html to find this html element.
-               $('#editProjectMembers').append("<li>"+promoteUser+" "+demoteUser+"<span>" + this.Uname + leaderTag + "</span>"+removeUser+"</li>");
+                if($.inArray(this.UID, addedUIDs) === -1){ //check if this user has already been added.
+                     $('#projectMembers').append("<li userID='"+this.UID+"'><span class='userFname'>"+this.fname+" </span><span class='userLname'>"+this.lname+"</span><span style='margin-left:5px;' class='userEmail'>("+this.Uname+")</span><span class='userFname'>"+leaderTag+"</span></li>");               
+                     //reference groups.html to find this html element.
+                     $('#editProjectMembers').append("<li>"+promoteUser+" "+demoteUser+"<span>" + this.Uname + leaderTag + "</span>"+removeUser+"</li>");
+                     addedUIDs.push(this.UID);
+                 }
             });  
             
             var publicProperties = activeProject.projper;
