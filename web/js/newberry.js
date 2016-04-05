@@ -195,18 +195,18 @@
                lines = currentFolioToUse.resources;
                 populatePreview(lines, pageLabel, currentPage);    
            }
-           else{
-               if(currentFolioToUse.otherContent && currentFolioToUse.otherContent.length>0){
-//                //console.log("this is the tester")
-                    lines = annoListTester.resources;
-                    pageLabel = annoListTester.label;
-                    populatePreview(lines, pageLabel, currentPage);    
-                }
-                else{
-                    //console.log("Gotta get annos on " + currentOn);
-                    gatherAndPopulate(currentOn, pageLabel, currentPage, i);                   
-                }
-           }
+//           else{
+//               if(currentFolioToUse.otherContent && currentFolioToUse.otherContent.length>0){
+////                //console.log("this is the tester")
+//                    lines = annoListTester.resources;
+//                    pageLabel = annoListTester.label;
+//                    populatePreview(lines, pageLabel, currentPage);    
+//                }
+//                else{
+//                    //console.log("Gotta get annos on " + currentOn);
+//                    gatherAndPopulate(currentOn, pageLabel, currentPage, i);                   
+//                }
+//           }
 
         }
     }
@@ -803,13 +803,6 @@
             linesToScreen(lines);
         }
         else{ //we have the anno list for this canvas (potentially), so query for it.  If not found, then consider this an empty canvas.
-            if(canvasObj.otherContent && canvasObj.otherContent.length>0){
-//                //console.log("this is the tester")
-                lines = annoListTester.resources;
-                linesToScreen(lines);
-                annoLists[currentFolio -1 ] = annoListTester["@id"];
-            }
-            else{
                 var annosURL = "getAnno";
                 var onValue = canvasObj["@id"];
                 //console.log("get annos for draw for canvas "+onValue);
@@ -852,6 +845,8 @@
                         });
                         if(lines.length > 0){
                             //console.log("Got lines to draw");
+                            $("#transTemplateLoading").hide();
+                            $("#transcriptionTemplate").show();
                             linesToScreen(lines);
                         }
                         else{ //list has no lines
@@ -859,6 +854,8 @@
                             if(parsing !== "parsing"){
                                 $("#noLineWarning").show();
                             }
+                            $("#transTemplateLoading").hide();
+                            $("#transcriptionTemplate").show();
                             $('#transcriptionCanvas').css('height', $("#imgTop img").height() + "px");
                             $('.lineColIndicatorArea').css('height', $("#imgTop img").height() + "px");
                             $("#imgTop").css("height", $("#imgTop img").height() + "px");
@@ -872,6 +869,8 @@
                         if(parsing !== "parsing"){
                             $("#noLineWarning").show();
                         }
+                        $("#transTemplateLoading").hide();
+                        $("#transcriptionTemplate").show();
                         $('#transcriptionCanvas').css('height', $("#imgTop img").height() + "px");
                         $('.lineColIndicatorArea').css('height', $("#imgTop img").height() + "px");
                         $("#imgTop").css("height", "0%");
@@ -880,7 +879,7 @@
                         $("#parsingBtn").css("box-shadow", "0px 0px 6px 5px yellow");
                     }
                 });
-            }  
+            
         }
     }
     
@@ -2933,7 +2932,6 @@ function toggleLineCol(){
 //        //console.log("saving new line...");
         if(onCanvas !== undefined && onCanvas !== ""){
             $.post(url, params, function(data){
-               {
                    //console.log("saved new line");
                    //console.log(data);
                     data=JSON.parse(data);
@@ -3045,8 +3043,9 @@ function toggleLineCol(){
                     $("#parsingCover").hide();
                     //should we write to the DB here?  This would be in support of old data.  
                 }
+                console.log("call cleanup from save line");
                 cleanupTranscriptlets(true);
-                } 
+                 
             });
         }
         else{
@@ -3277,6 +3276,7 @@ function toggleLineCol(){
             });
         } 
         //When it is just one line being removed, we need to redraw.  When its the whole column, we just delete. 
+        console.log("call cleanup from remove.  Draw: "+draw);
         cleanupTranscriptlets(draw);
     
      }
@@ -3328,6 +3328,7 @@ function toggleLineCol(){
                                 destroyPage();
                             }
                             else{
+                                console.log("call cleanup from update");
                                 cleanupTranscriptlets(true);
                             }
 
@@ -3359,6 +3360,7 @@ function toggleLineCol(){
     
     /* Re draw transcriptlets from the Annotation List information. */
     function cleanupTranscriptlets(draw) {
+        console.log("cleanup.  draw:"+draw);
         var transcriptlets = $(".transcriptlet");
           if(draw){
               transcriptlets.remove();
