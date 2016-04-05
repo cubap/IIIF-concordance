@@ -932,7 +932,10 @@ function getActiveProjectMetadata(currentProjectID){
                     var leaderTag = " (Admin) ";
                     var removeUser = ""; //cannot remove admins from group, must demote first.
                     var promoteUser = ""; //admin is already promoted, no need for this.
-                    var demoteUser = "<a class='demoteUser' title='Demote this user' onclick='demoteUser("+this.UID+", $(this));' > - </a>";
+                    var demoteUser = "";
+                    if(!this.UID == currentUser.uid){ //if this is the current user, they shouldnt be able to demote themselves.  
+                        demoteUser = "<a class='demoteUser' title='Demote this user' onclick='demoteUser("+this.UID+", $(this));' > - </a>";
+                    }
                     $('#projectMembers').append("<li userID='"+this.UID+"'><span class='userFname'>"+this.fname+" </span><span class='userLname'>"+this.lname+"</span><span style='margin-left:5px;' class='userEmail'>("+this.Uname+")</span><span class='userFname'>"+leaderTag+"</span></li>");               
                     $('#editProjectMembers').append("<li>"+promoteUser+" "+demoteUser+"<span>" + this.Uname + leaderTag + "</span>"+removeUser+"</li>");
                     addedUIDs.push(this.UID);
@@ -993,7 +996,6 @@ function getActiveProjectMetadata(currentProjectID){
             permitMetadata = publicProperties.allow_public_modify_metadata;
             permitNotes = publicProperties.allow_public_modify_notes;
             permitRead = publicProperties.allow_public_read_transcription;
-            
             
             if(permitOACr){
                 $('#OACr').attr('checked', 'checked');
