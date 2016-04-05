@@ -7,6 +7,9 @@ and open the template in the editor.
     Created on : Jan 27, 2015, 10:05:37 AM
     Author     : bhaberbe
 */
+#adduname, #addfname{
+    margin-bottom: 5px;
+}
 textarea:focus{
     outline: none;
 }
