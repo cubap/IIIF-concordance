@@ -142,6 +142,13 @@ body{
     height:400px;
     background-image: url('../images/loading2.gif');
 }
+#transTemplateLoading p{
+    position: relative;
+    display: block;
+    text-align:center;
+    top: 30px;
+    font-size: 20px;
+}
     
     .transcriptlet {
       display:block;
