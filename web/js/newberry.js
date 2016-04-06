@@ -3166,6 +3166,7 @@ function toggleLineCol(){
      * @see lineChange(e)
      * @see saveNewLine(e)
      */
+    console.log("remove line");
         $("#imageTip").hide();
         var removedLine = $(e);
         if(columnDelete){
@@ -3175,6 +3176,7 @@ function toggleLineCol(){
         }
         else{
             if ($(e).attr("lineleft") == $(e).next(".parsing").attr("lineleft")) {
+                console.log("this will be a merge....");
                 removedLine = $(e).next();
                 var removedLineHeight = removedLine.height();
                 var currentLineHeight = $(e).height();
@@ -3187,6 +3189,7 @@ function toggleLineCol(){
                     "lineheight":   convertedNewLineHeight
                 });
             } else if ($(e).hasClass("deletable")){ //&& $(".transcriptlet[lineserverid='"+$(e).attr("lineserverid")+"']").find("textarea").val().length > 0
+                console.log("this will be a delete...");
                 var cfrm = confirm("Removing this line will remove any data contained as well.\n\nContinue?");
                 if(!cfrm)return false;
                 isDestroyingLine = true;
@@ -3210,8 +3213,14 @@ function toggleLineCol(){
         //update remaining line, if needed
         $("#parsingCover").show();
         var updateText = "";
+        console.log("is the id of the line clicked "+updatedLineID+" == the next line "+lineid);
+        var removeNextLine = false;
         if (lineid !== updatedLineID){
+            console.log("No it isn't. merge");
+            removeNextLine = true;
             var updatedLine =   $(".parsing[lineserverid='"+updatedLineID+"']");
+            var removedLine1 = $(".parsing[lineserverid='"+lineid+"']");
+            var removedLine2 = $(".transcriptlet[lineserverid='"+lineid+"']");
             var toUpdate =      $(".transcriptlet[lineserverid='"+updatedLineID+"']");
             var removedText =   $(".transcriptlet[lineserverid='"+lineid+"']").find("textarea").val();
             toUpdate.find("textarea").val(function(){
@@ -3222,16 +3231,21 @@ function toggleLineCol(){
                 }
                 return thisValue;
             });
-            toUpdate.attr("lineheight", updatedLine.attr("lineheight"));
-            updateLine(toUpdate);
-        }      
+            console.log("line height for update is line clicked height "+ toUpdate.attr("lineheight") + " + line being removed height " + parseFloat(removedLine2.attr("lineheight")));
+            var lineHeightForUpdate = parseFloat(toUpdate.attr("lineheight")) + parseFloat(removedLine2.attr("lineheight"));
+            console.log(lineHeightForUpdate);
+            toUpdate.attr("lineheight", lineHeightForUpdate);   
+        }
+        else{
+            console.log("yes it is. delete!");
+        }
 
         var index = -1;
         currentFolio = parseInt(currentFolio);
         var currentAnnoList = annoLists[currentFolio -1];
         
          if(currentAnnoList !== "noList" && currentAnnoList !== "empty"){ // if it IIIF, we need to update the list
-            //console.log("Get annos for removal");
+            console.log("Get anno list");
             var annosURL = "getAnno";
                 var properties = {"@id": currentAnnoList};
                 var paramOBJ = {"content": JSON.stringify(properties)};
@@ -3239,15 +3253,23 @@ function toggleLineCol(){
                     annoList = JSON.parse(annoList);
                     var annoListID = currentAnnoList;
                     currentAnnoList = annoList[0];
-                    //console.log("got them");
+                    console.log("got it");
                     //console.log(currentAnnoList.resources);
                     $.each(currentAnnoList.resources, function(){
                         index++;
-                        //console.log(this["@id"]+" == "+lineid+"?  Index = "+index);
-                        if(this["@id"] == lineid){
+                        var lineIDToCheck = "";
+                        if(removeNextLine){
+                            lineIDToCheck = lineid;
+                            removedLine2.remove(); //remove the transcriptlet from UI
+                        }
+                        else{
+                            lineIDToCheck = updatedLineID;
+                        }
+                        console.log(this["@id"]+" == "+lineIDToCheck+"?  Index = "+index);
+                        if(this["@id"] === lineIDToCheck){
                             currentAnnoList.resources.splice(index, 1);
-                            //console.log("Delete from list " + lineid+" at index "+index+".  Then update with the new list: ");
-                            //console.log(currentAnnoList);
+                            console.log("Delete from list " + lineIDToCheck+" at index "+index+".  Then update with line removed.");
+                            console.log(currentAnnoList.resources);
                             var url = "updateAnnoList";
                             var paramObj = {"@id":annoListID, "resources": currentAnnoList.resources};
                             var params = {"content":JSON.stringify(paramObj)};
@@ -3255,8 +3277,15 @@ function toggleLineCol(){
                                 //console.log("update from delete finished");
                                 currentFolio = parseInt(currentFolio);
                                 annoLists[currentFolio - 1] = annoListID;
-                                console.log("hide cover");
-                                $("#parsingCover").hide();
+                                if(!removeNextLine){
+                                    $("#parsingCover").hide();
+                                    console.log("hide cover.");
+                                }
+                                else{
+                                    console.log("now we have to update the line that was clicked with the new line height from the one we removed.")
+                                    updateLine(toUpdate);
+                                }
+                                
                             });
                         }
                     });                       
