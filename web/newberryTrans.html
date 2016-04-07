@@ -430,8 +430,8 @@
             type: "GET",
             dataType: "json",
             success: function(data){
-                console.log("user data");
-                console.log(data);
+//                console.log("user data");
+//                console.log(data);
                 if(data.uname && data.uname !== ""){
                     user = data.uname;
                     loggedInUser = true;
@@ -601,7 +601,7 @@
                 }
             }
             else if (event.which == 18 || event.altKey){
-               console.log('ALT KEY');
+              // console.log('ALT KEY');
                var lineForEditing = $(".activeLine");
                lineForEditing.resizable();
                //alt + arrows will bump active line left and right
@@ -1029,7 +1029,7 @@
         else if (direction === "right"){
             var currentLineLeft = activeLine.css("left");
             var currentLineLeftPerc = (parseFloat(currentLineLeft) / $("#imgTop").width()) * 100;
-            console.log(currentLineLeftPerc);
+            //console.log(currentLineLeftPerc);
             if (currentLineLeftPerc < 99.7){ //no left values greater than 100
                 currentLineLeftPerc += .3;
             }   

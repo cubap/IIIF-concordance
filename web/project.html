@@ -386,7 +386,7 @@ Open the project management section for a given project ID.
               <div id="logo" style="display: inline-block;">
                   <img src="images/rp-logo.png">
               </div>
-              <span class="red">Paleography</span> <!-- <div class="newberry-slogan">A Project of the Newberry</div> -->
+              <span class="red">Paleography</span> 
             </a>
         </h1>
         <div class='pageCover'></div>
@@ -457,7 +457,6 @@ Open the project management section for a given project ID.
                                 </ul>
                                
                                 <br />
-                                <!--<div id="inviteUserBtn" class="tpenButton"><span class="ui-icon ui-icon-person right"></span>Invite to newberry</div>-->
                                 <form id="inviteUser" class="ui-corner-all" name="invite" action="project.jsp" onsubmit="return simpleFormValidation();" method="get">
                                     <input type="hidden" name="projectID" value="PROJECTID">
                                     <input type="hidden" name="selecTab" value="2">
@@ -477,7 +476,6 @@ Open the project management section for a given project ID.
                                     <div id="publicOptionsForm">
                                         <input type="hidden" value="PROJECTID">
                                         <input type="hidden" value="2" name="selecTab" />
-                                        <!--<h6>External Access</h6>-->
                                         <label for="OACr" class="publicLabel">
                                             <div class="publicDesc">
                                                 <h4 class="noBottom">Open Annotation Collaboration</h4>
@@ -500,7 +498,6 @@ Open the project management section for a given project ID.
                                                 <span class=""><span class="left ui-icon ui-icon-notice"></span>Allowing this is not recommended unless you have a specific need in mind.</span>
                                             </div>
                                         </label>
-                                        <!--<%if(permitRead)out.print("checked");%>-->
                                         <label for="readTrans" class="publicLabel">
                                             <div class="publicDesc">
                                                 <h4 class="noBottom">View Project</h4>
@@ -524,7 +521,6 @@ Open the project management section for a given project ID.
                                             </div>
                                         </label>
                                         <label for="projectCopy" class="publicLabel">
-                                            <!--<%if(permitCopy)out.print("checked");%> <%if(thisProject.containsUserUploadedManuscript())out.print("disabled title='This project contains private images.'");%>-->
                                             <div class="publicDesc">
                                                 <h4 class="noBottom">Copy Project</h4>
                                                 <input id="projectCopy" name="projectCopy" type="checkbox"  value="true" />Copy Project<br>
@@ -536,9 +532,7 @@ Open the project management section for a given project ID.
                                                 <span class=""><span class="left ui-icon ui-icon-notice"></span>Projects containing private images cannot be copied.</span>
                                             </div>
                                         </label>
-                                        <!--<h6>Public Modifications</h6>-->
                                         <label for="modNotes" class="publicLabel">
-                                            <!--<%if(permitNotes)out.print("checked");%>-->
                                             <div class="publicDesc">
                                                 <h4 class="noBottom">Modify Notes</h4>
                                                 <input id="modNotes" name="modNotes" type="checkbox"  value="true" />Modify Notes<br>
@@ -549,7 +543,6 @@ Open the project management section for a given project ID.
                                             </div>
                                         </label>
                                         <label for="modTrans" class="publicLabel">
-                                            <!--<%if(permitModify)out.print("checked");%>-->
                                             <div class="publicDesc">
                                                 <h4 class="noBottom">Modify Transcription</h4>
                                                 <input id="modTrans" name="modTrans" type="checkbox"  value="true" />Modify Transcription<br>
@@ -560,7 +553,6 @@ Open the project management section for a given project ID.
                                             </div>
                                         </label>
                                         <label for="modAnno" class="publicLabel">
-                                            <!--<%if(permitAnnotation)out.print("checked");%>-->
                                             <div class="publicDesc">
                                                 <h4 class="noBottom">Modify Annotations</h4>
                                                 <input id="modAnno" name="modAnno" type="checkbox"  value="true" />Modify Annotations<br>
@@ -571,8 +563,6 @@ Open the project management section for a given project ID.
                                             </div>
                                         </label>
                                         <label for="modParsing" class="publicLabel">
-                                            <!--<%if(permitParsing)out.print("checked");%>-->
-
                                             <div class="publicDesc">
                                                 <h4 class="noBottom">Modify Line Parsing</h4>
                                                 <input id="modParsing" name="modParsing" type="checkbox"  value="true" />Modify Line Parsing<br>
@@ -583,7 +573,6 @@ Open the project management section for a given project ID.
                                             </div>
                                         </label>
                                         <label for="modButton" class="publicLabel">
-                                            <!--<%if(permitButtons)out.print("checked");%>-->
 
                                             <div class="publicDesc">
                                                 <h4 class="noBottom">Modify Buttons</h4>
@@ -595,7 +584,6 @@ Open the project management section for a given project ID.
                                             </div>
                                         </label>
                                         <label for="modMetadata" class="publicLabel">
-                                            <!--<%if(permitMetadata)out.print("checked");%>-->
                                             <div class="publicDesc">
                                                 <h4 class="noBottom">Modify Metadata</h4>
                                                 <input id="modMetadata" name="modMetadata" type="checkbox"  value="true" />Modify Metadata<br>
@@ -611,22 +599,10 @@ Open the project management section for a given project ID.
                                 </div>
                             </li>
                             <li class="left ui-widget-content ui-corner-tr ui-corner-bl tall">
-<!--                                            <h3>Current Button Summary</h3>
-                                <h6>Special Character Buttons</h6>
-                                <div class="specialCharacters"></div>
-                                <br class="clear-left" />
-                                <h6>XML Tags</h6>
-                                <div class="xmlTags"></div>
-                               <p class="clear-left permitButtons isMember">If you wish, you can copy XML tags between projects: <a href="buttonProjectImport.jsp?a=1<%out.print(projectAppend);%>" class="ui-button tpenButton">Copy XML Tags</a></p>-->
                                <div id="specChars">
                                    <h2>Custom Characters</h2>
                                     <div class="right" style="width:50%;">
-<!--                                                    <h2>Hotkeys</h2>
-                                        <p>Enter the unicode value for each character.</p>
-                                        <a id="codeSearch" target="_blank" class="tpenButton ui-button ui-button-text-only" href="http://www.ssec.wisc.edu/~tomw/java/unicode.html"><span class="left ui-icon ui-icon-search"></span>Search for Codes</a>
-                                        <p>Buttons are mapped to the digits 1-9 on your keyboard. <span class="loud">Hold CTRL and press the corresponding number key</span> to insert one into your transcription.</p>
-                                        <p>Rearrange by clicking on the blue box and dragging to a new position. Click the X to remove a button.</p>
-                                        <p>You may add more than 9, but only the first 9 will be mapped to shortcuts.</p>-->
+
                                         <div class="noBottom" id="characterReview"><h4 class="noBottom">Current Special Characters</h4>
                                             <ul class="specialCharacters"></ul>
                                         </div>
@@ -645,10 +621,6 @@ Open the project management section for a given project ID.
                                             <ul class="xmlTags"></ul>
                                         </div>
                                     </div>
-                                    <ul id="sortable2" class="connectedSortable ui-helper-reset">
-
-
-                                    </ul>
                                     <input onclick="addnewtagcnfrm(event);" style="display: inline-block;" type="button" name="addT" value="Add a Tag" class="tpenButton ui-button" onclick="document.getElementById('selecTab').value = 1;" />
                                     <br />
                                 </div>
@@ -916,7 +888,6 @@ function populateEditableChars(specialCharacters){
     function addnewcharcnfrm(event){
          var x = event.pageX;
          var y = event.pageY;
-         
         $("<div class='optionCnfrm' id='newcharpopover'>\n\
             <p>Enter the numerical value for the special character you would like to add.</p>\n\
             <input type='text' id='newProjectChar' /><br>\n\
@@ -1007,7 +978,6 @@ function populateEditableChars(specialCharacters){
     
     
     function editchar(position){
-        // /updateProjectCharacter  projectID, position, key(int)
         var key = $("#newProjectChar").val(); //move out of editcharcnfrm into DOM
         var url = "updateProjectCharacter";
         var params = {"projectID":currentProjectID, "position":position, "key":key};
@@ -1019,7 +989,6 @@ function populateEditableChars(specialCharacters){
     }
     
     function removechar(position){
-        // /removeProjectCharaacter projectID, position
         var url = "removeProjectCharacter";
         var params = {"projectID":currentProjectID, "position":position};
         $.post(url, params, function(data){
@@ -1029,7 +998,6 @@ function populateEditableChars(specialCharacters){
     
     function editxml(position){
         var tag = $("#newProjectTag").val(); //move out of editxmlcnfrm into DOM
-        // /updateProjectTag  projectID, position, tag
         var url = "updateProjectTag";
         var params = {"projectID":currentProjectID, "position":position, "tag":tag};
         $.post(url, params, function(data){
@@ -1040,7 +1008,6 @@ function populateEditableChars(specialCharacters){
     }
     
     function removetag(position){
-        // /removeProjectTag  projectID, position
         var url = "removeProjectTag";
         var params = {"projectID":currentProjectID, "position":position};
         $.post(url, params, function(data){
@@ -1198,16 +1165,7 @@ function getActiveProjectMetadata(currentProjectID){
             
             var specialCharacters = activeProject.projectButtons;
             var xmlTags = activeProject.xml;
-            
-            //populateSpecialCharacters(specialCharacters);
-            //populateXML(xmlTags);
-            
-            console.log("Need to populate these xml:");
-            console.log(xmlTags);
             populateEditableXML(xmlTags);
-            
-            console.log("need to populate these spec chars");
-            console.log(specialCharacters);
             populateEditableChars(specialCharacters);
             
             //for all non-input areas
