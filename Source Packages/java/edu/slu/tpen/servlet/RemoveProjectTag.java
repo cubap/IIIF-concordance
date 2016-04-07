@@ -14,16 +14,16 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import textdisplay.Hotkey;
+import textdisplay.TagButton;
 
 /**
  *
  * @author bhaberbe
  */
-public class updateProjectCharacter extends HttpServlet {
+public class RemoveProjectTag extends HttpServlet {
 
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
@@ -33,11 +33,9 @@ public class updateProjectCharacter extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
-        this.doPost(request, response); 
-            
-    }   
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+            this.doPost(request, response); 
+        }   
 
     /**
      * Handles the HTTP <code>POST</code> method.
@@ -47,21 +45,17 @@ public class updateProjectCharacter extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException{
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int projectID = Integer.parseInt(request.getParameter("projectID"));
         int position = Integer.parseInt(request.getParameter("position"));
-        int newKey = Integer.parseInt(request.getParameter("key"));
         PrintWriter out = response.getWriter();
         try {
-            Hotkey keyToUpdate = new Hotkey(projectID, position, true);
-            keyToUpdate.setKey(newKey);
-            out.println("New key added");
+            TagButton buttonToDelete = new TagButton(projectID, position, true);
+            buttonToDelete.deleteTag();
+            out.println("tag deleted");
         } catch (SQLException ex) {
-            Logger.getLogger(updateProjectCharacter.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(UpdateProjectTag.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        
     }
 
     /**

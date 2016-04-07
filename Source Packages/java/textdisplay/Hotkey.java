@@ -80,6 +80,32 @@ public class Hotkey {
         }
 
     }
+    
+    /**
+     * Add a new Hotkey based on project
+     * @param code the integer keycode for the character
+     * @param uid user unique id under which this should be stored
+     * @param position position this button falls in, used to order the output of all buttons
+     * @throws SQLException
+     */
+    public Hotkey(int code, int projectID, int position, boolean hello, boolean isProject) throws SQLException {
+        String query = "insert into hotkeys(projectID, position,`key`, uid) values (?,?,?,?)";
+        Connection j = null;
+        PreparedStatement stmt = null;
+        try {
+            j = DatabaseWrapper.getConnection();
+            stmt = j.prepareStatement(query);
+            stmt.setInt(3, code);
+            stmt.setInt(1, projectID);
+            stmt.setInt(2, position);
+            stmt.setInt(4, 0);
+            stmt.execute();
+        } finally {
+            DatabaseWrapper.closeDBConnection(j);
+            DatabaseWrapper.closePreparedStatement(stmt);
+        }
+
+    }
 
     /**Get an existing Hotkey based on the current user and the key position (1-10)*/
     public Hotkey(int uid, int position) throws SQLException {

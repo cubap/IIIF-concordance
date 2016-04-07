@@ -20,7 +20,7 @@ import textdisplay.TagButton;
  *
  * @author bhaberbe
  */
-public class updateProjectTag extends HttpServlet {
+public class UpdateProjectTag extends HttpServlet {
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -57,7 +57,7 @@ public class updateProjectTag extends HttpServlet {
             buttonToUpdate.setTag(newTag);
             out.println("Tag updated");
         } catch (SQLException ex) {
-            Logger.getLogger(updateProjectTag.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(UpdateProjectTag.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

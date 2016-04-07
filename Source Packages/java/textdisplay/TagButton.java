@@ -523,7 +523,7 @@ public class TagButton {
       if (!caller) {
          LOG.log(Level.SEVERE, "{0} Running tagButton.getAllProjectButtons\n{1}", new Object[]{formatter.format(date), stackTrace});
       }
-      return getDescription()+",";
+      return getTag();
    }
 
    /**
@@ -635,7 +635,7 @@ public class TagButton {
                 ctr++;
                 JSONObject jo = new JSONObject();
                 jo.element("position", rs.getInt("position"));
-                jo.element("description", b.getButton());
+                jo.element("tag", b.getButton());
                 ja.add(jo);
             } catch (NullPointerException e) {
             }

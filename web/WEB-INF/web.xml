@@ -188,20 +188,28 @@
         <servlet-class>edu.slu.tpen.servlet.UpdateMetadataByProjectIDServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>updateProjectCharacter</servlet-name>
-        <servlet-class>edu.slu.tpen.servlet.updateProjectCharacter</servlet-class>
+        <servlet-name>UpdateProjectCharacter</servlet-name>
+        <servlet-class>edu.slu.tpen.servlet.UpdateProjectCharacter</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>removeProjectCharacter</servlet-name>
-        <servlet-class>edu.slu.tpen.servlet.removeProjectCharacter</servlet-class>
+        <servlet-name>RemoveProjectCharacter</servlet-name>
+        <servlet-class>edu.slu.tpen.servlet.RemoveProjectCharacter</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>updateProjectTag</servlet-name>
-        <servlet-class>edu.slu.tpen.servlet.updateProjectTag</servlet-class>
+        <servlet-name>UpdateProjectTag</servlet-name>
+        <servlet-class>edu.slu.tpen.servlet.UpdateProjectTag</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>removeProjectTag</servlet-name>
-        <servlet-class>edu.slu.tpen.servlet.removeProjectTag</servlet-class>
+        <servlet-name>RemoveProjectTag</servlet-name>
+        <servlet-class>edu.slu.tpen.servlet.RemoveProjectTag</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>SaveNewProjectCharacter</servlet-name>
+        <servlet-class>edu.slu.tpen.servlet.SaveNewProjectCharacter</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>SaveNewProjectXML</servlet-name>
+        <servlet-class>edu.slu.tpen.servlet.SaveNewProjectXML</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>imageResize</servlet-name>
@@ -575,20 +583,28 @@
     </servlet-mapping>
     <!-- tpen webservices for newberry ends -->
     <servlet-mapping>
-        <servlet-name>updateProjectCharacter</servlet-name>
+        <servlet-name>UpdateProjectCharacter</servlet-name>
         <url-pattern>/updateProjectCharacter</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>removeProjectCharacter</servlet-name>
+        <servlet-name>RemoveProjectCharacter</servlet-name>
         <url-pattern>/removeProjectCharacter</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>updateProjectTag</servlet-name>
+        <servlet-name>UpdateProjectTag</servlet-name>
         <url-pattern>/updateProjectTag</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>removeProjectTag</servlet-name>
+        <servlet-name>RemoveProjectTag</servlet-name>
         <url-pattern>/removeProjectTag</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SaveNewProjectCharacter</servlet-name>
+        <url-pattern>/saveNewProjectCharacter</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SaveNewProjectXML</servlet-name>
+        <url-pattern>/saveNewProjectXML</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>3000</session-timeout>

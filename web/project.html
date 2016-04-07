@@ -628,13 +628,13 @@ Open the project management section for a given project ID.
                                         <p>Rearrange by clicking on the blue box and dragging to a new position. Click the X to remove a button.</p>
                                         <p>You may add more than 9, but only the first 9 will be mapped to shortcuts.</p>-->
                                         <div class="noBottom" id="characterReview"><h4 class="noBottom">Current Special Characters</h4>
-                                            <div class="specialCharacters"></div>
+                                            <ul class="specialCharacters"></ul>
                                         </div>
                                     </div>
                                         <ul id="sortable1" class="connectedSortable ui-helper-reset">
 
                                     </ul>
-                                    <input style="display: inline-block;" type="button" id="addH" name="addH" class="tpenButton ui-button" value="Add a Button"/>
+                                    <input onclick="addnewcharcnfrm(event);" style="display: inline-block;" type="button" name="addH" class="tpenButton ui-button" value="Add a Character"/>
                                     <input style="display: inline-block;" type="submit" id="update" name="update" value="Save Changes" class="tpenButton ui-button"/><br><br>
                                 </div>
                                 <div id="custXML">
@@ -643,14 +643,14 @@ Open the project management section for a given project ID.
                                         <p>Add each tag without &lsaquo;angle brackets&rsaquo;, any parameters including &quot;quotes&quot; in the next 5 fields, and a description in the final field. Text in the <span class="loud">"description"</span> field will become the title of your button. Seek conciseness.</p>
                                         <p>Rearrange by clicking on the blue box and dragging. Click the "X" icon to remove a button from the list. Add as many buttons as is useful. You will access them through the footer menu.</p>
                                         <div id="xmlReview"><h4 class="noBottom">Current Tags</h4>
-                                            <div class="xmlTags"></div>
+                                            <ul class="xmlTags"></ul>
                                         </div>
                                     </div>
                                     <ul id="sortable2" class="connectedSortable ui-helper-reset">
 
 
                                     </ul>
-                                    <input style="display: inline-block;" type="button" id="addT" name="addT" value="Add a Tag" class="tpenButton ui-button" onclick="document.getElementById('selecTab').value = 1;" />
+                                    <input onclick="addnewtagcnfrm(event);" style="display: inline-block;" type="button" name="addT" value="Add a Tag" class="tpenButton ui-button" onclick="document.getElementById('selecTab').value = 1;" />
                                     <input style="display: inline-block;" type="submit" onclick="document.getElementById('selecTab').value = 1;" id="update" name="update" value="Save Changes" class="tpenButton ui-button"/><br><br>
                                     <br />
                                 </div>
@@ -880,8 +880,8 @@ function populateEditableXML(xmlTags){
     var tagsInOrder = [];
     for (var tag = 0; tag < xmlTags.length; tag++){ 
         var newTagBtn = xmlTags[tag];
-        if(newTagBtn.description!=="" && newTagBtn.description!==" "){
-             tagsInOrder.push("<li position='"+newTagBtn.position+"' onclick=\"editxmlcnfrm("+newTagBtn.position+", event);\">"+newTagBtn.description+"\
+        if(newTagBtn.tag!=="" && newTagBtn.tag!==" "){
+             tagsInOrder.push("<li class='projectTag' position='"+newTagBtn.position+"' onclick='editxmlcnfrm("+newTagBtn.position+", event);'>"+newTagBtn.tag+"\n\
                 <span class='removechar' onclick=\"removetagcnfrm("+newTagBtn.position+");\">X</span></li>");
         }
     }
@@ -902,8 +902,7 @@ function populateEditableChars(specialCharacters){
             else{
                 var keyVal = thisChar.key;
                 var position2 = parseInt(thisChar.position);
-                var newCharacter = "<li position='"+position2+"' onclick=\"editcharcnfrm('"+position2+"', event);\"  class='character'>&#"+keyVal+";  \n\
-                    <span class='removechar' onclick=\"removecharcnfrm("+position2+");\">X</span></li>";
+                var newCharacter = $("<li position='"+position2+"' onclick='editcharcnfrm("+position2+", event);'  class='character'>&#"+keyVal+";<span class='removechar' onclick='removecharcnfrm("+position2+");'>X</span></li>");
                 if(position2-1 >= 0 && (position2-1) < specialCharacters.length){
                     speCharactersInOrder[position2-1] = newCharacter; 
                 }
@@ -911,20 +910,73 @@ function populateEditableChars(specialCharacters){
 
         }
         $.each(speCharactersInOrder, function(){
-            var button1 = $(''+this);
+            var button1 = this;
             $(".specialCharacters").append(button1);
         });
     }
     
-    function editcharcnfrm(position, event){
+    function addnewcharcnfrm(event){
+         var x = event.pageX;
+         var y = event.pageY;
+         
+        $("<div class='optionCnfrm' id='newcharpopover'>\n\
+            <p>Enter the numerical value for the special character you would like to add.</p>\n\
+            <input type='text' id='newProjectChar' /><br>\n\
+            <input type='button' value='Save Character' class='tpenButton' onclick='addnewchar();'/>\n\
+            <input type='button' value='Cancel' class='tpenButton' onclick='$(this).parent().remove();'/>\n\
+            </div>").appendTo("body").css("top",y).css("left",x);
+    }
+    
+    function addnewtagcnfrm(event){
         var x = event.pageX;
         var y = event.pageY;
-        $("<div id='editcharpopover'>\n\
+        $("<div class='optionCnfrm' id='newtagpopover'>\n\
+            <p>Enter the word you would like this tag to be then enter a description for it (optional).</p>\n\
+            <span>Tag: </span><input type='text' id='newProjectTag' /><br>\n\
+            <span>Description:</span><input type='text' id='newProjectTagDescr' /><br>\n\
+            <input type='button' value='Save Tag' class='tpenButton' onclick='addnewtag();'/>\n\
+            <input type='button' value='Cancel' class='tpenButton' onclick='$(this).parent().remove();'/>\n\
+            </div>").appendTo("body").css("top",y).css("left",x);
+    }
+    
+    function addnewchar(){
+        var code = $("#newProjectChar").val(); //move out of editcharcnfrm into DOM
+        var position = parseInt($(".character:last").attr("position"))+1;
+        var url = "saveNewProjectCharacter";
+        var params = {"projectID":currentProjectID, "position":position, "code":code};
+        $.post(url, params, function(data){
+            var newBtn = $(data);
+            $("#newcharpopover").remove();
+            position -=1;
+            $(".specialCharacters").children("li[position='"+position+"']").after(newBtn);
+        });
+    }
+    
+    function addnewtag(){
+        var tag = $("#newProjectTag").val(); //move out of editcharcnfrm into DOM
+        var description = $("#newProjectTagDescr").val(); //move out of editcharcnfrm into DOM
+        var position = parseInt($(".projectTag:last").attr("position"))+1;
+        var url = "saveNewProjectXML";
+        var params = {"projectID":currentProjectID, "position":position, "tag":tag, "description":description};
+        $.post(url, params, function(data){
+            var newBtn = $(data);
+            $("#newtagpopover").remove();
+            position -=1;
+            $(".xmlTags").children("li[position='"+position+"']").after(newBtn);
+        });
+    }
+    
+    function editcharcnfrm(position, event){
+        if (event.target.tagName === "span") return false;
+        var x = event.pageX;
+        var y = event.pageY;
+        $("<div class='optionCnfrm' id='editcharpopover'>\n\
             <p>Enter the word below that you would like this tag to be.</p>\n\
-            <input type='text' id='newProjectChar' />\n\
+            <span>New Code: </span> <input type='text' id='newProjectChar' />\n\
             <input type='button' value='Update Character' class='tpenButton' onclick='editchar("+position+");'/>\n\
             <input type='button' value='Cancel' class='tpenButton' onclick='$(this).parent().remove();'/>\n\
             </div>").appendTo("body").css("top",y).css("left",x);
+        
     }
     
     function removecharcnfrm(position){
@@ -936,12 +988,13 @@ function populateEditableChars(specialCharacters){
     }
     
     function editxmlcnfrm(position, event){
+        if (event.target.tagName === "span") return false;
         var x = event.pageX;
         var y = event.pageY;       
-        $("<div id='editxmlpopover'>\n\
+        $("<div class='optionCnfrm' id='editxmlpopover'>\n\
             <p>Enter the word below that you would like this tag to be.</p>\n\
-            <input type='text' id='newProjectTag' />\n\
-            <input type='button' value='Update Tag' class='tpenButton' onclick='editxml("+position+");'\n\
+            <span>New Tag: </span><input type='text' id='newProjectTag' />\n\
+            <input type='button' value='Update Tag' class='tpenButton' onclick='editxml("+position+");'/>\n\
             <input type='button' value='Cancel' class='tpenButton' onclick='$(this).parent().remove();'/>\n\
             </div>").appendTo("body").css("top",y).css("left",x);
     }
@@ -962,6 +1015,8 @@ function populateEditableChars(specialCharacters){
         var params = {"projectID":currentProjectID, "position":position, "key":key};
         $.post(url, params, function(data){
             $("#editcharpopover").remove();
+            var newCharacter = $("<li position='"+position+"' onclick=\"editcharcnfrm('"+position+"', event);\"  class='character'>&#"+key+"; <span class='removechar' onclick=\"removecharcnfrm("+position+");\">X</span></li>");
+            $(".specialCharacters").children("li[position='"+position+"']").replaceWith(newCharacter);
         });
     }
     
@@ -970,7 +1025,7 @@ function populateEditableChars(specialCharacters){
         var url = "removeProjectCharacter";
         var params = {"projectID":currentProjectID, "position":position};
         $.post(url, params, function(data){
-            
+            $(".specialCharacters").children("li[position='"+position+"']").remove();
         });
     }
     
@@ -981,6 +1036,8 @@ function populateEditableChars(specialCharacters){
         var params = {"projectID":currentProjectID, "position":position, "tag":tag};
         $.post(url, params, function(data){
             $("#editxmlpopover").remove();
+            var newxml = $("<li class='projectTag' position='"+position+"' onclick=\"editxmlcnfrm("+position+", event);\">"+tag+"<span class='removechar' onclick=\"removetagcnfrm("+position+");\">X</span></li>");
+            $(".xmlTags").children("li[position='"+position+"']").replaceWith(newxml);
         });
     }
     
@@ -989,7 +1046,7 @@ function populateEditableChars(specialCharacters){
         var url = "removeProjectTag";
         var params = {"projectID":currentProjectID, "position":position};
         $.post(url, params, function(data){
-            
+            $(".xmlTags").children("li[position='"+position+"']").remove();
         });
     }
 
@@ -1572,60 +1629,60 @@ $(function() {
             "height":   "100%"
         });
         
-        $("#addT").click(function(){
-        var addTagData = {projectID:currentProjectID};
-        $.post("addTag", $.param(addTagData),function(data){
-            var position = data;    //tag position from servlet
-            $(".xmlTags").children("li").eq(-1).clone(true).html("New Tag").attr("position", position).appendTo($(".xmlTags"));
-//            .children("input.description").attr("name", "description"+position).val("New Tag").end()
-//                    .children("input.colors").attr("name","xmlColor"+position).val("black").end()
-//            .children(".xmlParams").find("input").each(function(index,param){
-//                var rename = (index > 0) ? "b"+position+"p"+index :  "b"+position;
-//                $(param).attr("name", rename).val("");
-//            });
-        },"html");           
-    });
-    
-    $("#addH").click(function(){
-        var addHotkeyData = {projectID:currentProjectID};
-        $.post("addHotkey", $.param(addHotkeyData),function(data){
-            var position = data;    //tag position from servlet
-            $("#sortable1").children("li").eq(-1).clone(true).appendTo($("#sortable1"))
-            .children("input.label").attr("id", "a"+position+"a").val("-").end()
-            .children("input.shrink").attr({
-                "name":"a"+position,
-                "id":"a"+position
-            }).val("42").end()
-            .children("a").attr("onclick","deleteHotkey("+position+");");
-        },"html");           
-    });
-    $( "#sortable1, #sortable2" ).sortable({
-        connectWith: ".connectedSortable",
-        placeholder: "ui-state-highlight ui-state-disabled",
-        axis:'y'
-    })
-    .css("cursor","move");
-    
-    $(".tag").children('input').change(function(){
-        unsavedAlert('#tabs-2');
-        isValidTag(this);
-    });
-    $(".moreParameters").click(function(){
-        $(this)
-            .hide()
-            .parent().next().slideDown();
-    });
-    $(".xmlPanel").focusin(function() {
-        $(".xmlPanel").not(this).each(function(){collapsePanel(this);});
-        expandPanel(this);
-    });
-    $('.toggleXML').click(function(){
-        if ($(this).hasClass("ui-icon-arrow-4")) {
-            expandPanel($(this).parent("li"));
-        } else {
-            collapsePanel($(this).parent("li"));
-        }
-    });
+//        $("#addT").click(function(){
+//        var addTagData = {projectID:currentProjectID};
+//        $.post("addTag", $.param(addTagData),function(data){
+//            var position = data;    //tag position from servlet
+//            $(".xmlTags").children("li").eq(-1).clone(true).html("New Tag").attr("position", position).appendTo($(".xmlTags"));
+////            .children("input.description").attr("name", "description"+position).val("New Tag").end()
+////                    .children("input.colors").attr("name","xmlColor"+position).val("black").end()
+////            .children(".xmlParams").find("input").each(function(index,param){
+////                var rename = (index > 0) ? "b"+position+"p"+index :  "b"+position;
+////                $(param).attr("name", rename).val("");
+////            });
+//        },"html");           
+//    });
+//    
+//    $("#addH").click(function(){
+//        var addHotkeyData = {projectID:currentProjectID};
+//        $.post("addHotkey", $.param(addHotkeyData),function(data){
+//            var position = data;    //tag position from servlet
+//            $("#sortable1").children("li").eq(-1).clone(true).appendTo($("#sortable1"))
+//            .children("input.label").attr("id", "a"+position+"a").val("-").end()
+//            .children("input.shrink").attr({
+//                "name":"a"+position,
+//                "id":"a"+position
+//            }).val("42").end()
+//            .children("a").attr("onclick","deleteHotkey("+position+");");
+//        },"html");           
+//    });
+//    $( "#sortable1, #sortable2" ).sortable({
+//        connectWith: ".connectedSortable",
+//        placeholder: "ui-state-highlight ui-state-disabled",
+//        axis:'y'
+//    })
+//    .css("cursor","move");
+//    
+//    $(".tag").children('input').change(function(){
+//        unsavedAlert('#tabs-2');
+//        isValidTag(this);
+//    });
+//    $(".moreParameters").click(function(){
+//        $(this)
+//            .hide()
+//            .parent().next().slideDown();
+//    });
+//    $(".xmlPanel").focusin(function() {
+//        $(".xmlPanel").not(this).each(function(){collapsePanel(this);});
+//        expandPanel(this);
+//    });
+//    $('.toggleXML').click(function(){
+//        if ($(this).hasClass("ui-icon-arrow-4")) {
+//            expandPanel($(this).parent("li"));
+//        } else {
+//            collapsePanel($(this).parent("li"));
+//        }
+//    });
 });
 
     function navigateTo(dropdown){

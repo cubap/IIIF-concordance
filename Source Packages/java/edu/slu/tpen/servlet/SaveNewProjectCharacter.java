@@ -20,11 +20,10 @@ import textdisplay.Hotkey;
  *
  * @author bhaberbe
  */
-public class removeProjectCharacter extends HttpServlet {
+public class SaveNewProjectCharacter extends HttpServlet {
 
 
-
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
@@ -34,11 +33,9 @@ public class removeProjectCharacter extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
-        this.doPost(request, response); 
-            
-    }   
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+            this.doPost(request, response); 
+        }   
 
     /**
      * Handles the HTTP <code>POST</code> method.
@@ -48,17 +45,18 @@ public class removeProjectCharacter extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int projectID = Integer.parseInt(request.getParameter("projectID"));
         int position = Integer.parseInt(request.getParameter("position"));
+        int code = Integer.parseInt(request.getParameter("code"));
+        String sendOut = "";
         PrintWriter out = response.getWriter();
         try {
-            Hotkey keyToDelete = new Hotkey(projectID, position, true);
-            keyToDelete.delete();
-            out.println("Key deleted");
+            Hotkey newButton = new Hotkey(code, projectID, position, true, true);
+            sendOut = "<li position='"+position+"' onclick=\"editcharcnfrm('"+position+"', event);\"  class='character'>&#"+code+"; <span class='removechar' onclick=\"removecharcnfrm("+position+");\">X</span></li>";
+            out.println(sendOut);
         } catch (SQLException ex) {
-            Logger.getLogger(updateProjectCharacter.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(UpdateProjectTag.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
