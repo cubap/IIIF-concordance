@@ -876,14 +876,19 @@ function showTeamMemberManagement(){
 }
 
 function populateEditableXML(xmlTags){
-    xmlTags = xmlTags.split("</span>"); // make a array by </span?
+    xmlTags = JSON.parse(xmlTags); // make a array by </span?
     var tagsInOrder = [];
     for (var tag = 0; tag < xmlTags.length; tag++){ 
         var newTagBtn = xmlTags[tag];
-        if(newTagBtn!=="" && newTagBtn!==" "){
-             tagsInOrder.push(newTagBtn + "</span>");
+        if(newTagBtn.description!=="" && newTagBtn.description!==" "){
+             tagsInOrder.push("<li position='"+newTagBtn.position+"' onclick=\"editxmlcnfrm("+newTagBtn.position+", event);\">"+newTagBtn.description+"\
+                <span class='removechar' onclick=\"removetagcnfrm("+newTagBtn.position+");\">X</span></li>");
         }
     }
+    $.each(tagsInOrder, function(){
+        var button2 = $(''+this);
+        $(".xmlTags").append(button2);
+    }); 
 }
     
 function populateEditableChars(specialCharacters){
@@ -897,13 +902,95 @@ function populateEditableChars(specialCharacters){
             else{
                 var keyVal = thisChar.key;
                 var position2 = parseInt(thisChar.position);
-                var newCharacter = "<button onclick=\"addchar('&#"+keyVal+";');\" class='character'>&#"+keyVal+";</button>";
+                var newCharacter = "<li position='"+position2+"' onclick=\"editcharcnfrm('"+position2+"', event);\"  class='character'>&#"+keyVal+";  \n\
+                    <span class='removechar' onclick=\"removecharcnfrm("+position2+");\">X</span></li>";
                 if(position2-1 >= 0 && (position2-1) < specialCharacters.length){
                     speCharactersInOrder[position2-1] = newCharacter; 
                 }
             }
 
         }
+        $.each(speCharactersInOrder, function(){
+            var button1 = $(''+this);
+            $(".specialCharacters").append(button1);
+        });
+    }
+    
+    function editcharcnfrm(position, event){
+        var x = event.pageX;
+        var y = event.pageY;
+        $("<div id='editcharpopover'>\n\
+            <p>Enter the word below that you would like this tag to be.</p>\n\
+            <input type='text' id='newProjectChar' />\n\
+            <input type='button' value='Update Character' class='tpenButton' onclick='editchar("+position+");'/>\n\
+            <input type='button' value='Cancel' class='tpenButton' onclick='$(this).parent().remove();'/>\n\
+            </div>").appendTo("body").css("top",y).css("left",x);
+    }
+    
+    function removecharcnfrm(position){
+        var cfrm = confirm("Click OK to delete this character from the project.");
+        if(!cfrm)return false;
+        else{
+            removechar(position);
+        }
+    }
+    
+    function editxmlcnfrm(position, event){
+        var x = event.pageX;
+        var y = event.pageY;       
+        $("<div id='editxmlpopover'>\n\
+            <p>Enter the word below that you would like this tag to be.</p>\n\
+            <input type='text' id='newProjectTag' />\n\
+            <input type='button' value='Update Tag' class='tpenButton' onclick='editxml("+position+");'\n\
+            <input type='button' value='Cancel' class='tpenButton' onclick='$(this).parent().remove();'/>\n\
+            </div>").appendTo("body").css("top",y).css("left",x);
+    }
+    
+    function removetagcnfrm(position){
+        var cfrm = confirm("Click OK to delete this tag from the project.");
+        if(!cfrm)return false;
+        else{
+            removetag(position);
+        }
+    }
+    
+    
+    function editchar(position){
+        // /updateProjectCharacter  projectID, position, key(int)
+        var key = $("#newProjectChar").val(); //move out of editcharcnfrm into DOM
+        var url = "updateProjectCharacter";
+        var params = {"projectID":currentProjectID, "position":position, "key":key};
+        $.post(url, params, function(data){
+            $("#editcharpopover").remove();
+        });
+    }
+    
+    function removechar(position){
+        // /removeProjectCharaacter projectID, position
+        var url = "removeProjectCharacter";
+        var params = {"projectID":currentProjectID, "position":position};
+        $.post(url, params, function(data){
+            
+        });
+    }
+    
+    function editxml(position){
+        var tag = $("#newProjectTag").val(); //move out of editxmlcnfrm into DOM
+        // /updateProjectTag  projectID, position, tag
+        var url = "updateProjectTag";
+        var params = {"projectID":currentProjectID, "position":position, "tag":tag};
+        $.post(url, params, function(data){
+            $("#editxmlpopover").remove();
+        });
+    }
+    
+    function removetag(position){
+        // /removeProjectTag  projectID, position
+        var url = "removeProjectTag";
+        var params = {"projectID":currentProjectID, "position":position};
+        $.post(url, params, function(data){
+            
+        });
     }
 
 function getActiveProjectMetadata(currentProjectID){
@@ -1056,10 +1143,16 @@ function getActiveProjectMetadata(currentProjectID){
             
             var specialCharacters = activeProject.projectButtons;
             var xmlTags = activeProject.xml;
-            populateSpecialCharacters(specialCharacters);
-            populateXML(xmlTags);
             
+            //populateSpecialCharacters(specialCharacters);
+            //populateXML(xmlTags);
+            
+            console.log("Need to populate these xml:");
+            console.log(xmlTags);
             populateEditableXML(xmlTags);
+            
+            console.log("need to populate these spec chars");
+            console.log(specialCharacters);
             populateEditableChars(specialCharacters);
             
             //for all non-input areas
@@ -1480,21 +1573,21 @@ $(function() {
         });
         
         $("#addT").click(function(){
-        var addTagData = {projectID:projectID};
+        var addTagData = {projectID:currentProjectID};
         $.post("addTag", $.param(addTagData),function(data){
             var position = data;    //tag position from servlet
-            $("#sortable2").children("li").eq(-1).clone(true).appendTo($("#sortable2"))
-            .children("input.description").attr("name", "description"+position).val("New Tag").end()
+            $(".xmlTags").children("li").eq(-1).clone(true).html("New Tag").attr("position", position).appendTo($(".xmlTags"));
+//            .children("input.description").attr("name", "description"+position).val("New Tag").end()
 //                    .children("input.colors").attr("name","xmlColor"+position).val("black").end()
-            .children(".xmlParams").find("input").each(function(index,param){
-                var rename = (index > 0) ? "b"+position+"p"+index :  "b"+position;
-                $(param).attr("name", rename).val("");
-            });
-            $("[name='b"+position+"']").val("New Tag");                        
+//            .children(".xmlParams").find("input").each(function(index,param){
+//                var rename = (index > 0) ? "b"+position+"p"+index :  "b"+position;
+//                $(param).attr("name", rename).val("");
+//            });
         },"html");           
     });
+    
     $("#addH").click(function(){
-        var addHotkeyData = {projectID:projectID};
+        var addHotkeyData = {projectID:currentProjectID};
         $.post("addHotkey", $.param(addHotkeyData),function(data){
             var position = data;    //tag position from servlet
             $("#sortable1").children("li").eq(-1).clone(true).appendTo($("#sortable1"))

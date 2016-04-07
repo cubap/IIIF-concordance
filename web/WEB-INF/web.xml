@@ -187,6 +187,22 @@
         <servlet-name>updateMetadataByProjectIDServlet</servlet-name>
         <servlet-class>edu.slu.tpen.servlet.UpdateMetadataByProjectIDServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>updateProjectCharacter</servlet-name>
+        <servlet-class>edu.slu.tpen.servlet.updateProjectCharacter</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>removeProjectCharacter</servlet-name>
+        <servlet-class>edu.slu.tpen.servlet.removeProjectCharacter</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>updateProjectTag</servlet-name>
+        <servlet-class>edu.slu.tpen.servlet.updateProjectTag</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>removeProjectTag</servlet-name>
+        <servlet-class>edu.slu.tpen.servlet.removeProjectTag</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>imageResize</servlet-name>
         <url-pattern>/imageResize</url-pattern>
@@ -440,7 +456,7 @@
         <servlet-name>LogoutHookServlet</servlet-name>
         <servlet-class>edu.slu.tpen.servlet.LogoutHookServlet</servlet-class>
     </servlet>
-<!-- Depricated.  This turned in to CopyProjectAndAnnos    
+    <!-- Depricated.  This turned in to CopyProjectAndAnnos    
     <servlet>
         <servlet-name>copyProjWithAnnoServlet</servlet-name>
         <servlet-class>edu.slu.tpen.servlet.CopyProjWithAnnoServlet</servlet-class>
@@ -558,6 +574,22 @@
         <url-pattern>/copyProjectWithAnnotations</url-pattern>
     </servlet-mapping>
     <!-- tpen webservices for newberry ends -->
+    <servlet-mapping>
+        <servlet-name>updateProjectCharacter</servlet-name>
+        <url-pattern>/updateProjectCharacter</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>removeProjectCharacter</servlet-name>
+        <url-pattern>/removeProjectCharacter</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>updateProjectTag</servlet-name>
+        <url-pattern>/updateProjectTag</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>removeProjectTag</servlet-name>
+        <url-pattern>/removeProjectTag</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>3000</session-timeout>
     </session-config>

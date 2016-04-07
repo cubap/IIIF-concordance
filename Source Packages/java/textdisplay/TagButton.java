@@ -33,6 +33,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.transform.stream.StreamSource;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.Serializer;
@@ -521,7 +523,7 @@ public class TagButton {
       if (!caller) {
          LOG.log(Level.SEVERE, "{0} Running tagButton.getAllProjectButtons\n{1}", new Object[]{formatter.format(date), stackTrace});
       }
-      return "<span class=\"lookLikeButtons\" title=\"" + getFullTag() + "\" onclick=\"Interaction.insertTag('" + tag + "', '" + getFullTag() + "');\">" + getDescription() + "</span>";
+      return getDescription()+",";
    }
 
    /**
@@ -625,11 +627,16 @@ public class TagButton {
          stmt.setInt(1, projectID);
          ResultSet rs = stmt.executeQuery();
          int ctr = 0;
+         JSONArray ja = new JSONArray();
          while (rs.next()) {
             int position = rs.getInt("position");
             try {
                TagButton b = new TagButton(projectID, position, true);
-               toret += b.getButton();
+                ctr++;
+                JSONObject jo = new JSONObject();
+                jo.element("position", rs.getInt("position"));
+                jo.element("description", b.getButton());
+                ja.add(jo);
             } catch (NullPointerException e) {
             }
             ctr++;
@@ -640,7 +647,7 @@ public class TagButton {
 //            b = new TagButton(projectID, 3, "temp", true, "button description");
 //            b = new TagButton(projectID, 4, "temp", true, "button description");
          }
-         return toret;
+         return ja.toString();
       } finally {
          DatabaseWrapper.closeDBConnection(j);
          DatabaseWrapper.closePreparedStatement(stmt);

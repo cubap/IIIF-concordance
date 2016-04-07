@@ -145,7 +145,6 @@ public class Hotkey {
         PreparedStatement stmt = null;
         try {
             j = DatabaseWrapper.getConnection();
-
             stmt = j.prepareStatement(query);
             stmt.setInt(1, projectID);
             ResultSet rs = stmt.executeQuery();
@@ -315,7 +314,7 @@ public class Hotkey {
                 int button = rs.getInt("position") + buttonOffset;
                 //toret+="<script>if(pressedkey=="+(buttonOffset+rs.getInt("position"))+"){addchar('&#"+rs.getInt("key")+";');  return false;}</script>";
                 vars += "var char" + button + "=\"" + rs.getInt("key") + "\";\n";
-                toret += "<span class=\"lookLikeButtons\"  onclick=\"Interaction.addchar('&#" + rs.getInt("key") + ";');\">&#" + rs.getInt("key") + ";<sup>" + rs.getInt("position") + "</sup></span>";
+                toret += "&#" + rs.getInt("key");
             }
             if (ctr == 0) {
 
@@ -331,7 +330,7 @@ public class Hotkey {
                 return this.javascriptToAddButtons(uid);
             }
             vars += "</script>";
-            return vars + toret;
+            return toret;
         } finally {
             DatabaseWrapper.closeDBConnection(j);
             DatabaseWrapper.closePreparedStatement(stmt);

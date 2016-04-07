@@ -330,12 +330,12 @@
     }
     
     function populateXML(xmlTags){
-        xmlTags = xmlTags.split("</span>"); 
+        xmlTags = xmlTags.split(","); 
         var tagsInOrder = [];
         for (var tag = 0; tag < xmlTags.length; tag++){
             var newTagBtn = xmlTags[tag];
             if(newTagBtn!=="" && newTagBtn!==" "){
-                 tagsInOrder.push("<option>"+newTagBtn + "</span></option>");
+                 tagsInOrder.push("<option>"+newTagBtn + "</option>");
             }
             //tagsInOrder[position1] = newTagBtn;
         }
@@ -3191,7 +3191,10 @@ function toggleLineCol(){
             } else if ($(e).hasClass("deletable")){ //&& $(".transcriptlet[lineserverid='"+$(e).attr("lineserverid")+"']").find("textarea").val().length > 0
                 console.log("this will be a delete...");
                 var cfrm = confirm("Removing this line will remove any data contained as well.\n\nContinue?");
-                if(!cfrm)return false;
+                if(!cfrm){
+                    $("#parsingCover").hide();
+                    return false;
+                }
                 isDestroyingLine = true;
             } 
             var params = new Array({name:"remove",value:removedLine.attr("lineserverid")});
