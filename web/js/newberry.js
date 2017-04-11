@@ -419,6 +419,7 @@
                                         var projectTitle = projectData.label;
                                         $("#trimTitle").html(projectTitle);
                                         $("#trimTitle").attr("title", projectTitle);
+                                        
                                         $('#transcriptionTemplate').css("display", "inline-block");
                                         $('#setTranscriptionObjectArea').hide();
                                         $(".instructions").hide();
@@ -460,8 +461,8 @@
                             }
                             count++;
                         });
-                        populateSpecialCharacters(activeProject.projectButtons);
-                        populateXML(activeProject.xml);
+                        //populateSpecialCharacters(activeProject.projectButtons);
+                        //populateXML(activeProject.xml);
                     },
                     error: function(jqXHR,error, errorThrown) {  
                             if(jqXHR.status && jqXHR.status==400){
@@ -622,8 +623,8 @@
                                 }
                                 count++;
                             });
-                            populateSpecialCharacters(activeProject.projectButtons);
-                            populateXML(activeProject.xml);
+                            //populateSpecialCharacters(activeProject.projectButtons);
+                            //populateXML(activeProject.xml);
                         },
                         error: function(jqXHR,error, errorThrown) {  
                                     if(jqXHR.status && jqXHR.status==400){
@@ -718,6 +719,7 @@
         var pageTitle = canvasObj.label;
         $("#trimPage").html(pageTitle);
         $("#trimPage").attr("title", pageTitle);
+        $("option[val='"+pageTitle+"']").prop("selected", true).attr("selected",true);
         $('#transcriptionTemplate').css("display", "inline-block");
         $("#parsingBtn").css("box-shadow", "none");
         $("#parsingButton").removeAttr('disabled');
@@ -801,6 +803,8 @@
                 }
             }
             linesToScreen(lines);
+            $("#transTemplateLoading").hide();
+            $("#transcriptionTemplate").show();
         }
         else{ //we have the anno list for this canvas (potentially), so query for it.  If not found, then consider this an empty canvas.
                 var annosURL = "getAnno";
@@ -1032,17 +1036,21 @@
                     }
                     else{
                         //ERROR! Malformed line
-                        update = false;
+                        //update = false;
+                        continue;
                     }
                 }
                 else{
                     //ERROR! Malformed line
-                    update = false;
+                    //update = false;
+                    continue;
                 }
             }
             else{
-                //ERROR!  Malformed line.
-                update = false;
+                //ERROR!  Malformed line.  No coordinates. skip it. take it out of our cached lines.
+                //lines.splice(i, 1);
+                //update = false;
+                continue;
             }
             
             if(line.resource['cnt:chars'] !== undefined && line.resource['cnt:chars'] !== "" && line.resource['cnt:chars'] != "Enter a line transcription"){
@@ -1051,6 +1059,7 @@
 
                 counter=parseInt(counter);
                 counter += 1;
+                //BH thisContent needs to be html safe text.
                 var newAnno = $('<div id="transcriptlet_'+counter+'" col="'+col+'" colLineNum="'+colCounter+'" lineID="'+counter+'" lineserverid="'+lineID+'" class="transcriptlet" data-answer="' + thisContent + '"><textarea placeholder="' + thisPlaceholder + '">'+thisContent+'</textarea></div>');
                 var left = parseFloat(XYWHarray[0]) / (10 * ratio);
                 var top = parseFloat(XYWHarray[1]) / 10;
@@ -1077,10 +1086,10 @@
                 lineColumnIndicator.find('.lineColOnLine').attr("style", "line-height:"+lineHeight+";");
                 //Put to the DOM
                 $(".lineColIndicatorArea").append(lineColumnIndicator);
-                $("#fullPageSplitCanvas").append(fullPageLineColumnIndicator);
-                
-            
+                $("#fullPageSplitCanvas").append(fullPageLineColumnIndicator);                          
         }
+        //BH it is very important that this fires.  Why isn't it?
+        //Some lines dont have #xywh=1,2,3,4
         if(update && $(".transcriptlet").eq(0) !== undefined){
             updatePresentation($(".transcriptlet").eq(0));
         }

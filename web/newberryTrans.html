@@ -8,19 +8,12 @@
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.js"></script>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.js"></script>
         <script type="text/javascript" src="js/newberry.js"></script>
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+        <script src="https://use.fontawesome.com/4ae676603d.js"></script>
     </head>    
     <style>
         p{
             padding: 0px 10px;
-        }
-        #topTrim{
-            position: relative;
-            display: block;
-            width: 100%;
-        }
-        #topTrim span{
-            display: inline-block;
-            border-right: 2px solid black;
         }
         .magnifyHelp{
             position: fixed;
@@ -63,21 +56,37 @@
             <button style='margin-bottom: 3px;' class='nohover'>+</button><span>   or mouse wheel to zoom in</span><br>
             <button class='nohover'>-</button><span>   or mouse wheel to zoom out</span>
         </div>
-        <div class="topTrim">
-            <span class="trimSection">TITLE:<span id="trimTitle"></span></span>
-            <span class="trimSection">PAGE: <span id="trimPage"></span></span>
-            <span class="trimSection jump">
-                <i onclick="firstFolio();" title="First Folio"><img src='images/firstpage.png' ></i>
-                <i onclick="previousFolio();" title="Previous Folio"><img src='images/previouspage.png' ></i>
+        <div class="topTrim navigation">
+            <span class="trimSection"><span id="trimTitle">TITLE</span></span>
+            <span class="trimSection">
+                <span id="trimPage"></span>
+                <!-- DO NOT add class exitPage.  It will try to fire the bulk update, which is not needed and will break the interface. -->
+                <a class="" id="prevCanvas" onclick="previousFolio();" title="Previous Page">
+                    <i class="fa fa-caret-left fa-2x"></i>
+                </a>
                 <select id="pageJump">
                     <option id="activePage" folioNum="0">Jump to Page</option>
                 </select>
-                <i onclick="nextFolio();" title="Next Folio"><img src='images/nextpage.png' ></i>
-                <i onclick="lastFolio();" title="Last Folio"><img src='images/endpage.png' ></i>
+                <!-- DO NOT add class exitPage.  It will try to fire the bulk update, which is not needed and will break the interface. -->
+                <a class="" id="nextCanvas" title="Next Page" onclick="nextFolio();">
+                    <i class="fa fa-caret-right fa-2x"></i>
+                </a>
             </span>
-            <span class="trimSection">USER: <span id="trimCurrentUser"></span></span>
+            <span class="trimSection" id="currentUser">
+                <i class="fa fa-user"></i>
+                <span id="trimCurrentUser"></span></span>
 <!--            <span class="trimSection">Help</span> -->
-            <span class="trimSection"><a href="https://paleography.library.utoronto.ca/contact" target="_blank">Contact</a></span> 
+            <div class="trimDividor" style="position:absolute;right:0;top:0;z-index: 1;">
+                <span class="trimSection">
+                    <span class="fa fa-home"></span><a title="Paleography Home" href="https://paleography.library.utoronto.ca/contact" target="_blank">Home</a>
+                </span>
+                <span class="trimSection">
+                    <a id="projectsBtn" class="exitPage wBtn ui-state-default ui-button" title="My Paleography Projects" href="project.jsp">Projects</a>
+                    <span class="fa fa-book"></span>       
+                </span>
+                <span class="trimSection"><a href="https://paleography.library.utoronto.ca/contact" target="_blank">Contact</a><span class="fa fa-comment"></span></span> 
+                <span class="trimSection"><a href="https://paleography.library.utoronto.ca/contact" target="_blank">Help</a><i class="fa fa-question" aria-hidden="true"></i></span>
+            </div>
         </div>
 
         <div class="instructions">
@@ -433,7 +442,7 @@
 //                console.log("user data");
 //                console.log(data);
                 if(data.uname && data.uname !== ""){
-                    user = data.uname;
+                    user = '<i class="fa fa-user"></i> '+data.uname;
                     loggedInUser = true;
                     $("#trimCurrentUser").html(user);
                     $("#trimCurrentUser").attr("title",user);

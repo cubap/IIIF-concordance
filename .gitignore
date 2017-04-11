@@ -6,3 +6,4 @@ WebContent/WEB-INF/classes/
 .project
 .classpath
 /dist/
+/nbproject/private/
