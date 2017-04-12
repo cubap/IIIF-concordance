@@ -746,6 +746,7 @@
                         originalCanvasHeight2 = $("#imgTop img").height();
                         originalCanvasWidth2 = $("#imgTop img").width();
                         drawLinesToCanvas(canvasObj, parsing);
+                        populateCompareSplit(currentFolio);
                         $("#transcriptionCanvas").attr("canvasid", canvasObj["@id"]);
                         $("#transcriptionCanvas").attr("annoList", canvasAnnoList);
                         $("#parseOptions").find(".tpenButton").removeAttr("disabled");
@@ -1171,40 +1172,115 @@
         //prevent textareas from going invisible and not moving out of the workspace
         focusItem[1].removeClass("transcriptletBefore transcriptletAfter");
       };
-     
-    /* Helper for position focus onto a specific transcriptlet */
+      
     function setPositions() {
-    //Determine size of section above workspace
+        // Determine size of section above workspace
         var bottomImageHeight = $("#imgBottom img").height();
         if (focusItem[1].attr("lineHeight") !== null) {
-          var pairForBookmarkCol = focusItem[1].attr('col');
-          var pairForBookmarkLine = parseInt(focusItem[1].attr('collinenum'));
-          pairForBookmarkLine += 1;
-          var pairForBookmark = pairForBookmarkCol + pairForBookmarkLine;
-          var currentLineHeight = parseFloat(focusItem[1].attr("lineHeight"));
-          var currentLineTop = parseFloat(focusItem[1].attr("lineTop"));
-          // top of column
-          var previousLine = (focusItem[1].prev().is('.transcriptlet') && (currentLineTop > parseFloat(focusItem[1].prev().attr("lineTop")))) ? parseFloat(focusItem[1].prev().attr("lineHeight")) : parseFloat(focusItem[1].attr("lineTop"));
-          // oversized for screen
-          var imgTopHeight = (previousLine + currentLineHeight)+1.5; // obscure behind workspace.
-          var topImgPositionPercent = ((previousLine - currentLineTop)*100)/imgTopHeight;
-          var topImgPositionPx = (previousLine - currentLineTop)*bottomImageHeight/100;
-//          var bookmarkTop = (currentLineTop + ((imgTopHeight/100)*topImgPositionPercent));
-          var bottomImgPositionPercent = -(currentLineTop + currentLineHeight);
-          var bottomImgPositionPx = -(currentLineTop+currentLineHeight)*bottomImageHeight / 100;
+            var pairForBookmarkCol = focusItem[1].attr('col');
+            var pairForBookmarkLine = parseInt(focusItem[1].attr('collinenum'));
+            var pairForBookmark = pairForBookmarkCol + pairForBookmarkLine;
+            var currentLineHeight = parseFloat(focusItem[1].attr("lineHeight"));
+            var currentLineTop = parseFloat(focusItem[1].attr("lineTop"));
+            var previousLineTop = 0.0;
+            var previousLineHeight = 0.0;
+            var imgTopHeight = 0.0; //value for the height of imgTop
+            if(focusItem[1].prev().is('.transcriptlet') && currentLineTop > parseFloat(focusItem[1].prev().attr("lineTop"))){
+                previousLineTop = parseFloat(focusItem[1].prev().attr("lineTop"));
+                previousLineHeight = parseFloat(focusItem[1].prev().attr("lineHeight"));
+            }
+            var bufferForImgTop = previousLineTop - 1.5;
+            if(previousLineHeight > 0.0){
+                imgTopHeight = (previousLineHeight + currentLineHeight) + 3.5;
+            }
+            else{ //there may not be a prev line so use the value of the current line...
+                imgTopHeight = (currentLineHeight) + 3.5;
+                bufferForImgTop = currentLineTop - 1.5;
+            }
+            //var topImgPositionPercent = ((previousLineTop - currentLineTop) * 100) / imgTopHeight;
+            var imgTopSize = (((imgTopHeight/100)*bottomImageHeight) / Page.height())*100;
+            if(bufferForImgTop < 0){
+                bufferForImgTop = 0;
+            }
+            //We may not be able to show the last line + the next line if there were two tall lines, so account for that here
+            if (imgTopSize > 80){
+                bufferForImgTop = currentLineTop - 1.5; //No longer adjust to previous line, adjust to current line.
+                if(bufferForImgTop < 0){
+                    bufferForImgTop = 0;
+                }
+                imgTopHeight = (currentLineHeight) + 3.5; //There will be a new height because of it
+                imgTopSize = (((imgTopHeight/100)*bottomImageHeight) / Page.height())*100; //There will be a new size because of it to check later.
+            }
+            var topImgPositionPx = ((-(bufferForImgTop) * bottomImageHeight) / 100);
+            if(topImgPositionPx <= -12){
+                topImgPositionPx += 12;
+            }
+            //var bottomImgPositionPercent = -(currentLineTop + currentLineHeight);
+            var bottomImgPositionPx = -((currentLineTop + currentLineHeight) * bottomImageHeight / 100);
+            if(bottomImgPositionPx <= -12){
+                bottomImgPositionPx += 12;
+            }
+
+            var percentageFixed = 0;
+            //use this to make sure workspace stays on screen!
+            if (imgTopSize > 80){ //if #imgTop is 80% of the screen size then we need to fix that so the workspace stays.
+                var workspaceHeight = 170; //$("#transWorkspace").height();
+                var origHeight = imgTopHeight;
+                imgTopHeight = ((Page.height() - workspaceHeight - 80) / bottomImageHeight) *  100; //this needs to be a percentage
+                percentageFixed = (100-(origHeight - imgTopHeight))/100; //what percentage of the original amount is left
+                //bottomImgPositionPercent *= percentageFixed; //do the same percentage change to this value
+                bottomImgPositionPx *= percentageFixed; //and this one
+                topImgPositionPx *= percentageFixed; // and this one
+
+            }
+
         }
         var positions = {
-          imgTopHeight: imgTopHeight,
-          topImgPositionPercent: topImgPositionPercent,
-          topImgPositionPx : topImgPositionPx,
-          bottomImgPositionPercent: bottomImgPositionPercent,
-          bottomImgPositionPx: bottomImgPositionPx,
-          activeLine: pairForBookmark
-//          bookmarkTop: (parseFloat(locationForBookmark.css("top")) / $(".lineColIndicatorArea:first").height()) * 100 + "%",
-//          bookmarkHeight: currentLineHeight
+            imgTopHeight: imgTopHeight,
+            //topImgPositionPercent: topImgPositionPercent,
+            topImgPositionPx : topImgPositionPx,
+            //bottomImgPositionPercent: bottomImgPositionPercent,
+            bottomImgPositionPx: bottomImgPositionPx,
+            activeLine: pairForBookmark
         };
+        imgTopPositionRatio = positions.topImgPositionPx / bottomImageHeight;
+        imgBottomPositionRatio = positions.bottomImgPositionPx / bottomImageHeight;
         return positions;
-    };
+    }
+     
+    /* Helper for position focus onto a specific transcriptlet */
+//    function setPositions() {
+//    //Determine size of section above workspace
+//        var bottomImageHeight = $("#imgBottom img").height();
+//        if (focusItem[1].attr("lineHeight") !== null) {
+//          var pairForBookmarkCol = focusItem[1].attr('col');
+//          var pairForBookmarkLine = parseInt(focusItem[1].attr('collinenum'));
+//          pairForBookmarkLine += 1;
+//          var pairForBookmark = pairForBookmarkCol + pairForBookmarkLine;
+//          var currentLineHeight = parseFloat(focusItem[1].attr("lineHeight"));
+//          var currentLineTop = parseFloat(focusItem[1].attr("lineTop"));
+//          // top of column
+//          var previousLine = (focusItem[1].prev().is('.transcriptlet') && (currentLineTop > parseFloat(focusItem[1].prev().attr("lineTop")))) ? parseFloat(focusItem[1].prev().attr("lineHeight")) : parseFloat(focusItem[1].attr("lineTop"));
+//          // oversized for screen
+//          var imgTopHeight = (previousLine + currentLineHeight)+1.5; // obscure behind workspace.
+//          var topImgPositionPercent = ((previousLine - currentLineTop)*100)/imgTopHeight;
+//          var topImgPositionPx = (previousLine - currentLineTop)*bottomImageHeight/100;
+////          var bookmarkTop = (currentLineTop + ((imgTopHeight/100)*topImgPositionPercent));
+//          var bottomImgPositionPercent = -(currentLineTop + currentLineHeight);
+//          var bottomImgPositionPx = -(currentLineTop+currentLineHeight)*bottomImageHeight / 100;
+//        }
+//        var positions = {
+//          imgTopHeight: imgTopHeight,
+//          topImgPositionPercent: topImgPositionPercent,
+//          topImgPositionPx : topImgPositionPx,
+//          bottomImgPositionPercent: bottomImgPositionPercent,
+//          bottomImgPositionPx: bottomImgPositionPx,
+//          activeLine: pairForBookmark
+////          bookmarkTop: (parseFloat(locationForBookmark.css("top")) / $(".lineColIndicatorArea:first").height()) * 100 + "%",
+////          bookmarkHeight: currentLineHeight
+//        };
+//        return positions;
+//    };
   
   /**
    * Removes previous textarea and slides in the new focus.
@@ -1498,7 +1574,7 @@
                 top :   startBottomImgPositionY + event.pageY - mousedownPositionY,
                 left:   startBottomImgPositionX + event.pageX - mousedownPositionX
             });
-            if(!event.altKey) unShiftInterface();
+//            if(!event.altKey) unShiftInterface();
         })
         .mouseup(function(){
             $("#dragHelper").remove();
@@ -1512,24 +1588,45 @@
     };
     
     function restoreWorkspace(){
-            $("#imgBottom").show();
-            $("#imgTop").show();
-            $("#imgTop").removeClass("fixingParsing");
-            $("#transWorkspace").show();
-            $("#imgTop").css("width", "100%");
-            $("#imgTop img").css({"height":"auto", "width":"100%"});
-            updatePresentation(focusItem[1]);
-            $(".hideMe").show();
-            $(".showMe").hide();
-            var pageJumpIcons = $("#pageJump").parent().find("i");
-            pageJumpIcons[0].setAttribute('onclick', 'firstFolio();');
-            pageJumpIcons[1].setAttribute('onclick', 'previousFolio();');
-            pageJumpIcons[2].setAttribute('onclick', 'nextFolio();');
-            pageJumpIcons[3].setAttribute('onclick', 'lastFolio();');
-            $("#prevCanvas").attr("onclick", "previousFolio();");
-            $("#nextCanvas").attr("onclick", "nextFolio();");
-            $("#pageJump").removeAttr("disabled");
-        }
+        $("#imgBottom").show();
+        $("#imgTop").show();
+        $("#imgTop").removeClass("fixingParsing");
+        $("#transWorkspace").show();
+        $("#imgTop").css("width", "100%");
+        $("#imgTop img").css({"height":"auto", "width":"100%"});
+        $("#imgBottom").css("height", "inherit");
+        updatePresentation(focusItem[1]);
+        $(".hideMe").show();
+        $(".showMe2").hide();
+    //    var pageJumpIcons = $("#pageJump").parent().find("i");
+    //    pageJumpIcons[0].setAttribute('onclick', 'firstFolio();');
+    //    pageJumpIcons[1].setAttribute('onclick', 'previousFolio();');
+    //    pageJumpIcons[2].setAttribute('onclick', 'nextFolio();');
+    //    pageJumpIcons[3].setAttribute('onclick', 'lastFolio();');
+        $("#prevCanvas").attr("onclick", "previousFolio();");
+        $("#nextCanvas").attr("onclick", "nextFolio();");
+        $("#pageJump").removeAttr("disabled");
+    }
+    
+//    function restoreWorkspace(){
+//            $("#imgBottom").show();
+//            $("#imgTop").show();
+//            $("#imgTop").removeClass("fixingParsing");
+//            $("#transWorkspace").show();
+//            $("#imgTop").css("width", "100%");
+//            $("#imgTop img").css({"height":"auto", "width":"100%"});
+//            updatePresentation(focusItem[1]);
+//            $(".hideMe").show();
+//            $(".showMe").hide();
+//            var pageJumpIcons = $("#pageJump").parent().find("i");
+//            pageJumpIcons[0].setAttribute('onclick', 'firstFolio();');
+//            pageJumpIcons[1].setAttribute('onclick', 'previousFolio();');
+//            pageJumpIcons[2].setAttribute('onclick', 'nextFolio();');
+//            pageJumpIcons[3].setAttribute('onclick', 'lastFolio();');
+//            $("#prevCanvas").attr("onclick", "previousFolio();");
+//            $("#nextCanvas").attr("onclick", "nextFolio();");
+//            $("#pageJump").removeAttr("disabled");
+//        }
         
     
     
@@ -1674,91 +1771,190 @@
      * to full height. From here, we need to load to interface
      * for the selected tool. 
      */
-     function hideWorkspaceForParsing(){
+//     function hideWorkspaceForParsing(){
+//        $("#parsingBtn").css("box-shadow: none;");
+//        originalCanvasHeight = $("#transcriptionCanvas").height();
+//        originalCanvasWidth = $("#transcriptionCanvas").width();
+//        imgTopOriginalTop = $("#imgTop img").css("top");
+//        //$("#pageJump").attr("disabled", "disabled");
+//         var pageJumpIcons = $("#pageJump").parent().children("i");
+//            pageJumpIcons[0].setAttribute('onclick', 'firstFolio("parsing");');
+//            pageJumpIcons[1].setAttribute('onclick', 'previousFolio("parsing");');
+//            pageJumpIcons[2].setAttribute('onclick', 'nextFolio("parsing");');
+//            pageJumpIcons[3].setAttribute('onclick', 'lastFolio("parsing");');
+//        $("#prevCanvas").attr("onclick", "");
+//        $("#nextCanvas").attr("onclick", "");
+//        
+//        //$("#pageJump").siblings().removeAttr("onclick").css("color", "red");
+////        bookmarkInfo = {"top": $("#bookmark").position().top, "left":$("#bookmark").position().left,
+////            "height": $("#bookmark").height()+"px", "width":$("#bookmark").width+"px"};
+//
+//        $("#imgTop").addClass("fixingParsing");
+//        var topImg = $("#imgTop img");
+//        imgRatio = topImg.width() / topImg.height();
+//        var wrapWidth = imgRatio*$("#transcriptionTemplate").height();
+//        var PAGEWIDTH = $("#transcriptionTemplate").width();
+//        
+//        if (wrapWidth > PAGEWIDTH-350)wrapWidth = PAGEWIDTH-350;
+//        $("#tools").children("[id$='Split']").hide();
+//        $("#parsingSplit").css({
+//            "display": "inline-block",
+//            "height": window.innerHeight+"px"
+//        }).fadeIn();
+//        
+//        topImg.css({
+//                "top":"0px",
+//                "left":"0px",
+//                "height":"auto",
+//                "overflow":"auto"
+//        });
+//        $("#imgTop .lineColIndicatorArea").css({
+//            "top":"0px",
+//            "left":"0px"
+//        });
+//        
+//        $("#transcriptionTemplate").css("max-width", "57%");
+//        //the width and max-width here may need to be played with a bit.
+//        $("#transcriptionTemplate").resizable({
+//              disabled:false,
+//              minWidth: window.innerWidth / 2,
+//              maxWidth: window.innerWidth * .75,
+//              start: function(event, ui){
+//                  originalRatio = $("#transcriptionCanvas").width() / $("#transcriptionCanvas").height();
+//              },
+//              resize: function(event, ui) {
+//                  var width = ui.size.width;
+//                  var height = 1/originalRatio * width;
+//
+//                  $("#transcriptionCanvas").css("height", height+"px").css("width", width+"px");
+//                  $(".lineColIndicatorArea").css("height", height+"px");
+//                  var splitWidth = window.innerWidth - (width+35) + "px";
+//                  $(".split img").css("max-width", splitWidth);
+//                  $(".split:visible").css("width", splitWidth);
+//              },
+//              stop: function(event, ui){;
+//                  //$(".lineColIndicator .lineColOnLine").css("line-height", $(this).height()+"px");
+//              }
+//            });
+//        
+//        $("#transWorkspace,#imgBottom").hide();
+//        if(screen.width == $(window).width() && screen.height == window.outerHeight){
+//        $(".centerInterface").css("text-align", "center"); //.css("background-color", "#e1f4fe")
+//        }
+//        else{
+//            $(".centerInterface").css("text-align", "left"); //.css("background-color", "#e1f4fe")
+//        }
+//        $("#noLineWarning").hide();
+//            window.setTimeout(function(){
+//                $("#imgTop, #imgTop img").height($(window).innerHeight()); 
+//                $("#imgTop img").css("width" , "auto");
+//                $("#imgTop").css("width" , $("#imgTop img").width());
+//                $("#imgTop").css("height" , $("#imgTop img").height());
+//                //At this point, transcription canvas is the original height and width of the full page image.  We can use that for when we resume transcription. 
+//                $("#transcriptionCanvas").css("height" , $(window).innerHeight());
+//                $(".lineColIndicatorArea").css("height", $(window).innerHeight());
+//                $("#transcriptionCanvas").css("display" , "block");
+//            }, 500);
+//            window.setTimeout(function(){
+//                //in here we can control what interface loads up.  writeLines draws lines onto the new full size transcription image.
+//                $('.lineColIndicatorArea').hide();
+//                writeLines($("#imgTop img"));
+//            },1200);
+//         
+//    };
+    
+    function hideWorkspaceForParsing(){
+        liveTool = "parsing";
         $("#parsingBtn").css("box-shadow: none;");
-        originalCanvasHeight = $("#transcriptionCanvas").height();
-        originalCanvasWidth = $("#transcriptionCanvas").width();
+        //    originalCanvasHeight = $("#transcriptionCanvas").height(); //make sure these are set correctly
+    //    originalCanvasWidth = $("#transcriptionCanvas").width(); //make sure these are set correctly
         imgTopOriginalTop = $("#imgTop img").css("top");
-        //$("#pageJump").attr("disabled", "disabled");
-         var pageJumpIcons = $("#pageJump").parent().children("i");
-            pageJumpIcons[0].setAttribute('onclick', 'firstFolio("parsing");');
-            pageJumpIcons[1].setAttribute('onclick', 'previousFolio("parsing");');
-            pageJumpIcons[2].setAttribute('onclick', 'nextFolio("parsing");');
-            pageJumpIcons[3].setAttribute('onclick', 'lastFolio("parsing");');
+        if ($("#transcriptionTemplate").hasClass("ui-resizable")){
+            $("#transcriptionTemplate").resizable('destroy');
+        }
+        $("#transcriptionTemplate").css("max-width", "55%").css("width", "55%");
+        //$("#transcriptionCanvas").css("max-height", window.innerHeight + "px");
+        //$("#transcriptionTemplate").css("max-height", window.innerHeight + "px");
+        $("#controlsSplit").hide();
+        var ratio = originalCanvasWidth / originalCanvasHeight;
+        var newCanvasWidth = originalCanvasWidth * .55;
+        var newCanvasHeight = 1 / ratio * newCanvasWidth;
+
+        if($(window).height() <= 625){ //This is the smallest height we allow
+            newCanvasHeight = 625;
+        }
+        else if ($(window).height() <= originalCanvasHeight){ //allow it to be as tall as possible, but not taller.
+            newCanvasHeight = $(window).height();
+            newCanvasWidth = ratio*newCanvasHeight;
+        }
+        else if($(window).height() > originalCanvasHeight){ //I suppose this is possible for small images, so handle if its trying to be bigger than possible
+            newCanvasHeight = originalCanvasHeight;
+            newCanvasWidth = originalCanvasWidth;
+        }
+
+        if($(window).width() > 900){ //Whenever it gets less wide than this, it prioritizes height and stops resizing by width.
+            if($(window).width() < newCanvasWidth + $("#parsingSplit").width()){
+                newCanvasWidth = $(window).width() - $("#parsingSplit").width();
+                newCanvasHeight = 1/ratio*newCanvasWidth;
+            }
+        }
+        else{ //Just do nothing instead of calling it 900 wide so it defaults to the height math, maybe put a max up there too.
+    //                     newCanvasWidth = 900;
+    //                     newCanvasHeight = 1/ratio*newCanvasWidth;
+        }
+        $("#transcriptionTemplate").css("width","auto");
+        $("#transcriptionCanvas").css("height", newCanvasHeight + "px");
+        $("#transcriptionCanvas").css("width", newCanvasWidth + "px");
+        $("#imgTop").css("height", newCanvasHeight + "px");
+        $("#imgTop").css("width", newCanvasWidth + "px");
+        $("#imgTop img").css({
+            'height': newCanvasHeight + "px"
+        });
+
         $("#prevCanvas").attr("onclick", "");
         $("#nextCanvas").attr("onclick", "");
-        
-        //$("#pageJump").siblings().removeAttr("onclick").css("color", "red");
-//        bookmarkInfo = {"top": $("#bookmark").position().top, "left":$("#bookmark").position().left,
-//            "height": $("#bookmark").height()+"px", "width":$("#bookmark").width+"px"};
-
         $("#imgTop").addClass("fixingParsing");
         var topImg = $("#imgTop img");
-        imgRatio = topImg.width() / topImg.height();
-        var wrapWidth = imgRatio*$("#transcriptionTemplate").height();
-        var PAGEWIDTH = $("#transcriptionTemplate").width();
-        
-        if (wrapWidth > PAGEWIDTH-350)wrapWidth = PAGEWIDTH-350;
+
         $("#tools").children("[id$='Split']").hide();
-        $("#parsingSplit").css({
+        $("#parsingSplit")
+        .css({
             "display": "inline-block",
-            "height": window.innerHeight+"px"
-        }).fadeIn();
-        
+            //"height": window.innerHeight + "px"
+        })
+        .fadeIn();
+
         topImg.css({
-                "top":"0px",
-                "left":"0px",
-                "height":"auto",
-                "overflow":"auto"
+            "top":"0px",
+            "left":"0px",
+            "overflow":"auto"
         });
         $("#imgTop .lineColIndicatorArea").css({
             "top":"0px",
-            "left":"0px"
+            "left":"0px",
+            "height":newCanvasHeight+"px"
         });
-        
-        $("#transcriptionTemplate").css("max-width", "57%");
-        //the width and max-width here may need to be played with a bit.
-        $("#transcriptionTemplate").resizable({
-              disabled:false,
-              minWidth: window.innerWidth / 2,
-              maxWidth: window.innerWidth * .75,
-              start: function(event, ui){
-                  originalRatio = $("#transcriptionCanvas").width() / $("#transcriptionCanvas").height();
-              },
-              resize: function(event, ui) {
-                  var width = ui.size.width;
-                  var height = 1/originalRatio * width;
-
-                  $("#transcriptionCanvas").css("height", height+"px").css("width", width+"px");
-                  $(".lineColIndicatorArea").css("height", height+"px");
-                  var splitWidth = window.innerWidth - (width+35) + "px";
-                  $(".split img").css("max-width", splitWidth);
-                  $(".split:visible").css("width", splitWidth);
-              },
-              stop: function(event, ui){;
-                  //$(".lineColIndicator .lineColOnLine").css("line-height", $(this).height()+"px");
-              }
-            });
-        
+        if(screen.width == $(window).width() && screen.height == window.outerHeight){
+            $(".centerInterface").css("text-align", "center"); //.css("background-color", "#e1f4fe")
+        }
+        else{
+            $(".centerInterface").css("text-align", "left"); //.css("background-color", "#e1f4fe")
+        }
         $("#transWorkspace,#imgBottom").hide();
         $("#noLineWarning").hide();
-            window.setTimeout(function(){
-                $("#imgTop, #imgTop img").height($(window).innerHeight()); 
-                $("#imgTop img").css("width" , "auto");
-                $("#imgTop").css("width" , $("#imgTop img").width());
-                $("#imgTop").css("height" , $("#imgTop img").height());
-                //At this point, transcription canvas is the original height and width of the full page image.  We can use that for when we resume transcription. 
-                $("#transcriptionCanvas").css("height" , $(window).innerHeight());
-                $(".lineColIndicatorArea").css("height", $(window).innerHeight());
-                $("#transcriptionCanvas").css("display" , "block");
-            }, 500);
-            window.setTimeout(function(){
-                //in here we can control what interface loads up.  writeLines draws lines onto the new full size transcription image.
-                $('.lineColIndicatorArea').hide();
-                writeLines($("#imgTop img"));
-            },1200);
-         
-    };
+        window.setTimeout(function(){
+            $("#imgTop img").css("width", "auto");
+            $("#imgTop img").css("top", "0px");
+            $("#transcriptionTemplate").css("width", "auto"); //fits canvas to image. $("#imgTop img").width() + "px".  Do we need a background color?
+            $("#transcriptionCanvas").css("display", "block");
+        }, 500);
+        window.setTimeout(function(){
+            //in here we can control what interface loads up.  writeLines
+            //draws lines onto the new full size transcription image.
+            $('.lineColIndicatorArea').hide();
+            writeLines($("#imgTop img"));
+        }, 1200);
+    }
     
     /** 
      * Overlays divs for each parsed line onto img indicated.
@@ -1814,15 +2010,20 @@
         if($("#trascriptionTemplate").hasClass("ui-resizable")){
             $("#transcriptionTemplate").resizable('destroy');
         }
-        $("#splitScreenTools").removeAttr("disabled");
-        $("#splitScreenTools").find('option:eq(0)').prop("selected",true);
+       $("#splitScreenTools").find('option:eq(0)').prop("selected", true);
         $("#transcriptionCanvas").css("width", "100%");
         $("#transcriptionCanvas").css("height", "auto");
+        $("#transcriptionCanvas").css("max-height", "none");
         $("#transcriptionTemplate").css("width", "100%");
         $("#transcriptionTemplate").css("max-width", "100%");
+        $("#transcriptionTemplate").css("max-height", "none");
         $("#transcriptionTemplate").css("height", "auto");
         $("#transcriptionTemplate").css("display", "inline-block");
+        $("#canvasControls").removeClass("selected");
+        $('.lineColIndicatorArea').css("max-height","none");
         $('.lineColIndicatorArea').show();
+        $(".centerInterface").css("text-align", "left");
+        $("#help").css({"left":"100%"}).fadeOut(1000);
         $("#fullScreenBtn").fadeOut(250);
         isZoomed = false;
         $(".split").hide();
@@ -1849,193 +2050,294 @@
         }
         
     }
-
-    function splitPage(event, tool) {
-//        //console.log("SPLIT PAGWE!");
-        liveTool = tool;
-        originalCanvasHeight = $("#transcriptionCanvas").height(); //make sure these are set correctly
-        originalCanvasWidth = $("#transcriptionCanvas").width(); //make sure these are set correctly
-        var ratio = originalCanvasWidth/originalCanvasHeight;
-        $("#splitScreenTools").attr("disabled", "disabled");
-        //$("#pageJump").attr("disabled", "disabled");
-        var imgBottomRatio = parseFloat($("#imgBottom img").css("top")) / originalCanvasHeight;
-        var imgTopRatio = parseFloat($("#imgTop img").css("top")) / originalCanvasHeight;
-        $("#transcriptionTemplate").css({
-           "width"   :   "55%",
-           "display" : "inline-table"
-        });
-        var newCanvasWidth = originalCanvasWidth2 * .55;
-        var newCanvasHeight = 1/ratio * newCanvasWidth;
-//        //console.log("New canvas width: "+newCanvasWidth);
-//        //console.log("New canvas height: "+newCanvasHeight);
-        $("#transcriptionCanvas").css({
-           "width"   :   newCanvasWidth + "px",
-           "height"   :   newCanvasHeight + "px"
-        });
-        var newImgBtmTop = imgBottomRatio * newCanvasHeight;
-        var newImgTopTop = imgTopRatio * newCanvasHeight;
-        $(".lineColIndicatorArea").css("height", newCanvasHeight+"px");
-//        //console.log("New Position: " + imgBottomRatio + " X " +newCanvasHeight+" = "+ imgBottomRatio * newCanvasHeight);
-        $("#imgBottom img").css("top", newImgBtmTop + "px");
-        $("#imgBottom .lineColIndicatorArea").css("top", newImgBtmTop + "px");
-        $("#imgTop img").css("top", newImgTopTop + "px");
-        $("#imgTop .lineColIndicatorArea").css("top", newImgTopTop + "px");
-        $.each($(".lineColOnLine"),function(){$(this).css("line-height", $(this).height()+"px");});
-        $("#transcriptionTemplate").resizable({
-              disabled:false,
-              minWidth: window.innerWidth / 2,
-              maxWidth: window.innerWidth * .75,
-              start: function(event, ui){
-                  originalRatio = $("#transcriptionCanvas").width() / $("#transcriptionCanvas").height();
-                  //originalRatio = $("#imgTop img").width() / $("#imgTop img").height();
-              },
-              resize: function(event, ui) {
-                  var width = ui.size.width;
-                  var height = 1/originalRatio * width;
-                  $("#transcriptionCanvas").css("height", height+"px").css("width", width+"px");
-                  $(".lineColIndicatorArea").css("height", height+"px");
-                  
-                  var splitWidth = window.innerWidth - (width+35) + "px";
-                  $(".split img").css("max-width", splitWidth);
-                  $(".split:visible").css("width", splitWidth);
-//                   //console.log("Full page split should have height "+$("#fullPageImg").height());
-                  var newHeight1 = parseFloat($("#fullPageImg").height()) + parseFloat($("#fullPageSplit .toolLinks").height());
-                  var newHeight2 = parseFloat($(".compareImage").height()) + parseFloat($("#compareSplit .toolLinks").height());
-                  $('#fullPageSplit').css('height', newHeight1 + 'px');
-                  //console.log("compare height "+newHeight2);
-                  $('#compareSplit').css('height', newHeight2 + 'px');
-              },
-              stop: function(event, ui){
-                  $.each($(".lineColOnLine"),function(){
-                      var height = $(this).height() + "px";
-                      $(this).css("line-height", height);
-                  });
-              }
-            });
-        $("#fullScreenBtn").fadeIn(250);
-        //show/manipulate whichever split tool is activated.
-        switch(tool){
-          case "calligraphy":
-             $("#calligraphySplit").css({
-              "display": "inline-table"
-            });
-            break;
-          case "scripts":
-              $("#scriptsSplit").css({
-              "display": "inline-table"
-            });
-            break;
-          case "frenchdocs":
-              $("#documentsSplit").css({
-              "display": "inline-table",
-            });
-            break;
-          case "conservation":
-              $("#conservationSplit").css({
-              "display": "inline-table"
-
-            });
-            break;
-          case "conventions":
-             $("#conventionsSplit").css({
-              "display": "inline-table"
-            });
-            break;
-          case "teachers":
-             $("#teachersSplit").css({
-              "display": "inline-table"
-            });
-            break;
-          case "groupwork":
-             $("#groupSplit").css({
-              "display": "inline-table"
-            });
-            break;
-          case "glossary":
-            $("#glossarySplit").css({
-              "display": "inline-table"
-            });
-            break;
-          case "fInstitutions":
-             $("#fInstitutionsSplit").css({
-              "display": "inline-table"
-            });
-            break;
-          case "other":
-             $("#otherSplit").css({
-              "display": "inline-table"
-            });
-            break;
-          case "essay":
-            $("#essaySplit").css({
-              "display": "inline-table"
-            });
-            break;
-          case "partialTrans":
-            $("#partialTransSplit").css({
-              "display": "inline-table"
-            });
-            break;
-          case "abbreviations":
-            $("#abbrevSplit").css({
-              "display": "inline-table"
-            });
-            break;
-          case "dictionary":
-            $("#dictionarySplit").css({
-              "display": "inline-table"
-            });
-            break;
-          case "preview":
-              forceOrderPreview();
-            break;
-          case "history":
-            $("#historySplit").css({
-              "display": "inline-table"
-            });
-            break;
-          case "fullPage":
-            $("#fullPageSplit").css({
-              "display": "block"
-            });
-            break;
-          case "compare":
-            $("#compareSplit").css({
-                "display": "block"
-            });
-            //When comparing, you need to be able to see the whole image, so I restrict it to window height.  To allow it to continue to grow, comment out the code below.  
-            $(".compareImage").css({
-                "max-height":window.innerHeight+"px",
-                "max-width":$("#compareSplit").width()+"px"
-            });
-            populateCompareSplit(1);
-            //$("#toolLinks").show();
-            break;
-          case "facing":
-              $("#facingSplit").css("display", "block");
-            break;
-          case "maps":
-              $("#mapsSplit").css("display", "inline-table");
-            break;
-          case "start":
-              $("#startSplit").css("display", "inline-table");
-          default:
-              //This is a user added iframe tool.  tool is toolID= attribute of the tool div to show.  
-              $('div[toolName="'+tool+'"]').css("display", "inline-table");
-
+    
+function splitPage(event, tool) {
+    liveTool = tool;
+    originalCanvasHeight = $("#transcriptionCanvas").height(); //make sure these are set correctly
+    originalCanvasWidth = $("#transcriptionCanvas").width(); //make sure these are set correctly
+    var resize = true;
+    var newCanvasWidth = originalCanvasWidth * .55;
+    $("#transcriptionTemplate").css({
+        "width"   :   "55%",
+        "display" : "inline-table"
+    });
+    $("#templateResizeBar").show();
+    if(tool==="controls"){
+        if($("#controlsSplit").is(":visible")){
+            return fullPage();
         }
-        $(".split:visible").find('img').css({
-            'max-height': window.innherHeight + 350 +"px",
-            'max-width' : $(".split:visible").width() + "px"
-        });
-         var pageJumpIcons = $("#pageJump").parent().children("i");
-            pageJumpIcons[0].setAttribute('onclick', 'firstFolio("parsing");');
-            pageJumpIcons[1].setAttribute('onclick', 'previousFolio("parsing");');
-            pageJumpIcons[2].setAttribute('onclick', 'nextFolio("parsing");');
-            pageJumpIcons[3].setAttribute('onclick', 'lastFolio("parsing");');
-        $("#prevCanvas").attr("onclick", "");
-        $("#nextCanvas").attr("onclick", "");
+        $("#transcriptionCanvas").css("width", Page.width()-200 + "px");
+        $("#transcriptionTemplate").css("width", Page.width()-200 + "px");
+        $("#canvasControls").addClass("selected");
+        newCanvasWidth = Page.width()-200;
+        $("#controlsSplit").show();
+        resize = false; //interupts parsing resizing funcitonaliy, dont need to resize for this anyway.
     }
+    if(tool==="help"){
+        if($("#helpSplit").is(":visible")){
+            return fullPage();
+        }
+        $("#transcriptionCanvas").css("width", Page.width()-520 + "px");
+        $("#transcriptionTemplate").css("width", Page.width()-520 + "px");
+        newCanvasWidth = Page.width()-520;
+        $("#helpSplit").show().height(Page.height()-$("#helpSplit").offset().top).scrollTop(0); // header space
+        $("#helpContainer").height(Page.height()-$("#helpContainer").offset().top);
+        resize = false; //interupts parsing resizing funcitonaliy, dont need to resize for this anyway.
+    }
+    if(tool === "parsing" || liveTool == "parsing"){
+        resize=false;
+    }
+    if(tool === "preview"){
+        $("#previewSplit").show().height(Page.height()-$("#previewSplit").offset().top).scrollTop(0); // header space
+        $("#previewDiv").height(Page.height()-$("#previewDiv").offset().top);
+    }
+    var ratio = originalCanvasWidth / originalCanvasHeight;
+    var newCanvasHeight = 1 / ratio * newCanvasWidth;
+    if(tool)
+    $("#transcriptionCanvas").css({
+        "width"   :   newCanvasWidth + "px",
+        "height"   :   newCanvasHeight + "px"
+    });
+    var newImgBtmTop = imgBottomPositionRatio * newCanvasHeight;
+    var newImgTopTop = imgTopPositionRatio * newCanvasHeight;
+    //$(".lineColIndicatorArea").css("max-height", newCanvasHeight + "px");
+    $(".lineColIndicatorArea").css("height", newCanvasHeight + "px");
+    $("#imgBottom img").css("top", newImgBtmTop + "px");
+    $("#imgBottom .lineColIndicatorArea").css("top", newImgBtmTop + "px");
+    $("#imgTop img").css("top", newImgTopTop + "px");
+    $("#imgTop .lineColIndicatorArea").css("top", newImgTopTop + "px");
+    
+    if(resize){
+        attachTemplateResize();
+    } else {
+        detachTemplateResize()
+        $("#templateResizeBar").hide();
+    }
+    $("#fullScreenBtn")
+        .fadeIn(250);
+        $('.split').hide();
+    //show/manipulate whichever split tool is activated.
+    //This is a user added iframe tool.  tool is toolID= attribute of the tool div to show.
+    var splitScreen = $("#" + tool + "Split");
+    if(!splitScreen.size()) splitScreen = $('div[toolname="' + tool + '"]');
+    splitScreen.css("display", "block");
+    $(".split:visible")
+        .find('img')
+        .css({
+            'max-height': window.innherHeight + 350 + "px",
+            'max-width': $(".split:visible")
+                .width() + "px"
+        });
+    if(tool === "fullpage"){ //set this to be the max height initially when the split happens.
+        var fullPageMaxHeight = window.innerHeight - 125; //100 comes from buttons above image and topTrim
+        $("#fullPageImg").css("max-height", fullPageMaxHeight); //If we want to keep the full image on page, it cant be taller than that.
+        $("#fullpageSplitCanvas").css("max-height", fullPageMaxHeight); //If we want to keep the full image on page, it cant be taller than that.
+        $("#fullpageSplitCanvas").css("max-width", $("#fullPageImg").width()); //If we want to keep the full image on page, it cant be taller than that.
+        $("#fullpageSplitCanvas").height($("#fullPageImg").height());
+        $("#fullpageSplitCanvas").width($("#fullPageImg").width());
+        $(".fullP").each(function(i){
+            this.title = $("#transcriptlet_"+i+" .theText").text();
+        })
+            .tooltip();
+    }
+    if(tool === "compare"){
+         var fullPageMaxHeight = window.innerHeight - 125; //100 comes from buttons above image and topTrim
+        $("#compareSplit img").css("max-height", fullPageMaxHeight); //If we want to keep the full image on page, it cant be taller than that.
+    }
+    setTimeout(function(){
+        $.each($(".lineColOnLine"), function(){
+            $(this).css("line-height", $(this).parent().height() + "px");
+        });
+    }, 1000);
+    
+}
+
+//    function splitPage(event, tool) {
+////        //console.log("SPLIT PAGWE!");
+//        liveTool = tool;
+//        originalCanvasHeight = $("#transcriptionCanvas").height(); //make sure these are set correctly
+//        originalCanvasWidth = $("#transcriptionCanvas").width(); //make sure these are set correctly
+//        var ratio = originalCanvasWidth/originalCanvasHeight;
+//        $("#splitScreenTools").attr("disabled", "disabled");
+//        //$("#pageJump").attr("disabled", "disabled");
+//        var imgBottomRatio = parseFloat($("#imgBottom img").css("top")) / originalCanvasHeight;
+//        var imgTopRatio = parseFloat($("#imgTop img").css("top")) / originalCanvasHeight;
+//        $("#transcriptionTemplate").css({
+//           "width"   :   "55%",
+//           "display" : "inline-table"
+//        });
+//        var newCanvasWidth = originalCanvasWidth2 * .55;
+//        var newCanvasHeight = 1/ratio * newCanvasWidth;
+////        //console.log("New canvas width: "+newCanvasWidth);
+////        //console.log("New canvas height: "+newCanvasHeight);
+//        $("#transcriptionCanvas").css({
+//           "width"   :   newCanvasWidth + "px",
+//           "height"   :   newCanvasHeight + "px"
+//        });
+//        var newImgBtmTop = imgBottomRatio * newCanvasHeight;
+//        var newImgTopTop = imgTopRatio * newCanvasHeight;
+//        $(".lineColIndicatorArea").css("height", newCanvasHeight+"px");
+////        //console.log("New Position: " + imgBottomRatio + " X " +newCanvasHeight+" = "+ imgBottomRatio * newCanvasHeight);
+//        $("#imgBottom img").css("top", newImgBtmTop + "px");
+//        $("#imgBottom .lineColIndicatorArea").css("top", newImgBtmTop + "px");
+//        $("#imgTop img").css("top", newImgTopTop + "px");
+//        $("#imgTop .lineColIndicatorArea").css("top", newImgTopTop + "px");
+//        $.each($(".lineColOnLine"),function(){$(this).css("line-height", $(this).height()+"px");});
+//        $("#transcriptionTemplate").resizable({
+//              disabled:false,
+//              minWidth: window.innerWidth / 2,
+//              maxWidth: window.innerWidth * .75,
+//              start: function(event, ui){
+//                  originalRatio = $("#transcriptionCanvas").width() / $("#transcriptionCanvas").height();
+//                  //originalRatio = $("#imgTop img").width() / $("#imgTop img").height();
+//              },
+//              resize: function(event, ui) {
+//                  var width = ui.size.width;
+//                  var height = 1/originalRatio * width;
+//                  $("#transcriptionCanvas").css("height", height+"px").css("width", width+"px");
+//                  $(".lineColIndicatorArea").css("height", height+"px");
+//                  
+//                  var splitWidth = window.innerWidth - (width+35) + "px";
+//                  $(".split img").css("max-width", splitWidth);
+//                  $(".split:visible").css("width", splitWidth);
+////                   //console.log("Full page split should have height "+$("#fullPageImg").height());
+//                  var newHeight1 = parseFloat($("#fullPageImg").height()) + parseFloat($("#fullPageSplit .toolLinks").height());
+//                  var newHeight2 = parseFloat($(".compareImage").height()) + parseFloat($("#compareSplit .toolLinks").height());
+//                  $('#fullPageSplit').css('height', newHeight1 + 'px');
+//                  //console.log("compare height "+newHeight2);
+//                  $('#compareSplit').css('height', newHeight2 + 'px');
+//              },
+//              stop: function(event, ui){
+//                  $.each($(".lineColOnLine"),function(){
+//                      var height = $(this).height() + "px";
+//                      $(this).css("line-height", height);
+//                  });
+//              }
+//            });
+//        $("#fullScreenBtn").fadeIn(250);
+//        //show/manipulate whichever split tool is activated.
+//        switch(tool){
+//          case "calligraphy":
+//             $("#calligraphySplit").css({
+//              "display": "inline-table"
+//            });
+//            break;
+//          case "scripts":
+//              $("#scriptsSplit").css({
+//              "display": "inline-table"
+//            });
+//            break;
+//          case "frenchdocs":
+//              $("#documentsSplit").css({
+//              "display": "inline-table",
+//            });
+//            break;
+//          case "conservation":
+//              $("#conservationSplit").css({
+//              "display": "inline-table"
+//
+//            });
+//            break;
+//          case "conventions":
+//             $("#conventionsSplit").css({
+//              "display": "inline-table"
+//            });
+//            break;
+//          case "teachers":
+//             $("#teachersSplit").css({
+//              "display": "inline-table"
+//            });
+//            break;
+//          case "groupwork":
+//             $("#groupSplit").css({
+//              "display": "inline-table"
+//            });
+//            break;
+//          case "glossary":
+//            $("#glossarySplit").css({
+//              "display": "inline-table"
+//            });
+//            break;
+//          case "fInstitutions":
+//             $("#fInstitutionsSplit").css({
+//              "display": "inline-table"
+//            });
+//            break;
+//          case "other":
+//             $("#otherSplit").css({
+//              "display": "inline-table"
+//            });
+//            break;
+//          case "essay":
+//            $("#essaySplit").css({
+//              "display": "inline-table"
+//            });
+//            break;
+//          case "partialTrans":
+//            $("#partialTransSplit").css({
+//              "display": "inline-table"
+//            });
+//            break;
+//          case "abbreviations":
+//            $("#abbrevSplit").css({
+//              "display": "inline-table"
+//            });
+//            break;
+//          case "dictionary":
+//            $("#dictionarySplit").css({
+//              "display": "inline-table"
+//            });
+//            break;
+//          case "preview":
+//              forceOrderPreview();
+//            break;
+//          case "history":
+//            $("#historySplit").css({
+//              "display": "inline-table"
+//            });
+//            break;
+//          case "fullPage":
+//            $("#fullPageSplit").css({
+//              "display": "block"
+//            });
+//            break;
+//          case "compare":
+//            $("#compareSplit").css({
+//                "display": "block"
+//            });
+//            //When comparing, you need to be able to see the whole image, so I restrict it to window height.  To allow it to continue to grow, comment out the code below.  
+//            $(".compareImage").css({
+//                "max-height":window.innerHeight+"px",
+//                "max-width":$("#compareSplit").width()+"px"
+//            });
+//            populateCompareSplit(1);
+//            //$("#toolLinks").show();
+//            break;
+//          case "facing":
+//              $("#facingSplit").css("display", "block");
+//            break;
+//          case "maps":
+//              $("#mapsSplit").css("display", "inline-table");
+//            break;
+//          case "start":
+//              $("#startSplit").css("display", "inline-table");
+//          default:
+//              //This is a user added iframe tool.  tool is toolID= attribute of the tool div to show.  
+//              $('div[toolName="'+tool+'"]').css("display", "inline-table");
+//
+//        }
+//        $(".split:visible").find('img').css({
+//            'max-height': window.innherHeight + 350 +"px",
+//            'max-width' : $(".split:visible").width() + "px"
+//        });
+//         var pageJumpIcons = $("#pageJump").parent().children("i");
+//            pageJumpIcons[0].setAttribute('onclick', 'firstFolio("parsing");');
+//            pageJumpIcons[1].setAttribute('onclick', 'previousFolio("parsing");');
+//            pageJumpIcons[2].setAttribute('onclick', 'nextFolio("parsing");');
+//            pageJumpIcons[3].setAttribute('onclick', 'lastFolio("parsing");');
+//        $("#prevCanvas").attr("onclick", "");
+//        $("#nextCanvas").attr("onclick", "");
+//    }
     
     function forceOrderPreview(){
         var ordered = [];
@@ -2429,6 +2731,9 @@
                         
                     }
             });
+            $(".parsingColumn").on('resize', function (e) {
+                e.stopPropagation();
+              });
      }
      
      /**
@@ -3489,6 +3794,219 @@ function loadIframes(){
         $(this).attr("src",src);
     });
 }
+
+/* Clear the resize function attached to the window element. */
+    function detachWindowResize(){
+        window.onresize = function(event, ui){
+        };
+    }
+    
+    function detachTemplateResize(){
+        if ($("#transcriptionTemplate").hasClass("ui-resizable")){
+            $("#transcriptionTemplate").resizable("destroy");
+        }
+        //$("#transcriptionTemplate").resizable("destroy");
+    }
+    
+    function attachTemplateResize(){
+        var originalRatio = originalCanvasWidth / originalCanvasHeight;
+        $("#transcriptionTemplate").resizable({
+            handles:"e",
+            disabled:false,
+            minWidth: window.innerWidth / 2,
+            maxWidth: window.innerWidth * .75,
+            start: function(event, ui){
+                detachWindowResize();
+            },
+            resize: function(event, ui) {
+                var width = ui.size.width;
+                var height = 1 / originalRatio * width;
+                $("#transcriptionCanvas").css("height", height + "px").css("width", width + "px");
+                $(".lineColIndicatorArea").css("height", height + "px");
+                var splitWidth = window.innerWidth - (width + 35) + "px";
+                $(".split img").css("max-width", splitWidth);
+                $(".split:visible").css("width", splitWidth);
+                //var newHeight1 = parseFloat($("#fullPageImg").height()) + parseFloat($("#fullpageSplit .toolLinks").height()); //For resizing properly when transcription template is resized
+                //var newHeight2 = parseFloat($(".compareImage").height()) + parseFloat($("#compareSplit .toolLinks").height()); //For resizing properly when transcription template is resized
+                var fullPageMaxHeight = window.innerHeight - 125; //100 comes from buttons above image and topTrim
+                $("#fullPageImg").css("max-height", fullPageMaxHeight); //If we want to keep the full image on page, it cant be taller than that.
+                $("#fullpageSplitCanvas").height($("#fullPageImg").height());
+                $("#fullpageSplitCanvas").width($("#fullPageImg").width());
+                var newImgBtmTop = imgBottomPositionRatio * height;
+                var newImgTopTop = imgTopPositionRatio * height;
+                $("#imgBottom img").css("top", newImgBtmTop + "px");
+                $("#imgBottom .lineColIndicatorArea").css("top", newImgBtmTop + "px");
+                $("#imgTop img").css("top", newImgTopTop + "px");
+                $("#imgTop .lineColIndicatorArea").css("top", newImgTopTop + "px");
+            },
+            stop: function(event, ui){
+                attachWindowResize();
+                $.each($(".lineColOnLine"), function(){
+                    var height = $(this).height() + "px";
+                    $(this).css("line-height", height);
+                });
+            }
+        });
+        $("#transcriptionTemplate").on('resize', function (e) {
+            e.stopPropagation();
+        });
+    }
+
+    //Must explicitly set new height and width for percentages values in the DOM to take effect.
+    //with resizing because the img top position puts it up off screen a little.
+    function attachWindowResize(){
+        window.onresize = function(event, ui) {
+            detachTemplateResize();
+            event.stopPropagation();
+            var newImgBtmTop = "0px";
+            var newImgTopTop = "0px";
+            var ratio = originalCanvasWidth / originalCanvasHeight;
+            var newCanvasWidth = $("#transcriptionCanvas").width();
+            var newCanvasHeight = $("#transcriptionCanvas").height();
+            var PAGEHEIGHT = Page.height();
+            var PAGEWIDTH = Page.width();
+            var SPLITWIDTH = $("#parsingSplit").width();
+            var widerThanTall = (parseInt(originalCanvasWidth) > parseInt(originalCanvasHeight));
+            
+            if(liveTool === 'parsing'){
+                if(screen.width == $(window).width() && screen.height == window.outerHeight){
+                    $(".centerInterface").css("text-align", "center"); //.css("background-color", "#e1f4fe");
+                }
+                else{
+                    $(".centerInterface").css("text-align", "left"); //.css("background-color", "#e1f4fe");
+                }
+                if(PAGEHEIGHT <= 625){ //This is the smallest height we allow, unless the image is widerThanTall
+                    if(!widerThanTall){
+                        newCanvasHeight = 625;
+                    }
+                }
+                else if (PAGEHEIGHT <= originalCanvasHeight){ //allow it to be as tall as possible, but not taller.
+                    newCanvasHeight = PAGEHEIGHT;
+                    newCanvasWidth = ratio*newCanvasHeight;
+                }
+                else if(PAGEHEIGHT > originalCanvasHeight){ //I suppose this is possible for small images, so handle if its trying to be bigger than possible
+                    newCanvasHeight = originalCanvasHeight;
+                    newCanvasWidth = originalCanvasWidth;
+                }
+
+                if(PAGEWIDTH > 900){ //Whenever it is greater than 900 wide
+                    if (PAGEWIDTH < newCanvasWidth + SPLITWIDTH){ //If the page width is less than that of the image width plus the split area
+                        newCanvasWidth = PAGEWIDTH - SPLITWIDTH; //make sure it respects the split area's space
+                        newCanvasHeight = 1/ratio*newCanvasWidth; //make the height of the canvas relative to this width
+                    }
+                    if(widerThanTall){
+                        $("#parsingSplit").show();
+                    }
+                }
+                else{ //Whenever it is less than 900 wide
+                    if(widerThanTall){ //if the image is wider than tall
+                        newCanvasWidth = 900; //make it as wide as the limit.  The split area is hidden, we do not need to take it into account
+                        newCanvasHeight = 1/ratio*newCanvasWidth; //make the height of the image what it needs to be for this width limit
+                        $("#parsingSplit").hide();
+                    }
+                    else{
+                        //The math above will have done everything right for all the areas of an image that is taller than it is wide. 
+                    }
+                }
+
+                $("#transcriptionCanvas").css("height", newCanvasHeight + "px");
+                $("#transcriptionCanvas").css("width", newCanvasWidth + "px");
+                $("#imgTop").css("height", newCanvasHeight + "px");
+                $("#imgTop").css("width", newCanvasWidth + "px");
+                $("#imgTop img").css({
+                    'height': newCanvasHeight + "px",
+                });
+            } 
+            else if (liveTool === "preview"){
+                $("#previewSplit").show().height(Page.height()-$("#previewSplit").offset().top).scrollTop(0); // header space
+                $("#previewDiv").height(Page.height()-$("#previewDiv").offset().top);
+            }
+            else if(liveTool !== "" && liveTool!=="none"){
+                newCanvasWidth = Page.width() * .55;
+                var splitWidth = window.innerWidth - (newCanvasWidth + 35) + "px";
+                if(liveTool === "controls"){
+                    newCanvasWidth = Page.width()-200;
+                    splitWidth = 200;
+                }
+                newCanvasHeight = 1 / ratio * newCanvasWidth;
+                var fullPageMaxHeight = window.innerHeight - 125; //120 comes from buttons above image and topTrim
+                $(".split img").css("max-width", splitWidth);
+                $(".split:visible").css("width", splitWidth);
+                $("#fullPageImg").css("max-height", fullPageMaxHeight); //If we want to keep the full image on page, it cant be taller than that.
+                $("#fullpageSplitCanvas").height(fullPageMaxHeight);
+                $("#fullpageSplitCanvas").height($("#fullPageImg").height());
+                $("#fullpageSplitCanvas").width($("#fullPageImg").width());
+                $("#transcriptionTemplate").css("width", newCanvasWidth + "px");
+                $("#transcriptionCanvas").css("width", newCanvasWidth + "px");
+                $("#transcriptionCanvas").css("height", newCanvasHeight + "px");
+                newImgTopTop = imgTopPositionRatio * newCanvasHeight;
+                $("#imgTop img").css("top", newImgTopTop + "px");
+                $("#imgTop .lineColIndicatorArea").css("top", newImgTopTop + "px");
+                $("#imgBottom img").css("top", newImgBtmTop + "px");
+                $("#imgBottom .lineColIndicatorArea").css("top", newImgBtmTop + "px");
+                $(".lineColIndicatorArea").css("height",newCanvasHeight+"px");
+
+            }
+            else{
+                var newHeight = $("#imgTop img").height();
+                newImgBtmTop = imgBottomPositionRatio * newHeight;
+                newImgTopTop = imgTopPositionRatio * newHeight;
+                $("#imgBottom img").css("top", newImgBtmTop + "px");
+                $("#imgBottom .lineColIndicatorArea").css("top", newImgBtmTop + "px");
+                $("#imgTop img").css("top", newImgTopTop + "px");
+                $("#imgTop .lineColIndicatorArea").css("top", newImgTopTop + "px");
+                $("#transcriptionCanvas").css("height",newHeight+"px");
+                $(".lineColIndicatorArea").css("height",newHeight+"px");
+            }
+            $.each($(".lineColOnLine"),function(){
+                $(this).css("line-height", $(this).height()+"px");
+            });
+            clearTimeout(doit);
+            var doit = "";
+            if(liveTool !== "parsing"){
+                doit = setTimeout(attachTemplateResize, 100);
+            }
+            
+        };
+
+    }
+    
+    var Page = {
+    /**
+     *  Returns converted number to CSS consumable string rounded to n decimals.
+     *
+     *  @param num float unprocessed number representing an object dimension
+     *  @param n number of decimal places to include in returned string
+     *  @returns float in ##.## format (example shows n=2)
+     */
+    convertPercent: function(num,n){
+        return Math.round(num*Math.pow(10,(n+2)))/Math.pow(10,n);
+    },
+    /**
+     * Sloppy hack so .focus functions work in FireFox
+     *
+     * @param elem element to focus on
+     */
+    focusOn: function(elem){
+        setTimeout("elem.focus()",0);
+    },
+    /**
+     * Window dimensions.
+     *
+     * @return Integer width of visible page
+     */
+    width: function() {
+        return window.innerWidth !== null? window.innerWidth: document.body !== null? document.body.clientWidth:null;
+    },
+    /**
+     * Window dimensions.
+     *
+     * @return Integer height of visible page
+     */
+    height: function() {
+        return window.innerHeight !== null? window.innerHeight: document.body !== null? document.body.clientHeight:null;
+    }
+};
 
 // Shim console.log to avoid blowing up browsers without it
 if (!window.console) window.console = {};
