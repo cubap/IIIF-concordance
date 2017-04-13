@@ -1910,7 +1910,7 @@
         $("#imgTop img").css({
             'height': newCanvasHeight + "px"
         });
-
+        $("#splitScreenTools").attr("disabled", "disabled");
         $("#prevCanvas").attr("onclick", "");
         $("#nextCanvas").attr("onclick", "");
         $("#imgTop").addClass("fixingParsing");
@@ -2029,7 +2029,7 @@
         $(".split").hide();
         $(".split").css("width", "43%");
 //        //console.log("RESTORE WORKSPACE");
-        
+        $("#splitScreenTools").removeAttr("disabled")
         restoreWorkspace();
         $("#splitScreenTools").show();
         var screenWidth = $(window).width();
