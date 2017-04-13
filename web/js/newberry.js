@@ -193,7 +193,7 @@
            var lines = [];
            if(currentFolioToUse.resources && currentFolioToUse.resources.length > 0){
                lines = currentFolioToUse.resources;
-                populatePreview(lines, pageLabel, currentPage);    
+                populatePreview(lines, pageLabel, currentPage, i);    
            }
 //           else{
 //               if(currentFolioToUse.otherContent && currentFolioToUse.otherContent.length>0){
@@ -2084,13 +2084,6 @@ function splitPage(event, tool) {
         $("#helpContainer").height(Page.height()-$("#helpContainer").offset().top);
         resize = false; //interupts parsing resizing funcitonaliy, dont need to resize for this anyway.
     }
-    if(tool === "parsing" || liveTool == "parsing"){
-        resize=false;
-    }
-    if(tool === "preview"){
-        $("#previewSplit").show().height(Page.height()-$("#previewSplit").offset().top).scrollTop(0); // header space
-        $("#previewDiv").height(Page.height()-$("#previewDiv").offset().top);
-    }
     var ratio = originalCanvasWidth / originalCanvasHeight;
     var newCanvasHeight = 1 / ratio * newCanvasWidth;
     if(tool)
@@ -2098,6 +2091,14 @@ function splitPage(event, tool) {
         "width"   :   newCanvasWidth + "px",
         "height"   :   newCanvasHeight + "px"
     });
+    if(tool === "parsing" || liveTool == "parsing"){
+        resize=false;
+    }
+    if(tool === "preview"){
+        $("#previewSplit").show().height(Page.height()-$("#previewSplit").offset().top).scrollTop(0); // header space
+        $("#previewDiv").height(Page.height()-$("#previewDiv").offset().top);
+    }
+   
     var newImgBtmTop = imgBottomPositionRatio * newCanvasHeight;
     var newImgTopTop = imgTopPositionRatio * newCanvasHeight;
     //$(".lineColIndicatorArea").css("max-height", newCanvasHeight + "px");
