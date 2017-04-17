@@ -250,24 +250,6 @@ textarea:focus{
       visibility:hidden;
     }
 
-    #transWorkspace textarea {
-      left: 0px;
-      max-height: 12em;
-      min-height: 60px;
-      position: relative;
-      width: 100%;
-      z-index: 5;
-      -webkit-box-shadow: 4px 4px 4px 2px #DDD inset;
-      -moz-box-shadow: 4px 4px 4px 2px #DDD inset;
-      box-shadow: 4px 4px 4px 2px #DDD inset;
-      overflow: auto;
-      border: 1px solid #000;
-      resize: vertical;
-      margin: 0px auto;
-      padding-top:7px;
-      padding-left:7px;
-    }
-
     #bookmark {
       -moz-box-shadow:0 0 15px #000;
       -webkit-box-shadow:0 0 15px #000;
@@ -305,22 +287,53 @@ textarea:focus{
         z-index:inherit;
         max-width: 100%;
     }
-
+    
+    #transWorkspace textarea {
+        max-height: 12em;
+        min-height: 60px;
+        position: relative;
+        width: 100%;
+        z-index: 5;
+        overflow: auto;
+        border: 1px solid #000;
+        resize: vertical;
+        border-radius: 2px;
+        padding-right: 2rem; /* stay clear of column labels */
+        top: -48px;  //why do we need this?
+    }
+    
+    #transWorkspace textarea.notes {
+        display:none;
+        max-width: 40%;
+        border: solid thin #AAA;
+        resize: none;
+    }
+    
     #transWorkspace {
-       background-color: #C8DDD8;
+        background-color: #C8DDD8;
         box-shadow: 0px 6px 32px 4px #000;
         display: block;
         position: relative;
         width: auto;
         z-index: 3;
         height: auto;
-        padding: 7px;
-        min-width: 541px;
-        white-space: nowrap;
-        overflow-x: auto;
-        overflow-y: hidden;
+        padding: .25em;
     }
-
+    
+    .workspaceHandle {
+        z-index: 1;
+        position: absolute;
+        height: 20px;
+        width: 30px;
+        left: 4px;
+        top: 4px;
+    }
+    
+    .slideHandleRight {
+        left: auto;
+        right: 4px;
+    }
+/*
     #captions {
         min-height: 1em;
         position: relative;
@@ -333,6 +346,32 @@ textarea:focus{
         padding-left: 7px;
         padding-top: 7px;
         padding-bottom: 7px;
+    }*/
+    
+    #captions {
+        color: #002a5c;
+        line-height: 1.25;
+        -webkit-transition: opacity .25s;
+        -moz-transition: opacity .25s;
+        -o-transition: opacity .25s;
+        transition: opacity .25s;
+        background: #ddd;
+        bottom: -2px;
+    }
+    #captionsText,#notes {
+        display: inline-block;
+        font-family: "Junicode","Cambria","Georgia", serif;
+        text-overflow: ellipsis;
+        width: 100%;
+        position: relative;
+        white-space: nowrap;
+        overflow: hidden;
+
+    }
+    #notes {
+        font-family: monospace;
+        color:#aaa;
+        max-width:40%;
     }
    
     /*
@@ -445,7 +484,7 @@ textarea:focus{
 .bottomButtons:last-child{
     padding-left:20px;
 }
-#transcriptletArea{
+/*#transcriptletArea{
     display: inline-block;
     opacity: 1;
     position: relative;
@@ -455,6 +494,18 @@ textarea:focus{
     width: 73.5%;
     top: -35px;
 
+}*/
+#transcriptletArea,#captions{
+    opacity: 1;
+    position: relative;
+    z-index: 3;
+    visibility: visible;
+    overflow: hidden;
+    /*max-width: 40em;*/
+    max-width: 80em;
+}
+div#transcriptletArea {
+    margin-bottom: 0.25em;
 }
 #pageLabel, #lineLabel, #lineCtrlLabel, #magnifyHlpLabel{
     margin: 0 auto;
@@ -473,7 +524,7 @@ textarea:focus{
     top: -1px !important;
     margin-bottom: 2px;
 }
-#prevPage, #nextPage{
+/*#prevPage, #nextPage{
     font-size: 30pt;
     border: 1px solid black;
     cursor: pointer;
@@ -481,7 +532,7 @@ textarea:focus{
 }
 #prevPage{
     margin-right:60px;
-}
+}*/
 #lineCol{
   position: relative;
   display: inline-block;
@@ -492,6 +543,34 @@ textarea:focus{
   height: 0px;
 }
 #prevColLine, #currentColLine{
+    font-weight: bold;
+    text-align: center;
+    font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
+    position: absolute;
+    padding: 0 .25em;
+    right: 0;
+    z-index: 6;
+}
+
+#captionsColLine {
+    display: inline-block;
+    height: 30px;
+    width: 30px;
+    text-align: center;
+    line-height: 30px;
+    cursor: default;
+    color: #002a5c;
+    font-size: 11pt;
+    position: relative;
+    color:wheat;
+}
+#prevColLine {
+    background-color: #ddd;
+}
+#currentColLine {
+    background: #999;
+}
+/*#prevColLine, #currentColLine{
     position: relative;
     height: 30px;
     width: 30px;
@@ -514,7 +593,7 @@ textarea:focus{
     background-color: #BFBFBF;
     right: -7px;
     top: 46px;
-}
+}*/
 #zoomDiv {
     display: none;
     border-radius : 50%;
@@ -1279,6 +1358,40 @@ button.imgTool{
     cursor: pointer;
     color: #d14836;
 }
+#prevLine,#nextLine,#toggleNotes,#nextPage,#prevPage{
+    position: relative;
+    line-height:2em;
+    width:5.5em;
+    padding: 0 .5em;
+    margin: .25em 0;
+}
+#nextPage,#prevPage{
+    width:100%;
+}
+#toggleNotes {
+    margin-top:0;
+}
+#pageControls {
+    margin-right: 2px;
+}
+#pageControls,#lineControls{
+    background-color: rgba(0,0,0,.3);
+    text-align:center;
+    border-radius: 4px;
+}
+#lineControls i, #pageControls i{
+    display: inline-table;
+    margin: 0px 7px;
+    position:relative;
+}
+#lineControls i:hover{
+    cursor: pointer;
+    color: #d14836;
+}
+#pageControls i:hover{
+    cursor: pointer;
+    color: #d14836;
+}
 #ruler1,#ruler2 {display: none;background: black;position: absolute;z-index: 6;}
 
 
@@ -1291,8 +1404,46 @@ button.imgTool{
     font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
     overflow-x: hidden;
 }*/
-button{
-/*    font-family: 'Open Sans','Helvetica Neue',sans-serif;*/
+
+
+button, #uploadText, .lookLikeButtons {
+    color:white;
+    border-radius: 2px;
+    padding: 4px 6px;
+    height: 35px;
+    cursor: pointer;
+    background-color: #005a8c;
+    border: none;
+}
+
+button.active {
+    background-color: #618797;
+}
+.selected button{
+    background-color: #8198AA;
+}
+button.selected{
+    background-color: #8198AA !important;
+}
+.lookLikeButtons, button{
+    font-family: "Open Sans","Helvetica Neue",sans-serif;
+    color: #FFF;
+    border-radius: 2px;
+    height: 26px;
+    cursor: pointer;
+    background-color: #272727;
+    position: relative;
+    margin: 0px 3px;
+    padding: 4px 6px;
+    margin: 3px 2px;
+    border:none;
+}
+
+
+
+
+/*button{
+    font-family: 'Open Sans','Helvetica Neue',sans-serif;
     font-weight: bold;
     color:white;
     border-radius: 4px;
@@ -1306,7 +1457,7 @@ button{
     cursor: pointer;
     background-color: #272727;
     border: none;
-}
+}*/
 button:hover{
     background-color: #d14836;
 }
@@ -1535,4 +1686,54 @@ button,.navigation, #contribution,
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+}
+
+/* Flexible classing */
+.flex-container{
+    display: flex;
+    margin: 2px 0;
+}
+.flex-bookend {
+    width: 8em;
+    text-align: center;
+    padding: 0 .25em;
+    position: relative;
+}
+.flex-wide, #transcriptletArea div {
+    display:flex;
+    flex-grow:8;
+}
+.flex-stretch{
+    flex-align: stretch;
+    justify-content: center;
+    align-items: stretch;
+}
+.flex-stretch.buttons {
+    display: flex;
+    flex-wrap:reverse-wrap;
+    justify-content:center;
+}
+.flex-stretch.buttons button {
+    margin: 0 2px;
+    flex: 2 1;
+    height: 2em;
+    max-width: 9em;
+    display: block;
+}
+
+#xmlTagFloat, #specialCharsFloat{
+    z-index: 3;
+    position: relative;
+    display: none;
+    padding:.25em;
+    counter-reset: hotkey;
+    flex-grow: 1;
+}
+
+#charactersPopin,#xmlTagPopin {
+    background: #ddd;
+    margin: -4px;
+    padding: 4px 1px;
+    margin-right: 4px;
+    flex-grow:2;
 }

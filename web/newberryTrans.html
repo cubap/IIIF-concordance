@@ -125,77 +125,193 @@
                   </div>
                 </div>
                 <div id="transWorkspace">
-                <div title="Slide Workspace" class="workspaceHandle slideHandleLeft"><i class="handl"></i></div><div title="Slide Workspace" class="workspaceHandle slideHandleRight"><i class="handl"></i></div>
-                <div id="captions"><div id="captionsText"></div></div>
-                <div id="pageControls">
-                    <div id="pageLabel">Page</div>
-                    <button id="prevCanvas" onclick="previousFolio();" title="Previous Page">prev</button><button id="nextCanvas" title="Next Page" onclick="nextFolio();">next</button>
-                </div>
-                <div id="transcriptletArea"></div>
-                <div id="lineCol"><div title="Previous Line" id="prevColLine"></div><div title="Current Line" id="currentColLine"></div></div>
-                <div id="lineControls">
-                    <div id="lineLabel">Line</div>
-                    <button id="prevLine" title="Previous Line" onclick="previousTranscriptlet();">prev</button><button id="nextLine" title="Next Line" onclick="nextTranscriptlet();">next</button>
-                </div><br>
-                <div class="bottomButtons">
-                    <select id="charactersPopin" class="specialCharacters"  title="Special Characters" >
-                        <option id="activeCharacters" >Characters</option> 
-                    </select>
-                    <select id="xmlTagPopin" class="xmlTags" title="Custom XML Tags">
-                        <option id="activeTags">XML Tags</option> 
-                    </select>
-                    <select id="splitScreenTools" > 
-                         <option id="activeSplitTool" >Split Page Tools</option> 
-                         <option splitter='start' class="splitTool" >Get Started</option>
-                         <option splitter='essay' class="splitTool" >Background Essay</option>
-                         <option splitter='partialTrans' class="splitTool" >Partial Transcriptions</option>
-                         <option splitter='groupwork' class="splitTool" >Group Work</option>
-                         <option splitter='calligraphy' class="splitTool" >Calligraphy Books</option>
-                         <option splitter='scripts' class="splitTool" >French Scripts and Hands</option>
-                         <option splitter='frenchdocs' class="splitTool" >About French Documents</option>
-                         <option splitter='conservation' class="splitTool" >Manuscript Preservation</option>
-                         <option splitter='conventions' class="splitTool" >Transcribing & Editing Conventions</option>
-                         <option splitter='teachers' class="splitTool" >Teaching</option>
-                         <option splitter='dictionary' class="splitTool" >Dictionaries</option>
-                         <option splitter='glossary' class="splitTool" >Glossary</option>
-                         <option splitter='fInstitutions' class="splitTool" >French Institutions</option>
-                         <option splitter='other' class="splitTool" >Other Reference Resources</option>
-                         <option splitter='abbrev' class="splitTool" >Abbreviations</option>
-                         <option splitter='maps' class="splitTool" >Historical Maps</option>
-                         <option splitter='preview' class="splitTool" >Text Preview</option>
-                         <option splitter='fullPage' class="splitTool"  >View Full Page</option>
-                         <option splitter='compare' class="splitTool" >Compare Page</option>
-                     </select>  
-                </div>
-                <div class="bottomButtons" style="width: 201px; top:-4px;">
-                    <div id="imageTools" style="width: 201px;">
-                        <div id="activeImageTool" onclick="toggleImgTools();" ><span>Image Tools</span> <i>&#9660;</i></div> <!--  -->
-                           <div class="toolWrap">
-                                <button style="margin-right: 18px; margin-top: 15px;" class="imgTool" which="grayscale" onclick="toggleFilter('grayscale');">Grayscale</button>
-                                <button style="margin-bottom: 10px;" class="imgTool" which="invert" onclick="toggleFilter('invert');">Invert</button>
-                                <div id="imageToolSliders" class="imgTool">
-                                    Brightness
-                                    <div id="brightnessSlider"></div>
-                                    Contrast
-                                    <div id="contrastSlider"></div>
-                                </div>
-                           </div>
+                    <div title="Slide Workspace" class="workspaceHandle slideHandleLeft"><i class="fa fa-bars"></i><i class="fa fa-arrows-v"></i></div><div title="Slide Workspace" class="workspaceHandle slideHandleRight"><i class="fa fa-arrows-v"></i><i class="fa fa-bars"></i></div>
+                    <div class="flex-container flex-stretch">
+                        <div class="flex-bookend">
+                        </div>
+                        <div class="flex-wide" style="position:relative;height:1em;">
+<!--                            <div id="contribution"></div>
+                            <div id="saveReport"></div>-->
+                        </div>
+                        <div class="flex-bookend">
+                        </div>
                     </div>
-                </div>
-                <div class="bottomButtons">
-                     <button class="magnifyBtn" magnifyImg="trans" title="Magnify Transcription Image" >Magnify</button> <!--Page event on the listener for this class in js.-->
-                     <button id="moveImage" title="Move Transcription Image" onclick="startMoveImg();">Move Img</button>
-                     <button id="parsingBtn" title="Correct Page Parsing" >Correct Parsing</button> <!--Page event on the listener for this class in js.--> 
-                     <!--<button id="linebreakBtn">Linebreak</button>-->
-                    <div  id="lineColControls">
-                        <div title="Control Drawn Line Settings" id="lineCtrlLabel">Line Control</div>
-                        <span style="top:14px;" title="Toggle Entire Lines" class="linehdr">Lines</span><input style="top:14px;" title="Toggle Lines" type="checkbox" onchange="toggleLineMarkers();" checked="checked"><br>
-                        <span style="top:10px;" title="Toggle Lines' Indicator" class="linehdr">Line #s</span><input style="top:10px;" type="checkbox" onchange="toggleLineCol();" checked="checked">
-                        <button id="markerColors" onclick="markerColors();">Line Color</button>
+                    <div class="flex-container flex-stretch">
+                        <div class="flex-bookend">
+                        </div>
+                        <div id="captions" class="flex-wide">
+                            <div title="Previous Line" class="pull-right" id="prevColLine"></div>
+                            <div id="captionsText"></div>
+                            <span id="notes" class="quiet">&nbsp;</span>
+                        </div>
+                        <div class="flex-bookend">
+                        </div>
                     </div>
-                </div>
+                    <div class="flex-container flex-stretch">
+                        <div class="flex-bookend">
+                            <button id="prevLine" class="pull-right" title="Prev" onclick="previousTranscriptlet();">
+                                <i class="fa fa-chevron-left"></i> Prev
+                            </button>
+                            <button id="prevPage" title="Previous Page" onclick="previousFolio();">
+                                <i class="fa fa-caret-left fa-2x"></i>
+                                Previous Page
+                            </button>
+                        </div>
+                        <div id="transcriptletArea" class="flex-wide">
+                            <div title="Current Line" id="currentColLine"></div>
+                            <div class="xmlClosingTags"></div>
+                        </div>
 
-              </div>
+                        <div class="flex-bookend">
+                            <button class="pull-left" id="nextLine" title="Next Line" onclick="nextTranscriptlet();">
+                                Next <i class="fa fa-chevron-right"></i>
+                            </button>
+                            <button id="nextPage" title="Next Page" onclick="nextFolio();">
+                                <i class="fa fa-forward fa-2x"></i>
+                                Next Page
+                            </button>
+                            <button id="toggleNotes" class="pull-left clear-left" role="button" onclick="$('.notes').fadeToggle('slow')" title="Toggle Notes">
+                                Notes <i class="fa fa-comment"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex-container flex-stretch buttons let">
+                        <select id="splitScreenTools" > 
+                             <option id="activeSplitTool" >Splitscreen Tools</option> 
+                             <option splitter='start' class="splitTool" >Get Started</option>
+                             <option splitter='essay' class="splitTool" >Background Essay</option>
+                             <option splitter='partialTrans' class="splitTool" >Partial Transcriptions</option>
+                             <option splitter='groupwork' class="splitTool" >Group Work</option>
+                             <option splitter='calligraphy' class="splitTool" >Calligraphy Books</option>
+                             <option splitter='scripts' class="splitTool" >French Scripts and Hands</option>
+                             <option splitter='frenchdocs' class="splitTool" >About French Documents</option>
+                             <option splitter='conservation' class="splitTool" >Manuscript Preservation</option>
+                             <option splitter='conventions' class="splitTool" >Transcribing & Editing Conventions</option>
+                             <option splitter='teachers' class="splitTool" >Teaching</option>
+                             <option splitter='dictionary' class="splitTool" >Dictionaries</option>
+                             <option splitter='glossary' class="splitTool" >Glossary</option>
+                             <option splitter='fInstitutions' class="splitTool" >French Institutions</option>
+                             <option splitter='other' class="splitTool" >Other Reference Resources</option>
+                             <option splitter='abbrev' class="splitTool" >Abbreviations</option>
+                             <option splitter='maps' class="splitTool" >Historical Maps</option>
+                             <option splitter='preview' class="splitTool" >Text Preview</option>
+                             <option splitter='fullPage' class="splitTool"  >View Full Page</option>
+                             <option splitter='compare' class="splitTool" >Compare Page</option>
+                         </select>  
+                        <button id="canvasControls" title="Page Tools">
+                            Page Tools
+                            <i class="fa fa-file-image-o"></i>
+                        </button>
+<!--                        <button style="display:inline-block;" id="ltrSwitch" title="Change Interface">
+                            LTR
+                            <i class="fa fa-beer"></i>
+                        </button>
+                        <button style="display:inline-block;" id="rtlSwitch" title="Change Interface">
+                            RTL
+                            <i class="fa fa-file-image-o"></i>
+                        </button>-->
+                        <button id="magnify1" class="magnifyBtn let" magnifyImg="trans" title="Inspect Transcription Image" >
+                            Inspect
+                            <i class="fa fa-search-plus"></i>
+                        </button> <!--Page event on the listener for this class in js.-->
+                        <button id="toggleChars" title="Move Transcription Image" onclick="toggleSpecialChars(event);">
+                            Characters
+                            <i class="fa fa-keyboard-o"></i>
+                        </button>
+                        <button id="toggleXML" class="let" title="Move Transcription Image" onclick="toggleXMLTags(event);">
+                            XML Tags
+                            <i class="fa fa-code"></i>
+                        </button>
+                    </div>
+                    <div class="flex-container flex-stretch" style="flex-wrap: wrap; justify-content: space-around;">
+                        <div id="specialCharsFloat" class="flex-container special-charactered">
+                            <div id="charactersPopin" class="specialCharacters"  title="Special Characters" >
+                            </div>
+                            <a title="Edit Special Characters" class="lookLikeButtons editButtons exitPage" href="buttons.jsp">
+                                Edit <i class="fa fa-edit"></i>
+                            </a>
+                        </div>
+                        <div id="xmlTagFloat" class="flex-container xml-tagged">
+                            <div id="xmlTagPopin" class="xmlTags" title="Custom XML Tags">
+                            </div>
+                            <a title="Edit XML Tags" class="lookLikeButtons editButtons exitPage" href="buttons.jsp">
+                                Edit <i class="fa fa-edit"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+<!--                <div id="transWorkspace_old">
+                    <div title="Slide Workspace" class="workspaceHandle slideHandleLeft"><i class="handl"></i></div><div title="Slide Workspace" class="workspaceHandle slideHandleRight"><i class="handl"></i></div>
+                    <div id="captions"><div id="captionsText"></div></div>
+                    <div id="pageControls">
+                        <div id="pageLabel">Page</div>
+                        <button id="prevCanvas" onclick="previousFolio();" title="Previous Page">prev</button><button id="nextCanvas" title="Next Page" onclick="nextFolio();">next</button>
+                    </div>
+                    <div id="transcriptletArea"></div>
+                    <div id="lineCol"><div title="Previous Line" id="prevColLine"></div><div title="Current Line" id="currentColLine"></div></div>
+                    <div id="lineControls">
+                        <div id="lineLabel">Line</div>
+                        <button id="prevLine" title="Previous Line" onclick="previousTranscriptlet();">prev</button><button id="nextLine" title="Next Line" onclick="nextTranscriptlet();">next</button>
+                    </div><br>
+                    <div class="bottomButtons">
+                        <select id="charactersPopin" class="specialCharacters"  title="Special Characters" >
+                            <option id="activeCharacters" >Characters</option> 
+                        </select>
+                        <select id="xmlTagPopin" class="xmlTags" title="Custom XML Tags">
+                            <option id="activeTags">XML Tags</option> 
+                        </select>
+                        <select id="splitScreenTools" > 
+                             <option id="activeSplitTool" >Split Page Tools</option> 
+                             <option splitter='start' class="splitTool" >Get Started</option>
+                             <option splitter='essay' class="splitTool" >Background Essay</option>
+                             <option splitter='partialTrans' class="splitTool" >Partial Transcriptions</option>
+                             <option splitter='groupwork' class="splitTool" >Group Work</option>
+                             <option splitter='calligraphy' class="splitTool" >Calligraphy Books</option>
+                             <option splitter='scripts' class="splitTool" >French Scripts and Hands</option>
+                             <option splitter='frenchdocs' class="splitTool" >About French Documents</option>
+                             <option splitter='conservation' class="splitTool" >Manuscript Preservation</option>
+                             <option splitter='conventions' class="splitTool" >Transcribing & Editing Conventions</option>
+                             <option splitter='teachers' class="splitTool" >Teaching</option>
+                             <option splitter='dictionary' class="splitTool" >Dictionaries</option>
+                             <option splitter='glossary' class="splitTool" >Glossary</option>
+                             <option splitter='fInstitutions' class="splitTool" >French Institutions</option>
+                             <option splitter='other' class="splitTool" >Other Reference Resources</option>
+                             <option splitter='abbrev' class="splitTool" >Abbreviations</option>
+                             <option splitter='maps' class="splitTool" >Historical Maps</option>
+                             <option splitter='preview' class="splitTool" >Text Preview</option>
+                             <option splitter='fullPage' class="splitTool"  >View Full Page</option>
+                             <option splitter='compare' class="splitTool" >Compare Page</option>
+                         </select>  
+                    </div>
+                    <div class="bottomButtons" style="width: 201px; top:-4px;">
+                        <div id="imageTools" style="width: 201px;">
+                            <div id="activeImageTool" onclick="toggleImgTools();" ><span>Image Tools</span> <i>&#9660;</i></div>   
+                               <div class="toolWrap">
+                                    <button style="margin-right: 18px; margin-top: 15px;" class="imgTool" which="grayscale" onclick="toggleFilter('grayscale');">Grayscale</button>
+                                    <button style="margin-bottom: 10px;" class="imgTool" which="invert" onclick="toggleFilter('invert');">Invert</button>
+                                    <div id="imageToolSliders" class="imgTool">
+                                        Brightness
+                                        <div id="brightnessSlider"></div>
+                                        Contrast
+                                        <div id="contrastSlider"></div>
+                                    </div>
+                               </div>
+                        </div>
+                    </div>
+                    <div class="bottomButtons">
+                         <button class="magnifyBtn" magnifyImg="trans" title="Magnify Transcription Image" >Magnify</button> Page event on the listener for this class in js.
+                         <button id="moveImage" title="Move Transcription Image" onclick="startMoveImg();">Move Img</button>
+                         <button id="parsingBtn" title="Correct Page Parsing" >Correct Parsing</button> Page event on the listener for this class in js. 
+                         <button id="linebreakBtn">Linebreak</button>
+                        <div  id="lineColControls">
+                            <div title="Control Drawn Line Settings" id="lineCtrlLabel">Line Control</div>
+                            <span style="top:14px;" title="Toggle Entire Lines" class="linehdr">Lines</span><input style="top:14px;" title="Toggle Lines" type="checkbox" onchange="toggleLineMarkers();" checked="checked"><br>
+                            <span style="top:10px;" title="Toggle Lines' Indicator" class="linehdr">Line #s</span><input style="top:10px;" type="checkbox" onchange="toggleLineCol();" checked="checked">
+                            <button id="markerColors" onclick="markerColors();">Line Color</button>
+                        </div>
+                    </div>
+
+              </div>-->
               <div id="imgBottom">
                 <img class="transcriptionImage" />
                 <div class="lineColIndicatorArea"></div>
@@ -935,7 +1051,6 @@
             });
             
             $("#parsingBtn").click(function(){
-                liveTool = "parsing";
                 if(isFullscreen)isUnadjusted = true;
                 isFullscreen = false;
                 hideWorkspaceForParsing();

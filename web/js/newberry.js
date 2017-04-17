@@ -309,43 +309,66 @@
         var speCharactersInOrder = new Array(specialCharacters.length);
         for (var char = 0; char < specialCharacters.length; char++){
             var thisChar = specialCharacters[char];
-            if(thisChar == ""){
-
-            }
-            else{
+            if (thisChar == ""){ }
+            else {
                 var keyVal = thisChar.key;
                 var position2 = parseInt(thisChar.position);
-                var newCharacter = "<option class='character'>&#"+keyVal+";</option>";  // onclick=\"addchar('&#"+keyVal+";');\" 
-                if(position2-1 >= 0 && (position2-1) < specialCharacters.length){
-                    speCharactersInOrder[position2-1] = newCharacter; 
+                var newCharacter = "<div class='character lookLikeButtons' onclick='addchar(\"&#" + keyVal + "\")'>&#" + keyVal + ";</div>";
+                if (position2 - 1 >= 0 && (position2 - 1) < specialCharacters.length) {
+                    //speCharactersInOrder[position2 - 1] = newCharacter;
+                    speCharactersInOrder[char] = newCharacter;
+                }
+                else{
+                    speCharactersInOrder[char] = newCharacter;
+                    //Something is wrong with the position value, do your best.
                 }
             }
-
         }
-        $.each(speCharactersInOrder, function(){
-            var button1 = $(''+this);
+        for (var char2 = 0; char2 < speCharactersInOrder.length; char2++){
+            var textButton = speCharactersInOrder[char2];
+            var button1 = $(textButton);
             $(".specialCharacters").append(button1);
-        });
-
+        }
     }
-    
+
     function populateXML(xmlTags){
         xmlTags = xmlTags.split(","); 
         var tagsInOrder = [];
-        for (var tag = 0; tag < xmlTags.length; tag++){
-            var newTagBtn = xmlTags[tag];
-            if(newTagBtn!=="" && newTagBtn!==" "){
-                 tagsInOrder.push("<option>"+newTagBtn + "</option>");
+        for (var tagIndex = 0; tagIndex < xmlTags.length; tagIndex++){
+            var newTagBtn = "";
+            var tagName = xmlTags[tagIndex].tag;
+            if(tagName && tagName!== "" && tagName !== " "){
+                var fullTag = "";
+                var xmlTagObject = xmlTags[tagIndex];
+                var parametersArray = xmlTagObject.parameters; //This is a string array of properties, paramater1-parameter5 out of the db.
+                if (parametersArray[0] != null) {
+                    fullTag += " " + parametersArray[0];
+                }
+                if (parametersArray[1] != null) {
+                   fullTag += " " + parametersArray[1];
+                }
+                if (parametersArray[2] != null) {
+                   fullTag += " " + parametersArray[2];
+                }
+                if (parametersArray[3] != null) {
+                   fullTag += " " + parametersArray[3];
+                }
+                if (parametersArray[4] != null) {
+                   fullTag += " " + parametersArray[4];
+                }
+                if(fullTag !== ""){
+                    fullTag = "<"+tagName+" "+fullTag+">";
+                }
+                var description = xmlTagObject.description;
+                newTagBtn = "<div onclick=\"insertAtCursor('" + tagName + "', '', '" + fullTag + "',false);\" class='xmlTag lookLikeButtons' title='" + fullTag + "'>" + description + "</div>"; //onclick=\"insertAtCursor('" + tagName + "', '', '" + fullTag + "');\">
+                var button = $(newTagBtn);
+                $(".xmlTags").append(button);
             }
-            //tagsInOrder[position1] = newTagBtn;
         }
-        $.each(tagsInOrder, function(){
-            var button2 = $(''+this);
-            $(".xmlTags").append(button2);
-        }); 
     }
+
     /*
-     * Load the trnascription from the text in the text area. 
+     * Loivated the trnascription from the text in the text area. 
      */
     function loadTranscription(){
         //Object validation here.
@@ -900,8 +923,8 @@
         }
         var thisContent = "";
         var thisPlaceholder = "Enter a line transcription";
-        var counter = 0;
-        var colCounter = 0;
+        var counter = -1;
+        var colCounter = 1;
         var image = $('#imgTop img');
         var theHeight = image.height();
         var theWidth = image.width();
@@ -1012,7 +1035,7 @@
                                 if(lines.length > 1){
                                     letterIndex++;
                                     col = letters[letterIndex];
-                                    colCounter = 0; //Reset line counter so that when the column changes the line# restarts?
+                                    colCounter = 1; //Reset line counter so that when the column changes the line# restarts?
                                 }
                             }
                         }
@@ -1060,8 +1083,18 @@
 
                 counter=parseInt(counter);
                 counter += 1;
-                //BH thisContent needs to be html safe text.
-                var newAnno = $('<div id="transcriptlet_'+counter+'" col="'+col+'" colLineNum="'+colCounter+'" lineID="'+counter+'" lineserverid="'+lineID+'" class="transcriptlet" data-answer="' + thisContent + '"><textarea placeholder="' + thisPlaceholder + '">'+thisContent+'</textarea></div>');
+                
+                var htmlSafeText = $("<div/>").text(thisContent).html();
+                //var htmlSafeText2 = $("<div/>").text(thisNote).html();
+                var newAnno = $('<div id="transcriptlet_' + counter + '" col="' + col
+                    + '" colLineNum="' + colCounter + '" lineID="' + counter
+                    + '" lineserverid="' + lineID + '" class="transcriptlet" data-answer="'
+                    + escape(thisContent) + '"><textarea class="theText" placeholder="' + thisPlaceholder + '">'
+                    + htmlSafeText + '</textarea></div>');
+            
+                    //<textarea class="notes" data-answer="'+escape(thisNote)+'" placeholder="Line notes">'
+                    //+ htmlSafeText2 + '</textarea>
+                
                 var left = parseFloat(XYWHarray[0]) / (10 * ratio);
                 var top = parseFloat(XYWHarray[1]) / 10;
                 var width = parseFloat(XYWHarray[2]) / (10 * ratio);
@@ -1074,9 +1107,7 @@
                     counter: counter
                 });
                 
-                colCounter+=1;
                 $("#transcriptletArea").append(newAnno);
-                
                 var lineColumnIndicator = $("<div onclick='loadTranscriptlet("+counter+");' pair='"+col+""+colCounter+"' lineserverid='"+lineID+"' lineID='"+counter+"' class='lineColIndicator' style='left:"+left+"%; top:"+top+"%; width:"+width+"%; height:"+height+"%;'><div class\n\
                 ='lineColOnLine' >"+col+""+colCounter+"</div></div>");
                 var fullPageLineColumnIndicator = $("<div pair='"+col+""+colCounter+"' lineserverid='"+lineID+"' lineID='"+counter+"' class='lineColIndicator fullP'\n\
@@ -1086,6 +1117,7 @@
                 var lineHeight = theHeight * (height/100) + "px";
                 lineColumnIndicator.find('.lineColOnLine').attr("style", "line-height:"+lineHeight+";");
                 //Put to the DOM
+                colCounter+=1;
                 $(".lineColIndicatorArea").append(lineColumnIndicator);
                 $("#fullPageSplitCanvas").append(fullPageLineColumnIndicator);                          
         }
@@ -1111,67 +1143,148 @@
     }
     
     /* Make the transcription interface focus to the transcriptlet passed in as the parameter. */
-    function updatePresentation(transcriptlet) {
-        if(transcriptlet === undefined || transcriptlet === null){
-            $("#imgTop").css("height", "0%");
-            $("#imgBottom").css("height", "inherit");
-            return false;
+function updatePresentation(transcriptlet) {
+    if (transcriptlet === undefined || transcriptlet === null){
+        $("#imgTop").css("height", "0%");
+        $("#imgBottom").css("height", "inherit");
+        return false;
+    }
+    var currentCol = transcriptlet.attr("col");
+    var currentColLineNum = parseInt(transcriptlet.attr("collinenum"));
+    var transcriptletBefore = $(transcriptlet.prev());
+    var currentColLine = currentCol + "" + currentColLineNum;
+    $("#currentColLine").html(currentColLine);
+    if (parseInt(currentColLineNum) >= 1){
+        if (transcriptletBefore.hasClass("transcriptlet")){
+            var prevColLineNum = parseInt(transcriptletBefore.attr("collinenum"));
+            var prevLineCol = transcriptletBefore.attr("col");
+            var prevLineText = unescape(transcriptletBefore.attr("data-answer"));
+            //var prevLineNote = unescape(transcriptletBefore.find(".notes").attr("data-answer"));
+            $("#prevColLine").html(prevLineCol + "" + prevColLineNum).css("visibility","");
+            $("#captionsText").text((prevLineText.length && prevLineText) || "This line is not transcribed.").attr("title",prevLineText);
+                
+                    //.next().html(prevLineNote).attr("title",prevLineNote);
         }
-        var nextCol = transcriptlet.attr("col");
-        var nextLineNum = parseInt(transcriptlet.attr("collinenum"))+1;
-        var transcriptletBefore = $(transcriptlet.prev());
-        var nextColLine = nextCol+""+nextLineNum;
-        $("#currentColLine").html(nextColLine);
-        if(parseInt(nextLineNum) >= 1){
-            if(transcriptletBefore.length>0){
-                var currentTranscriptletNum = parseInt(transcriptletBefore.attr("collinenum")) + 1;
-                //var prevLine = $("#transcriptlet_"+previousTranscriptletNum);
-                var preLine = "";
-                if(transcriptletBefore.length > 0){
-
-                }
-                else{
-
-                }
-                var prevLineCol = transcriptletBefore.attr("col");
-                var prevLineText = transcriptletBefore.attr("data-answer");
-                $("#prevColLine").html(prevLineCol+""+currentTranscriptletNum);
-                if(prevLineText === ""){
-                    $("#captionsText").html("This line is not transcribed.");
-                }
-                else{
-                    $("#captionsText").html(prevLineText);
-                }
-            }
-            else{ //this is a probelm
-                $("#prevColLine").html("**");
-                $("#captionsText").html("You are on the first line.");
-            }
-            
+        else { //there is no previous line
+            $("#prevColLine").html(prevLineCol + "" + prevColLineNum).css("visibility","hidden");
+            $("#captionsText").html("You are on the first line.").next().html("");
         }
-        else{ //there is no previous line
-            $("#prevColLine").html("**");
-            $("#captionsText").html("ERROR.  NUMBERS ARE OFF");
-        }
-        focusItem[0] = focusItem[1];
-        focusItem[1] = transcriptlet;
-        if ((focusItem[0] === null) || (focusItem[0].attr("id") !== focusItem[1].attr("id"))) {
-          this.adjustImgs(this.setPositions());
-          this.swapTranscriptlet();
-          //show previous line transcription
-          $('#captions').animate({
+    }
+    else { //this is a problem
+        $("#prevColLine").html(currentCol + "" + currentColLineNum-1).css("visibility","hidden");
+        $("#captionsText").html("ERROR.  NUMBERS ARE OFF").next().html("");
+    }
+    focusItem[0] = focusItem[1];
+    focusItem[1] = transcriptlet;
+    if ((focusItem[0] === null)
+        || (focusItem[0].attr("id") !== focusItem[1].attr("id"))) {
+        adjustImgs(setPositions());
+        swapTranscriptlet();
+        // show previous line transcription
+        $('#captions').css({
             opacity: 1
-          }, 100);
-        } 
-        else {
-          this.adjustImgs(this.setPositions());
-          focusItem[1].prevAll(".transcriptlet").addClass("transcriptletBefore").removeClass("transcriptletAfter");
-          focusItem[1].nextAll(".transcriptlet").addClass("transcriptletAfter").removeClass("transcriptletBefore");
-          //this.maintainWorkspace();
-        }
-        //prevent textareas from going invisible and not moving out of the workspace
-        focusItem[1].removeClass("transcriptletBefore transcriptletAfter");
-      };
+        });
+    }
+    else {
+        adjustImgs(setPositions());
+        focusItem[1].prevAll(".transcriptlet").addClass("transcriptletBefore").removeClass("transcriptletAfter");
+        focusItem[1].nextAll(".transcriptlet").addClass("transcriptletAfter").removeClass("transcriptletBefore");
+    }
+    // prevent textareas from going invisible and not moving out of the workspace
+    focusItem[1].removeClass("transcriptletBefore transcriptletAfter")
+        .find('.theText')[0].focus();
+    // change prev/next at page edges
+    if($(".transcriptletBefore").size()===0){
+
+        $("#prevLine").hide();
+        $("#prevPage").show();
+    } else {
+        $("#prevLine").show();
+        $("#prevPage").hide();
+    }
+    if($(".transcriptletAfter").size()===0){
+        $("#nextLine").hide();
+        $("#nextPage").show();
+    } else {
+        $("#nextLine").show();
+        $("#nextPage").hide();
+    }
+    $.each($(".lineColOnLine"), function(){
+        $(this).css("line-height", $(this).height() + "px");
+    });
+};
+    
+    /* Make the transcription interface focus to the transcriptlet passed in as the parameter. */
+//    function updatePresentation(transcriptlet) {
+//        if(transcriptlet === undefined || transcriptlet === null){
+//            $("#imgTop").css("height", "0%");
+//            $("#imgBottom").css("height", "inherit");
+//            return false;
+//        }
+//        var nextCol = transcriptlet.attr("col");
+//        var nextLineNum = parseInt(transcriptlet.attr("collinenum"))+1;
+//        var transcriptletBefore = $(transcriptlet.prev(".transcriptlet"));
+//        var transcriptletAfter = $(transcriptlet.next(".transcriptlet"));
+//        var nextColLine = nextCol+""+nextLineNum;
+//        $("#currentColLine").html(nextColLine);
+//        if(parseInt(nextLineNum) >= 1){
+//            if(transcriptletBefore.length>0){
+//                var currentTranscriptletNum = parseInt(transcriptletBefore.attr("collinenum")) + 1;
+//                //var prevLine = $("#transcriptlet_"+previousTranscriptletNum);
+//                var preLine = "";
+//                var prevLineCol = transcriptletBefore.attr("col");
+//                var prevLineText = transcriptletBefore.attr("data-answer");
+//                $("#prevColLine").html(prevLineCol+""+currentTranscriptletNum);
+//                if(prevLineText === ""){
+//                    $("#captionsText").html("This line is not transcribed.");
+//                }
+//                else{
+//                    $("#captionsText").html(prevLineText);
+//                }
+//            }
+//            else{ //this is a probelm...or is it?
+//                $("#prevColLine").html("");
+//                $("#captionsText").html("You are on the first line.");
+//            }
+//            
+//        }
+//        else{ //there is no previous line
+//            $("#prevColLine").html("**");
+//            $("#captionsText").html("ERROR.  NUMBERS ARE OFF");
+//        }
+//        if($(".transcriptletBefore").size()===0){
+//            $("#prevLine").hide();
+//            $("#prevPage").show();
+//        } else {
+//            $("#prevLine").show();
+//            $("#prevPage").hide();
+//        }
+//        if($(".transcriptletAfter").size()===0){
+//            $("#nextLine").hide();
+//            $("#nextPage").show();
+//        } else {
+//            $("#nextLine").show();
+//            $("#nextPage").hide();
+//        }
+//        focusItem[0] = focusItem[1];
+//        focusItem[1] = transcriptlet;
+//        if ((focusItem[0] === null) || (focusItem[0].attr("id") !== focusItem[1].attr("id"))) {
+//          this.adjustImgs(this.setPositions());
+//          this.swapTranscriptlet();
+//          //show previous line transcription
+//          $('#captions').animate({
+//            opacity: 1
+//          }, 100);
+//        } 
+//        else {
+//          this.adjustImgs(this.setPositions());
+//          focusItem[1].prevAll(".transcriptlet").addClass("transcriptletBefore").removeClass("transcriptletAfter");
+//          focusItem[1].nextAll(".transcriptlet").addClass("transcriptletAfter").removeClass("transcriptletBefore");
+//          //this.maintainWorkspace();
+//        }
+//        //prevent textareas from going invisible and not moving out of the workspace
+//        //focusItem[1].removeClass("transcriptletBefore transcriptletAfter");
+//      };
       
     function setPositions() {
         // Determine size of section above workspace
@@ -1765,6 +1878,46 @@
         $("#imgBottom").css("transition", "left .5s, top .5s, width .5s");
     };
     
+    function toggleImgTools(event){
+    var locationX = event.pageX;
+    var locationY = event.pageY;
+    $("#imageTools").css({
+        "display":  "block",
+        "left" : locationX + "px",
+        "top" : locationY + 15 + "px"
+    });
+    $("#imageTools").draggable();
+}
+
+function toggleLineControls(event){
+    var locationX = event.pageX;
+    var locationY = event.pageY;
+    $("#lineColControls").css({
+        "display":  "block",
+        "left" : locationX + "px",
+        "top" : locationY + 15 + "px"
+    });
+    $("#lineColControls").draggable();
+}
+
+function toggleXMLTags(event){
+    if($("#xmlTagFloat").is(":visible")){
+        $("#xmlTagFloat").fadeOut();
+    } else {
+        $("#xmlTagFloat").css("display","flex").fadeIn();
+    }
+    $("#toggleXML").toggleClass('xml-tagged');
+}
+
+function toggleSpecialChars(event){
+    if($("#specialCharsFloat").is(":visible")){
+        $("#specialCharsFloat").fadeOut();
+    } else {
+        $("#specialCharsFloat").css("display","flex").fadeIn();
+    }
+    $("#toggleChars").toggleClass('special-charactered');
+}
+    
         /** 
      * Sets screen for parsing tool use.
      * Slides the workspace down and scales the top img
@@ -1864,10 +2017,13 @@
 //    };
     
     function hideWorkspaceForParsing(){
+        if(liveTool === "parsing"){
+            return false;
+        }
         liveTool = "parsing";
         $("#parsingBtn").css("box-shadow: none;");
-        //    originalCanvasHeight = $("#transcriptionCanvas").height(); //make sure these are set correctly
-    //    originalCanvasWidth = $("#transcriptionCanvas").width(); //make sure these are set correctly
+        originalCanvasHeight = $("#transcriptionCanvas").height(); //make sure these are set correctly
+        originalCanvasWidth = $("#transcriptionCanvas").width(); //make sure these are set correctly
         imgTopOriginalTop = $("#imgTop img").css("top");
         if ($("#transcriptionTemplate").hasClass("ui-resizable")){
             $("#transcriptionTemplate").resizable('destroy');
@@ -2004,6 +2160,7 @@
             $("#overlay").click();
             return false;
         }
+        liveTool = "none";
         $(".line, .parsing, .adjustable,.parsingColumn").remove();
         isUnadjusted = isFullscreen = true;
         //currentFocus = "transcription" + focusItem[1].attr('id').substring(1);
@@ -2023,6 +2180,7 @@
         $('.lineColIndicatorArea').css("max-height","none");
         $('.lineColIndicatorArea').show();
         $(".centerInterface").css("text-align", "left");
+        $("#canvasControls").removeClass("selected");
         $("#help").css({"left":"100%"}).fadeOut(1000);
         $("#fullScreenBtn").fadeOut(250);
         isZoomed = false;
@@ -2091,7 +2249,7 @@ function splitPage(event, tool) {
         "width"   :   newCanvasWidth + "px",
         "height"   :   newCanvasHeight + "px"
     });
-    if(tool === "parsing" || liveTool == "parsing"){
+    if(tool === "parsing" || liveTool === "parsing"){
         resize=false;
     }
     if(tool === "preview"){
