@@ -1194,21 +1194,20 @@ function updatePresentation(transcriptlet) {
     focusItem[1].removeClass("transcriptletBefore transcriptletAfter")
         .find('.theText')[0].focus();
     // change prev/next at page edges
-    if($(".transcriptletBefore").size()===0){
-
-        $("#prevLine").hide();
-        $("#prevPage").show();
-    } else {
-        $("#prevLine").show();
-        $("#prevPage").hide();
-    }
-    if($(".transcriptletAfter").size()===0){
-        $("#nextLine").hide();
-        $("#nextPage").show();
-    } else {
-        $("#nextLine").show();
-        $("#nextPage").hide();
-    }
+//    if($(".transcriptletBefore").size()===0){
+//        $("#prevLine").hide();
+//        $("#prevPage").show();
+//    } else {
+//        $("#prevLine").show();
+//        $("#prevPage").hide();
+//    }
+//    if($(".transcriptletAfter").size()===0){
+//        $("#nextLine").hide();
+//        $("#nextPage").show();
+//    } else {
+//        $("#nextLine").show();
+//        $("#nextPage").hide();
+//    }
     $.each($(".lineColOnLine"), function(){
         $(this).css("line-height", $(this).height() + "px");
     });

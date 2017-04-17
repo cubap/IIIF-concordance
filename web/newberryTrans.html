@@ -110,6 +110,7 @@
         <button id="loadBtn" class="hideme" onclick="loadTranscription();"> Load Transcription </button> 
         <div id="transTemplateLoading">
             <p>Please wait while we load the transcription interface.  This may take up to 2 minutes.</p>
+            <div class="turnLoader transLoader"><img src="images/loading2.gif" /></div>
         </div>
         <div class="centerInterface">
         <div id="transcriptionTemplate">
@@ -140,7 +141,7 @@
                         <div class="flex-bookend">
                         </div>
                         <div id="captions" class="flex-wide">
-                            <div title="Previous Line" class="pull-right" id="prevColLine"></div>
+                            <div title="Previous Line" id="prevColLine"></div>
                             <div id="captionsText"></div>
                             <span id="notes" class="quiet">&nbsp;</span>
                         </div>
@@ -149,12 +150,14 @@
                     </div>
                     <div class="flex-container flex-stretch">
                         <div class="flex-bookend">
-                            <button id="prevLine" class="pull-right" title="Prev" onclick="previousTranscriptlet();">
-                                <i class="fa fa-chevron-left"></i> Prev
-                            </button>
+                            <div id="pageLabel">Page</div>
                             <button id="prevPage" title="Previous Page" onclick="previousFolio();">
-                                <i class="fa fa-caret-left fa-2x"></i>
-                                Previous Page
+<!--                                <i class="fa fa-caret-left fa-2x"></i>-->
+                                Prev
+                            </button>
+                            <button id="nextPage" title="Next Page" onclick="nextFolio();">
+<!--                                <i class="fa fa-forward fa-2x"></i>-->
+                                Next
                             </button>
                         </div>
                         <div id="transcriptletArea" class="flex-wide">
@@ -163,16 +166,19 @@
                         </div>
 
                         <div class="flex-bookend">
-                            <button class="pull-left" id="nextLine" title="Next Line" onclick="nextTranscriptlet();">
-                                Next <i class="fa fa-chevron-right"></i>
+                            <div id="lineLabel">Line <span class="lineHotkeys">(alt + &UpArrow; or &DownArrow;)</span></div>
+                            <button id="prevLine" title="Prev" onclick="previousTranscriptlet();">
+<!--                                <i class="fa fa-chevron-left"></i> -->
+                                Prev
                             </button>
-                            <button id="nextPage" title="Next Page" onclick="nextFolio();">
-                                <i class="fa fa-forward fa-2x"></i>
-                                Next Page
+                            <button id="nextLine" title="Next Line" onclick="nextTranscriptlet();">
+                                Next 
+                                <!--<i class="fa fa-chevron-right"></i>-->
                             </button>
-                            <button id="toggleNotes" class="pull-left clear-left" role="button" onclick="$('.notes').fadeToggle('slow')" title="Toggle Notes">
+                            
+<!--                            <button id="toggleNotes" class="pull-left clear-left" role="button" onclick="$('.notes').fadeToggle('slow')" title="Toggle Notes">
                                 Notes <i class="fa fa-comment"></i>
-                            </button>
+                            </button>-->
                         </div>
                     </div>
                     <div class="flex-container flex-stretch buttons let">
