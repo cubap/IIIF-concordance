@@ -7,6 +7,9 @@
     var liveTool = "none";
     var zoomMultiplier = 2;
     var isMagnifying = false;
+    var isPeeking = false;
+    var toggleMove = false;
+    var peekMemory = [];
     var currentFolio = 0; //The current folio number.  It runs from 1 -> infinity, remember to subtract 1 when referring to index.  
     var isFullscreen = true;
     var line = false;

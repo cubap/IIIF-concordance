@@ -233,14 +233,14 @@
                         <div id="specialCharsFloat" class="flex-container special-charactered">
                             <div id="charactersPopin" class="specialCharacters"  title="Special Characters" >
                             </div>
-                            <a title="Edit Special Characters" class="lookLikeButtons editButtons exitPage" href="buttons.jsp">
+                            <a title="Edit Special Characters" class="lookLikeButtons editButtons exitPage" href="buttons.html">
                                 Edit <i class="fa fa-edit"></i>
                             </a>
                         </div>
                         <div id="xmlTagFloat" class="flex-container xml-tagged">
                             <div id="xmlTagPopin" class="xmlTags" title="Custom XML Tags">
                             </div>
-                            <a title="Edit XML Tags" class="lookLikeButtons editButtons exitPage" href="buttons.jsp">
+                            <a title="Edit XML Tags" class="lookLikeButtons editButtons exitPage" href="buttons.html">
                                 Edit <i class="fa fa-edit"></i>
                             </a>
                         </div>
@@ -761,6 +761,52 @@
                     </div>
                 </div> 
             </div>
+            <div id='controlsSplit' class='split' style="width:200px;max-width:200px;overflow:auto;">
+                <div class="fullScreenTrans"><i class="fa fa-share fa-flip-vertical"></i></div>
+                <div style="padding:0 15px;">
+                    <button style="margin-bottom: 8px;" class="block" onclick="resetImageTools(false);" title="Reset Tools">
+                    Reset to Defaults
+                    </button>
+                    <header> Image Controls </header>
+                    <button which="grayscale" class="block" onclick="toggleFilter('grayscale');" title="Grayscale">
+                        Grayscale
+                        <i class="fa fa-picture-o" style="color: #999;background: #DDD;border-radius: 2px;"></i></button>
+                    <button which="invert" class="block" onclick="toggleFilter('invert');">
+                        Invert
+                        <i class="fa fa-picture-o" style="background: #FFF;border-radius: 2px;color: #000;"></i>
+                    </button>
+                    <div id="imageToolSliders" class="imgTool">
+                        Brightness  <i class="fa fa-sun-o"></i>
+                        <div id="brightnessSlider"></div>
+                        Contrast  <i class="fa fa-adjust"></i>
+                        <div id="contrastSlider"></div>
+                    </div>
+                    <header> Column Controls</header>
+                    <button id="showTheLines" role="button" class="block" onclick="toggleLineMarkers();">
+                        Lines
+                    </button>
+                    <button id="showTheLabels" role="button" class="block selected" onclick="toggleLineCol();">
+                        Labels
+                    </button>
+                    <button role="button" id="markerColors" class="block" onclick="markerColors();">Change Line Color</button>
+                    <button role="button" id="parsingBtn" title="Redraw the lines on this page" class='block'>
+                        Edit Columns
+                        <i class="fa fa-barcode fa-rotate-90"></i>
+                    </button>
+
+                    <header>
+                        Keyboard Shortcuts
+                    </header>
+                    <div>
+                        <strong>View/Move Image</strong>
+                        <kbd>CTRL</kbd>+<kbd>ALT</kbd>: hold to temporarily hide the workspace and drag around your page image
+                    </div>
+                    <div>
+                        <strong>Peek-Zoom</strong>
+                        <kbd>CTRL</kbd>+<kbd>SHIFT</kbd>: peek-zoom into the current line of transcription
+                    </div>
+                </div>
+            </div>
             <div style="clear:both"></div>
         </div>
         <div id="zoomDiv" class="ui-corner-all"></div>
@@ -943,78 +989,195 @@
                 }
             }
         });
-
-        $(document).keydown(function(event){
-            if(isMagnifying){
-                //back out
-                if ((event.which === 109) || (event.which === 189) || (event.which === 173) ){ //173  = - in firefox
-                    zoomMultiplier -= .4;
-                    $(document).mousemove();
-                }
-                //ease in
-                else if ((event.which === 107) || (event.which === 187) || (event.which === 61)){ // 61 = + in firefox
-                    zoomMultiplier += .4;
-                    $(document).mousemove();
-                }
-                //esc
-                else if(event.which === 27){
+        
+        $(document)
+            .dblclick(function(){
+                if(isMagnifying){
                     stopMagnify();
+                }
+            })
+            .keydown(function(event){
+                var ctrlDown = false,
+                ctrlKey = 17,
+                cmdKey = 91;
+                if(isMagnifying){
+                    //back out
+                    if ((event.which === 109) || (event.which === 189) || (event.which === 173) ){ //173  = - in firefox
+                        if(zoomMultiplier > .5){
+                            zoomMultiplier -= .4;
+                            $(document).trigger('mousemove');
+                        }
+                    }
+                    //ease in
+                    else if ((event.which === 107) || (event.which === 187) || (event.which === 61)){ // 61 = + in firefox
+                        if(zoomMultiplier < 10){
+                           zoomMultiplier += .4;
+                           $(document).trigger('mousemove');
+                        }
+                    }
+                    //esc
+                    else if(event.which === 27){
+                        stopMagnify();
+                    }
+                    else {
+
+                    }
+                    $("#zoomat").text(Math.round(zoomMultiplier*10)/10+"x");
+                }
+                else if (event.which == 112) { //F1 for help
+                    event.preventDefault();
+                    //DO NOT pull up the help if the user is using another tool that is taking up the screen.  It breaks the interface..  
+                    if(liveTool === "none"){
+                        revealHelp(event);
+                    }
+                    //$("#helpMe").click();
+                }
+                else if (event.which == 18 || event.altKey && (liveTool !=="parsing")){
+                   //console.log('ALT KEY');
+                   var lineForEditing = $(".activeLine");
+                   lineForEditing.resizable();
+                   if(event.altKey&&event.ctrlKey || event.altKey&&event.metaKey){
+                       // hide workspace and move image
+                       toggleMoveImage(event);
+                   }
+                   else if(event.which === 38){ //up.  Go to prev line
+                       previousTranscriptlet();
+                   }
+                   else if(event.which === 40){ //down. Go to next line.
+                       nextTranscriptlet();
+                   }
+                }
+                else if (event.which === 27){
+                    //Esc during any active tool means stop the tool.  In this case, our only worry is moving the image around.  We may add others later.
+                    $("#imgTop, #imgBottom").unbind("mousemove");
+                    $("#imgTop, #imgBottom").unbind("mousedown");
+                    $("#imgTop, #imgBottom").unbind("mouseup");
+                    //still need hover event on imgTop
+                    $("#imgTop").css("cursor", "default");
+                    $("#imgBottom").css("cursor", "default");
+                    $(".magnifyBtn").removeClass("selected");
+                    $("#moveImage").removeClass("selected");
+                    $(".transcriptlet").children("textarea").removeClass("imageMove").removeAttr("disabled");
+
+
+                    if(liveTool && liveTool !== "none" && liveTool !== "parsing"){
+                        fullPage();
+                    }
+                    else{ //this stuff needs to happen when tpen.screen.liveTool="parsing"
+                        //Make sure all the parsing stuff is unselected.  The function that does this is toggleSelected(), but it doesn't work quite right here...
+                        $("#addLines").click() //resets the lines UI to their default state
+                        $(".splitBlock.selected").children(".tpenButton.selected").removeClass("selected");
+                        $(".splitBlock.selected").children(".tpenButton.selected").removeClass("active"); //not 100% sure we need this
+                        $(".splitBlock.selected").removeClass("selected");
+                        $(".icon-panel").find(".selected").removeClass("selected");
+                        //This is from fullPage() since it is conditional whether or not you fire it.
+                        $(document).unbind("mousemove");
+                        $(document).unbind("mousedown");
+                        $(document).unbind("mouseup");
+                        $(".parsing").unbind();
+                    }
+
+                }
+                else if (event.which === 13 && (liveTool !=="parsing")){ //enter
+                    if (event.shiftKey || event.altKey) return true;
+                    event.preventDefault();
+                    //Linebreak.moveTextToNextBox();
+                    return nextTranscriptlet();
+                }
+                else if (event.which === 9 && (liveTool !=="parsing")){ // tab
+                //TAB hijack to keep behavior as expected
+                    var inForm = $(document.activeElement).is('input,textarea') && !$(document.activeElement).parent().is('.transcriptlet');
+                    if(event.which === 9 && !inForm){
+                        event.preventDefault();
+                        event.stopPropagation();
+                        if(event.shiftKey) $("#prevLine").click();
+                        else $("#nextLine").click();
+                    }
+                }
+                else if (event.ctrlKey || event.metaKey && (liveTool !=="parsing")) { //ctrl
+                    //This is also how you select a new tab in the browser.
+                    if(event.which >= 49 && event.which <= 57){ //insert a special char
+                        event.preventDefault();
+                        event.stopPropagation();
+                        //find the index in the special chars field and insert it.
+                        var hotkey = $("#charactersPopin").children().eq(String.fromCharCode(event.which)-1);
+                        hotkey.click(); //populating to the text field fires in onclick to this element, we have to register the change.
+                    }
+                    else if(event.ctrlKey && event.which === 36){ //HOME key.  Jump to first line.
+                        event.preventDefault();
+                        event.stopPropagation();
+                        if($("div[pair='A1']").length){
+                            $("div[pair='A1']").click();
+                        }
+                    } else if (event.shiftKey && !isPeeking && !isMagnifying) {
+                        // Peek-Zoom
+                        peekZoom(false);
+                    }
                 }
                 else {
 
                 }
-            }
-            else if (event.which == 18 || event.altKey){
-              // console.log('ALT KEY');
-               var lineForEditing = $(".activeLine");
-               lineForEditing.resizable();
-               //alt + arrows will bump active line left and right
-               if(event.which == 37 && (event.altKey||event.which == 18)){
-                   //left
-                   event.preventDefault();
-                   bumpLine("left", lineForEditing);
-                   
-               }
-               else if (event.which == 39 && (event.altKey||event.which == 18)){
-                   //right
-                   event.preventDefault();
-                   bumpLine("right", lineForEditing);
-               }
-            }
-            else if (event.which === 27){
-                //Esc during any active tool means stop the tool.  In this case, our only worry is moving the image around.  We may add others later.
-                $("#imgTop, #imgBottom").unbind("mousemove");
-                $("#imgTop, #imgBottom").unbind("mousedown");
-                $("#imgTop, #imgBottom").unbind("mouseup");
-                //still need hover event on imgTop
-                $("#imgTop").css("cursor", "default");
-                $("#imgBottom").css("cursor", "default");
-                $(".magnifyBtn").removeClass("selected");
-                $("#moveImage").removeClass("selected");
-                $(".transcriptlet").children("textarea").removeClass("imageMove").removeAttr("disabled");
-                
-                
-                if(liveTool && liveTool !== "none" && liveTool !== "parsing"){
-                    fullPage();
+            })
+            .keyup(function(event){
+                if(isMagnifying){
+                    return event;
                 }
-                else{ //this stuff needs to happen when tpen.screen.liveTool="parsing"
-                    //Make sure all the parsing stuff is unselected.  The function that does this is toggleSelected(), but it doesn't work quite right here...
-                    $("#addLines").click() //resets the lines UI to their default state
-                    $(".splitBlock.selected").children(".tpenButton.selected").removeClass("selected");
-                    $(".splitBlock.selected").children(".tpenButton.selected").removeClass("active"); //not 100% sure we need this
-                    $(".splitBlock.selected").removeClass("selected");
-                    $(".icon-panel").find(".selected").removeClass("selected");
-                    //This is from fullPage() since it is conditional whether or not you fire it.
-                    $(document).unbind("mousemove");
-                    $(document).unbind("mousedown");
-                    $(document).unbind("mouseup");
-                    $(".parsing").unbind();
+                if(event.which == 18){
+                    $("#imgTop, #imgBottom").css("cursor", "default");
+                    $("#imgTop, #imgBottom").unbind("mousemove");
+                    $("#imgTop, #imgBottom").unbind("mousedown");
+                    $("#imgTop, #imgBottom").unbind("mouseup");
                 }
-                
-            }
+                else if(isPeeking && (!event.shiftKey || !(event.ctrlKey||event.metaKey))){
+                    // cancel Peek-Zoom
+                    peekZoom(true);
+                }
+                else if(toggleMove && (!event.altKey || !event.ctrlKey || !event.metaKey)){
+                    //cancel show and/or move image.  Must do this here because it is possible the user never moves the image and moveImg() won't handle the cancel case.
+                    //Do not check against tpen.screen.isMoving, just make sure we are not peeking (they share the ctrlKey or metaKey, so they both tend to want to fire).
+                    toggleMoveImage(false);
+                }
+            });
+
+//        $(document).keydown(function(event){
+//            if(isMagnifying){
+//                //back out
+//                if ((event.which === 109) || (event.which === 189) || (event.which === 173) ){ //173  = - in firefox
+//                    zoomMultiplier -= .4;
+//                    $(document).mousemove();
+//                }
+//                //ease in
+//                else if ((event.which === 107) || (event.which === 187) || (event.which === 61)){ // 61 = + in firefox
+//                    zoomMultiplier += .4;
+//                    $(document).mousemove();
+//                }
+//                //esc
+//                else if(event.which === 27){
+//                    stopMagnify();
+//                }
+//                else {
+//
+//                }
+//            }
+//            else if (event.which == 18 || event.altKey){
+//              // console.log('ALT KEY');
+//               var lineForEditing = $(".activeLine");
+//               lineForEditing.resizable();
+//               //alt + arrows will bump active line left and right
+//               if(event.which == 37 && (event.altKey||event.which == 18)){
+//                   //left
+//                   event.preventDefault();
+//                   bumpLine("left", lineForEditing);
+//                   
+//               }
+//               else if (event.which == 39 && (event.altKey||event.which == 18)){
+//                   //right
+//                   event.preventDefault();
+//                   bumpLine("right", lineForEditing);
+//               }
+//            }
 //            else if (event.which === 27){
-//                //Esc during any active tool means stop the tool.  In this case, our only worry is moving the image around.  We may add others later. 
-//                ////console.log("ESC DOWN");
+//                //Esc during any active tool means stop the tool.  In this case, our only worry is moving the image around.  We may add others later.
 //                $("#imgTop, #imgBottom").unbind("mousemove");
 //                $("#imgTop, #imgBottom").unbind("mousedown");
 //                $("#imgTop, #imgBottom").unbind("mouseup");
@@ -1024,37 +1187,69 @@
 //                $(".magnifyBtn").removeClass("selected");
 //                $("#moveImage").removeClass("selected");
 //                $(".transcriptlet").children("textarea").removeClass("imageMove").removeAttr("disabled");
+//                
+//                
+//                if(liveTool && liveTool !== "none" && liveTool !== "parsing"){
+//                    fullPage();
+//                }
+//                else{ //this stuff needs to happen when tpen.screen.liveTool="parsing"
+//                    //Make sure all the parsing stuff is unselected.  The function that does this is toggleSelected(), but it doesn't work quite right here...
+//                    $("#addLines").click() //resets the lines UI to their default state
+//                    $(".splitBlock.selected").children(".tpenButton.selected").removeClass("selected");
+//                    $(".splitBlock.selected").children(".tpenButton.selected").removeClass("active"); //not 100% sure we need this
+//                    $(".splitBlock.selected").removeClass("selected");
+//                    $(".icon-panel").find(".selected").removeClass("selected");
+//                    //This is from fullPage() since it is conditional whether or not you fire it.
+//                    $(document).unbind("mousemove");
+//                    $(document).unbind("mousedown");
+//                    $(document).unbind("mouseup");
+//                    $(".parsing").unbind();
+//                }
+//                
 //            }
-            else if (event.which === 13){ //entr
-                var activeTranscriptlet = $(".transcriptlet:visible");
-                if(activeTranscriptlet.find('textarea').is(":focus")){
-                    nextTranscriptlet();
-                }
-            }
-             else if (event.which == 112) { //F1 for help
-                event.preventDefault();
-                //DO NOT pull up the help if the user is using another tool that is taking up the screen.  It breaks the interface..  
-                if(liveTool === "none"){
-                    splitPage(event, "help");
-                }
-                //$("#helpMe").click();
-            }
-            else{
-                ////console.log(event.which+" DOWN");
-            }
-            })
-            .keyup(function(event){
-                if(event.which == 18 || event.altKey){
-                    $("#imgTop,#imgBottom").unbind("mousemove").css("cursor", "default");
-                    $("#imgTop, #imgBottom").unbind("mousedown");
-                    $("#imgTop, #imgBottom").unbind("mouseup");
-                    //restoreTransition();
-                    //unShiftInterface();
-                }
-                else{
-                   // //console.log(event.which+' UP');
-                }
-            });
+////            else if (event.which === 27){
+////                //Esc during any active tool means stop the tool.  In this case, our only worry is moving the image around.  We may add others later. 
+////                ////console.log("ESC DOWN");
+////                $("#imgTop, #imgBottom").unbind("mousemove");
+////                $("#imgTop, #imgBottom").unbind("mousedown");
+////                $("#imgTop, #imgBottom").unbind("mouseup");
+////                //still need hover event on imgTop
+////                $("#imgTop").css("cursor", "default");
+////                $("#imgBottom").css("cursor", "default");
+////                $(".magnifyBtn").removeClass("selected");
+////                $("#moveImage").removeClass("selected");
+////                $(".transcriptlet").children("textarea").removeClass("imageMove").removeAttr("disabled");
+////            }
+//            else if (event.which === 13){ //entr
+//                var activeTranscriptlet = $(".transcriptlet:visible");
+//                if(activeTranscriptlet.find('textarea').is(":focus")){
+//                    nextTranscriptlet();
+//                }
+//            }
+//             else if (event.which == 112) { //F1 for help
+//                event.preventDefault();
+//                //DO NOT pull up the help if the user is using another tool that is taking up the screen.  It breaks the interface..  
+//                if(liveTool === "none"){
+//                    splitPage(event, "help");
+//                }
+//                //$("#helpMe").click();
+//            }
+//            else{
+//                ////console.log(event.which+" DOWN");
+//            }
+//            })
+//            .keyup(function(event){
+//                if(event.which == 18 || event.altKey){
+//                    $("#imgTop,#imgBottom").unbind("mousemove").css("cursor", "default");
+//                    $("#imgTop, #imgBottom").unbind("mousedown");
+//                    $("#imgTop, #imgBottom").unbind("mouseup");
+//                    //restoreTransition();
+//                    //unShiftInterface();
+//                }
+//                else{
+//                   // //console.log(event.which+' UP');
+//                }
+//            });
             
             $("#parsingBtn").click(function(){
                 if(isFullscreen)isUnadjusted = true;
@@ -1684,5 +1879,94 @@
         }
         
     }    
+    
+    function peekZoom(cancel){
+        var topImg = $("#imgTop img");
+        var btmImg = $("#imgBottom img");
+        var availableRoom = new Array (Page.height()-$(".navigation").height(),$("#transcriptionCanvas").width());
+        var line = $(".activeLine:first");
+        var limitIndex = (line.width()/line.height()> availableRoom[1]/availableRoom[0]) ? 1 : 0;
+        var zoomRatio = (limitIndex === 1) ? availableRoom[1]/line.width() : availableRoom[0]/line.height();
+        var imgDims = new Array (topImg.height(),topImg.width(),parseInt(topImg.css("left")),-line.position().top);
+        if (!cancel){
+            //zoom in
+            if($(".parsing").size()>0){
+                // Parsing tool is open
+                return false;
+            }
+            $(".lineColIndicatorArea").fadeOut();
+            peekMemory = [parseFloat(topImg.css("top")),parseFloat(btmImg.css("top")),$("#imgTop").css("height")];
+            //For some reason, doing $("#imgTop").height() and getting the integer value causes the interface to be broken when restored in the else below, even though it is the same value.
+            $("#imgTop").css({
+                "height"    : line.height() * zoomRatio + "px"
+            });
+            topImg.css({
+                "width"     : imgDims[1] * zoomRatio + "px",
+                "left"      : -line.position().left * zoomRatio,
+                "top"       : imgDims[3] * zoomRatio,
+                "max-width" : imgDims[1] * zoomRatio / availableRoom[1] * 100 + "%"
+            });
+            btmImg.css({
+                "left"      : -line.position().left * zoomRatio,
+                "top"       : (imgDims[3]-line.height()) * zoomRatio,
+                "width"     : imgDims[1] * zoomRatio + "px",
+                "max-width" : imgDims[1] * zoomRatio / availableRoom[1] * 100 + "%"
+            });
+            isPeeking = true;
+        } else {
+            //zoom out
+            topImg.css({
+                "width"     : "100%",
+                "left"      : 0,
+                "top"       : peekMemory[0],
+                "max-width" : "100%"
+            });
+            btmImg.css({
+                "width"     : "100%",
+                "left"      : 0,
+                "top"       : peekMemory[1],
+                "max-width" : "100%"
+            });
+            $("#imgTop").css({
+                "height"    : peekMemory[2]
+            });
+            $(".lineColIndicatorArea").fadeIn();
+            isPeeking = false;
+        }
+    };
+    
+    function toggleMoveImage(event) {
+        //if (event && event.altKey && (event.ctrlKey || event.metaKey)) {
+        if(!toggleMove){
+            $(document).unbind("mousemove");
+            $(document).unbind("mouseup");
+            $(".lineColIndicatorArea").hide();
+            //fullTopImage();
+            toggleMove = true;
+            $("#imgTop img,#imgBottom img,#imgTop .lineColIndicatorArea, #imgBottom .lineColIndicatorArea, #bookmark, #imgTop, #imgBottom").addClass('noTransition');
+            //$("#imgTop, #imgBottom").css("cursor", "url(images/open_grab.png),auto");
+            //$(dragHelper).appendTo("body");
+            startMoveImg();
+    //        $("#imgTop, #imgBottom")
+    //        .mousedown() //This will handle the mouse up
+        }   
+        //}
+        if(event === false){
+            $("#imgTop, #imgBottom").unbind("mousedown");
+            $("#imgTop, #imgBottom").unbind("mousemove"); //This is what we needed from the mousup event
+            $("#imgTop, #imgBottom").unbind("mouseup"); //This is what we needed from the mousup event
+            isMoving = false; //This is what we needed from the mouseup event.
+            toggleMove = false;
+            $("#moveImage").removeClass("selected");
+            $(".transcriptlet").removeClass("moveImage");
+            $(".transcriptlet").children("textarea").removeAttr("disabled");
+            $("#imgTop, #imgBottom").css("cursor", "default");
+            fullPage();
+            updatePresentation(focusItem[1]);
+            $(".lineColIndicatorArea").show();
+            $("#imgTop, #imgBottom").css("cursor", "default");
+            $("#imgTop img,#imgBottom img,#imgTop .lineColIndicatorArea, #imgBottom .lineColIndicatorArea, #bookmark, #imgTop, #imgBottom").removeClass('noTransition');
+        }
+    };
     
 </script>
