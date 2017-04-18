@@ -274,6 +274,7 @@
         var num = 0;
         for(var j=0; j<lines.length; j++){
             num++;
+            var goodLine = true;
             var col = letters[letterIndex];
             var currentLine = lines[j].on;
             var currentLineXYWH = currentLine.slice(currentLine.indexOf("#xywh=")+6);
@@ -283,28 +284,36 @@
             var lineURL = line["@id"];
             var lineID = lineURL; //lineURL.slice(lineURL.indexOf("/line/")+6)
             var lineText = line.resource["cnt:chars"];
+            if(line.on.indexOf("#xywh") === -1){
+                goodLine = false;
+            }
             if(j>=1){
                 var lastLine = lines[j-1].on;
                 var lastLineXYWH = lastLine.slice(lastLine.indexOf("#xywh=")+6);
                 lastLineXYWH = lastLineXYWH.split(",");
                 var lastLineX = lastLineXYWH[0];
                 var abs = Math.abs(parseInt(lastLineX) - parseInt(currentLineX));
-                if(abs > 0){
+                if(lastLine.indexOf("#xywh") === -1){
+                    goodLine = false;
+                }
+                if(abs > 0 && goodLine){
                     letterIndex++;
                     num = 1;
+                    col = letters[letterIndex];
                 }
             }
-            
-            var previewLine = $('<div class="previewLine">\n\
+            if(goodLine){
+                var previewLine = $('<div class="previewLine">\n\
                          <span class="previewLineNumber" lineserverid="'+lineID+'" data-column="'+col+'" >\n\
                             '+col+''+num+'\n\
                           </span>\n\
                          <span class="previewText '+currentPage+'">'+lineText+'<span class="previewLinebreak"></span></span>\n\
                          <span class="previewNotes" contentEditable="(permitModify||isMember)" ></span>\n\
                      </div>');
-             previewPage.append(previewLine);
-         }
-         $("#previewDiv").append(previewPage);
+                previewPage.append(previewLine);
+            }
+        }
+        $("#previewDiv").append(previewPage);
     }
     
     function populateSpecialCharacters(specialCharacters){
@@ -942,10 +951,16 @@
 //        console.log(ratio);
         for(var i=0; i<lines.length;i++){
             //("line "+i);
+            var goodLastLine = true;
             var line = lines[i];
             var lastLine = {};
             var col = letters[letterIndex];
-            if(i>0)lastLine=lines[i-1];
+            if(i>0){
+                lastLine=lines[i-1];
+                if(lastLine.on.indexOf("#xywh") === -1){
+                    goodLastLine = false;
+                }
+            }
             var lastLineX = 10000;
             var lastLineWidth = -1;
             var lastLineTop = -2;
@@ -969,7 +984,7 @@
                 update = false;
             }
             thisContent = "";
-            if(lineURL.indexOf('#') > -1){ //string must contain this to be valid
+            if(lineURL.indexOf('#') > -1){ //current line string must contain this to be valid
                 var XYWHsubstring = lineURL.substring(lineURL.lastIndexOf('#' + 1)); //xywh = 'x,y,w,h'
                 if(lastLine.on){ //won't be true for first line
                     lastLineX = lastLine.on.slice(lastLine.on.indexOf("#xywh=") + 6).split(",")[0];
@@ -1007,38 +1022,40 @@
                             //console.log("no difference");
                         }
                     }
-                    if(numberArray.length === 4){ // string must have all 4 to be valid
+                    if(numberArray.length === 4 && goodLastLine){ // string must have all 4 to be valid
                         x = numberArray[0];
                         w = numberArray[2];
                         if(lastLineX !== x){ //check if the last line's x value is equal to this line's x value (means same column)
-                            if(Math.abs(x - lastLineX) <= 3){ //allow a 3 pixel  variance and fix this variance when necessary...
-                                //align them, call them the same Column. 
-                                /*
-                                 * This is a consequence of #xywh for a resource needing to be an integer.  When I calculate its intger position off of
-                                 * percentages, it is often a float and I have to round to write back.  This can cause a 1 or 2 pixel discrenpency, which I account
-                                 * for here.  There may be better ways of handling this, but this is a good solution for now. 
-                                 */
-                                if(lastLineWidth !== w){ //within "same" column (based on 3px variance).  Check the width
-                                    if(Math.abs(w - lastLineWidth) <= 5){ //If the width of the line is within five pixels, automatically make the width equal to the last line's width.
+                            if(goodLastLine){
+                                if(Math.abs(x - lastLineX) <= 3){ //allow a 3 pixel  variance and fix this variance when necessary...
+                                    //align them, call them the same Column. 
+                                    /*
+                                     * This is a consequence of #xywh for a resource needing to be an integer.  When I calculate its intger position off of
+                                     * percentages, it is often a float and I have to round to write back.  This can cause a 1 or 2 pixel discrenpency, which I account
+                                     * for here.  There may be better ways of handling this, but this is a good solution for now. 
+                                     */
+                                    if(lastLineWidth !== w){ //within "same" column (based on 3px variance).  Check the width
+                                        if(Math.abs(w - lastLineWidth) <= 5){ //If the width of the line is within five pixels, automatically make the width equal to the last line's width.
 
-                                        //align them, call them the same Column. 
-                                        /*
-                                         * This is a consequence of #xywh for a resource needing to be an integer.  When I calculate its intger position off of
-                                         * percentages, it is often a float and I have to round to write back.  This can cause a 1 or 2 pixel discrenpency, which I account
-                                         * for here.  There may be better ways of handling this, but this is a good solution for now. 
-                                         */
-                                        w = lastLineWidth;
-                                        numberArray[2] = w;
+                                            //align them, call them the same Column. 
+                                            /*
+                                             * This is a consequence of #xywh for a resource needing to be an integer.  When I calculate its intger position off of
+                                             * percentages, it is often a float and I have to round to write back.  This can cause a 1 or 2 pixel discrenpency, which I account
+                                             * for here.  There may be better ways of handling this, but this is a good solution for now. 
+                                             */
+                                            w = lastLineWidth;
+                                            numberArray[2] = w;
+                                        }
                                     }
+                                    x = lastLineX;
+                                    numberArray[0] = x;
                                 }
-                                x = lastLineX;
-                                numberArray[0] = x;
-                            }
-                            else{ //we are in a new column, column indicator needs to increase. 
-                                if(lines.length > 1){
-                                    letterIndex++;
-                                    col = letters[letterIndex];
-                                    colCounter = 1; //Reset line counter so that when the column changes the line# restarts?
+                                else{ //we are in a new column, column indicator needs to increase. 
+                                    if(lines.length > 1){ //only if we had a valid lastLine to do the comparison with should you trust this logic.
+                                        letterIndex++;
+                                        col = letters[letterIndex];
+                                        colCounter = 1; //Reset line counter so that when the column changes the line# restarts?
+                                    }
                                 }
                             }
                         }
@@ -1080,9 +1097,10 @@
                 continue;
             }
             
-            if(line.resource['cnt:chars'] !== undefined && line.resource['cnt:chars'] !== "" && line.resource['cnt:chars'] != "Enter a line transcription"){
-                thisContent = line.resource['cnt:chars'];
-            }
+            if(goodLastLine){
+                if(line.resource['cnt:chars'] !== undefined && line.resource['cnt:chars'] !== "" && line.resource['cnt:chars'] != "Enter a line transcription"){
+                    thisContent = line.resource['cnt:chars'];
+                }
 
                 counter=parseInt(counter);
                 counter += 1;
@@ -1093,10 +1111,7 @@
                     + '" colLineNum="' + colCounter + '" lineID="' + counter
                     + '" lineserverid="' + lineID + '" class="transcriptlet" data-answer="'
                     + escape(thisContent) + '"><textarea class="theText" placeholder="' + thisPlaceholder + '">'
-                    + htmlSafeText + '</textarea></div>');
-            
-                    //<textarea class="notes" data-answer="'+escape(thisNote)+'" placeholder="Line notes">'
-                    //+ htmlSafeText2 + '</textarea>
+                    + htmlSafeText + '</textarea></div>');           
                 
                 var left = parseFloat(XYWHarray[0]) / (10 * ratio);
                 var top = parseFloat(XYWHarray[1]) / 10;
@@ -1122,7 +1137,8 @@
                 //Put to the DOM
                 colCounter+=1;
                 $(".lineColIndicatorArea").append(lineColumnIndicator);
-                $("#fullPageSplitCanvas").append(fullPageLineColumnIndicator);                          
+                $("#fullPageSplitCanvas").append(fullPageLineColumnIndicator);
+            }
         }
         //BH it is very important that this fires.  Why isn't it?
         //Some lines dont have #xywh=1,2,3,4
