@@ -1029,7 +1029,7 @@
                     event.preventDefault();
                     //DO NOT pull up the help if the user is using another tool that is taking up the screen.  It breaks the interface..  
                     if(liveTool === "none"){
-                        revealHelp(event);
+                        splitPage(event, "help");
                     }
                     //$("#helpMe").click();
                 }
