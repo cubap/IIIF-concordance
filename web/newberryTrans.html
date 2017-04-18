@@ -957,7 +957,7 @@
         $(".magnifyBtn").click(function(event){
             if ($(this).hasClass("ui-state-active")){
                 $('#zoomDiv').hide();
-                restoreWorkspace()
+                restoreWorkspace();
                 isMagnifying = false;
                 $(document).off("mousemove");
                 $(this).removeClass("ui-state-active");
@@ -968,12 +968,13 @@
             }
         });
         
-        $("#imgTop").hover(function(){
+        $("#imgTop, #imgBottom").hover(function(){
             var color = colorThisTime.replace(".4", "1");
             $('.activeLine').css('box-shadow', '0px 0px 15px 8px '+color);
         }, function(){
             $('.activeLine').css('box-shadow', '0px 0px 15px 8px '+colorThisTime);
         });
+
         
         document.addEventListener("mousewheel", function(e){
             if(isMagnifying){
@@ -1257,6 +1258,9 @@
                 hideWorkspaceForParsing();
                 $("#confirmParsingInst").show();
                 $("#parsingBtn").css("box-shadow", "");
+            });
+            $("#canvasControls").click(function(event){
+               splitPage(event, "controls");
             });
             
             $(".workspaceHandle").mousedown(function(event){moveWorkspace(event);})
@@ -1958,6 +1962,9 @@
             $("#imgTop, #imgBottom").unbind("mousedown");
             $("#imgTop, #imgBottom").unbind("mousemove"); //This is what we needed from the mousup event
             $("#imgTop, #imgBottom").unbind("mouseup"); //This is what we needed from the mousup event
+            $(document).unbind("mousedown");
+            $(document).unbind("mousemove"); //This is what we needed from the mousup event
+            $(document).unbind("mouseup"); //This is what we needed from the mousup event
             isMoving = false; //This is what we needed from the mouseup event.
             toggleMove = false;
             $("#moveImage").removeClass("selected");
@@ -1968,7 +1975,6 @@
             fullPage();
             updatePresentation(focusItem[1]);
             $(".lineColIndicatorArea").show();
-            $("#imgTop, #imgBottom").css("cursor", "default");
             
         }
     };

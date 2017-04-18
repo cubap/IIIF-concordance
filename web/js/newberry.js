@@ -291,12 +291,12 @@
                 var abs = Math.abs(parseInt(lastLineX) - parseInt(currentLineX));
                 if(abs > 0){
                     letterIndex++;
-                    num = 0;
+                    num = 1;
                 }
             }
             
-            var previewLine = $('<div class="previewLine" data-lineNumber="'+j+'">\n\
-                         <span class="previewLineNumber" lineserverid="'+lineID+'" data-lineNumber="'+j+'"  data-column="'+col+'"  data-lineOfColumn="'+j+'">\n\
+            var previewLine = $('<div class="previewLine">\n\
+                         <span class="previewLineNumber" lineserverid="'+lineID+'" data-column="'+col+'" >\n\
                             '+col+''+num+'\n\
                           </span>\n\
                          <span class="previewText '+currentPage+'">'+lineText+'<span class="previewLinebreak"></span></span>\n\
@@ -1430,7 +1430,7 @@ function updatePresentation(transcriptlet) {
    */
     function adjustImgs(positions) {
       //move background images above and below the workspace
-         var lineToMakeActive = $(".lineColIndicator[pair='"+positions.activeLine+"']:first");
+         var lineToMakeActive = $(".lineColIndicator[pair='"+positions.activeLine+"']"); //:first
          var topImageHeight = $("#imgTop img").height();
           $("#imgTop").animate({
             "height": positions.imgTopHeight + "%"
@@ -1637,21 +1637,12 @@ function updatePresentation(transcriptlet) {
     
     /* Start event listening to move the image in the transcirption interface */
      function startMoveImg(){
-       if($(".transcriptlet:first").hasClass("moveImage")){
-           $("#moveImage").removeClass("selected");
-           $(".transcriptlet").removeClass("moveImage");
-           $(".transcriptlet").children("textarea").removeAttr("disabled");
-           $("#imgTop, #imgBottom").css("cursor", "default");
-           $("#imgTop,#imgBottom").unbind("mousedown");
-       }
-       else{
-            $("#moveImage").addClass("selected");
-            $(".transcriptlet").addClass("moveImage");
-            $(".transcriptlet").children("textarea").attr("disabled", "");
-            $("#imgTop, #imgBottom").css("cursor", "url("+"images/open_grab.png),auto");
-            $("#imgTop,#imgBottom").mousedown(function(event){moveImg(event);});
-       }
-        
+        $("#moveImage").addClass("selected");
+        $(".transcriptlet").addClass("moveImage");
+        $(".transcriptlet").children("textarea").attr("disabled", "");
+        $("#imgTop, #imgBottom").css("cursor", "url("+"images/open_grab.png),auto");
+        $("#imgTop,#imgBottom").mousedown(function(event){$("#imgTop, #imgBottom").css("cursor", "url("+"images/close_grab.png),auto");  moveImg(event);});
+        //The event is unregistered in the keyup on newberryTrans.html
     }
     
     /** 
@@ -1668,7 +1659,8 @@ function updatePresentation(transcriptlet) {
         var mousedownPositionX = event.pageX;
         var mousedownPositionY = event.pageY;
         event.preventDefault();
-        
+        $("#imgTop").trigger('mousemove');
+        $("#imgBottom").trigger('mousemove');
         $(document)
         .disableSelection()
         .mousemove(function(event){
@@ -1692,12 +1684,15 @@ function updatePresentation(transcriptlet) {
         })
         .mouseup(function(){
             $("#dragHelper").remove();
-            if(!isMagnifying)$("#imgTop, #imgBottom").css("cursor", "url(images/open_grab.png),auto");
             $(document)
             .enableSelection()
             .unbind("mousemove");
             isUnadjusted = false;
+            $("#imgTop, #imgBottom").css("cursor", "url("+"images/open_grab.png),auto");
+            $("#imgTop").trigger('mousemove');
+            $("#imgBottom").trigger('mousemove');
         });
+        //These events are unregistered in keyup() on newberryTrans.html
     };
     
     function restoreWorkspace(){
@@ -1720,28 +1715,6 @@ function updatePresentation(transcriptlet) {
         $("#nextCanvas").attr("onclick", "nextFolio();");
         $("#pageJump").removeAttr("disabled");
     }
-    
-//    function restoreWorkspace(){
-//            $("#imgBottom").show();
-//            $("#imgTop").show();
-//            $("#imgTop").removeClass("fixingParsing");
-//            $("#transWorkspace").show();
-//            $("#imgTop").css("width", "100%");
-//            $("#imgTop img").css({"height":"auto", "width":"100%"});
-//            updatePresentation(focusItem[1]);
-//            $(".hideMe").show();
-//            $(".showMe").hide();
-//            var pageJumpIcons = $("#pageJump").parent().find("i");
-//            pageJumpIcons[0].setAttribute('onclick', 'firstFolio();');
-//            pageJumpIcons[1].setAttribute('onclick', 'previousFolio();');
-//            pageJumpIcons[2].setAttribute('onclick', 'nextFolio();');
-//            pageJumpIcons[3].setAttribute('onclick', 'lastFolio();');
-//            $("#prevCanvas").attr("onclick", "previousFolio();");
-//            $("#nextCanvas").attr("onclick", "nextFolio();");
-//            $("#pageJump").removeAttr("disabled");
-//        }
-        
-    
     
     function hideWorkspaceToSeeImage(){
         $("#transWorkspace").hide();
