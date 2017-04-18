@@ -1600,7 +1600,7 @@ function updatePresentation(transcriptlet) {
      * Requires shift key to be held down.
      */
      function moveWorkspace(evt){
-        $("#imgTop,#imgBottom,#imgBottom img").addClass('noTransition');
+        $("#imgTop img,#imgBottom img,#imgTop .lineColIndicatorArea, #imgBottom .lineColIndicatorArea, #bookmark, #imgTop, #imgBottom").addClass('noTransition');
         var startImgTop = $("#imgTop").height();
         var startImgBottom = $("#imgBottom img").position().top;
         var startImgBottomH = $("#imgBottom").height();
@@ -1627,7 +1627,7 @@ function updatePresentation(transcriptlet) {
         })
         .mouseup(function(){
             $("#dragHelper").remove();
-            $("#imgTop,#imgBottom,#imgBottom img").removeClass('noTransition');
+            $("#imgTop img,#imgBottom img,#imgTop .lineColIndicatorArea, #imgBottom .lineColIndicatorArea, #bookmark, #imgTop, #imgBottom").removeClass('noTransition');
             $(document)
             .enableSelection()
             .unbind("mousemove");
@@ -1668,8 +1668,7 @@ function updatePresentation(transcriptlet) {
         var mousedownPositionX = event.pageX;
         var mousedownPositionY = event.pageY;
         event.preventDefault();
-        $("#imgTop img,#imgBottom img,#imgTop .lineColIndicatorArea, #imgBottom .lineColIndicatorArea, #bookmark").addClass('noTransition');
-        $("#imgTop, #imgBottom").css("cursor", "url(images/close_grab.png),auto" );
+        
         $(document)
         .disableSelection()
         .mousemove(function(event){
@@ -1693,7 +1692,6 @@ function updatePresentation(transcriptlet) {
         })
         .mouseup(function(){
             $("#dragHelper").remove();
-            $("#imgTop img,#imgBottom img,#imgTop .lineColIndicatorArea, #imgBottom .lineColIndicatorArea, #bookmark").removeClass('noTransition');
             if(!isMagnifying)$("#imgTop, #imgBottom").css("cursor", "url(images/open_grab.png),auto");
             $(document)
             .enableSelection()
@@ -2196,7 +2194,7 @@ function toggleSpecialChars(event){
         var adjustedHeightForFullscreen = (originalCanvasHeight2 / originalCanvasWidth2) * screenWidth;
         $("#transcriptionCanvas").css("height", adjustedHeightForFullscreen+"px");
         $(".lineColIndicatorArea").css("height", adjustedHeightForFullscreen+"px");
-        $("#imgTop").hover(function(){
+        $("#imgTop, #imgBottom").hover(function(){
             var color = colorThisTime.replace(".4", "1");
             $('.activeLine').css('box-shadow', '0px 0px 15px 8px '+color);
         }, function(){

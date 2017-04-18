@@ -362,10 +362,6 @@ textarea:focus{
     #captions {
         color: #002a5c;
         line-height: 1.25;
-        -webkit-transition: opacity .25s;
-        -moz-transition: opacity .25s;
-        -o-transition: opacity .25s;
-        transition: opacity .25s;
         background: #ddd;
         bottom: -2px;
         height: 20px
@@ -391,36 +387,70 @@ textarea:focus{
     */
 
    #bookmark {
-       -webkit-transition: width .25s, height .5s, left .25s, top .5s;
-       -moz-transition: width .25s, height .5s, left .25s, top .5s;
-       -o-transition: width .25s, height .5s, left .25s, top .5s;
-       transition: width .25s, height .5s, left .25s, top .5s;
+       -webkit-transition: width .25s, height .25s, left .25s, top .25s;
+       -moz-transition: width .25s, height .25s, left .25s, top .25s;
+       -o-transition: width .25s, height .25s, left .25s, top .25s;
+       transition: width .25s, height .25s, left .25s, top .25s;
    }
-   /*#imgTop,#imgBottom {
-       -webkit-transition: height .25s, width .5s;
-       -moz-transition: height .25s, width .5s;
-       -o-transition: height .25s, width .5s;
-       transition: height .25s, width .5s;
+   /* Make the workspace seem like it is sliding around with this if you want */
+/*   #imgTop,#imgBottom {
+       -webkit-transition: height .25s, width .25s;
+       -moz-transition: height .25s, width .25s;
+       -o-transition: height .25s, width .25s;
+       transition: height .25s, width .25s;
    }*/
-   #imgTopImg,#imgBottom img {
-       -webkit-transition: left .5s, top .5s, width .5s;
-       -moz-transition: left .5s, top .5s, width .5s;
-       -o-transition: left .5s, top .5s, width .5s;
-       transition: left .5s, top .5s, width .5s;
-   }
-   #imgTop, #imgBottom {
-       -webkit-transition: left .5s, top .5s, width .5s;
-       -moz-transition: left .5s, top .5s, width .5s;
-       -o-transition: left .5s, top .5s, width .5s;
-       transition: left .5s, top .5s, width .5s;
-   }
+
+/* Make the images behind the drawn lines slide around with this if you want */
+/*   #imgTop img,#imgBottom img {
+       -webkit-transition: left .25s, top .25s, width .25s;
+       -moz-transition: left .25s, top .25s, width .25s;
+       -o-transition: left .25s, top .25s, width .25s;
+       transition: left .25s, top .25s, width .25s;
+   }*/
+   .lineColIndicator{
+        transition: box-shadow .25s;
+    }
+
    .transcriptlet,#blogLink {
-       -webkit-transition: opacity .5s, top .5s;
-       -moz-transition: opacity .5s, top .5s;
-       -o-transition: opacity .5s, top .5s;
-       transition: opacity .5s, top .5s;
+       -webkit-transition: opacity .25s, top .25s;
+       -moz-transition: opacity .25s, top .25s;
+       -o-transition: opacity .25s, top .25s;
+       transition: opacity .25s, top .25s;
    }
-   
+   .actions{
+        transition: max-height 1s ease;
+   }
+   .startHide{
+        transition: display 1s ease;
+   }
+   #help{
+       -webkit-transition:left 2s;-moz-transition:left 2s;transition:left 2s;
+   }
+   #helpPanels{
+       -webkit-transition:margin 2s;-moz-transition:margin 2s;transition:margin 2s;
+   }
+   #fullScreenBtn{
+       -moz-transition: all .5s; /* Firefox 4 */
+        -webkit-transition: all .5s; /* Safari and Chrome */
+        -o-transition: all .5s; /* Opera */             
+        transition: all .5s;
+   }
+   #imageTools{
+        transition: height 1s;
+
+   }
+   #captions{
+       -webkit-transition: opacity .25s;
+        -moz-transition: opacity .25s;
+        -o-transition: opacity .25s;
+        transition: opacity .25s;
+   }
+   .ui-resizable:not(.ui-resizable-disabled),.noTransition,.lineColIndicatorArea {
+        -webkit-transition: all 0s !important;
+        -moz-transition: all 0s !important;
+        -o-transition: all 0s !important;
+        transition: all 0s !important;
+    }
    #transcriptionText{
        height:100px;
        width:80%;
@@ -643,7 +673,6 @@ div#transcriptletArea {
     padding: 0px 15px 2px 13px;
     z-index: 1;
     border: 2px solid #002a5c;
-    transition: max-height 1s ease;
     /*white-space: nowrap;  This is difficult.  On smaller screens, the explanation boxes must break line.*/
     overflow: hidden;
     text-align: center
@@ -653,7 +682,6 @@ div#transcriptletArea {
     display: none;
     /*max-height: 0px;*/
     overflow: hidden;
-    transition: display 1s ease;
     height: auto;
 }
 .actions .startHide{
@@ -869,14 +897,14 @@ label {width:auto;padding: 0;float: none;}/*fixme should not have to overwrite*/
 .historyRevert {margin: 0 4px;}
 .previewText:focus,.previewNotes:focus {box-shadow:0 0 5px #A64129 !important;}
 .isUnsaved textarea {box-shadow: 0 0 10px #A64129;}
-#help {z-index: 40;position: absolute;display: none;left:100%;overflow: hidden;width: 100%; color: rgba(40,40,40,1);-webkit-transition:left 2s;-moz-transition:left 2s;transition:left 2s;font-family: "Palatino Linotype", "Book Antiqua", "Palatino", serif;
+#help {z-index: 40;position: absolute;display: none;left:100%;overflow: hidden;width: 100%; color: rgba(40,40,40,1);font-family: "Palatino Linotype", "Book Antiqua", "Palatino", serif;
     -webkit-box-sizing:border-box;
     -moz-box-sizing: border-box;
     -ms-box-sizing: border-box;
     box-sizing: border-box;
 }
 #help iframe {width:auto;height:auto;}
-#helpPanels {position: relative;width:3000px;overflow: hidden;-webkit-transition:margin 2s;-moz-transition:margin 2s;transition:margin 2s;
+#helpPanels {position: relative;width:3000px;overflow: hidden;
     background: rgb(255,255,255); /* Old browsers */
     background: -moz-radial-gradient(center, ellipse cover,  rgba(255,255,255,1) 0%, rgba(204,204,204,1) 100%); /* FF3.6+ */
     background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgba(255,255,255,1)), color-stop(100%,rgba(204,204,204,1))); /* Chrome,Safari4+ */
@@ -960,10 +988,7 @@ label {width:auto;padding: 0;float: none;}/*fixme should not have to overwrite*/
     background: -ms-linear-gradient(left,  rgba(171,183,188,1) 0%,rgba(232,233,234,1) 100%); /* IE10+ */
     background: linear-gradient(left,  rgba(171,183,188,1) 0%,rgba(232,233,234,1) 100%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#abb7bc', endColorstr='#e8e9ea',GradientType=1 ); /* IE6-9 */
-    -moz-transition: all .5s; /* Firefox 4 */
-    -webkit-transition: all .5s; /* Safari and Chrome */
-    -o-transition: all .5s; /* Opera */             
-    transition: all .5s;
+    
     }
 #fullscreenBtn:hover{
     -moz-box-shadow:6px 0 8px 2px black;
@@ -1020,7 +1045,6 @@ label {width:auto;padding: 0;float: none;}/*fixme should not have to overwrite*/
     position: absolute;
     bottom: -13px;
     z-index: 3;
-    transition: height 1s;
     border: 2px solid black;
     margin-left: 6px; 
     color: rgba(0,42,92,1);
@@ -1491,7 +1515,6 @@ p{
     border:1px solid white;
     font-size:.8em;
     color:white;
-    transition: box-shadow 2s;
 }
 .lineColIndicatorArea{
     position: absolute;
@@ -1751,3 +1774,4 @@ button,.navigation, #contribution,
     margin-right: 4px;
     flex-grow:2;
 }
+
