@@ -43,8 +43,17 @@ body{
 }
 
 
-
-
+.controlOrganizer{
+    padding:0 15px;
+    top: 25px;
+    position: relative;
+    text-align: center;
+}
+.block {
+    width: 100%;
+    margin: 2px 0;
+    height: 32px;
+}
 .specialCharacters li, .xmlTags li{
     border-right: none !important;
     cursor: default;

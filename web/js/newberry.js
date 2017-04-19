@@ -2047,6 +2047,12 @@ function toggleSpecialChars(event){
     //                     newCanvasWidth = 900;
     //                     newCanvasHeight = 1/ratio*newCanvasWidth;
         }
+        if(screen.width == $(window).width() && screen.height == window.outerHeight){
+            $(".centerInterface").css("text-align", "center"); //.css("background-color", "#e1f4fe")
+        }
+        else{
+            $(".centerInterface").css("text-align", "left"); //.css("background-color", "#e1f4fe")
+        }
         $("#transcriptionTemplate").css("width","auto");
         $("#transcriptionCanvas").css("height", newCanvasHeight + "px");
         $("#transcriptionCanvas").css("width", newCanvasWidth + "px");
@@ -2079,12 +2085,7 @@ function toggleSpecialChars(event){
             "left":"0px",
             "height":newCanvasHeight+"px"
         });
-        if(screen.width == $(window).width() && screen.height == window.outerHeight){
-            $(".centerInterface").css("text-align", "center"); //.css("background-color", "#e1f4fe")
-        }
-        else{
-            $(".centerInterface").css("text-align", "left"); //.css("background-color", "#e1f4fe")
-        }
+        
         $("#transWorkspace,#imgBottom").hide();
         $("#noLineWarning").hide();
         window.setTimeout(function(){
@@ -2211,8 +2212,10 @@ function splitPage(event, tool) {
     $("#templateResizeBar").show();
     if(tool==="controls"){
         if($("#controlsSplit").is(":visible")){
+            $("#canvasControls").removeClass("selected");
             return fullPage();
         }
+        $("#canvasControls").addClass("selected");
         $("#transcriptionCanvas").css("width", Page.width()-200 + "px");
         $("#transcriptionTemplate").css("width", Page.width()-200 + "px");
         $("#canvasControls").addClass("selected");
@@ -2693,6 +2696,7 @@ function splitPage(event, tool) {
             handles     : "n,s,w,e",
             containment : 'parent',
             start       : function(event,ui){
+                detachWindowResize();
                 $("#progress").html("Adjusting Columns - unsaved").fadeIn();
                 $("#columnResizing").show();
                 $("#sidebar").fadeIn();
@@ -2725,6 +2729,7 @@ function splitPage(event, tool) {
                 }
             },
             stop        : function(event,ui){
+                attachWindowResize();
                 $("#progress").html("Column Resized - Saving...");
                
                 var parseRatio = $("#imgTop img").width() / $("#imgTop img").height();
@@ -3113,25 +3118,30 @@ function markerColors(){
 
 /* Toggle the line/column indicators in the transcription interface. (A1, A2...) */
 function toggleLineMarkers(){
-    if($('.lineColIndicator:first').is(":visible") && $('.lineColIndicator:eq(1)').is(":visible")){ //see if a pair of lines are visible just in case you checked the active line first. 
+    if (($('.lineColIndicator:first').is(":visible")&& $('.lineColIndicator:eq(1)').is(":visible"))
+            || $("#showTheLines").hasClass("selected")){ //see if a pair of lines are visible just in case you checked the active line first.
         $('.lineColIndicator').hide();
         $(".activeLine").show().addClass("linesHidden");
+        $("#showTheLines").removeClass("selected");
     }
-    else{
-        $('.lineColIndicator').show();
+    else {
+        $('.lineColIndicator').css("display", "block");
         $(".lineColIndicator").removeClass("linesHidden");
-        $.each($(".lineColOnLine"),function(){$(this).css("line-height", $(this).height()+"px");});
+        $("#showTheLines").addClass("selected");
+        $.each($(".lineColOnLine"), function(){$(this).css("line-height", $(this).height() + "px"); });
     }
-}  
+}
 
 /* Toggle the drawn lines in the transcription interface. */
 function toggleLineCol(){
-    if($('.lineColOnLine:first').is(":visible")){ 
+    if ($('.lineColOnLine:first').is(":visible")){
         $('.lineColOnLine').hide();
+        $("#showTheLabels").removeClass("selected");
     }
-    else{
+    else {
         $('.lineColOnLine').show();
-        $.each($(".lineColOnLine"),function(){$(this).css("line-height", $(this).height()+"px");});
+        $("#showTheLabels").addClass("selected");
+        $.each($(".lineColOnLine"), function(){$(this).css("line-height", $(this).height() + "px"); });
     }
 }
 
@@ -3898,18 +3908,18 @@ function scrubFolios(){
 }
 
 /* Control the hiding and showing of the image tools in the transcription interface. */
-function toggleImgTools(){
-    if($("#imageTools").attr("class")!==undefined && $("#imageTools").attr("class").indexOf("activeTools") > -1){
-        $('.toolWrap').hide();
-        $("#imageTools").removeClass("activeTools");
-        $("#activeImageTool").children("i").css("transform", "rotate(180deg)");
-    }
-    else{
-        $("#imageTools").addClass("activeTools");
-        $('.toolWrap').show();
-        $("#activeImageTool").children("i").css("transform", "rotate(0deg)");
-    }
-}
+//function toggleImgTools(){
+//    if($("#imageTools").attr("class")!==undefined && $("#imageTools").attr("class").indexOf("activeTools") > -1){
+//        $('.toolWrap').hide();
+//        $("#imageTools").removeClass("activeTools");
+//        $("#activeImageTool").children("i").css("transform", "rotate(180deg)");
+//    }
+//    else{
+//        $("#imageTools").addClass("activeTools");
+//        $('.toolWrap').show();
+//        $("#activeImageTool").children("i").css("transform", "rotate(0deg)");
+//    }
+//}
 
 function stopMagnify(){
     isMagnifying = false;
@@ -4015,7 +4025,6 @@ function loadIframes(){
             var PAGEWIDTH = Page.width();
             var SPLITWIDTH = $("#parsingSplit").width();
             var widerThanTall = (parseInt(originalCanvasWidth) > parseInt(originalCanvasHeight));
-            
             if(liveTool === 'parsing'){
                 if(screen.width == $(window).width() && screen.height == window.outerHeight){
                     $(".centerInterface").css("text-align", "center"); //.css("background-color", "#e1f4fe");

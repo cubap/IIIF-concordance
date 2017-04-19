@@ -761,8 +761,8 @@
                 </div> 
             </div>
             <div id='controlsSplit' class='split' style="width:200px;max-width:200px;overflow:auto;">
-                <div class="fullScreenTrans"><i class="fa fa-share fa-flip-vertical"></i></div>
-                <div style="padding:0 15px;">
+                <div style="text-align: center;" class="fullScreenTrans"><i class="fa fa-share fa-flip-vertical"></i></div>
+                <div class="controlOrganizer">
                     <button style="margin-bottom: 8px;" class="block" onclick="resetImageTools(false);" title="Reset Tools">
                     Reset to Defaults
                     </button>
@@ -781,7 +781,7 @@
                         <div id="contrastSlider"></div>
                     </div>
                     <header> Column Controls</header>
-                    <button id="showTheLines" role="button" class="block" onclick="toggleLineMarkers();">
+                    <button id="showTheLines" role="button" class="block selected" onclick="toggleLineMarkers();">
                         Lines
                     </button>
                     <button id="showTheLabels" role="button" class="block selected" onclick="toggleLineCol();">
@@ -796,12 +796,12 @@
                     <header>
                         Keyboard Shortcuts
                     </header>
-                    <div>
-                        <strong>View/Move Image</strong>
+                    <div style="text-align: left;">
+                        <strong>View/Move Image</strong><br>
                         <kbd>CTRL</kbd>+<kbd>ALT</kbd>: hold to temporarily hide the workspace and drag around your page image
                     </div>
-                    <div>
-                        <strong>Peek-Zoom</strong>
+                    <div style="text-align:left;">
+                        <strong>Peek-Zoom</strong><br>
                         <kbd>CTRL</kbd>+<kbd>SHIFT</kbd>: peek-zoom into the current line of transcription
                     </div>
                 </div>
@@ -827,6 +827,7 @@
     
     //Page load event triggers and attached here.
     $(document).ready(function(){
+        attachWindowResize();
         $("#imgTop, #imgBottom").css("height", "400px");
         $("#imgTop img, #imgBottom img").css("height", "400px");
         $("#imgTop img, #imgBottom img").css("width", "auto");
@@ -1502,7 +1503,7 @@
                         $("#imgTop").children(".line").addClass("parsing").removeClass("line");
                         $(".parsing").bind({
                             mouseenter: function(){
-                                applyRuler($(this));
+                                applyRuler($(this), false);
                             },
                             mouseleave: function(){
                                 removeRuler($(this));
@@ -1521,7 +1522,7 @@
                         isAddingLines = false;
                         $(".parsing").bind({
                             mouseenter: function(){
-                                applyRuler($(this));
+                                applyRuler($(this), true);
                             },
                             mouseleave: function(){
                                 removeRuler($(this));
@@ -1816,46 +1817,105 @@
     }
     
     //Turn the ruler on
-    function applyRuler(line){
-            //var sRCbkp = selectRulerColor; //select Ruler Color backup
+    function applyRuler(line, deleteOnly){
             $("#imageTip").html("Add a Line");
             if(!isAddingLines){
-                if (line.attr("lineleft") == line.next("div").attr("lineleft")) {
-                    line.next("div").addClass('deletable');
-                }
-                line.addClass('deletable');
-                if($(".deletable").size()>1){
-                    $(".deletable").addClass("mergeable");
-                    $("#imageTip").html("Merge Line");
-                } else {
+                if(deleteOnly){ //delete line
+                    console.log("I am deleting...");
                     $("#imageTip").html("Delete Line");
+                    if (line.attr("lineleft") !== line.next("div").attr("lineleft")) {
+                        line.addClass('deletable');
+                        //only let the deleted line get this cursor when deleting
+                        line.css('cursor','pointer');
+                    }
+                    else{
+                        //other lines get the "can't do it" cursor
+                        line.css("cursor", "not-allowed");
+                    }
+                    
                 }
-               //sRCbkp = 'transparent';
+                else{ //merge line
+                    console.log("I am mergin...");
+                    if (line.attr("lineleft") == line.next("div").attr("lineleft")) {
+                        line.next("div").addClass('deletable');
+                    }
+                    line.addClass('deletable');
+                    if($(".deletable").size()>1){
+                        $(".deletable").addClass("mergeable");
+                        $("#imageTip").html("Merge Line");
+                    } 
+                    else  {
+                        $("#imageTip").html("Delete Line");
+                    }
+                    //line.css('cursor','pointer'); //all the lines should get this cursor when merging
+                    line.css('cursor','cell'); //all the lines should get this cursor when merging
+                }
+                $('#ruler1').hide();
             }
-            line.css('cursor','crosshair').bind('mousemove', function(e){
-                var myLeft = line.position().left;
+            else{ //add lines
+                console.log("I am adding...");
+                line.css('cursor','crosshair');
+                $('#ruler1').show();
+            }
+            line.bind('mousemove', function(e){
+                var imgTopOffset = $("#imgTop").offset().left; //helps because we can center the interface with this and it will still work.
+                var myLeft = line.position().left + imgTopOffset;
                 var myWidth = line.width();
                 $('#imageTip').show().css({
                     left:e.pageX,
                     top:e.pageY+20
                 });
-                $('#ruler1').show().css({
+                $('#ruler1').css({
                     left: myLeft,
-                    top: e.pageY,
+                    top: e.pageY, 
                     height:'1px',
-                    width:e.pageX-myLeft-7,
-                    //background:"red"
+                    width:myWidth 
                 });
-                $('#ruler2').show().css({
-                    left: e.pageX+7,
-                    top: e.pageY,
-                    width:myWidth+myLeft-e.pageX-7,
-                    height:'1px',
-                   // background:"red"
-                });
+
             });
-        
     }
+    
+//    //Turn the ruler on
+//    function applyRuler(line){
+//            //var sRCbkp = selectRulerColor; //select Ruler Color backup
+//            $("#imageTip").html("Add a Line");
+//            if(!isAddingLines){
+//                if (line.attr("lineleft") == line.next("div").attr("lineleft")) {
+//                    line.next("div").addClass('deletable');
+//                }
+//                line.addClass('deletable');
+//                if($(".deletable").size()>1){
+//                    $(".deletable").addClass("mergeable");
+//                    $("#imageTip").html("Merge Line");
+//                } else {
+//                    $("#imageTip").html("Delete Line");
+//                }
+//               //sRCbkp = 'transparent';
+//            }
+//            line.css('cursor','crosshair').bind('mousemove', function(e){
+//                var myLeft = line.position().left + $("#imgTop").offset().left;
+//                var myWidth = line.width();
+//                $('#imageTip').show().css({
+//                    left:e.pageX,
+//                    top:e.pageY+20
+//                });
+//                $('#ruler1').show().css({
+//                    left: myLeft,
+//                    top: e.pageY,
+//                    height:'1px',
+//                    width:e.pageX-myLeft-7,
+//                    //background:"red"
+//                });
+//                $('#ruler2').show().css({
+//                    left: e.pageX+7,
+//                    top: e.pageY,
+//                    width:myWidth+myLeft-e.pageX-7,
+//                    height:'1px',
+//                   // background:"red"
+//                });
+//            });
+//        
+//    }
     /**
      * Hides ruler within parsing tool. Called on mouseleave .parsing.
      */
