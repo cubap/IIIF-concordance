@@ -378,16 +378,24 @@
             }
         }
     }
+    
+    /* Display a message to the user letting them know the project will take a long time to load. */
+    function longLoad(){
+        var newMessage = "This project is large and may take a long time to load.  A message will appear here if there is an error.  This may take up to 10 minutes.  Thank you for your patience.";
+        $("#transTemplateLoading p").html(newMessage);
+    }
 
     /*
-     * Loivated the trnascription from the text in the text area. 
+     * Load transcription interface from the text in the text area. 
      */
     function loadTranscription(){
         //Object validation here.
             projectID = 4080;
             var userTranscription = $('#transcriptionText').val();
             currentFolio = 1;
-            
+            longLoadingProject = window.setTimeout(function(){
+                longLoad();
+            }, 25000);
             if($.isNumeric(userTranscription)){ //The user can put the project ID in directly and a call will be made to newberry proper to grab it.
                 projectID = userTranscription;
                 theProjectID = projectID;
@@ -397,7 +405,6 @@
                     type:"GET",
                     success: function(activeProject){
                         var projectTools = activeProject.projectTool;
-                        projectTools = JSON.parse(projectTools);
                         var count = 0;
                         var url  = ""; 
                         var currentUser = activeProject.cuser;
@@ -468,19 +475,17 @@
                                     }
                                 },
                                 error: function(jqXHR,error, errorThrown) {  
-                                    if(jqXHR.status && jqXHR.status==400){
-                                         alert(jqXHR.responseText); 
-                                    }
-                                    else{
-                                        alert("Something went wrong. Could not get the project. 1");
-                                    }
+                                    clearTimeout(longLoadingProject);
+                                    $("#transTemplateLoading p").html("Something went wrong. We could not get the project data.  Refresh the page to try again.");
+                                    //alert("Something went wrong. Could not get the project. 1");
                                     //load Iframes after user check and project information data call    
                                     loadIframes();
                                }
                             });
                         }
                         else{
-                            alert("No Manifest Found");
+                            clearTimeout(longLoadingProject);
+                            $("#transTemplateLoading p").html("We could not get the manfiest assosiated with this project.  Refresh the page to try again.");
                         }
                         $.each(projectTools, function(){
                             if(count < 4){ //allows 5 tools.  
@@ -500,18 +505,19 @@
                         //populateXML(activeProject.xml);
                     },
                     error: function(jqXHR,error, errorThrown) {  
-                            if(jqXHR.status && jqXHR.status==400){
-                                 alert(jqXHR.responseText); 
-                            }
-                            else{
-                                alert("Something went wrong. Could not get the project. 2");
-                            }
-                       }
+                        clearTimeout(longLoadingProject);
+                        $("#transTemplateLoading p").html("We could not get the the project data.  Refresh the page to try again.  Contact the admin if you continue to see this message.");
+                    }
                 });
                 }
                 else if(isJSON(userTranscription)){
+                    try{
                         userTranscription = JSON.parse(userTranscription);
-                        if(userTranscription.sequences[0] !== undefined && userTranscription.sequences[0].canvases !== undefined
+                    }
+                    catch(e){
+                        
+                    }
+                    if(userTranscription.sequences[0] !== undefined && userTranscription.sequences[0].canvases !== undefined
                         && userTranscription.sequences[0].canvases.length > 0){
                             transcriptionFolios = userTranscription.sequences[0].canvases;
                             scrubFolios();
@@ -628,19 +634,16 @@
                                             }
                                         },
                                         error: function(jqXHR,error, errorThrown) {  
-                                            if(jqXHR.status && jqXHR.status==400){
-                                                 alert(jqXHR.responseText); 
-                                            }
-                                            else{
-                                                alert("Something went wrong 2");
-                                            }
+                                            clearTimeout(longLoadingProject);
+                                            $("#transTemplateLoading p").html("We could not get project data.  Refresh the page to try again.");
                                             //load Iframes after user check and project information data call    
                                             loadIframes();
                                        }
                                 });
                             }
                             else{
-                                alert("No Manifest Found");
+                                clearTimeout(longLoadingProject);
+                                $("#transTemplateLoading p").html("We could not get the manfiest assosiated with this project.  Refresh the page to try again.");
                                 //load Iframes after user check and project information data call    
                                 loadIframes();
                             }
@@ -662,13 +665,9 @@
                             //populateXML(activeProject.xml);
                         },
                         error: function(jqXHR,error, errorThrown) {  
-                                    if(jqXHR.status && jqXHR.status==400){
-                                         alert(jqXHR.responseText); 
-                                    }
-                                    else{
-                                        alert("Something went wrong. Could not get the project. 4");
-                                    }
-                               }
+                                    clearTimeout(longLoadingProject);
+                                    $("#transTemplateLoading p").html("We could not get project data.  Refresh the page to try again.  Contact the admin if you continue to see this message.");
+                            }
                     });
                     }
                     else{ //it is not a local project, so just grab the url that was input and request the manifst. 
@@ -717,12 +716,8 @@
                                 loadIframes();
                             },
                             error: function(jqXHR,error, errorThrown) {  
-                                if(jqXHR.status && jqXHR.status==400){
-                                     alert(jqXHR.responseText); 
-                                }
-                                else{
-                                    alert("Something went wrong 5");
-                                }
+                                clearTimeout(longLoadingProject);
+                                $("#transTemplateLoading p").html("We could not load this JSON object.  Check it in a validator and try again.");
                                 //load Iframes after user check and project information data call    
                                 loadIframes();
                            }
@@ -730,7 +725,8 @@
                     }
                 }
                 else{
-                    alert("The input was invalid.");
+                    clearTimeout(longLoadingProject);
+                    $("#transTemplateLoading p").html("The input was invalid.  Make sure you are asking for a Manifest a proper way.  Refresh to try again.");
                     //load Iframes after user check and project information data call.  Maybe only after valid page load parameters.  uncomment this line if necessary.    
                     //loadIframes();
                 }
@@ -802,10 +798,10 @@
                             $("#imgBottom img").css("top", "0px");
                             $("#imgBottom").css("height", "inherit"); 
                             $("#parsingButton").attr("disabled", "disabled");
-                            
                             alert("No image for this canvas or it could not be resolved.  Not drawing lines.");
                             $("#parseOptions").find(".tpenButton").attr("disabled", "disabled");
                             $("#parsingBtn").attr("disabled", "disabled");
+                            clearTimeout(longLoadingProject);
                         })
                         .attr("src", "images/missingImage.png");
                     })
@@ -814,6 +810,7 @@
         else{
              $('.transcriptionImage').attr('src',"images/missingImage.png");
              alert("The canvas is malformed.  No 'images' field in canvas object or images:[0]['@id'] does not exist.  Cannot draw lines.");
+             clearTimeout(longLoadingProject);
             //ERROR!  Malformed canvas object.  
         }
         $(".previewText").removeClass("currentPage");
@@ -4168,3 +4165,5 @@ function loadIframes(){
 // Shim console.log to avoid blowing up browsers without it
 if (!window.console) window.console = {};
 if (!window.console.log) window.console.log = function () { };
+
+

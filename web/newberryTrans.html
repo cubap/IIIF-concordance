@@ -1031,7 +1031,10 @@
                     if(liveTool === "none"){
                         splitPage(event, "help");
                     }
-                    //$("#helpMe").click();
+                    else if(liveTool === "help"){
+                        //F1 should toggle help, not just show.  Handle that here. 
+                        fullPage();
+                    }
                 }
                 else if (event.which == 18 || event.altKey && (liveTool !=="parsing")){
                    //console.log('ALT KEY');
