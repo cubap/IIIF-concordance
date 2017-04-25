@@ -396,6 +396,7 @@
             longLoadingProject = window.setTimeout(function(){
                 longLoad();
             }, 25000);
+            $("#transTemplateLoading").show();
             if($.isNumeric(userTranscription)){ //The user can put the project ID in directly and a call will be made to newberry proper to grab it.
                 projectID = userTranscription;
                 theProjectID = projectID;
@@ -477,6 +478,7 @@
                                 error: function(jqXHR,error, errorThrown) {  
                                     clearTimeout(longLoadingProject);
                                     $("#transTemplateLoading p").html("Something went wrong. We could not get the project data.  Refresh the page to try again.");
+                                    $('.transLoader img').attr('src',"images/missingImage.png");
                                     //alert("Something went wrong. Could not get the project. 1");
                                     //load Iframes after user check and project information data call    
                                     loadIframes();
@@ -486,6 +488,7 @@
                         else{
                             clearTimeout(longLoadingProject);
                             $("#transTemplateLoading p").html("We could not get the manfiest assosiated with this project.  Refresh the page to try again.");
+                            $('.transLoader img').attr('src',"images/missingImage.png");
                         }
                         $.each(projectTools, function(){
                             if(count < 4){ //allows 5 tools.  
@@ -507,6 +510,7 @@
                     error: function(jqXHR,error, errorThrown) {  
                         clearTimeout(longLoadingProject);
                         $("#transTemplateLoading p").html("We could not get the the project data.  Refresh the page to try again.  Contact the admin if you continue to see this message.");
+                        $('.transLoader img').attr('src',"images/missingImage.png");
                     }
                 });
                 }
@@ -636,6 +640,7 @@
                                         error: function(jqXHR,error, errorThrown) {  
                                             clearTimeout(longLoadingProject);
                                             $("#transTemplateLoading p").html("We could not get project data.  Refresh the page to try again.");
+                                            $('.transLoader img').attr('src',"images/missingImage.png");
                                             //load Iframes after user check and project information data call    
                                             loadIframes();
                                        }
@@ -644,6 +649,7 @@
                             else{
                                 clearTimeout(longLoadingProject);
                                 $("#transTemplateLoading p").html("We could not get the manfiest assosiated with this project.  Refresh the page to try again.");
+                                $('.transLoader img').attr('src',"images/missingImage.png");
                                 //load Iframes after user check and project information data call    
                                 loadIframes();
                             }
@@ -667,6 +673,7 @@
                         error: function(jqXHR,error, errorThrown) {  
                                     clearTimeout(longLoadingProject);
                                     $("#transTemplateLoading p").html("We could not get project data.  Refresh the page to try again.  Contact the admin if you continue to see this message.");
+                                    $('.transLoader img').attr('src',"images/missingImage.png");
                             }
                     });
                     }
@@ -718,6 +725,7 @@
                             error: function(jqXHR,error, errorThrown) {  
                                 clearTimeout(longLoadingProject);
                                 $("#transTemplateLoading p").html("We could not load this JSON object.  Check it in a validator and try again.");
+                                $('.transLoader img').attr('src',"images/missingImage.png");
                                 //load Iframes after user check and project information data call    
                                 loadIframes();
                            }
@@ -727,6 +735,7 @@
                 else{
                     clearTimeout(longLoadingProject);
                     $("#transTemplateLoading p").html("The input was invalid.  Make sure you are asking for a Manifest a proper way.  Refresh to try again.");
+                    $('.transLoader img').attr('src',"images/missingImage.png");
                     //load Iframes after user check and project information data call.  Maybe only after valid page load parameters.  uncomment this line if necessary.    
                     //loadIframes();
                 }
@@ -744,7 +753,7 @@
         $("#imgTop img, #imgBottom img").css("width", "auto");
         $("#prevColLine").html("**");
         $("#currentColLine").html("**");
-        $('.transcriptionImage').attr('src', "images/loading2.gif"); //background loader if there is a hang time waiting for image
+        //$('.transcriptionImage').attr('src', "images/loading2.gif"); //background loader if there is a hang time waiting for image
         $('.lineColIndicator').remove();
         $(".transcriptlet").remove();
         var pageTitle = canvasObj.label;
@@ -769,6 +778,7 @@
             var image = new Image();
             $(image)
                     .on("load",function() {
+                        $("#transTemplateLoading").hide();
                         $("#imgTop, #imgTop img, #imgBottom img, #imgBottom, #transcriptionCanvas").css("height", "auto");
                         $("#imgTop img, #imgBottom img").css("width", "100%");
                         $("#imgBottom").css("height", "inherit");
@@ -799,6 +809,7 @@
                             $("#imgBottom").css("height", "inherit"); 
                             $("#parsingButton").attr("disabled", "disabled");
                             alert("No image for this canvas or it could not be resolved.  Not drawing lines.");
+                            $("#transTemplateLoading").hide();
                             $("#parseOptions").find(".tpenButton").attr("disabled", "disabled");
                             $("#parsingBtn").attr("disabled", "disabled");
                             clearTimeout(longLoadingProject);
@@ -810,6 +821,7 @@
         else{
              $('.transcriptionImage').attr('src',"images/missingImage.png");
              alert("The canvas is malformed.  No 'images' field in canvas object or images:[0]['@id'] does not exist.  Cannot draw lines.");
+             $("#transTemplateLoading").hide();
              clearTimeout(longLoadingProject);
             //ERROR!  Malformed canvas object.  
         }
