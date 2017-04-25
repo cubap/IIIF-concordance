@@ -490,6 +490,8 @@
                             $("#transTemplateLoading p").html("We could not get the manfiest assosiated with this project.  Refresh the page to try again.");
                             $('.transLoader img').attr('src',"images/missingImage.png");
                         }
+                        populateSpecialCharacters(activeProject.projectButtons);
+                        populateXML(activeProject.xml);
                         $.each(projectTools, function(){
                             if(count < 4){ //allows 5 tools.  
                                 var splitHeight = window.innerHeight + "px";
@@ -504,8 +506,7 @@
                             }
                             count++;
                         });
-                        //populateSpecialCharacters(activeProject.projectButtons);
-                        //populateXML(activeProject.xml);
+                        
                     },
                     error: function(jqXHR,error, errorThrown) {  
                         clearTimeout(longLoadingProject);
@@ -653,6 +654,8 @@
                                 //load Iframes after user check and project information data call    
                                 loadIframes();
                             }
+                            populateSpecialCharacters(activeProject.projectButtons);
+                            populateXML(activeProject.xml);
                             $.each(projectTools, function(){
                                 if(count < 4){ //allows 5 tools.  
                                     var splitHeight = window.innerHeight + "px";
@@ -667,8 +670,6 @@
                                 }
                                 count++;
                             });
-                            //populateSpecialCharacters(activeProject.projectButtons);
-                            //populateXML(activeProject.xml);
                         },
                         error: function(jqXHR,error, errorThrown) {  
                                     clearTimeout(longLoadingProject);

@@ -154,7 +154,7 @@ textarea:focus{
 }
 .specialCharacters, .xmlTags{
     position: relative;
-    display: none;
+    /*display: none;*/
 }
 .lookLikeButtons{
 /*    font-family: "Open Sans","Helvetica Neue",sans-serif;*/
@@ -1060,18 +1060,7 @@ label {width:auto;padding: 0;float: none;}/*fixme should not have to overwrite*/
     margin-left: 6px; 
     color: rgba(0,42,92,1);
 }
-#charactersPopin, #xmlTagPopin{
-  position: relative;
-    /* height: auto; */
-    border: 2px solid #000;
-    /* background-color: #D14836; */
-    display: inline-table;
-    /* color: #FFF; */
-    text-align: center;
-    top: 2px;
-    /* padding: 4px 0px;
-  /*padding: 4px 0px;*/
-}
+
 #xmlTagPopin option, #charactersPopin option{
     padding: 4px 6px;
 }
@@ -1086,6 +1075,9 @@ label {width:auto;padding: 0;float: none;}/*fixme should not have to overwrite*/
   color: black;
   padding: 4px 6px;
 }
+.character, .xmlTag{
+    display: inline-block !important;
+}
 
 #parse,#linebreak,#moveimg{
   position: relative;
@@ -1094,7 +1086,7 @@ label {width:auto;padding: 0;float: none;}/*fixme should not have to overwrite*/
 .split{
     display: none;
     position:relative;
-    width:43%;
+    width: 43%;
     height:100vh;
     overflow: hidden;
     float: right;
@@ -1784,5 +1776,17 @@ button,.navigation, #contribution,
     padding: 4px 1px;
     margin-right: 4px;
     flex-grow:2;
+}
+
+.special-charactered {
+    background-color: #bbb;
+    color:#333;
+}
+.xml-tagged {
+    background: #999;
+    background: #777;
+}
+.special-charactered, .xml-tagged {
+    margin-right: .5em;
 }
 
