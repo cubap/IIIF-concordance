@@ -4200,6 +4200,27 @@ function loadIframes(){
 
     }
     
+    /**
+ * Make sure all image tools reset to their default values.
+*/
+function resetImageTools(newPage){
+    $("#brightnessSlider").slider("value", "100");
+    $("#contrastSlider").slider("value", "100");
+    if($("button[which='grayscale']").hasClass("selected")){
+            toggleFilter("grayscale");
+        }
+    if($("button[which='invert']").hasClass("selected")){
+        toggleFilter("invert");
+    }
+    if($("#showTheLines").hasClass("selected")){
+        toggleLineMarkers();
+    }
+    if(!$("#showTheLabels").hasClass("selected")){
+        toggleLineCol();
+    }
+    
+}
+    
     var Page = {
     /**
      *  Returns converted number to CSS consumable string rounded to n decimals.
