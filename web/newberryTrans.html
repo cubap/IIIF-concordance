@@ -188,7 +188,7 @@
                     </div>
                     <div class="flex-container flex-stretch buttons let">
                         <select id="splitScreenTools" > 
-                             <!--<option id="activeSplitTool" >Splitscreen Tools</option>--> 
+                             <option id="activeSplitTool" >Included Tools</option> 
                              <optgroup label="Paleography Information">
                                 <option splitter='start' class="splitTool" >Get Started</option>
                                 <option splitter='essay' class="splitTool" >Background Essay</option>
@@ -861,7 +861,7 @@
                     user = '<i class="fa fa-user"></i> '+data.uname;
                     loggedInUser = true;
                     $("#trimCurrentUser").html(user);
-                    $("#trimCurrentUser").attr("title",user);
+                    $("#trimCurrentUser").attr("title",data.uname);
                     var theURL = window.location.href;
                     if (theURL.indexOf("projectID=") > -1){
                         var projID = theURL.substring(theURL.indexOf("projectID=")+10);

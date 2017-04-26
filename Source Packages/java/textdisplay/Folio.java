@@ -644,7 +644,7 @@ public class Folio {
     * @throws SQLException
     */
    public String getImageURLResize() throws SQLException {
-      return getImageURLResize(1000);
+      return getImageURLResize(2000);
    }
 
    /**
