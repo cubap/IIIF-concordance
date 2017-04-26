@@ -312,6 +312,9 @@
                      </div>');
                 previewPage.append(previewLine);
             }
+            else{
+                num--;
+            }
         }
         $("#previewDiv").append(previewPage);
     }
@@ -1801,7 +1804,7 @@ function updatePresentation(transcriptlet) {
         var imgDims = new Array($img.offset().left,$img.offset().top,$img.width(),$img.height());
         //build the zoomed div
         var zoomSize = (page.height()/3 < 120) ? 120 : page.height()/3;
-       
+        if(zoomSize > 400) zoomSize = 400;
         var zoomPos = new Array(event.pageX, event.pageY );
         $("#zoomDiv").css({
             "box-shadow"    : "2px 2px 5px black,15px 15px "+zoomSize/3+"px rgba(230,255,255,.8) inset,-15px -15px "+zoomSize/3+"px rgba(0,0,15,.4) inset",
@@ -2898,25 +2901,6 @@ function splitPage(event, tool) {
                 e.stopPropagation();
               });
      }
-     
-     /**
-     * Determines action based on transcription line clicked and tool in use.
-     * Alerts 'unknown click' if all fails. Calls lineChange(e,event) for 
-     * parsing tool. Jumps to transcriptlet for full page tool.
-     */
-    function clickedLine(e,event) {
-        //Stop ability to make a new line until the update from this process is complete.
-        if ($(e).hasClass("parsing")){
-            if ($("#addLines").hasClass('active')||$("#removeLines").hasClass('active')){
-                //console.log("show parsing cover");
-                $("#parsingCover").show();
-                lineChange(e,event);
-            }
-        }
-        else{
-            
-        }
-    }
     
     function reparseColumns(){
         $.each($('.parsingColumn'),function(){
@@ -3639,53 +3623,131 @@ function toggleLineCol(){
         $("#progress").html("Line Added").fadeIn(1000).delay(3000).fadeOut(1000);
     }
     
-    function removeLine(e, columnDelete){
-        /**
-     * Removes clicked line, merges if possible with the following line.
-     * updateLine(e,additionalParameters) handles the original, resized line.
-     * 
-     * @param e clicked line element from lineChange(e) via saveNewLine(e)
-     * @see lineChange(e)
-     * @see saveNewLine(e)
-     */
-    console.log("remove line");
+    /**
+ * Removes clicked line, merges if possible with the following line.
+ * updateLine(e,additionalParameters) handles the original, resized line.
+ *
+ * @param e clicked line element from lineChange(e) via saveNewLine(e)
+ * @see lineChange(e)
+ * @see saveNewLine(e)
+ */
+    function removeLine(e, columnDelete, deleteOnly){
         $("#imageTip").hide();
         var removedLine = $(e);
-        if(columnDelete){
+        if (columnDelete){
             var lineID = "";
             removedLine.remove();
             return false;
         }
-        else{
-            if ($(e).attr("lineleft") == $(e).next(".parsing").attr("lineleft")) {
-                console.log("this will be a merge....");
-                removedLine = $(e).next();
-                var removedLineHeight = removedLine.height();
-                var currentLineHeight = $(e).height();
-                var newLineHeight = removedLineHeight + currentLineHeight;
-                var convertedNewLineHeight = newLineHeight / $("#imgTop").height() * 100;
-                $(e).css({
-                    "height" :  convertedNewLineHeight+"%",
-                    "top" :     $(e).css("top")
-                }).addClass("newDiv").attr({
-                    "lineheight":   convertedNewLineHeight
-                });
-            } else if ($(e).hasClass("deletable")){ //&& $(".transcriptlet[lineserverid='"+$(e).attr("lineserverid")+"']").find("textarea").val().length > 0
-                console.log("this will be a delete...");
-                var cfrm = confirm("Removing this line will remove any data contained as well.\n\nContinue?");
-                if(!cfrm){
+        else {
+            if ($(e).attr("lineleft") == $(e).next(".parsing").attr("lineleft")) { //merge
+                if(!deleteOnly){ //if user clicked to remove a line, then do not allow merging.  Only delete the last line.
+                    removedLine = $(e).next();
+                    var removedLineHeight = removedLine.height();
+                    var currentLineHeight = $(e).height();
+                    var newLineHeight = removedLineHeight + currentLineHeight;
+                    var convertedNewLineHeight = newLineHeight / $("#imgTop").height() * 100;
+                    var transcriptletToUpdate = $(".transcriptlet[lineserverid='"+$(e).attr('lineserverid')+"']");
+                    $(e).css({
+                        "height" :  convertedNewLineHeight + "%",
+                        "top" :     $(e).css("top")
+                    }).addClass("newDiv").attr({
+                        "lineheight":   convertedNewLineHeight
+                    });
+                    transcriptletToUpdate.attr("lineheight", convertedNewLineHeight); //Need to put this on the transcriptlet so updateLine() passes the correct value. 
+                }
+                else{ //User is trying to delete a line that is not the last line, do nothing
+                    //removedLine = $(e);
+                    //tpen.screen.isDestroyingLine = true;
                     $("#parsingCover").hide();
                     return false;
                 }
-                isDestroyingLine = true;
-            } 
-            var params = new Array({name:"remove",value:removedLine.attr("lineserverid")});
-            removedLine.remove(); 
-            removeTranscriptlet(removedLine.attr("lineserverid"),$(e).attr("lineserverid"), true, "cover");
-            return params;
+            }
+            else{ //user is deleting a line, could be merge or delete mode
+                    if(deleteOnly){ //this would mean it is delete happening in delete mode, so allow it.
+
+                    }
+                    else{ //this would mean it is a delete happening in merge mode.
+                        alert("To delete a line, deactivate 'Merge Lines' and activate 'Delete Line'.");
+                        $("#parsingCover").hide();
+                        return false;
+                    }
+            }
+            var params = new Array({name:"remove", value:removedLine.attr("lineserverid")});
+
+            if(deleteOnly){ //if we are in delete mode deleting a line
+                if($(e).hasClass("deletable")){
+                    var cfrm = confirm("Removing this line will remove any data contained as well.\n\nContinue?");
+                    if (!cfrm){
+                        $("#parsingCover").hide();
+                        return false;
+                    }
+                    removeTranscriptlet(removedLine.attr("lineserverid"), $(e).attr("lineserverid"), true, "cover");
+                    removedLine.remove();
+                    return params;
+                }
+                else{
+                    $("#parsingCover").hide();
+                    return false;
+                }
+            }
+            else{ //we are in merge mode merging a line, move forward with this functionality.
+                removeTranscriptlet(removedLine.attr("lineserverid"), $(e).attr("lineserverid"), true, "cover");
+                removedLine.remove();
+                //$("#parsingCover").hide();
+                return params;
+            }
+
         }
-    
     }
+    
+//    function removeLine(e, columnDelete, deleteOnly){
+//        /**
+//     * Removes clicked line, merges if possible with the following line.
+//     * updateLine(e,additionalParameters) handles the original, resized line.
+//     * 
+//     * @param e clicked line element from lineChange(e) via saveNewLine(e)
+//     * @see lineChange(e)
+//     * @see saveNewLine(e)
+//     */
+//    console.log("remove line");
+//        $("#imageTip").hide();
+//        var removedLine = $(e);
+//        if(columnDelete){
+//            var lineID = "";
+//            removedLine.remove();
+//            return false;
+//        }
+//        else{
+//            if ($(e).attr("lineleft") == $(e).next(".parsing").attr("lineleft")) {
+//                console.log("this will be a merge....");
+//                removedLine = $(e).next();
+//                var removedLineHeight = removedLine.height();
+//                var currentLineHeight = $(e).height();
+//                var newLineHeight = removedLineHeight + currentLineHeight;
+//                var convertedNewLineHeight = newLineHeight / $("#imgTop").height() * 100;
+//                $(e).css({
+//                    "height" :  convertedNewLineHeight+"%",
+//                    "top" :     $(e).css("top")
+//                }).addClass("newDiv").attr({
+//                    "lineheight":   convertedNewLineHeight
+//                });
+//            } else if ($(e).hasClass("deletable")){ //&& $(".transcriptlet[lineserverid='"+$(e).attr("lineserverid")+"']").find("textarea").val().length > 0
+//                console.log("this will be a delete...");
+//                var cfrm = confirm("Removing this line will remove any data contained as well.\n\nContinue?");
+//                if(!cfrm){
+//                    $("#parsingCover").hide();
+//                    return false;
+//                }
+//                isDestroyingLine = true;
+//            } 
+//            var params = new Array({name:"remove",value:removedLine.attr("lineserverid")});
+//            removedLine.remove(); 
+//            removeTranscriptlet(removedLine.attr("lineserverid"),$(e).attr("lineserverid"), true, "cover");
+//            return params;
+//        }
+//    
+//    }
      /**
      * Removes transcriptlet when line is removed. Updates transcriplet
      * if line has been merged with previous.

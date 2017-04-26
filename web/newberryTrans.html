@@ -16,21 +16,23 @@
             padding: 0px 10px;
         }
         .magnifyHelp{
-            position: fixed;
-            top:35px;
-            left: 0;
-            right:0;
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
             margin: 0 auto;
-            border: 2px outset #002a5c;
-            background-color: #BFBFBF;
-            height: 134px;
-            width: 200px;
-            font-size: 9pt;
-            padding: 4px 6px;
-            color: #002a5c;
-            height: 140px;
+            background-color: rgb(255,252,227);
+            padding: 0;
+            color: #666;
+            text-align: center;
             z-index: 3;
             display: none;
+            box-shadow: 0 0 5px rgba(0,0,0,0.34);
+            opacity: .85;
+        }
+        .magnifyHelp p {
+            white-space: nowrap;
+            margin: 0;
+            padding: .25em;
         }
         
         .magifyHelp button{
@@ -40,7 +42,10 @@
         .parsingHdr{
             margin-left: 20px;
         }
-        
+        optgroup{
+            background-color: grey;
+            color: #002a5c;
+        }
         
         
         
@@ -49,12 +54,6 @@
         <div class="pageTurnCover">
             <div class="turnMsg">Please wait while we load the page...</div>
             <div class="turnLoader"><img src="images/loading2.gif" /></div>
-        </div>
-        <div class="magnifyHelp">
-            <div id='magnifyHlpLabel'>Magnify Help</div>
-            <button style='margin-bottom: 3px;' class='nohover'>esc</button><span>   to quit</span><br>
-            <button style='margin-bottom: 3px;' class='nohover'>+</button><span>   or mouse wheel to zoom in</span><br>
-            <button class='nohover'>-</button><span>   or mouse wheel to zoom out</span>
         </div>
         <div class="topTrim navigation">
             <span class="trimSection"><span id="trimTitle">TITLE</span></span>
@@ -114,6 +113,12 @@
         </div>
         <div class="centerInterface">
         <div id="transcriptionTemplate">
+            <div class="magnifyHelp">
+                <p>Return to Transcribing: <kbd>ESC</kbd> or double-click</p>
+                <p>
+                    <span id="zoomat"></span>
+                    Zoom in: <kbd>+</kbd> Zoom out: <kbd>-</kbd> </p>
+            </div>
             <div id="parsingCover"></div>
             <div id="transcriptionCanvas">
                 <div id="noLineWarning">
@@ -167,7 +172,7 @@
 
                         <div class="flex-bookend">
                             <div id="lineLabel">Line <span class="lineHotkeys">(alt + &UpArrow; or &DownArrow;)</span></div>
-                            <button id="prevLine" title="Prev" onclick="previousTranscriptlet();">
+                            <button id="prevLine" title="Previous Line" onclick="previousTranscriptlet();">
 <!--                                <i class="fa fa-chevron-left"></i> -->
                                 Prev
                             </button>
@@ -183,26 +188,31 @@
                     </div>
                     <div class="flex-container flex-stretch buttons let">
                         <select id="splitScreenTools" > 
-                             <option id="activeSplitTool" >Splitscreen Tools</option> 
-                             <option splitter='start' class="splitTool" >Get Started</option>
-                             <option splitter='essay' class="splitTool" >Background Essay</option>
-                             <option splitter='partialTrans' class="splitTool" >Partial Transcriptions</option>
-                             <option splitter='groupwork' class="splitTool" >Group Work</option>
-                             <option splitter='calligraphy' class="splitTool" >Calligraphy Books</option>
-                             <option splitter='scripts' class="splitTool" >French Scripts and Hands</option>
-                             <option splitter='frenchdocs' class="splitTool" >About French Documents</option>
-                             <option splitter='conservation' class="splitTool" >Manuscript Preservation</option>
-                             <option splitter='conventions' class="splitTool" >Transcribing & Editing Conventions</option>
-                             <option splitter='teachers' class="splitTool" >Teaching</option>
-                             <option splitter='dictionary' class="splitTool" >Dictionaries</option>
-                             <option splitter='glossary' class="splitTool" >Glossary</option>
-                             <option splitter='fInstitutions' class="splitTool" >French Institutions</option>
-                             <option splitter='other' class="splitTool" >Other Reference Resources</option>
-                             <option splitter='abbrev' class="splitTool" >Abbreviations</option>
-                             <option splitter='maps' class="splitTool" >Historical Maps</option>
-                             <option splitter='preview' class="splitTool" >Text Preview</option>
-                             <option splitter='fullPage' class="splitTool"  >View Full Page</option>
-                             <option splitter='compare' class="splitTool" >Compare Page</option>
+                             <!--<option id="activeSplitTool" >Splitscreen Tools</option>--> 
+                             <optgroup label="Paleography Information">
+                                <option splitter='start' class="splitTool" >Get Started</option>
+                                <option splitter='essay' class="splitTool" >Background Essay</option>
+                                <option splitter='partialTrans' class="splitTool" >Partial Transcriptions</option>
+                                <option splitter='groupwork' class="splitTool" >Group Work</option>
+                                <option splitter='calligraphy' class="splitTool" >Calligraphy Books</option>
+                                <option splitter='conservation' class="splitTool" >Manuscript Preservation</option>
+                             </optgroup>
+                             <optgroup label="French Paleography Resources">
+                                <option splitter='scripts' class="splitTool" >French Scripts and Hands</option>
+                                <option splitter='frenchdocs' class="splitTool" >About French Documents</option>
+                                <option splitter='conventions' class="splitTool" >Transcribing & Editing Conventions</option>
+                                <option splitter='teachers' class="splitTool" >Teaching</option>
+                                <option splitter='dictionary' class="splitTool" >Dictionaries</option>
+                                <option splitter='glossary' class="splitTool" >Glossary</option>
+                                <option splitter='fInstitutions' class="splitTool" >French Institutions</option>
+                             </optgroup>
+                             <optgroup label="T-PEN Power">
+                                <option splitter='abbrev' class="splitTool" >Abbreviations</option>
+                                <option splitter='maps' class="splitTool" >Historical Maps</option>
+                                <option splitter='preview' class="splitTool" >Text Preview</option>
+                                <option splitter='fullPage' class="splitTool"  >View Full Page</option>
+                                <option splitter='compare' class="splitTool" >Compare Page</option>
+                             </optgroup>
                          </select>  
                         <button id="canvasControls" title="Page Tools">
                             Page Tools
@@ -367,8 +377,9 @@
                             <h4 id="ctrlLines" title="Make adjustments at the line level" class="clear-left">Line Controls</h4>
                                 <div class="parsingToolButtons">
                                     <span id="addLines" class="tpenButton" title="Split lines to create new ones in a column" show="addLinesInst">Add Lines</span>
-                                    <span id="removeLines" class="tpenButton" title="Merge two lines or remove the last line from a column" show="removeLinesInst">Delete/Merge Lines</span>
-                                    <span id="adjustLines" class="tpenButton" title="Simple adjustments to individual lines" show="adjustLinesInst">Adjust Lines</span>                       
+                                    <span id="mergeLines" class="tpenButton" title="Merge two lines or remove the last line from a column" show="removeLinesInst">Merge Lines</span>
+                                    <span id="adjustLines" class="tpenButton" title="Simple adjustments to individual lines" show="adjustLinesInst">Adjust Lines</span>                      
+                                    <span id="removeLines" class="tpenButton" title="Delete the last line of a column" show="removeLinesInst">Remove Last Line</span>                      
                                 </div>
                                 <div class="activeParsingTool">
                                     <div class="startHide" id="addLinesInst">
@@ -384,11 +395,15 @@
                                             <input style="width:80px;" title="Type the name of any valid HTML color or code. If the code is invalid, a default color will be shown." type="text" id="customRuler" onkeyup="rulerColor('custom');" placeholder="transparent" value="transparent"/>
                                         </div>                  
                                     </div>
-                                    <div class="startHide" id="removeLinesInst">
-                                        <p class="">Click within the shaded area to merge the highlighted lines or delete the last line of a column.</p>
+                                    <div class="startHide" id="mergeLinesInst">
+                                        <p class="">Click within the shaded area to merge the highlighted lines.</p>
                                         <p class="small"><span class="inline ui-icon ui-icon-info"></span>This method combines your <acronym title="Text, markup, and notes saved for lines within this column will remain attached.">transcription information</acronym> into the new line.<br />
                                         <span class="ui-state-error-text"><span class="inline ui-icon ui-icon-alert"></span>If a line is removed, so in the information associated <acronym title="text, markup, and notes">with it</acronym>.</span> <br />
                                         <span><span class="inline ui-icon ui-icon-info"></span>To add a line, use the <span class="ui-button loud" onclick="$('#addLines').click();" title="Click to use the Add Lines option">Add Lines</span> option.</span></p>
+                                    </div>
+                                    <div class="startHide" id="removeLinesInst">
+                                        <p class="">Click within the shaded area to delete the <b>last line</b> of a column.</p>
+                                        <span class="ui-state-error-text"><span class="inline ui-icon ui-icon-alert"></span>If a line is removed, so is the information associated <acronym title="text, markup, and notes">with it</acronym>.</span> <br />
                                     </div>
                                     <div class="startHide" id="adjustLinesInst">
                                         <p class="">Click and drag the right side of the line to contain the line accurately.</p>
@@ -1444,7 +1459,7 @@
                             .bind('click', function(){destroyPage();})
                     }
                 }
-                else if (thisID == "addLines" || thisID == "removeLines" || thisID == "adjustLines") {
+                else if (thisID == "addLines" || thisID == "removeLines" || thisID == "adjustLines" || thisID == "mergeLines") {
                     $("#ctrlLinesInst").find(".startHide").hide();
                     $("#"+show).fadeIn(800);
                     $("#ctrlColumnsInst").find(".activeParsingTool").fadeOut(800);
@@ -1502,6 +1517,7 @@
                         //writeLines($("#imgTop img"));
                         $("#addLines").addClass("active");
                         $("#removeLines").removeClass("active");
+                        $("#mergeLines").removeClass("active");
                         isAddingLines = true;
                         $("#imgTop").children(".line").addClass("parsing").removeClass("line");
                         $(".parsing").bind({
@@ -1512,26 +1528,30 @@
                                 removeRuler($(this));
                             },
                             click: function(event){
-                                lineChange($(this), event);
+                                lineChange($(this), event, false);
                             }
                         });
 
                     }
-                    if (thisID == "removeLines"){
-                        $("#removeLines").addClass("active");
+                    if (thisID == "removeLines" || thisID == "mergeLines"){
+                        $("#"+thisID).addClass("active");
                         $("#addLines").removeClass("active");
+                        var deleteFlag = false;
+                        if(thisID === "removeLines"){
+                            deleteFlag=true;
+                        }
                         //prep for column adjustment
                         //writeLines($("#imgTop img"));
                         isAddingLines = false;
                         $(".parsing").bind({
                             mouseenter: function(){
-                                applyRuler($(this), true);
+                                applyRuler($(this), deleteFlag);
                             },
                             mouseleave: function(){
                                 removeRuler($(this));
                             },
                             click: function(event){
-                                lineChange($(this), event);
+                                lineChange($(this), event, deleteFlag);
                             }
                         });
                         $("#imgTop").children(".line").addClass("parsing").removeClass("line");
@@ -1821,10 +1841,8 @@
     
     //Turn the ruler on
     function applyRuler(line, deleteOnly){
-            $("#imageTip").html("Add a Line");
             if(!isAddingLines){
                 if(deleteOnly){ //delete line
-                    console.log("I am deleting...");
                     $("#imageTip").html("Delete Line");
                     if (line.attr("lineleft") !== line.next("div").attr("lineleft")) {
                         line.addClass('deletable');
@@ -1837,8 +1855,7 @@
                     }
                     
                 }
-                else{ //merge line
-                    console.log("I am mergin...");
+                else{ //merge
                     if (line.attr("lineleft") == line.next("div").attr("lineleft")) {
                         line.next("div").addClass('deletable');
                     }
@@ -1856,7 +1873,7 @@
                 $('#ruler1').hide();
             }
             else{ //add lines
-                console.log("I am adding...");
+                $("#imageTip").html("Add a Line");
                 line.css('cursor','crosshair');
                 $('#ruler1').show();
             }
@@ -1931,21 +1948,18 @@
     }
     
     //Triggered when a user alters a line to either create a new one or destroy one.
-    function lineChange(e,event){
-        //console.log("show parsing cover");
+    function lineChange(e,event,deleteOnly){
         $("#parsingCover").show();
         if(isAddingLines){
-            //console.log("SPLIT LINE");
             splitLine(e,event);
         }
         else{
-            //mrege the line you clicked with the line below.  Delete the line below and grow this line by that lines height.  
-            //console.log("Merge / Remove line")
-            removeLine(e);
+            //merge the line you clicked with the line below.  Delete the line below and grow this line by that lines height.
+            removeLine(e, false, deleteOnly);
         }
-        
-    }    
-    
+
+    }
+      
     function peekZoom(cancel){
         var topImg = $("#imgTop img");
         var btmImg = $("#imgBottom img");
