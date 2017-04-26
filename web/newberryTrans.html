@@ -377,7 +377,7 @@
                             <h4 id="ctrlLines" title="Make adjustments at the line level" class="clear-left">Line Controls</h4>
                                 <div class="parsingToolButtons">
                                     <span id="addLines" class="tpenButton" title="Split lines to create new ones in a column" show="addLinesInst">Add Lines</span>
-                                    <span id="mergeLines" class="tpenButton" title="Merge two lines or remove the last line from a column" show="removeLinesInst">Merge Lines</span>
+                                    <span id="mergeLines" class="tpenButton" title="Merge two lines or remove the last line from a column" show="mergeLinesInst">Merge Lines</span>
                                     <span id="adjustLines" class="tpenButton" title="Simple adjustments to individual lines" show="adjustLinesInst">Adjust Lines</span>                      
                                     <span id="removeLines" class="tpenButton" title="Delete the last line of a column" show="removeLinesInst">Remove Last Line</span>                      
                                 </div>
@@ -1844,7 +1844,7 @@
     function applyRuler(line, deleteOnly){
             if(!isAddingLines){
                 if(deleteOnly){ //delete line
-                    $("#imageTip").html("Delete Line");
+                    $("#imageTip").html("Remove Last Line");
                     if (line.attr("lineleft") !== line.next("div").attr("lineleft")) {
                         line.addClass('deletable');
                         //only let the deleted line get this cursor when deleting
@@ -1866,7 +1866,7 @@
                         $("#imageTip").html("Merge Line");
                     } 
                     else  {
-                        $("#imageTip").html("Delete Line");
+                        $("#imageTip").html("Remove Last Line");
                     }
                     //line.css('cursor','pointer'); //all the lines should get this cursor when merging
                     line.css('cursor','cell'); //all the lines should get this cursor when merging

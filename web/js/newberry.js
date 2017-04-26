@@ -3668,7 +3668,7 @@ function toggleLineCol(){
 
                     }
                     else{ //this would mean it is a delete happening in merge mode.
-                        alert("To delete a line, deactivate 'Merge Lines' and activate 'Delete Line'.");
+                        alert("To delete a line, deactivate 'Merge Lines' and activate 'Remove Last Line'.");
                         $("#parsingCover").hide();
                         return false;
                     }
