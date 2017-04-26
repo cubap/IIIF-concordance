@@ -1078,22 +1078,23 @@
                     $("#moveImage").removeClass("selected");
                     $(".transcriptlet").children("textarea").removeClass("imageMove").removeAttr("disabled");
 
-
                     if(liveTool && liveTool !== "none" && liveTool !== "parsing"){
                         fullPage();
                     }
                     else{ //this stuff needs to happen when tpen.screen.liveTool="parsing"
                         //Make sure all the parsing stuff is unselected.  The function that does this is toggleSelected(), but it doesn't work quite right here...
-                        $("#addLines").click() //resets the lines UI to their default state
-                        $(".splitBlock.selected").children(".tpenButton.selected").removeClass("selected");
-                        $(".splitBlock.selected").children(".tpenButton.selected").removeClass("active"); //not 100% sure we need this
-                        $(".splitBlock.selected").removeClass("selected");
-                        $(".icon-panel").find(".selected").removeClass("selected");
+                        $("#ctrlColumnsInst").find(".activeParsingTool").fadeOut(800);
+                        $("#ctrlLinesInst").find(".activeParsingTool").fadeOut(800);
+                        $("#imgTop").children(".line").addClass("parsing").removeClass("line");
+                        $(".parsing").css("z-index", "5");
+                        $('.parsing').unbind();
+                        $(".parsing").css('cursor','default');
+                        $(".parsingColumn").remove();
+                        $("#parsingSplit .tpenButton.selected").removeClass("selected active");
                         //This is from fullPage() since it is conditional whether or not you fire it.
                         $(document).unbind("mousemove");
                         $(document).unbind("mousedown");
                         $(document).unbind("mouseup");
-                        $(".parsing").unbind();
                     }
 
                 }
