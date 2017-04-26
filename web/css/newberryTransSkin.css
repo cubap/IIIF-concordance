@@ -1186,18 +1186,38 @@ button.imgTool{
     margin: 0 -15px 6px -15px;
 }
 
-.fullScreenTrans{
+.fullScreenTrans {
     width: auto;
-    position: absolute;
-    top: 0;
-    right: 0;
-    color: #D14836;
+    color: #fff;
     background-color: #272727;
     cursor: pointer;
+    margin: .5rem auto;
+    padding: 0 .25rem;
+    display: table;
+    text-align: center;
 }
 .fullScreenTrans:hover{
     background-color: #D14836;
     color: #272727;
+}
+.fullScreenTrans::before {
+    content: "Close ";
+    font-size: .8rem;
+    text-transform: uppercase;
+    position: relative;
+}
+.fullScreenTrans::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    height: 100%;
+    z-index: -1;
+}
+#parsingSplit .fullScreenTrans::before{
+    content:"Return to Transcription "
 }
 #miradorInstance { background: black; width: 100%; position: relative; display:block; }
 
@@ -1802,5 +1822,19 @@ button,.navigation, #contribution,
 }
 .special-charactered, .xml-tagged {
     margin-right: .5em;
+}
+.fa-flip-vertical {
+    -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=2, mirror=1)";
+    -webkit-transform: scale(1, -1);
+    -ms-transform: scale(1, -1);
+    transform: scale(1, -1);
+}
+.fa {
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
