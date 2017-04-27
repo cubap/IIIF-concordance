@@ -1666,6 +1666,12 @@ function updatePresentation(transcriptlet) {
         });
     };
     
+    function fullTopImage(){
+        $("#imgTop").css("height","100vh");
+        $(".hideMe").hide();
+        $(".showMe2").show();
+    }
+    
     /* Start event listening to move the image in the transcirption interface */
      function startMoveImg(){
         $("#moveImage").addClass("selected");
@@ -1734,7 +1740,13 @@ function updatePresentation(transcriptlet) {
         $("#imgTop").css("width", "100%");
         $("#imgTop img").css({"height":"auto", "width":"100%"});
         $("#imgBottom").css("height", "inherit");
-        updatePresentation(focusItem[1]);
+        if(focusItem[0] == null && focusItem[1] == null){
+            updatePresentation($("#transcriptlet_0"));
+        }
+        else{
+            updatePresentation(focusItem[1]);
+        }
+        
         $(".hideMe").show();
         $(".showMe2").hide();
     //    var pageJumpIcons = $("#pageJump").parent().find("i");
@@ -2208,9 +2220,9 @@ function toggleSpecialChars(event){
         $.each($(".lineColOnLine"),function(){
               $(this).css("line-height", $(this).height()+"px");
           });
-          if(focusItem[0] == null && focusItem[1] == null){
-              updatePresentation($("#transcriptlet_1"));
-        }
+//        if(focusItem[0] == null && focusItem[1] == null){
+//              updatePresentation($("#transcriptlet_1"));
+//        }
         
     }
     

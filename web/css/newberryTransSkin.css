@@ -403,6 +403,28 @@ textarea:focus{
        -o-transition: width .25s, height .25s, left .25s, top .25s;
        transition: width .25s, height .25s, left .25s, top .25s;
    }
+    
+     .transcriptlet {
+         -webkit-transition: opacity .5s, top .25s;
+         -moz-transition: opacity .5s, top .25s;
+         -o-transition: opacity .5s, top .25s;
+         transition: opacity .5s, top .25s;
+     }
+     /* New from TPEN28, but it does not work here.
+     #imgTop,#imgBottom {
+         -webkit-transition: height .25s, width .5s;
+         -moz-transition: height .25s, width .5s;
+         -o-transition: height .25s, width .5s;
+         transition: height .25s, width .5s;
+     }
+     #imgTop img,#imgBottom img, .lineColIndicatorArea {
+         -webkit-transition: left .25s, top .25s, width .25s, max-width .25s;
+         -moz-transition: left .25s, top .25s, width .25s, max-width .25s;
+         -o-transition: left .25s, top .25s, width .25s, max-width .25s;
+         transition: left .25s, top .25s, width .25s, max-width .25s;
+     }
+     */
+     
    /* Make the workspace seem like it is sliding around with this if you want */
 /*   #imgTop,#imgBottom {
        -webkit-transition: height .25s, width .25s;
