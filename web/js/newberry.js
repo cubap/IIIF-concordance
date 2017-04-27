@@ -790,6 +790,8 @@
                         $("#fullPageImg").attr("src", canvasObj.images[0].resource['@id'].replace('amp;',''));
                         originalCanvasHeight2 = $("#imgTop img").height();
                         originalCanvasWidth2 = $("#imgTop img").width();
+                        originalCanvasHeight = $("#imgTop img").height();; //make sure these are set correctly
+                        originalCanvasWidth = $("#imgTop img").width(); //make sure these are set correctly
                         drawLinesToCanvas(canvasObj, parsing);
                         populateCompareSplit(currentFolio);
                         $("#transcriptionCanvas").attr("canvasid", canvasObj["@id"]);
@@ -2024,8 +2026,8 @@ function toggleSpecialChars(event){
         }
         liveTool = "parsing";
         $("#parsingBtn").css("box-shadow: none;");
-        originalCanvasHeight = $("#transcriptionCanvas").height(); //make sure these are set correctly
-        originalCanvasWidth = $("#transcriptionCanvas").width(); //make sure these are set correctly
+        //originalCanvasHeight = $("#transcriptionCanvas").height(); //make sure these are set correctly
+        //originalCanvasWidth = $("#transcriptionCanvas").width(); //make sure these are set correctly
         imgTopOriginalTop = $("#imgTop img").css("top");
         if ($("#transcriptionTemplate").hasClass("ui-resizable")){
             $("#transcriptionTemplate").resizable('destroy');
@@ -2214,8 +2216,8 @@ function toggleSpecialChars(event){
     
 function splitPage(event, tool) {
     liveTool = tool;
-    originalCanvasHeight = $("#transcriptionCanvas").height(); //make sure these are set correctly
-    originalCanvasWidth = $("#transcriptionCanvas").width(); //make sure these are set correctly
+    //originalCanvasHeight = $("#transcriptionCanvas").height(); //make sure these are set correctly
+    //originalCanvasWidth = $("#transcriptionCanvas").width(); //make sure these are set correctly
     var resize = true;
     var newCanvasWidth = originalCanvasWidth * .55;
     $("#transcriptionTemplate").css({
@@ -2292,13 +2294,13 @@ function splitPage(event, tool) {
             'max-width': $(".split:visible")
                 .width() + "px"
         });
-    if(tool === "fullpage"){ //set this to be the max height initially when the split happens.
+    if(tool === "fullPage"){ //set this to be the max height initially when the split happens.
         var fullPageMaxHeight = window.innerHeight - 125; //100 comes from buttons above image and topTrim
         $("#fullPageImg").css("max-height", fullPageMaxHeight); //If we want to keep the full image on page, it cant be taller than that.
-        $("#fullpageSplitCanvas").css("max-height", fullPageMaxHeight); //If we want to keep the full image on page, it cant be taller than that.
-        $("#fullpageSplitCanvas").css("max-width", $("#fullPageImg").width()); //If we want to keep the full image on page, it cant be taller than that.
-        $("#fullpageSplitCanvas").height($("#fullPageImg").height());
-        $("#fullpageSplitCanvas").width($("#fullPageImg").width());
+        $("#fullPageSplitCanvas").css("max-height", fullPageMaxHeight); //If we want to keep the full image on page, it cant be taller than that.
+        $("#fullPageSplitCanvas").css("max-width", $("#fullPageImg").width()); //If we want to keep the full image on page, it cant be taller than that.
+        $("#fullPageSplitCanvas").height($("#fullPageImg").height());
+        $("#fullPageSplitCanvas").width($("#fullPageImg").width());
         $(".fullP").each(function(i){
             this.title = $("#transcriptlet_"+i+" .theText").text();
         })
@@ -4060,8 +4062,8 @@ function loadIframes(){
                 //var newHeight2 = parseFloat($(".compareImage").height()) + parseFloat($("#compareSplit .toolLinks").height()); //For resizing properly when transcription template is resized
                 var fullPageMaxHeight = window.innerHeight - 125; //100 comes from buttons above image and topTrim
                 $("#fullPageImg").css("max-height", fullPageMaxHeight); //If we want to keep the full image on page, it cant be taller than that.
-                $("#fullpageSplitCanvas").height($("#fullPageImg").height());
-                $("#fullpageSplitCanvas").width($("#fullPageImg").width());
+                $("#fullPageSplitCanvas").height($("#fullPageImg").height());
+                $("#fullPageSplitCanvas").width($("#fullPageImg").width());
                 var newImgBtmTop = imgBottomPositionRatio * height;
                 var newImgTopTop = imgTopPositionRatio * height;
                 $("#imgBottom img").css("top", newImgBtmTop + "px");
@@ -4162,9 +4164,9 @@ function loadIframes(){
                 $(".split img").css("max-width", splitWidth);
                 $(".split:visible").css("width", splitWidth);
                 $("#fullPageImg").css("max-height", fullPageMaxHeight); //If we want to keep the full image on page, it cant be taller than that.
-                $("#fullpageSplitCanvas").height(fullPageMaxHeight);
-                $("#fullpageSplitCanvas").height($("#fullPageImg").height());
-                $("#fullpageSplitCanvas").width($("#fullPageImg").width());
+                $("#fullPageSplitCanvas").height(fullPageMaxHeight);
+                $("#fullPageSplitCanvas").height($("#fullPageImg").height());
+                $("#fullPageSplitCanvas").width($("#fullPageImg").width());
                 $("#transcriptionTemplate").css("width", newCanvasWidth + "px");
                 $("#transcriptionCanvas").css("width", newCanvasWidth + "px");
                 $("#transcriptionCanvas").css("height", newCanvasHeight + "px");
