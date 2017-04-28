@@ -1039,18 +1039,6 @@ function getActiveProjectMetadata(currentProjectID){
                     $('.mustBeAdmin').show();
                     $('.isMember').show();
                 }
-                if($.inArray(this.UID, addedUIDs) === -1){ //check if this user has already been added.
-                    var leaderTag = " (Admin) ";
-                    var removeUser = ""; //cannot remove admins from group, must demote first.
-                    var promoteUser = ""; //admin is already promoted, no need for this.
-                    var demoteUser = "";
-                    if(!this.UID == currentUser.uid){ //if this is the current user, they shouldnt be able to demote themselves.  
-                        demoteUser = "<a class='demoteUser' title='Demote this user' onclick='demoteUser("+this.UID+", $(this));' > - </a>";
-                    }
-                    $('#projectMembers').append("<li userID='"+this.UID+"'><span class='userFname'>"+this.fname+" </span><span class='userLname'>"+this.lname+"</span><span style='margin-left:5px;' class='userEmail'>("+this.Uname+")</span><span class='userFname'>"+leaderTag+"</span></li>");               
-                    $('#editProjectMembers').append("<li>"+promoteUser+" "+demoteUser+"<span>" + this.Uname + leaderTag + "</span>"+removeUser+"</li>");
-                    addedUIDs.push(this.UID);
-                }
             });
             
             $('.metadataLeader').html(leader[0].fname +"&nbsp;"+leader[0].lname+"&nbsp;&nbsp;("+leader[0].Uname+")");

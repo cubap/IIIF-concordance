@@ -1317,36 +1317,54 @@
                         });
 
                         var isCreating = true;
-                        adjustColumn(event);
+                        //adjustColumn(event);
                         ////console.log("New or reparse column");
                         var offset = $('#imgTop').offset();
                         var point = {};
                         var deltaPoint = {x:0,y:0};
-                        $("#imgTop").bind({
+                        $(".parsingColumn").off();
+                        $(".parsingColumn").unbind();
+                        $(document).bind({
                                 mousedown: function(event){
-                                   // //console.log("NEWCOLUMN");
-                                    if ((event.target.className.indexOf("transcriptionImage") === -1 )){//|| !$("#createColumn").hasClass("ui-state-active")
-                                        isCreating = false;
-                                        return true;
+                                    //This bit of mouse down ensures it only fires on left mouse click.
+                                    event = event || window.event;
+                                    if(event.pageY <= offset.top || event.pageX <= offset.left || event.pageX >= (offset.left + $("#imgTop").width())){ //If you try to draw off of imgTop....
+                                        return false;
+                                    }
+                                    if ("buttons" in event) {
+                                        if(!event.buttons === 1){
+                                            return false;
+                                        }
                                     }
                                     else{
-                                        event.preventDefault();
-                                        var newCol = "<div id='newCol' class='parsingColumn ui-resizable' style='z-index:1000; background-color: yellow;'></div>";
-                                        point = {x:event.pageX - offset.left,y:event.pageY - offset.top};
-                                        $(newCol).insertBefore($("#imgTop img")).css({
-                                            'position'  : 'absolute',
-                                            'top': point.y,
-                                            'left': point.x,
-                                            'min-width' : "5px",
-                                            'min-height': "5px"
-                                        });
+                                        var check = event.which || event.button;
+                                        if(check!==1){
+                                            return false;
+                                        }
                                     }
+// Why this? It stops it from working when overlapping an existing column 3-9-17                                    
+//                                    if ((event.target.className.indexOf("transcriptionImage") === -1 )){
+//                                        isCreating = false;
+//                                        return true;
+//                                    }
+                                    //else{
+                                    event.preventDefault();
+                                    var newCol = "<div id='newCol' class='parsingColumn ui-resizable' style='z-index:1000;'></div>";
+                                    point = {x:event.pageX - offset.left,y:event.pageY - offset.top};
+                                    $(newCol).insertBefore($("#imgTop img")).css({
+                                        'position'  : 'absolute',
+                                        'top': point.y,
+                                        'left': point.x,
+                                        'min-width' : "5px",
+                                        'min-height': "5px"
+                                    });
+                                    //}
 
                                 },
                                 mousemove:  function(event){
                                     event.preventDefault();
                                     deltaPoint = {
-                                        x: event.pageX-point.x,
+                                        x: event.pageX-offset.left-point.x,
                                         y: event.pageY-(point.y)
                                     };
                                     if (deltaPoint.x < 0) {
@@ -1364,16 +1382,21 @@
                                 },
                                 mouseup:    function(event){
                                     event.preventDefault();
+                                    var $newCol = $("#newCol");
+                                    if(event.pageY <= offset.top || event.pageX <= offset.left || event.pageX >= (offset.left + $("#imgTop").width())){ //If you try to draw off of imgTop....
+                                        $newCol.remove();
+                                        return false;
+                                    }
                                     $("#parsingCover").show();
                                     if (!isCreating){
-                                        $("#imgTop").unbind("mousemove");
-                                        $("#imgTop").unbind("mousedown");
-                                        $("#imgTop").unbind("mouseup");
+                                        $(document).unbind("mousemove");
+                                        $(document).unbind("mousedown");
+                                        $(document).unbind("mouseup");
                                         $("#imgTop").css("cursor", "default");
                                         $("#imgBottom").css("cursor", "default");
                                         return true;
                                     }
-                                    var $newCol = $("#newCol");
+                                    
                                     $newCol.attr({
                                         "lineserverid"   : "-1",
                                         "newline"       : true,
@@ -1389,6 +1412,7 @@
                                     // Prevent tiny columns on accident
                                     if (parseInt($newCol.attr('linewidth'))+parseInt($newCol.attr('lineheight')) < 12) {
                                         $newCol.remove();
+                                        $("#parsingCover").hide();
                                         return true;
                                     }
                                     isAddingLines = true;
@@ -1397,7 +1421,7 @@
                                     var newH = $newCol.height() / $("#imgTop").height()* 100;
                                     var newW = $newCol.width() / $("#imgTop").width() * 100;
 
-                                    //The column is now a line, so put that into the UI and save it to the DB.  
+                                    //The column is now a line, so put that into the UI and save it to the DB.
                                     var columnIsLine =$(
                                     "<div class='parsing newColumn' style='\n\
                                         top:"+newY+"%; \n\
@@ -1415,15 +1439,15 @@
                                         saveNewLine(null,columnIsLine);
                                         $("#imgTop").append(columnIsLine);
                                     }
-                                    adjustColumn(); //Do this so that the new column is adjustable.       
+                                    //adjustColumn(); //Do this so that the new column is adjustable.
                                     $("#createColumn").ajaxStop(function(){
                                         $(this).click()
                                         .unbind("ajaxStop");
                                         isCreating = false;
                                     });
-                                    $("#imgTop").unbind("mousemove");
-                                    $("#imgTop").unbind("mousedown");
-                                    $("#imgTop").unbind("mouseup");
+                                    //$("#imgTop").unbind("mousemove");
+                                    //$("#imgTop").unbind("mousedown");
+                                    //$("#imgTop").unbind("mouseup");
                                     $("#imgTop").css("cursor", "default");
                                     $("#imgBottom").css("cursor", "default");
                                 }
