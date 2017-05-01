@@ -1412,6 +1412,7 @@
                                     // Prevent tiny columns on accident
                                     if (parseInt($newCol.attr('linewidth'))+parseInt($newCol.attr('lineheight')) < 12) {
                                         $newCol.remove();
+                                        console.log("Hiding cover because of tiny column no save scenario");
                                         $("#parsingCover").hide();
                                         return true;
                                     }
@@ -1494,6 +1495,8 @@
                     $('.parsing').unbind();
                     $(".parsing").css('cursor','default');
                     $(".parsingColumn").remove();
+                    $(document).off();
+                    $(document).unbind();
                     if (thisID == "adjustLines") {
                         $("#addLines").removeClass("active");
                         $("#removeLines").removeClass("active");

@@ -1069,7 +1069,6 @@ label {width:auto;padding: 0;float: none;}/*fixme should not have to overwrite*/
     background-color: white;
     display: inline-table;
     color: black;
-    top: 2px;
     text-align:center;
     cursor: default;
 }

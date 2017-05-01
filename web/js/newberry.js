@@ -752,8 +752,8 @@
     function loadTranscriptionCanvas(canvasObj, parsing){
         var noLines = true;
         var canvasAnnoList = "";
-        $("#imgTop, #imgBottom").css("height", "400px");
-        $("#imgTop img, #imgBottom img").css("height", "400px");
+        $("#imgTop, #imgBottom").css("height", "0px");
+        $("#imgTop img, #imgBottom img").css("height", "0px");
         $("#imgTop img, #imgBottom img").css("width", "auto");
         $("#prevColLine").html("**");
         $("#currentColLine").html("**");
@@ -810,7 +810,7 @@
                             $("#fullPageImg").attr("src", "images/missingImage.png");
                             $('#transcriptionCanvas').css('height', $("#imgTop img").height() + "px");
                             $('.lineColIndicatorArea').css('height', $("#imgTop img").height() + "px");
-                            $("#imgTop").css("height", "0%");
+                            $("#imgTop").css("height", "0px");
                             $("#imgBottom img").css("top", "0px");
                             $("#imgBottom").css("height", "inherit"); 
                             $("#parsingButton").attr("disabled", "disabled");
@@ -908,12 +908,13 @@
                             //console.log("no lines in what we got");
                             if(parsing !== "parsing"){
                                 $("#noLineWarning").show();
+                                $("#captions").text("There are no lines for this canavs.");
                             }
+                            $("#imgTop").css("height", "0px");
                             $("#transTemplateLoading").hide();
                             $("#transcriptionTemplate").show();
                             $('#transcriptionCanvas').css('height', $("#imgTop img").height() + "px");
                             $('.lineColIndicatorArea').css('height', $("#imgTop img").height() + "px");
-                            $("#imgTop").css("height", $("#imgTop img").height() + "px");
                             $("#imgTop img").css("top", "0px");
                             $("#imgBottom").css("height", "inherit");
                             $("#parsingBtn").css("box-shadow", "0px 0px 6px 5px yellow");
@@ -923,12 +924,13 @@
                         annoLists[currentFolio -1 ] = "empty";
                         if(parsing !== "parsing"){
                             $("#noLineWarning").show();
+                            $("#captions").text("There are no lines for this canavs.");
                         }
                         $("#transTemplateLoading").hide();
                         $("#transcriptionTemplate").show();
                         $('#transcriptionCanvas').css('height', $("#imgTop img").height() + "px");
                         $('.lineColIndicatorArea').css('height', $("#imgTop img").height() + "px");
-                        $("#imgTop").css("height", "0%");
+                        $("#imgTop").css("height", "0px");
                         $("#imgBottom img").css("top", "0px");
                         $("#imgBottom").css("height", "inherit");
                         $("#parsingBtn").css("box-shadow", "0px 0px 6px 5px yellow");
@@ -2758,7 +2760,7 @@ function splitPage(event, tool) {
             stop        : function(event,ui){
                 attachWindowResize();
                 $("#progress").html("Column Resized - Saving...");
-               
+                $("#parsingCover").show();
                 var parseRatio = $("#imgTop img").width() / $("#imgTop img").height();
 //                console.log("ratio for adjust");
 //                console.log($("#imgTop img").width()+"/"+$("#imgTop img").height());
@@ -3305,8 +3307,6 @@ function toggleLineCol(){
             "forProject": "TPEN_NL"
         };
 
-        var index = -1;
-        
         if(currentAnnoListID !== "noList" && currentAnnoListID !== "empty"){ // if its IIIF, we need to update the list
             var annosURL = "getAnno";
             var properties = {"@id": currentAnnoListID};
@@ -3319,11 +3319,11 @@ function toggleLineCol(){
                 currentAnnoList = annoList[0];
                 //console.log(currentAnnoList);
                 //console.log("Check list resources...");
-               $.each(currentAnnoList.resources, function(){
-                    index++;
-                    if(this["@id"] == currentLineServerID){
+                for(var z=0; z<currentAnnoList.resources.length; z++){
+                    var lineID = currentAnnoList.resources[z]["@id"];
+                    if(lineID == currentLineServerID){
                         //console.log("update current anno list "+annoListID+" index " + index);
-                        currentAnnoList.resources[index] = dbLine;
+                        currentAnnoList.resources[z] = dbLine;
                         var url = "updateAnnoList";
                         var paramObj = {"@id":annoListID, "resources": currentAnnoList.resources};
                         var params = {"content":JSON.stringify(paramObj)};
@@ -3332,11 +3332,12 @@ function toggleLineCol(){
                             //console.log(currentAnnoList.resources)
                             currentFolio = parseInt(currentFolio);
                             annoLists[currentFolio - 1]= annoListID;
-                            console.log("hide cover");
+                            console.log("hide cover in update");
                             $("#parsingCover").hide();
                         });
+                        break;
                     }
-                });                    
+                }                   
             });
         }
         else if(currentAnnoList == "empty"){
@@ -3344,6 +3345,7 @@ function toggleLineCol(){
         }
         else if(currentAnnoList == "noList"){ //If it is classic T-PEN, we need to update canvas resources
             currentFolio = parseInt(currentFolio);
+            var index = -1;
             $.each(transcriptionFolios[currentFolio - 1].resources, function(){
                 index++;
                 if(this["@id"] == currentLineServerID){
@@ -3455,10 +3457,11 @@ function toggleLineCol(){
     //                            //console.log("Updated list on anno store");
                                 if(lineBefore !== undefined && lineBefore !== null){
                                     //This is the good case.  We called split line and saved the new line, now we need to update the other one. 
+                                    console.log("mergeness happened.  Saved new line, now update a line, and in that update hide the parsing cover.  ")
                                     updateLine(lineBefore);
-                                    $("#parsingCover").hide(); //doesnt always fire, so this is to be sure
                                 }
                                 else{
+                                    console.log("We just saved a new line with column creation, so no update needs to be called");
                                     $("#parsingCover").hide();
                                 }
                             });
@@ -3501,6 +3504,7 @@ function toggleLineCol(){
                                     "linenum" : $(".parsing").length
                                 }).removeClass("newColumn");
                                 newLine.attr("lineserverid", dbLine["@id"]);
+                                console.log("added line into new list, so I can hide cover.");
                                 $("#parsingCover").hide();
                             });
                     });
@@ -3525,7 +3529,6 @@ function toggleLineCol(){
                 }
                 console.log("call cleanup from save line");
                 cleanupTranscriptlets(true);
-                 
             });
         }
         else{
