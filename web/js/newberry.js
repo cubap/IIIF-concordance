@@ -2149,7 +2149,7 @@ function toggleSpecialChars(event){
         imgToParse.parent().append($(setOfLines.join("")));
     }
     
-    function makeOverlayDiv(thisLine,originalX, cnt){
+    function makeOverlayDiv(thisLine, originalX, cnt){
         var Y = parseFloat(thisLine.attr("lineTop"));
         var X = parseFloat(thisLine.attr("lineLeft"));
         var H = parseFloat(thisLine.attr("lineHeight"));
@@ -2158,20 +2158,19 @@ function toggleSpecialChars(event){
         var newX = (X);
         var newH = (H);
         var newW = (W);
-        
-        var lineOverlay = "<div class='parsing' linenum='"+cnt+"' style='\n\
-        top:"+newY+"%; \n\
-        left:"+newX+"%; \n\
-        height:"+newH+"%; \n\
-        width:"+newW+"%; \n\
-        ' lineserverid='"+thisLine.attr('lineserverid')+"'\n\
-        linetop='"+Y+"'\n\
-        lineleft='"+X+"'\n\
-        lineheight='"+H+"'\n\
-        linewidth='"+W+"'>\n\
-        </div>";
+        var hasTrans = false;
+        if(thisLine.attr("data-answer") !== undefined && thisLine.attr("data-answer")!==""){
+            hasTrans = true;
+        }
+        var lineOverlay = "<div class='parsing' lineid='" + (parseInt(cnt)-1) + "' style='top:"
+            + newY + "%;left:" + newX + "%;height:"
+            + newH + "%;width:" + newW + "%;' lineserverid='"
+            + thisLine.attr('lineserverid') + "'linetop='"
+            + Y + "'lineleft='" + X + "'lineheight='"
+            + H + "'linewidth='" + W + "' hastranscription='"+hasTrans+"'></div>";
         return lineOverlay;
     }
+
 
     /* Reset the interface to the full screen transcription view. */
     function fullPage(){;
@@ -3782,11 +3781,25 @@ function toggleLineCol(){
         if (lineid !== updatedLineID){
             console.log("No it isn't. merge");
             removeNextLine = true;
-            var updatedLine =   $(".parsing[lineserverid='"+updatedLineID+"']");
             var removedLine1 = $(".parsing[lineserverid='"+lineid+"']");
             var removedLine2 = $(".transcriptlet[lineserverid='"+lineid+"']");
-            var toUpdate =      $(".transcriptlet[lineserverid='"+updatedLineID+"']");
+            var toUpdate =   $(".transcriptlet[lineserverid='"+updatedLineID+"']");
             var removedText =   $(".transcriptlet[lineserverid='"+lineid+"']").find("textarea").val();
+            if(toUpdate.length === 0){ 
+                //cleanupTranscriptlets() at the end of this function has removed all trascriptlets.  Check if parsing line exists, there will be no text.
+                toUpdate = $(".parsing[lineserverid='" + updatedLineID + "']");
+            }
+            if(removedLine2.length === 0){ 
+                //cleanupTranscriptlets() at the end of this function has removed all trascriptlets.  Check if parsing line exists, there will be no text.
+                removedLine2 = removedLine1;
+            }
+            //If toUpdate or removedLine2 are of length 0 at this point, there will be an error because I will not have ID's to talk to the db with.
+            if(toUpdate.length ==0 || removedLine2.length ==0){
+                console.warn("I could not find the lines to perform this action with, it has gone unsaved.");
+                $(".trexHead").show();
+                $("#genericIssue").show(1000);
+                return false;
+            }
             toUpdate.find("textarea").val(function(){
                 var thisValue = $(this).val();
                 if (removedText !== undefined){
@@ -3851,6 +3864,7 @@ function toggleLineCol(){
                                 }
                                 
                             });
+                            return false;
                         }
                     });                       
                 });

@@ -1859,3 +1859,56 @@ button,.navigation, #contribution,
     -moz-osx-font-smoothing: grayscale;
 }
 
+#templateResizeBar{
+    right: -15px;
+    position: absolute;
+    background-color: #aaa;
+    display: none;
+    z-index: 4;
+    height: 100vh;
+    width: 16px;
+    top: 0;
+    -moz-transition: all .5s;
+    -webkit-transition: all .5s;
+    -o-transition: all .5s;
+    transition: all .5s;
+}
+#transcriptionTemplate .ui-resizable-handle.ui-resizable-e {
+    width: 15px;
+    right: -15px;
+    height: 100vh;
+}
+.ui-widget-overlay{}
+
+a.editButtons {
+    height: 1.4em;
+    white-space: nowrap;
+    min-width: 4em;
+    font-size: small;
+    line-height: 1.4;
+}
+/*.editButtons::after{
+    content: "";
+}
+.character::after,.editButtons::after {
+    content: "CTRL+" counter(hotkey);
+    position: absolute;
+    color: #999;
+    font-size: .75em;
+    bottom: 0;
+    left: 0;
+    font-family: monospace;
+    width: 100%;
+    text-align: center;
+}
+.character::after, .editButtons::after, .editXMLs::after {
+    content: "CTRL+" counter(hotkey);
+    position: absolute;
+    color: #999;
+    font-size: .75em;
+    bottom: 0;
+    left: 0;
+    font-family: monospace;
+    width: 100%;
+    text-align: center;
+}*/

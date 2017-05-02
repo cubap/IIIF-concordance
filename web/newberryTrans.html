@@ -119,6 +119,7 @@
                     <span id="zoomat"></span>
                     Zoom in: <kbd>+</kbd> Zoom out: <kbd>-</kbd> </p>
             </div>
+            <div id="templateResizeBar"></div>
             <div id="parsingCover"></div>
             <div id="transcriptionCanvas">
                 <div id="noLineWarning">
@@ -243,14 +244,14 @@
                         <div id="specialCharsFloat" class="flex-container special-charactered">
                             <div id="charactersPopin" class="specialCharacters"  title="Special Characters" >
                             </div>
-                            <a title="Edit Special Characters" class="lookLikeButtons editButtons exitPage" href="buttons.html">
+                            <a title="Edit Special Characters" class="lookLikeButtons editButtons exitPage" href="project.html">
                                 Edit <i class="fa fa-edit"></i>
                             </a>
                         </div>
                         <div id="xmlTagFloat" class="flex-container xml-tagged">
                             <div id="xmlTagPopin" class="xmlTags" title="Custom XML Tags">
                             </div>
-                            <a title="Edit XML Tags" class="lookLikeButtons editButtons exitPage" href="buttons.html">
+                            <a title="Edit XML Tags" class="lookLikeButtons editButtons exitPage" href="project.html?">
                                 Edit <i class="fa fa-edit"></i>
                             </a>
                         </div>
@@ -866,6 +867,7 @@
                     if (theURL.indexOf("projectID=") > -1){
                         var projID = theURL.substring(theURL.indexOf("projectID=")+10);
                         theProjectID = parseInt(projID);
+                        $(".editButtons").attr("href", "project.html?projectID="+theProjectID);
                         $("#transcriptionText").val(projID);
                         $("#loadBtn").click();
                     }
@@ -882,6 +884,7 @@
                     var theURL = window.location.href;
                     var projID = theURL.substring(theURL.indexOf("projectID=")+10);
                     if (theURL.indexOf("projectID=") > -1){
+                        theProjectID = parseInt(projID);
                         alert("You must be logged in to view project "+projID);
                     }
                     $('#transcriptionTemplate').hide();
@@ -1309,6 +1312,7 @@
                     $("#ctrlColumnsInst").find(".activeParsingTool").fadeIn(800);
                     $("#ctrlLinesInst").find(".activeParsingTool").fadeOut(800);
                     $(".parsing").unbind();
+                    $(document).unbind();
                     linesToColumns();
                     
                     if (thisID == "createColumn"){
@@ -1317,8 +1321,8 @@
                         });
 
                         var isCreating = true;
-                        //adjustColumn(event);
-                        ////console.log("New or reparse column");
+                        adjustColumn(event);
+                        //console.log("New or reparse column");
                         var offset = $('#imgTop').offset();
                         var point = {};
                         var deltaPoint = {x:0,y:0};

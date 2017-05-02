@@ -402,6 +402,7 @@ Open the project management section for a given project ID.
                         <li><a title="Switch between projects" href="#tabs-1">Projects</a></li>
 <!--                        <li><a title="Alter linebreaks and parsings" href="#tabs-2">Manuscripts</a></li>-->
                         <li><a title="Project Options" href="#tabs-4">Options</a></li>
+                        <li><a id="backToTranscribe" title="Project Options" href="">Transcribe this Project</a></li>
 <!--                        <li><a title="Export Options" href="#tabs-5">Export</a></li>-->
                     </ul>
                     <div id="tabs-1">
@@ -709,6 +710,7 @@ function getPreloadInformation(){
     $(".returnToTrans").attr("href","newberryTrans.html?projectID="+projectID);
     currentProjectID = parseInt(projectID);
     $("#activeProjectID").val(currentProjectID);
+    $("#backToTranscribe").attr("href", "transcription.html?projectID="+currentProjectID);
     $.ajax({
         url: url,
         type: "GET",
