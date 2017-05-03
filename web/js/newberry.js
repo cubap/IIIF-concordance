@@ -533,20 +533,22 @@
                         }
                         populateSpecialCharacters(activeProject.projectButtons);
                         populateXML(activeProject.xml);
-                        $.each(projectTools, function(){
-                            if(count < 4){ //allows 5 tools.  
-                                var splitHeight = window.innerHeight + "px";
-                                var toolLabel = this.name;
-                                var toolSource = this.url;
-                                var splitTool = $('<div toolName="'+toolLabel+'" class="split iTool"><button class="fullScreenTrans">Full Screen Transcription</button></div>');
-                                var splitToolIframe = $('<iframe style="height:'+splitHeight+';" src="'+toolSource+'"></iframe>');
-                                var splitToolSelector = $('<option splitter="'+toolLabel+'" class="splitTool">'+toolLabel+'</option>');
-                                splitTool.append(splitToolIframe);
-                                $("#splitScreenTools").append(splitToolSelector);
-                                $(".iTool:last").after(splitTool);
-                            }
-                            count++;
-                        });
+                        if(projectTools.length){
+                            $.each(projectTools, function(){
+                                if(count < 4){ //allows 5 tools.  
+                                    var splitHeight = window.innerHeight + "px";
+                                    var toolLabel = this.name;
+                                    var toolSource = this.url;
+                                    var splitTool = $('<div toolName="'+toolLabel+'" class="split iTool"><button class="fullScreenTrans">Full Screen Transcription</button></div>');
+                                    var splitToolIframe = $('<iframe style="height:'+splitHeight+';" src="'+toolSource+'"></iframe>');
+                                    var splitToolSelector = $('<option splitter="'+toolLabel+'" class="splitTool">'+toolLabel+'</option>');
+                                    splitTool.append(splitToolIframe);
+                                    $("#splitScreenTools").append(splitToolSelector);
+                                    $(".iTool:last").after(splitTool);
+                                }
+                                count++;
+                            });
+                        }
                         
                     },
                     error: function(jqXHR,error, errorThrown) {  
@@ -2304,12 +2306,34 @@ function splitPage(event, tool) {
     //originalCanvasHeight = $("#transcriptionCanvas").height(); //make sure these are set correctly
     //originalCanvasWidth = $("#transcriptionCanvas").width(); //make sure these are set correctly
     var resize = true;
-    var newCanvasWidth = originalCanvasWidth * .55;
+    var newCanvasWidth = window.innerWidth * .55;
+    var ratio = originalCanvasWidth / originalCanvasHeight;
+    var newCanvasHeight = 1 / ratio * newCanvasWidth;
+    var fullPageMaxHeight = window.innerHeight - 125; //100 comes from buttons above image and topTrim
     $("#transcriptionTemplate").css({
         "width"   :   "55%",
         "display" : "inline-table"
     });
     $("#templateResizeBar").show();
+    var splitWidthAdjustment = window.innerWidth - ($("#transcriptionTemplate").width() + 35) + "px";
+    $("#fullScreenBtn")
+        .fadeIn(250);
+        $('.split').hide();
+    if(tool){
+        $("#transcriptionCanvas").css({
+            "width"   :   newCanvasWidth + "px",
+            "height"   :   newCanvasHeight + "px"
+        });
+        var splitScreen = $("#" + tool + "Split");
+        if(!splitScreen.size()) splitScreen = $('div[toolname="' + tool + '"]');
+        splitScreen.css("display", "block");
+        $(".split:visible")
+        .find('img')
+        .css({
+            'max-height': window.innherHeight + 350 + "px",
+            'max-width': splitWidthAdjustment
+        });
+    }
     if(tool==="controls"){
         if($("#controlsSplit").is(":visible")){
             $("#canvasControls").removeClass("selected");
@@ -2334,24 +2358,17 @@ function splitPage(event, tool) {
         $("#helpContainer").height(Page.height()-$("#helpContainer").offset().top);
         resize = false; //interupts parsing resizing funcitonaliy, dont need to resize for this anyway.
     }
-    var ratio = originalCanvasWidth / originalCanvasHeight;
-    var newCanvasHeight = 1 / ratio * newCanvasWidth;
-    if(tool)
-    $("#transcriptionCanvas").css({
-        "width"   :   newCanvasWidth + "px",
-        "height"   :   newCanvasHeight + "px"
-    });
+    
+
     if(tool === "parsing" || liveTool === "parsing"){
         resize=false;
     }
-    else{
-        var splitWidthAdjustment = window.innerWidth - ($("#transcriptionCanvas").width() + 35) + "px"; ;
-        $(".split img").css("max-width", splitWidthAdjustment);
-        $(".split:visible").css("width", splitWidthAdjustment);
-    }
+
     if(tool === "preview" || liveTool === "preview"){
         $("#previewSplit").show().height(Page.height()-$("#previewSplit").offset().top).scrollTop(0); // header space
         $("#previewDiv").height(Page.height()-$("#previewDiv").offset().top);
+        $(".split img").css("max-width", splitWidthAdjustment);
+        $(".split:visible").css("width", splitWidthAdjustment);
     }
    
     var newImgBtmTop = imgBottomPositionRatio * newCanvasHeight;
@@ -2369,36 +2386,26 @@ function splitPage(event, tool) {
         detachTemplateResize()
         $("#templateResizeBar").hide();
     }
-    $("#fullScreenBtn")
-        .fadeIn(250);
-        $('.split').hide();
-    //show/manipulate whichever split tool is activated.
-    //This is a user added iframe tool.  tool is toolID= attribute of the tool div to show.
-    var splitScreen = $("#" + tool + "Split");
-    if(!splitScreen.size()) splitScreen = $('div[toolname="' + tool + '"]');
-    splitScreen.css("display", "block");
-    $(".split:visible")
-        .find('img')
-        .css({
-            'max-height': window.innherHeight + 350 + "px",
-            'max-width': $(".split:visible")
-                .width() + "px"
-        });
+    
     if(tool === "fullPage"){ //set this to be the max height initially when the split happens.
-        var fullPageMaxHeight = window.innerHeight - 125; //100 comes from buttons above image and topTrim
+        
         $("#fullPageImg").css("max-height", fullPageMaxHeight); //If we want to keep the full image on page, it cant be taller than that.
-        $("#fullPageSplitCanvas").css("max-height", fullPageMaxHeight); //If we want to keep the full image on page, it cant be taller than that.
-        $("#fullPageSplitCanvas").css("max-width", $("#fullPageImg").width()); //If we want to keep the full image on page, it cant be taller than that.
+        $("#fullPageImg").css("max-width", splitWidthAdjustment);
+        $("#fullPageSplitCanvas").css("max-height", splitWidthAdjustment); //If we want to keep the full image on page, it cant be taller than that.
+        $("#fullPageSplitCanvas").css("max-width", splitWidthAdjustment); //If we want to keep the full image on page, it cant be taller than that.
         $("#fullPageSplitCanvas").height($("#fullPageImg").height());
         $("#fullPageSplitCanvas").width($("#fullPageImg").width());
         $(".fullP").each(function(i){
             this.title = $("#transcriptlet_"+i+" .theText").text();
         })
             .tooltip();
+        //$(".split img").css("max-width", splitWidthAdjustment);
+        //$(".split:visible").css("width", splitWidthAdjustment);
     }
     if(tool === "compare"){
-         var fullPageMaxHeight = window.innerHeight - 125; //100 comes from buttons above image and topTrim
         $("#compareSplit img").css("max-height", fullPageMaxHeight); //If we want to keep the full image on page, it cant be taller than that.
+        $("#compareSplit img").css("max-width", splitWidthAdjustment); //If we want to keep the full image on page, it cant be taller than that.
+        $("#compareSplit").css("width", splitWidthAdjustment);
     }
     setTimeout(function(){
         $.each($(".lineColOnLine"), function(){
@@ -2407,193 +2414,6 @@ function splitPage(event, tool) {
     }, 1000);
     
 }
-
-//    function splitPage(event, tool) {
-////        //console.log("SPLIT PAGWE!");
-//        liveTool = tool;
-//        originalCanvasHeight = $("#transcriptionCanvas").height(); //make sure these are set correctly
-//        originalCanvasWidth = $("#transcriptionCanvas").width(); //make sure these are set correctly
-//        var ratio = originalCanvasWidth/originalCanvasHeight;
-//        $("#splitScreenTools").attr("disabled", "disabled");
-//        //$("#pageJump").attr("disabled", "disabled");
-//        var imgBottomRatio = parseFloat($("#imgBottom img").css("top")) / originalCanvasHeight;
-//        var imgTopRatio = parseFloat($("#imgTop img").css("top")) / originalCanvasHeight;
-//        $("#transcriptionTemplate").css({
-//           "width"   :   "55%",
-//           "display" : "inline-table"
-//        });
-//        var newCanvasWidth = originalCanvasWidth2 * .55;
-//        var newCanvasHeight = 1/ratio * newCanvasWidth;
-////        //console.log("New canvas width: "+newCanvasWidth);
-////        //console.log("New canvas height: "+newCanvasHeight);
-//        $("#transcriptionCanvas").css({
-//           "width"   :   newCanvasWidth + "px",
-//           "height"   :   newCanvasHeight + "px"
-//        });
-//        var newImgBtmTop = imgBottomRatio * newCanvasHeight;
-//        var newImgTopTop = imgTopRatio * newCanvasHeight;
-//        $(".lineColIndicatorArea").css("height", newCanvasHeight+"px");
-////        //console.log("New Position: " + imgBottomRatio + " X " +newCanvasHeight+" = "+ imgBottomRatio * newCanvasHeight);
-//        $("#imgBottom img").css("top", newImgBtmTop + "px");
-//        $("#imgBottom .lineColIndicatorArea").css("top", newImgBtmTop + "px");
-//        $("#imgTop img").css("top", newImgTopTop + "px");
-//        $("#imgTop .lineColIndicatorArea").css("top", newImgTopTop + "px");
-//        $.each($(".lineColOnLine"),function(){$(this).css("line-height", $(this).height()+"px");});
-//        $("#transcriptionTemplate").resizable({
-//              disabled:false,
-//              minWidth: window.innerWidth / 2,
-//              maxWidth: window.innerWidth * .75,
-//              start: function(event, ui){
-//                  originalRatio = $("#transcriptionCanvas").width() / $("#transcriptionCanvas").height();
-//                  //originalRatio = $("#imgTop img").width() / $("#imgTop img").height();
-//              },
-//              resize: function(event, ui) {
-//                  var width = ui.size.width;
-//                  var height = 1/originalRatio * width;
-//                  $("#transcriptionCanvas").css("height", height+"px").css("width", width+"px");
-//                  $(".lineColIndicatorArea").css("height", height+"px");
-//                  
-//                  var splitWidth = window.innerWidth - (width+35) + "px";
-//                  $(".split img").css("max-width", splitWidth);
-//                  $(".split:visible").css("width", splitWidth);
-////                   //console.log("Full page split should have height "+$("#fullPageImg").height());
-//                  var newHeight1 = parseFloat($("#fullPageImg").height()) + parseFloat($("#fullPageSplit .toolLinks").height());
-//                  var newHeight2 = parseFloat($(".compareImage").height()) + parseFloat($("#compareSplit .toolLinks").height());
-//                  $('#fullPageSplit').css('height', newHeight1 + 'px');
-//                  //console.log("compare height "+newHeight2);
-//                  $('#compareSplit').css('height', newHeight2 + 'px');
-//              },
-//              stop: function(event, ui){
-//                  $.each($(".lineColOnLine"),function(){
-//                      var height = $(this).height() + "px";
-//                      $(this).css("line-height", height);
-//                  });
-//              }
-//            });
-//        $("#fullScreenBtn").fadeIn(250);
-//        //show/manipulate whichever split tool is activated.
-//        switch(tool){
-//          case "calligraphy":
-//             $("#calligraphySplit").css({
-//              "display": "inline-table"
-//            });
-//            break;
-//          case "scripts":
-//              $("#scriptsSplit").css({
-//              "display": "inline-table"
-//            });
-//            break;
-//          case "frenchdocs":
-//              $("#documentsSplit").css({
-//              "display": "inline-table",
-//            });
-//            break;
-//          case "conservation":
-//              $("#conservationSplit").css({
-//              "display": "inline-table"
-//
-//            });
-//            break;
-//          case "conventions":
-//             $("#conventionsSplit").css({
-//              "display": "inline-table"
-//            });
-//            break;
-//          case "teachers":
-//             $("#teachersSplit").css({
-//              "display": "inline-table"
-//            });
-//            break;
-//          case "groupwork":
-//             $("#groupSplit").css({
-//              "display": "inline-table"
-//            });
-//            break;
-//          case "glossary":
-//            $("#glossarySplit").css({
-//              "display": "inline-table"
-//            });
-//            break;
-//          case "fInstitutions":
-//             $("#fInstitutionsSplit").css({
-//              "display": "inline-table"
-//            });
-//            break;
-//          case "other":
-//             $("#otherSplit").css({
-//              "display": "inline-table"
-//            });
-//            break;
-//          case "essay":
-//            $("#essaySplit").css({
-//              "display": "inline-table"
-//            });
-//            break;
-//          case "partialTrans":
-//            $("#partialTransSplit").css({
-//              "display": "inline-table"
-//            });
-//            break;
-//          case "abbreviations":
-//            $("#abbrevSplit").css({
-//              "display": "inline-table"
-//            });
-//            break;
-//          case "dictionary":
-//            $("#dictionarySplit").css({
-//              "display": "inline-table"
-//            });
-//            break;
-//          case "preview":
-//              forceOrderPreview();
-//            break;
-//          case "history":
-//            $("#historySplit").css({
-//              "display": "inline-table"
-//            });
-//            break;
-//          case "fullPage":
-//            $("#fullPageSplit").css({
-//              "display": "block"
-//            });
-//            break;
-//          case "compare":
-//            $("#compareSplit").css({
-//                "display": "block"
-//            });
-//            //When comparing, you need to be able to see the whole image, so I restrict it to window height.  To allow it to continue to grow, comment out the code below.  
-//            $(".compareImage").css({
-//                "max-height":window.innerHeight+"px",
-//                "max-width":$("#compareSplit").width()+"px"
-//            });
-//            populateCompareSplit(1);
-//            //$("#toolLinks").show();
-//            break;
-//          case "facing":
-//              $("#facingSplit").css("display", "block");
-//            break;
-//          case "maps":
-//              $("#mapsSplit").css("display", "inline-table");
-//            break;
-//          case "start":
-//              $("#startSplit").css("display", "inline-table");
-//          default:
-//              //This is a user added iframe tool.  tool is toolID= attribute of the tool div to show.  
-//              $('div[toolName="'+tool+'"]').css("display", "inline-table");
-//
-//        }
-//        $(".split:visible").find('img').css({
-//            'max-height': window.innherHeight + 350 +"px",
-//            'max-width' : $(".split:visible").width() + "px"
-//        });
-//         var pageJumpIcons = $("#pageJump").parent().children("i");
-//            pageJumpIcons[0].setAttribute('onclick', 'firstFolio("parsing");');
-//            pageJumpIcons[1].setAttribute('onclick', 'previousFolio("parsing");');
-//            pageJumpIcons[2].setAttribute('onclick', 'nextFolio("parsing");');
-//            pageJumpIcons[3].setAttribute('onclick', 'lastFolio("parsing");');
-//        $("#prevCanvas").attr("onclick", "");
-//        $("#nextCanvas").attr("onclick", "");
-//    }
     
     function forceOrderPreview(){
         var ordered = [];
@@ -4267,10 +4087,7 @@ function loadIframes(){
             var PAGEHEIGHT = Page.height();
             var PAGEWIDTH = Page.width();
             var widerThanTall = (parseInt(originalCanvasWidth) > parseInt(originalCanvasHeight));
-            
-            var splitWidthAdjustment = window.innerWidth - (newCanvasWidth + 35) + "px";
-            
-            
+            var splitWidthAdjustment = window.innerWidth - (newCanvasWidth + 35) + "px";  
             if(liveTool === 'parsing'){
                 if(screen.width == $(window).width() && screen.height == window.outerHeight){
                     $(".centerInterface").css("text-align", "center"); //.css("background-color", "#e1f4fe");
