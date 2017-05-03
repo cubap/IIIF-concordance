@@ -189,7 +189,7 @@
                     </div>
                     <div class="flex-container flex-stretch buttons let">
                         <select id="splitScreenTools" > 
-                             <option id="activeSplitTool" >Included Tools</option> 
+                             <option id="activeSplitTool" disabled>Included Tools</option> 
                              <optgroup label="Paleography Information">
                                 <option splitter='start' class="splitTool" >Get Started</option>
                                 <option splitter='essay' class="splitTool" >Background Essay</option>
@@ -826,6 +826,30 @@
         </div>
         <div id="zoomDiv" class="ui-corner-all"></div>
         <div id="ruler1"></div><div id="ruler2"></div>
+        <div id="genericIssue" class="ui-widget ui-corner-all ui-widget-content">
+            <h2 class="ui-widget-header ui-corner-all">Data Error</h2>
+            <p>
+                There was an issue saving some of your data.  Please refresh the page to resume your activity.  If you continue to see this error
+                please contact the T&#8209;PEN Admin.
+            </p>
+            <div class="clear right buttons">
+                <button class="ui-button tpenButton" onclick="document.location.reload();">OK</button>
+            </div>
+        </div>
+        <div id="overlay" class="ui-widget-overlay">
+            <div id="overlayNote">Click the page to return</div>
+        </div>
+        <div id="location" class="ui-widget-content ui-corner-tr">
+        </div>
+        <div class="trexHead"></div>
+        <noscript>
+            <div id="noscript">
+                You are blocking scripts on this page. T-PEN uses 
+                <code>googleapis.com</code> and <code>javascript</code> 
+                for necessary functionality.
+            </div>
+            <div class="trexHead" style="display:block"></div>
+        </noscript>
     </body>
 </html>
 <script>

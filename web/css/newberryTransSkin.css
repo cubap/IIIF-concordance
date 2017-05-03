@@ -7,8 +7,58 @@ and open the template in the editor.
     Created on : Jan 27, 2015, 10:05:37 AM
     Author     : bhaberbe
 */
+#overlay{
+    display: none;
+    z-index: 10;
+}
+#location {
+    bottom: 0;
+    left: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+    border-right: none;
+    border-top: none;
+    position: fixed;
+    z-index: 10;
+    padding: 0 5px 3px;
+    display: none;
+}
+#highlight {
+    position:absolute;
+    z-index: 10;
+    overflow: visible;
+}
+#genericIssue {
+    position: fixed;
+    left:0;
+    right:0;
+    top:10%;
+    margin:auto;
+    width:90%;
+    max-width: 600px;
+    max-height: 400px;
+    overflow: hidden;
+    padding: 5px;
+    z-index: 50;
+    -moz-box-shadow:0 0 45px black;
+    box-shadow:0 0 45px black; 
+    display:none;
+}
 .theText,#captions,input.hotkey {
     font-family:'Junicode','Georgia', serif;
+}
+.trexHead {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    pointer-events: none;
+    background: rgba(0,0,0,.7) url(../images/trexhead.png) right center no-repeat fixed;
+    background-size: 53%;
+    background-position: 100% 0px;
+    z-index: 3;
+    display: none;
 }
 /*#captionsText,#notes {
     display: inline-block;

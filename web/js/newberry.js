@@ -221,10 +221,20 @@
         var properties = {"@type": "sc:AnnotationList", "on" : currentOn};
         var paramOBJ = {"content": JSON.stringify(properties)};
          $.post(annosURL, paramOBJ, function(annoList){
-             annoList = JSON.parse(annoList);
-             if(annoList.length > 0){
-                 checkForMaster(annoList, pageLabel, currentPage, i);
-             }
+            try{
+                annoList = JSON.parse(annoList);
+            }
+            catch(e){ //dont kill it here
+                $("#transTemplateLoading p").html("Something went wrong. We could not get the annotation data FOR THE PREVIEW MODULE.  Refresh the page to try again.");
+//                $('.transLoader img').attr('src',"images/missingImage.png");
+//                $(".trexHead").show();
+//                $("#genericIssue").show(1000);
+//                return false;                
+            }
+             
+            if(annoList.length > 0){
+                checkForMaster(annoList, pageLabel, currentPage, i);
+            }
 
          });
     }
@@ -320,7 +330,16 @@
     }
     
     function populateSpecialCharacters(specialCharacters){
-        specialCharacters = JSON.parse(specialCharacters);
+        try{
+            specialCharacters = JSON.parse(specialCharacters);
+        }
+        catch(e){ //dont kill it here
+            $("#transTemplateLoading p").html("Something went wrong. We could not get the special characters.  Refresh the page to try again.");
+//            $('.transLoader img').attr('src',"images/missingImage.png");
+//            $(".trexHead").show();
+//            $("#genericIssue").show(1000);
+            return false;                
+        }
         var speCharactersInOrder = new Array(specialCharacters.length);
         for (var char = 0; char < specialCharacters.length; char++){
             var thisChar = specialCharacters[char];
@@ -413,7 +432,16 @@
                         var url  = ""; 
                         var currentUser = activeProject.cuser;
                         var leaders = activeProject.ls_leader;
-                        leaders = JSON.parse(leaders);
+                        try{
+                            leaders = JSON.parse(leaders);
+                        }
+                        catch(e){ //may not need to do this here
+                            $("#transTemplateLoading p").html("Something went wrong. We could not get the information about the leader for this project.  Refresh the page to try again.");
+                            $('.transLoader img').attr('src',"images/missingImage.png");
+                            //$(".trexHead").show();
+                            //$("#genericIssue").show(1000);
+                            //return false;                
+                        }
                         $.each(leaders, function(){
                             if(this.UID === parseInt(currentUser)){
                                 //console.log("This user is a leader.");
@@ -427,7 +455,17 @@
                         });
                         if(activeProject.ls_ms[0] !== undefined){
                             var getURLfromThis = activeProject.ls_ms;
-                            getURLfromThis = JSON.parse(getURLfromThis);
+                            try{
+                                getURLfromThis = JSON.parse(getURLfromThis);
+                            }
+                            catch(e){ //may not need to do this here
+                                $("#transTemplateLoading p").html("Something went wrong. We could not get the manifest from the TPEN data.  Refresh the page to try again.");
+                                $('.transLoader img').attr('src',"images/missingImage.png");
+                                //$(".trexHead").show();
+                                //$("#genericIssue").show(1000);
+                                return false;                
+                            }
+                            
                             url  = getURLfromThis[0].archive; //This is the manifest inside the project data
                             if(url.indexOf("http") < 0){
                                 //create the newberry url
@@ -522,8 +560,12 @@
                     try{
                         userTranscription = JSON.parse(userTranscription);
                     }
-                    catch(e){
-                        
+                    catch(e){ //may not need to do this here
+                        $("#transTemplateLoading p").html("Something went wrong. The data for this object is not proper JSON.  Resubmit or refresh the page to try again.");
+                        $('.transLoader img').attr('src',"images/missingImage.png");
+                        //$(".trexHead").show();
+                        //$("#genericIssue").show(1000);
+                        return false;                
                     }
                     if(userTranscription.sequences[0] !== undefined && userTranscription.sequences[0].canvases !== undefined
                         && userTranscription.sequences[0].canvases.length > 0){
@@ -590,12 +632,32 @@
                             type:"GET",
                             success: function(activeProject){
                                 var projectTools = activeProject.projectTool;
-                                projectTools = JSON.parse(projectTools);
+                                try{
+                                    projectTools = JSON.parse(projectTools);
+                                }
+                                catch(e){ //may not need to do this here
+                                    $("#transTemplateLoading p").html("Something went wrong. We could not get the tools for this project.  Refresh the page to try again.");
+                                    $('.transLoader img').attr('src',"images/missingImage.png");
+                                    //$(".trexHead").show();
+                                    //$("#genericIssue").show(1000);
+                                    return false;                
+                                }
+                                
                                 var count = 0;
                                 var url  = "";
                                 if(activeProject.ls_ms[0] !== undefined){
                                     var getURLfromThis = activeProject.ls_ms;
-                                    getURLfromThis = JSON.parse(getURLfromThis);
+                                    try{
+                                        getURLfromThis = JSON.parse(getURLfromThis);
+                                    }
+                                    catch(e){ //may not need to do this here
+                                        $("#transTemplateLoading p").html("Something went wrong. We could not get the manifest out of the TPEN data for this project.  Refresh the page to try again.");
+                                        $('.transLoader img').attr('src',"images/missingImage.png");
+                                        //$(".trexHead").show();
+                                        //$("#genericIssue").show(1000);
+                                        return false;                
+                                    }
+                                    
                                     url  = getURLfromThis[0].archive;
                                     $.ajax({
                                         url: url,
@@ -865,7 +927,17 @@
                 var paramOBJ = {"content": JSON.stringify(properties)};
                 $.post(annosURL, paramOBJ, function(annoList){
                     //console.log("found annoLists");
-                    annoList = JSON.parse(annoList);
+                    try{
+                        annoList = JSON.parse(annoList);
+                    }
+                    catch(e){ //may not need to do this here
+                        $("#transTemplateLoading p").html("Something went wrong. The list of lines was not JSON.  Refresh the page to try again.");
+                        $('.transLoader img').attr('src',"images/missingImage.png");
+                        $(".trexHead").show();
+                        $("#genericIssue").show(1000);
+                        return false;                
+                    }
+                    
                     //console.log(annoList);
                     var found = false;
                     var currentList = {};
@@ -3194,7 +3266,16 @@ function toggleLineCol(){
         var paramOBJ = {"content": JSON.stringify(properties)};
         $.post(annosURL, paramOBJ, function(annoLists){
             //console.log("got anno list.  Here are the current resources");
-            annoLists = JSON.parse(annoLists);
+            try{
+                annoLists = JSON.parse(annoLists);
+            }
+            catch(e){ //may not need to do this here
+                $("#transTemplateLoading p").html("Something went wrong. Could not get annotation lists properly.  Refresh the page to try again.");
+                $('.transLoader img').attr('src',"images/missingImage.png");
+                $(".trexHead").show();
+                $("#genericIssue").show(1000);
+                return false;                
+            }
             var currentAnnoList; 
             $.each(annoLists, function(){
                 if(this.proj === "master"){
@@ -3318,7 +3399,16 @@ function toggleLineCol(){
             //console.log("Query for list...")
             $.post(annosURL, paramOBJ, function(annoList){
                 //console.log("got list");
-                annoList = JSON.parse(annoList);
+                try{
+                    annoList = JSON.parse(annoList);
+                }
+                catch(e){ //may not need to do this here
+                    $("#transTemplateLoading p").html("Something went wrong. The list of lines was not JSON.  Refresh the page to try again.");
+                    $('.transLoader img').attr('src',"images/missingImage.png");
+                    $(".trexHead").show();
+                    $("#genericIssue").show(1000);
+                    return false;                
+                }
                 var annoListID = currentAnnoListID;
                 currentAnnoList = annoList[0];
                 //console.log(currentAnnoList);
@@ -3420,7 +3510,16 @@ function toggleLineCol(){
             $.post(url, params, function(data){
                    //console.log("saved new line");
                    //console.log(data);
-                    data=JSON.parse(data);
+                    try{
+                        data = JSON.parse(data);
+                    }
+                    catch(e){ //may not need to do this here
+                        $("#transTemplateLoading p").html("Something went wrong. Did not save a line correctly.  Refresh the page to try again.");
+                        $('.transLoader img').attr('src',"images/missingImage.png");
+                        $(".trexHead").show();
+                        $("#genericIssue").show(1000);
+                        return false;                
+                    }
                     dbLine["@id"] = data["@id"];
                     newLine.attr("lineserverid", data["@id"]);
                     $("div[newcol='"+true+"']").attr({
@@ -3438,7 +3537,16 @@ function toggleLineCol(){
                         $.post(annosURL, paramOBJ, function(annoList){
     //                        //console.log("got list");
                             var annoListID = currentAnnoList;
-                            annoList = JSON.parse(annoList);
+                            try{
+                                annoList = JSON.parse(annoList);
+                            }
+                            catch(e){ //may not need to do this here
+                                $("#transTemplateLoading p").html("Something went wrong. Did not save a line correctly.  Refresh the page to try again.");
+                                $('.transLoader img').attr('src',"images/missingImage.png");
+                                $(".trexHead").show();
+                                $("#genericIssue").show(1000);
+                                return false;                
+                            }
                             currentAnnoList = annoList[0];
                             if(beforeIndex == -1){
                                 $(".newColumn").attr({
@@ -3489,7 +3597,16 @@ function toggleLineCol(){
                     var params2 = {"content": JSON.stringify(newAnnoList)};
                     $.post(url2, params2, function(data){ //save new list
     //                    //console.log("new list made");
-                        data=JSON.parse(data);
+                        try{
+                            data = JSON.parse(data);
+                        }
+                        catch(e){ //may not need to do this here
+                            $("#transTemplateLoading p").html("Something went wrong. Did not save a line correctly.  Refresh the page to try again.");
+                            $('.transLoader img').attr('src',"images/missingImage.png");
+                            $(".trexHead").show();
+                            $("#genericIssue").show(1000);
+                            return false;                
+                        }
                         var newAnnoListCopy = newAnnoList;
                         newAnnoListCopy["@id"] = data["@id"];
                         currentFolio = parseInt(currentFolio);
@@ -3832,7 +3949,16 @@ function toggleLineCol(){
                 var properties = {"@id": currentAnnoList};
                 var paramOBJ = {"content": JSON.stringify(properties)};
                 $.post(annosURL, paramOBJ, function(annoList){
-                    annoList = JSON.parse(annoList);
+                    try{
+                        annoList = JSON.parse(annoList);
+                    }
+                    catch(e){ //may not need to do this here
+                        $("#transTemplateLoading p").html("Something went wrong. Did not delete a line correctly.  Refresh the page to try again.");
+                        $('.transLoader img').attr('src',"images/missingImage.png");
+                        $(".trexHead").show();
+                        $("#genericIssue").show(1000);
+                        return false;                
+                    }
                     var annoListID = currentAnnoList;
                     currentAnnoList = annoList[0];
                     console.log("got it");
@@ -3906,7 +4032,16 @@ function toggleLineCol(){
             var properties = {"@id": currentAnnoList};
             var paramOBJ = {"content": JSON.stringify(properties)};
             $.post(annosURL, paramOBJ, function(annoList){
-                annoList = JSON.parse(annoList);
+                try{
+                    annoList = JSON.parse(annoList);
+                }
+                catch(e){ //may not need to do this here
+                    $("#transTemplateLoading p").html("Something went wrong. Did not remove a line correctly.  Refresh the page to try again.");
+                    $('.transLoader img').attr('src',"images/missingImage.png");
+                    $(".trexHead").show();
+                    $("#genericIssue").show(1000);
+                    return false;                
+                }
                 var annoListID = currentAnnoList;
                 currentAnnoList = annoList[0];
                 //console.log("got them");
