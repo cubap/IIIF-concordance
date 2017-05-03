@@ -2272,7 +2272,12 @@ function splitPage(event, tool) {
     if(tool === "parsing" || liveTool === "parsing"){
         resize=false;
     }
-    if(tool === "preview"){
+    else{
+        var splitWidthAdjustment = window.innerWidth - ($("#transcriptionCanvas").width() + 35) + "px"; ;
+        $(".split img").css("max-width", splitWidthAdjustment);
+        $(".split:visible").css("width", splitWidthAdjustment);
+    }
+    if(tool === "preview" || liveTool === "preview"){
         $("#previewSplit").show().height(Page.height()-$("#previewSplit").offset().top).scrollTop(0); // header space
         $("#previewDiv").height(Page.height()-$("#previewDiv").offset().top);
     }
@@ -4126,8 +4131,11 @@ function loadIframes(){
             var newCanvasHeight = $("#transcriptionCanvas").height();
             var PAGEHEIGHT = Page.height();
             var PAGEWIDTH = Page.width();
-            var SPLITWIDTH = $("#parsingSplit").width();
             var widerThanTall = (parseInt(originalCanvasWidth) > parseInt(originalCanvasHeight));
+            
+            var splitWidthAdjustment = window.innerWidth - (newCanvasWidth + 35) + "px";
+            
+            
             if(liveTool === 'parsing'){
                 if(screen.width == $(window).width() && screen.height == window.outerHeight){
                     $(".centerInterface").css("text-align", "center"); //.css("background-color", "#e1f4fe");
@@ -4180,6 +4188,8 @@ function loadIframes(){
             else if (liveTool === "preview"){
                 $("#previewSplit").show().height(Page.height()-$("#previewSplit").offset().top).scrollTop(0); // header space
                 $("#previewDiv").height(Page.height()-$("#previewDiv").offset().top);
+                $(".split img").css("max-width", splitWidthAdjustment);
+                $(".split:visible").css("width", splitWidthAdjustment);
             }
             else if(liveTool !== "" && liveTool!=="none"){
                 newCanvasWidth = Page.width() * .55;
