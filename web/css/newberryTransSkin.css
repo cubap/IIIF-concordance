@@ -728,8 +728,8 @@ div#transcriptletArea {
     display: none;
     border-radius : 50%;
     box-shadow :5px 5px 15px 3px black,15px 15px 100px rgba(230,255,255,.8) inset,-15px -15px 100px rgba(0,0,15,.4) inset;
-    width : 300;
-    height:300;
+    width : 300px;
+    height:300px;
     border: 3px gold outset;
     overflow : hidden;
     position:fixed;
@@ -741,6 +741,8 @@ div#transcriptletArea {
     background-repeat:no-repeat;
     z-index: 4;
 }
+/*#zoomDiv {display: none;border-radius : 50%; box-shadow :5px 5px 15px 3px black,15px 15px 100px rgba(230,255,255,.8) inset,-15px -15px 100px rgba(0,0,15,.4) inset;width : 300;height:300;border: 3px gold outset;overflow : hidden;position:fixed;left: 450px;top: 65px;background-color: transparent;background-position: 0px 0px;background-size: auto;background-repeat:no-repeat;}*/
+
 #pageLabel1{
     left: 35%;
     position: absolute;
@@ -979,7 +981,6 @@ label {width:auto;padding: 0;float: none;}/*fixme should not have to overwrite*/
 }
 #progress {bottom:0;right:0;}
 #lineResizing {top:50%;width:auto;max-width: 25%;}
-#zoomDiv {display: none;border-radius : 50%; box-shadow :5px 5px 15px 3px black,15px 15px 100px rgba(230,255,255,.8) inset,-15px -15px 100px rgba(0,0,15,.4) inset;width : 300;height:300;border: 3px gold outset;overflow : hidden;position:fixed;left: 450px;top: 65px;background-color: transparent;background-position: 0px 0px;background-size: auto;background-repeat:no-repeat;}
 #historyListing {height: 100%;overflow: auto;position:relative;}
 .historyEntry,.historyLine{position: relative;overflow: auto;}
 .historyLine{height:100%;}
@@ -1938,6 +1939,14 @@ a.editButtons {
     font-size: small;
     line-height: 1.4;
 }
+/* Center the images inside compare page and view full page */
+/*.compareImage, #fullPageImg{
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    position: absolute;
+     max-height: 98%; cubap: what? 
+}*/
 /*.editButtons::after{
     content: "";
 }

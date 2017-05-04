@@ -2302,9 +2302,6 @@ function toggleSpecialChars(event){
     }
     
 function splitPage(event, tool) {
-    liveTool = tool;
-    //originalCanvasHeight = $("#transcriptionCanvas").height(); //make sure these are set correctly
-    //originalCanvasWidth = $("#transcriptionCanvas").width(); //make sure these are set correctly
     var resize = true;
     var newCanvasWidth = window.innerWidth * .55;
     var ratio = originalCanvasWidth / originalCanvasHeight;
@@ -2316,24 +2313,12 @@ function splitPage(event, tool) {
     });
     $("#templateResizeBar").show();
     var splitWidthAdjustment = window.innerWidth - ($("#transcriptionTemplate").width() + 35) + "px";
+    var newImgBtmTop = imgBottomPositionRatio * newCanvasHeight;
+    var newImgTopTop = imgTopPositionRatio * newCanvasHeight;
     $("#fullScreenBtn")
         .fadeIn(250);
         $('.split').hide();
-    if(tool){
-        $("#transcriptionCanvas").css({
-            "width"   :   newCanvasWidth + "px",
-            "height"   :   newCanvasHeight + "px"
-        });
-        var splitScreen = $("#" + tool + "Split");
-        if(!splitScreen.size()) splitScreen = $('div[toolname="' + tool + '"]');
-        splitScreen.css("display", "block");
-        $(".split:visible")
-        .find('img')
-        .css({
-            'max-height': window.innherHeight + 350 + "px",
-            'max-width': splitWidthAdjustment
-        });
-    }
+    
     if(tool==="controls"){
         if($("#controlsSplit").is(":visible")){
             $("#canvasControls").removeClass("selected");
@@ -2347,7 +2332,7 @@ function splitPage(event, tool) {
         $("#controlsSplit").show();
         resize = false; //interupts parsing resizing funcitonaliy, dont need to resize for this anyway.
     }
-    if(tool==="help"){
+    else if(tool==="help"){
         if($("#helpSplit").is(":visible")){
             return fullPage();
         }
@@ -2358,22 +2343,44 @@ function splitPage(event, tool) {
         $("#helpContainer").height(Page.height()-$("#helpContainer").offset().top);
         resize = false; //interupts parsing resizing funcitonaliy, dont need to resize for this anyway.
     }
-    
-
-    if(tool === "parsing" || liveTool === "parsing"){
+    else if(tool === "parsing" || liveTool === "parsing"){
         resize=false;
     }
-
-    if(tool === "preview" || liveTool === "preview"){
+    else if(tool === "preview" || liveTool === "preview"){
         $("#previewSplit").show().height(Page.height()-$("#previewSplit").offset().top).scrollTop(0); // header space
         $("#previewDiv").height(Page.height()-$("#previewDiv").offset().top);
         $(".split img").css("max-width", splitWidthAdjustment);
         $(".split:visible").css("width", splitWidthAdjustment);
     }
-   
-    var newImgBtmTop = imgBottomPositionRatio * newCanvasHeight;
-    var newImgTopTop = imgTopPositionRatio * newCanvasHeight;
-    //$(".lineColIndicatorArea").css("max-height", newCanvasHeight + "px");
+    else if(tool === "fullPage"){ //set this to be the max height initially when the split happens.
+        
+        $("#fullPageImg").css("max-height", fullPageMaxHeight); //If we want to keep the full image on page, it cant be taller than that.
+        $("#fullPageImg").css("max-width", splitWidthAdjustment);
+        $("#fullPageSplitCanvas").css("max-height", splitWidthAdjustment); //If we want to keep the full image on page, it cant be taller than that.
+        $("#fullPageSplitCanvas").css("max-width", splitWidthAdjustment); //If we want to keep the full image on page, it cant be taller than that.
+        //$("#fullPageSplitCanvas").height($("#fullPageImg").height());
+        //$("#fullPageSplitCanvas").width($("#fullPageImg").width());
+        $(".fullP").each(function(i){
+            this.title = $("#transcriptlet_"+i+" .theText").text();
+        })
+            .tooltip();
+    }
+    else if(tool === "compare"){
+        $("#compareSplit img").css("max-height", fullPageMaxHeight); //If we want to keep the full image on page, it cant be taller than that.
+        $("#compareSplit img").css("max-width", splitWidthAdjustment); //If we want to keep the full image on page, it cant be taller than that.
+        $("#compareSplit").css("width", splitWidthAdjustment);
+    }
+    else{
+        
+    }
+    liveTool = tool;
+    $("#transcriptionCanvas").css({
+        "width"   :   newCanvasWidth + "px",
+        "height"   :   newCanvasHeight + "px"
+    });
+    var splitScreen = $("#" + tool + "Split");
+    if(!splitScreen.size()) splitScreen = $('div[toolname="' + tool + '"]');
+    splitScreen.css("display", "block");
     $(".lineColIndicatorArea").css("height", newCanvasHeight + "px");
     $("#imgBottom img").css("top", newImgBtmTop + "px");
     $("#imgBottom .lineColIndicatorArea").css("top", newImgBtmTop + "px");
@@ -2385,27 +2392,6 @@ function splitPage(event, tool) {
     } else {
         detachTemplateResize()
         $("#templateResizeBar").hide();
-    }
-    
-    if(tool === "fullPage"){ //set this to be the max height initially when the split happens.
-        
-        $("#fullPageImg").css("max-height", fullPageMaxHeight); //If we want to keep the full image on page, it cant be taller than that.
-        $("#fullPageImg").css("max-width", splitWidthAdjustment);
-        $("#fullPageSplitCanvas").css("max-height", splitWidthAdjustment); //If we want to keep the full image on page, it cant be taller than that.
-        $("#fullPageSplitCanvas").css("max-width", splitWidthAdjustment); //If we want to keep the full image on page, it cant be taller than that.
-        $("#fullPageSplitCanvas").height($("#fullPageImg").height());
-        $("#fullPageSplitCanvas").width($("#fullPageImg").width());
-        $(".fullP").each(function(i){
-            this.title = $("#transcriptlet_"+i+" .theText").text();
-        })
-            .tooltip();
-        //$(".split img").css("max-width", splitWidthAdjustment);
-        //$(".split:visible").css("width", splitWidthAdjustment);
-    }
-    if(tool === "compare"){
-        $("#compareSplit img").css("max-height", fullPageMaxHeight); //If we want to keep the full image on page, it cant be taller than that.
-        $("#compareSplit img").css("max-width", splitWidthAdjustment); //If we want to keep the full image on page, it cant be taller than that.
-        $("#compareSplit").css("width", splitWidthAdjustment);
     }
     setTimeout(function(){
         $.each($(".lineColOnLine"), function(){
@@ -4051,8 +4037,8 @@ function loadIframes(){
                 //var newHeight2 = parseFloat($(".compareImage").height()) + parseFloat($("#compareSplit .toolLinks").height()); //For resizing properly when transcription template is resized
                 var fullPageMaxHeight = window.innerHeight - 125; //100 comes from buttons above image and topTrim
                 $("#fullPageImg").css("max-height", fullPageMaxHeight); //If we want to keep the full image on page, it cant be taller than that.
-                $("#fullPageSplitCanvas").height($("#fullPageImg").height());
-                $("#fullPageSplitCanvas").width($("#fullPageImg").width());
+                //$("#fullPageSplitCanvas").height($("#fullPageImg").height());
+                //$("#fullPageSplitCanvas").width($("#fullPageImg").width());
                 var newImgBtmTop = imgBottomPositionRatio * height;
                 var newImgTopTop = imgTopPositionRatio * height;
                 $("#imgBottom img").css("top", newImgBtmTop + "px");
@@ -4155,9 +4141,7 @@ function loadIframes(){
                 $(".split img").css("max-width", splitWidth);
                 $(".split:visible").css("width", splitWidth);
                 $("#fullPageImg").css("max-height", fullPageMaxHeight); //If we want to keep the full image on page, it cant be taller than that.
-                $("#fullPageSplitCanvas").height(fullPageMaxHeight);
-                $("#fullPageSplitCanvas").height($("#fullPageImg").height());
-                $("#fullPageSplitCanvas").width($("#fullPageImg").width());
+                //$("#fullPageSplitCanvas").css("height", fullPageMaxHeight);
                 $("#transcriptionTemplate").css("width", newCanvasWidth + "px");
                 $("#transcriptionCanvas").css("width", newCanvasWidth + "px");
                 $("#transcriptionCanvas").css("height", newCanvasHeight + "px");
