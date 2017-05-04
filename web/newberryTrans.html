@@ -889,7 +889,7 @@
                     $("#trimCurrentUser").attr("title",data.uname);
                     var theURL = window.location.href;
                     if (theURL.indexOf("projectID=") > -1){
-                        var projID = theURL.substring(theURL.indexOf("projectID=")+10);
+                        var projID = getURLVariable("projectID");
                         theProjectID = parseInt(projID);
                         $(".editButtons").attr("href", "project.html?projectID="+theProjectID);
                         $("#transcriptionText").val(projID);

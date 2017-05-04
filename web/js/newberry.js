@@ -414,6 +414,7 @@
         //Object validation here.
             projectID = 4080;
             var userTranscription = $('#transcriptionText').val();
+            var pageToLoad = getURLVariable("p");
             currentFolio = 1;
             longLoadingProject = window.setTimeout(function(){
                 longLoad();
@@ -422,6 +423,7 @@
             if($.isNumeric(userTranscription)){ //The user can put the project ID in directly and a call will be made to newberry proper to grab it.
                 projectID = userTranscription;
                 theProjectID = projectID;
+                updateURL("");
                 var url = "getProjectTPENServlet?projectID="+projectID;
                 $.ajax({
                     url: url,
@@ -432,11 +434,22 @@
                         var url  = ""; 
                         var currentUser = activeProject.cuser;
                         var leaders = activeProject.ls_leader;
+                        tpenFolios = activeProject.ls_fs;
                         try{
                             leaders = JSON.parse(leaders);
                         }
                         catch(e){ //may not need to do this here
                             $("#transTemplateLoading p").html("Something went wrong. We could not get the information about the leader for this project.  Refresh the page to try again.");
+                            $('.transLoader img').attr('src',"images/missingImage.png");
+                            //$(".trexHead").show();
+                            //$("#genericIssue").show(1000);
+                            //return false;                
+                        }
+                        try{
+                            tpenFolios = JSON.parse(tpenFolios);
+                        }
+                        catch(e){ //may not need to do this here
+                            $("#transTemplateLoading p").html("Something went wrong. We could not get the information about the folios for this project.  Refresh the page to try again.");
                             $('.transLoader img').attr('src',"images/missingImage.png");
                             //$(".trexHead").show();
                             //$("#genericIssue").show(1000);
@@ -479,6 +492,14 @@
                                     if(projectData.sequences[0] !== undefined && projectData.sequences[0].canvases !== undefined
                                     && projectData.sequences[0].canvases.length > 0){
                                         transcriptionFolios = projectData.sequences[0].canvases;
+                                        if(pageToLoad){
+                                            $.each(tpenFolios, function(i){
+                                                if(this.folioNumber === parseInt(pageToLoad)){
+                                                    currentFolio = i + 1;
+                                                    return true;
+                                                }
+                                            });
+                                        }
                                         scrubFolios();
                                         var count = 1;
                                         $.each(transcriptionFolios, function(){
@@ -499,7 +520,7 @@
                                                 annoLists.push("noList");
                                             }
                                         });
-                                        loadTranscriptionCanvas(transcriptionFolios[0],"");
+                                        loadTranscriptionCanvas(transcriptionFolios[currentFolio - 1],"");
                                         var projectTitle = projectData.label;
                                         $("#trimTitle").html(projectTitle);
                                         $("#trimTitle").attr("title", projectTitle);
@@ -628,6 +649,7 @@
                     }
                     if(localProject){
                         //get project info first, get manifest out of it, populate
+                        updateURL("");
                         var url = "getProjectTPENServlet?projectID="+projectID;
                         $.ajax({
                             url: url,
@@ -667,6 +689,14 @@
                                             if(projectData.sequences[0] !== undefined && projectData.sequences[0].canvases !== undefined
                                             && projectData.sequences[0].canvases.length > 0){
                                                 transcriptionFolios = projectData.sequences[0].canvases;
+                                                if(pageToLoad){
+                                                    $.each(tpenFolios, function(i){
+                                                        if(this.folioNumber === parseInt(pageToLoad)){
+                                                            currentFolio = i + 1;
+                                                            return true;
+                                                        }
+                                                    });
+                                                }
                                                 scrubFolios();
                                                 var count = 1;
 
@@ -688,7 +718,7 @@
                                                         annoLists.push("noList");
                                                     }
                                                 });
-                                                loadTranscriptionCanvas(transcriptionFolios[0],"");
+                                                loadTranscriptionCanvas(transcriptionFolios[currentFolio - 1],"");
                                                 var projectTitle = projectData.label;
                                                 $("#trimTitle").html(projectTitle);
                                                 $("#trimTitle").attr("title", projectTitle);$('#transcriptionTemplate').css("display", "inline-block");
@@ -918,6 +948,7 @@
                 }
             }
             linesToScreen(lines);
+            updateURL("p");
             $("#transTemplateLoading").hide();
             $("#transcriptionTemplate").show();
         }
@@ -1009,8 +1040,8 @@
                         $("#imgBottom").css("height", "inherit");
                         $("#parsingBtn").css("box-shadow", "0px 0px 6px 5px yellow");
                     }
+                    updateURL("p");
                 });
-            
         }
     }
     
@@ -2493,6 +2524,8 @@ function splitPage(event, tool) {
         }
         else{
             cleanupTranscriptlets(true);
+            //var newURL = "newberryTrans.html?projectID="+getURLVariable('projectID')+"&p="+getURLVariable('p')+"&liveTool=parsing";
+            //window.location.href= newURL;
         }
     }
     
@@ -4180,6 +4213,57 @@ function loadIframes(){
             
         };
 
+    }
+    
+    function getURLVariable(variable)
+    {
+        var query = window.location.search.substring(1);
+        var vars = query.split("&");
+        for (var i=0;i<vars.length;i++) {
+                var pair = vars[i].split("=");
+                if(pair[0] == variable){return pair[1];}
+        }
+        return(false);
+    }
+
+    function replaceURLVariable(variable, value){
+           var query = window.location.search.substring(1);
+           var location = window.location.origin + window.location.pathname;
+           var vars = query.split("&");
+           var variables = "";
+           for (var i=0;i<vars.length;i++) {
+            var pair = vars[i].split("=");
+            if(pair[0] == variable){
+                var newVar = pair[0]+"="+value;
+                vars[i] = newVar;
+                break;
+            }
+           }
+           variables = vars.toString();
+           variables = variables.replace(/,/g, "&");
+           return(location + "?"+variables);
+    }
+    
+    function updateURL(piece, classic){
+        var toAddressBar = document.location.href;
+        //If nothing is passed in, just ensure the projectID is there.
+        //console.log("does URL contain projectID?        "+getURLVariable("projectID"));
+        if(!getURLVariable("projectID")){
+            toAddressBar = "?projectID="+projectID;
+        }
+        //Any other variable will need to be replaced with its new value
+        if(piece === "p"){
+            if(!getURLVariable("p")){
+                toAddressBar += "&p=" + tpenFolios[currentFolio-1].folioNumber;
+            }
+            else{
+                toAddressBar = replaceURLVariable("p", tpenFolios[currentFolio-1].folioNumber);
+            }
+            var relocator = "buttons.jsp?p="+tpenFolios[currentFolio-1].folioNumber+"&projectID="+projectID;
+            $(".editButtons").attr("href", relocator);
+        }  
+        
+        window.history.pushState("", "T&#8209;PEN Transcription", toAddressBar);
     }
     
     /**
