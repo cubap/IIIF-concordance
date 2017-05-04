@@ -2350,10 +2350,10 @@ function splitPage(event, tool) {
         $("#helpContainer").height(Page.height()-$("#helpContainer").offset().top);
         resize = false; //interupts parsing resizing funcitonaliy, dont need to resize for this anyway.
     }
-    else if(tool === "parsing" || liveTool === "parsing"){
+    else if(tool === "parsing"){
         resize=false;
     }
-    else if(tool === "preview" || liveTool === "preview"){
+    else if(tool === "preview"){
         $("#previewSplit").show().height(Page.height()-$("#previewSplit").offset().top).scrollTop(0); // header space
         $("#previewDiv").height(Page.height()-$("#previewDiv").offset().top);
         $(".split img").css("max-width", splitWidthAdjustment);
@@ -4194,7 +4194,7 @@ function resetImageTools(newPage){
     if($("button[which='invert']").hasClass("selected")){
         toggleFilter("invert");
     }
-    if($("#showTheLines").hasClass("selected")){
+    if(!$("#showTheLines").hasClass("selected")){
         toggleLineMarkers();
     }
     if(!$("#showTheLabels").hasClass("selected")){
