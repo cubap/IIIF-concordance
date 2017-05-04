@@ -2156,6 +2156,10 @@ function toggleSpecialChars(event){
         else{
             $(".centerInterface").css("text-align", "left"); //.css("background-color", "#e1f4fe")
         }
+        if(newCanvasHeight > window.innerHeight -40){ //never let the bottom of the image go off screen.
+            newCanvasHeight = window.innerHeight - 40;
+            newCanvasWidth = ratio * newCanvasHeight;
+        }
         $("#transcriptionTemplate").css("width","auto");
         $("#transcriptionCanvas").css("height", newCanvasHeight + "px");
         $("#transcriptionCanvas").css("width", newCanvasWidth + "px");
