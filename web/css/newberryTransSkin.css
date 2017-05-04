@@ -1651,7 +1651,7 @@ p{
     border: none !important;
 }
 
-#fullpageSplitCanvas {
+#fullPageSplitCanvas {
     height: auto;
     position: relative;
     display: block;
