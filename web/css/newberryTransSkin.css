@@ -1650,11 +1650,13 @@ p{
 .lineColIndicator.fullP{
     border: none !important;
 }
-#fullPageSplitCanvas{
-    height:auto;
-    position:relative;
+
+#fullpageSplitCanvas {
+    height: auto;
+    position: relative;
     display: block;
-    width:auto;
+    width: auto;
+    margin: 0px auto;
 }
 .activeTools{
     height: 190px !important;
