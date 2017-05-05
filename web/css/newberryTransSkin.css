@@ -202,6 +202,7 @@ textarea:focus{
 .activeLine{
     box-shadow: 0px 0px 15px 8px #FFF;
     display: block !important;
+    /*opacity: 1 !important;*/
 }
 .specialCharacters, .xmlTags{
     position: relative;
@@ -1619,12 +1620,23 @@ p{
     border:1px solid black;
     display: block;
 }
-.lineColIndicator{
+/*.lineColIndicator{
     z-index:10; 
     position: absolute;
     border:1px solid white;
     font-size:.8em;
     color:white;
+}*/
+.lineColIndicator{
+    z-index: 10;
+    position: absolute;
+    border: 2px solid white;
+    font-size: .8em;
+    color: white;
+    transition: box-shadow .5s;
+    box-sizing: border-box;
+    opacity: .36;
+
 }
 .lineColIndicatorArea{
     position: absolute;
@@ -1636,7 +1648,7 @@ p{
     right: 0px;
     border-left:1px solid rgba(255,255,255,.2);
     padding: 0px 8px;
-    height:100%
+    height:100%;
 }
 .lineColOnLine:hover{
     cursor: default;
@@ -1648,7 +1660,7 @@ p{
     color: transparent !important;
 }
 .lineColIndicator.fullP{
-    border: none !important;
+    display: block !important;
 }
 
 #fullPageSplitCanvas {

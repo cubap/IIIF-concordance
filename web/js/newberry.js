@@ -3065,7 +3065,7 @@ function markerColors(){
     var oneToChange = colorThisTime.lastIndexOf(")") - 2;
     var borderColor = colorThisTime.substr(0, oneToChange) + '.2' + colorThisTime.substr(oneToChange + 1);
     var lineColor = colorThisTime.replace(".4", "1"); //make this color opacity 100
-    $('.lineColIndicator').css('border', '1px solid '+lineColor);
+    $('.lineColIndicator').css('border', '2px solid '+lineColor);
     $('.lineColOnLine').css({'border-left':'1px solid '+borderColor, 'color':lineColor});
     $('.activeLine').css('box-shadow', '0px 0px 15px 8px '+colorThisTime); //keep this color opacity .4 until imgTop is hovered.
 }
