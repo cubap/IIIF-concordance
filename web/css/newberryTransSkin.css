@@ -344,11 +344,22 @@ textarea:focus{
       width:100%;
       z-index:1;
       max-width: 100%;
+      
     }
-
+    
+    #imgTop{
+        transition: width .5s;
+    }
     #imgBottom {
         height:100%;
         z-index:2;
+        transition: width .5s;
+    }
+    #imgTop img{
+        transition: left .25s, top .25s, width .25s, max-width .25s;
+    }
+    #imgBottom img{
+        transition: left .25s, width .25s, max-width .25s;
     }
 
     #imgTop img,#imgBottom img {
@@ -360,6 +371,7 @@ textarea:focus{
         max-height: none !important; 
         z-index:inherit;
         max-width: 100%;
+        
     }
     
     #transWorkspace textarea {
@@ -492,9 +504,7 @@ textarea:focus{
        -o-transition: left .25s, top .25s, width .25s;
        transition: left .25s, top .25s, width .25s;
    }*/
-   .lineColIndicator{
-        transition: box-shadow .25s;
-    }
+
 
    .transcriptlet,#blogLink {
        -webkit-transition: opacity .25s, top .25s;
@@ -530,7 +540,7 @@ textarea:focus{
         -o-transition: opacity .25s;
         transition: opacity .25s;
    }
-   .ui-resizable:not(.ui-resizable-disabled),.noTransition,.lineColIndicatorArea {
+   .ui-resizable:not(.ui-resizable-disabled),.lineColIndicatorArea {
         -webkit-transition: all 0s !important;
         -moz-transition: all 0s !important;
         -o-transition: all 0s !important;
@@ -1633,7 +1643,7 @@ p{
     border: 2px solid white;
     font-size: .8em;
     color: white;
-    transition: box-shadow .5s;
+    transition: box-shadow .5s, opacity .5s, border .5s;
     box-sizing: border-box;
     opacity: .36;
 
