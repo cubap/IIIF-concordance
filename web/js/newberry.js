@@ -1615,17 +1615,18 @@ function updatePresentation(transcriptlet) {
           if($('.activeLine').hasClass('linesHidden')){
               $('.activeLine').hide();
           }
+          var activeColor = colorThisTime.replace(".4", "1");
           $(".lineColIndicator")
             .removeClass('activeLine')
             .css({
                 "background-color":"transparent",
                 "opacity" : ".36",
                 "box-shadow": "none",
-                "border" : "2px solid "+colorThisTime
+                "border" : "2px solid "+activeColor
             });
           lineToMakeActive.addClass("activeLine");
           //use the active line color to give the active line a little background color to make it stand out if the box shadow is not enough.
-          var activeColor = colorThisTime.replace(".4", "1");
+          
           lineToMakeActive.css({
                 "box-shadow" : "0px 0px 15px 8px "+activeColor,
                 "border" : "2px solid "+activeColor,
@@ -2349,12 +2350,12 @@ function toggleSpecialChars(event){
         var adjustedHeightForFullscreen = (originalCanvasHeight2 / originalCanvasWidth2) * screenWidth;
         $("#transcriptionCanvas").css("height", adjustedHeightForFullscreen+"px");
         $(".lineColIndicatorArea").css("height", adjustedHeightForFullscreen+"px");
-        $("#imgTop, #imgBottom").hover(function(){
-            var color = colorThisTime.replace(".4", "1");
-            $('.activeLine').css('box-shadow', '0px 0px 15px 8px '+color);
-        }, function(){
-            $('.activeLine').css('box-shadow', '0px 0px 15px 8px '+colorThisTime);
-        });
+//        $("#imgTop, #imgBottom").hover(function(){
+//            var color = colorThisTime.replace(".4", "1");
+//            $('.activeLine').css('box-shadow', '0px 0px 15px 8px '+color);
+//        }, function(){
+//            $('.activeLine').css('box-shadow', '0px 0px 15px 8px '+colorThisTime);
+//        });
         $.each($(".lineColOnLine"),function(){
               $(this).css("line-height", $(this).height()+"px");
           });
@@ -3072,7 +3073,7 @@ function markerColors(){
     var lineColor = colorThisTime.replace(".4", "1"); //make this color opacity 100
     $('.lineColIndicator').css('border', '2px solid '+lineColor);
     $('.lineColOnLine').css({'border-left':'1px solid '+borderColor, 'color':lineColor});
-    $('.activeLine').css('box-shadow', '0px 0px 15px 8px '+colorThisTime); //keep this color opacity .4 until imgTop is hovered.
+    $('.activeLine').css('box-shadow', '0px 0px 15px 8px '+lineColor); //keep this color opacity .4 until imgTop is hovered.
 }
 
 /* Toggle the line/column indicators in the transcription interface. (A1, A2...) */
