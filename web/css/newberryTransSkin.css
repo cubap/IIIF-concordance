@@ -202,7 +202,7 @@ textarea:focus{
 .activeLine{
     box-shadow: 0px 0px 15px 8px #FFF;
     display: block !important;
-    /*opacity: 1 !important;*/
+    opacity: .6;
 }
 .specialCharacters, .xmlTags{
     position: relative;

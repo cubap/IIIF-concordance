@@ -1615,17 +1615,22 @@ function updatePresentation(transcriptlet) {
           if($('.activeLine').hasClass('linesHidden')){
               $('.activeLine').hide();
           }
-          $(".lineColIndicator").removeClass('activeLine').css({
-              "box-shadow": "none",
-              "background-color":"transparent"
+          $(".lineColIndicator")
+            .removeClass('activeLine')
+            .css({
+                "background-color":"transparent",
+                "opacity" : ".36",
+                "box-shadow": "none",
+                "border" : "2px solid "+colorThisTime
             });
           lineToMakeActive.addClass("activeLine");
           //use the active line color to give the active line a little background color to make it stand out if the box shadow is not enough.
-          var activeLineColor = colorThisTime.replace(".4", ".2");
-          $('.activeLine').css({
-              'box-shadow': '0px 0px 15px 8px '+colorThisTime
-              //'background-color':activeLineColor
-          });
+          var activeColor = colorThisTime.replace(".4", "1");
+          lineToMakeActive.css({
+                "box-shadow" : "0px 0px 15px 8px "+activeColor,
+                "border" : "2px solid "+activeColor,
+                "opacity" : ".6"
+            });
           
     }  
    
