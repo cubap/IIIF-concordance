@@ -656,17 +656,40 @@
                             type:"GET",
                             success: function(activeProject){
                                 var projectTools = activeProject.projectTool;
+                                var currentUser = activeProject.cuser;
+                                var leaders = activeProject.ls_leader;
+                                tpenFolios = activeProject.ls_fs;
                                 try{
-                                    projectTools = JSON.parse(projectTools);
+                                    leaders = JSON.parse(leaders);
                                 }
                                 catch(e){ //may not need to do this here
-                                    $("#transTemplateLoading p").html("Something went wrong. We could not get the tools for this project.  Refresh the page to try again.");
+                                    $("#transTemplateLoading p").html("Something went wrong. We could not get the information about the leader for this project.  Refresh the page to try again.");
                                     $('.transLoader img').attr('src',"images/missingImage.png");
                                     //$(".trexHead").show();
                                     //$("#genericIssue").show(1000);
-                                    return false;                
+                                    //return false;                
                                 }
-                                
+                                try{
+                                    tpenFolios = JSON.parse(tpenFolios);
+                                }
+                                catch(e){ //may not need to do this here
+                                    $("#transTemplateLoading p").html("Something went wrong. We could not get the information about the folios for this project.  Refresh the page to try again.");
+                                    $('.transLoader img').attr('src',"images/missingImage.png");
+                                    //$(".trexHead").show();
+                                    //$("#genericIssue").show(1000);
+                                    //return false;                
+                                }
+                                $.each(leaders, function(){
+                                    if(this.UID === parseInt(currentUser)){
+                                        //console.log("This user is a leader.");
+                                        userIsAdmin = true;
+                                        $("#parsingBtn").show();
+                                        var message = $('<span>This canvas has no lines.  If you would like to create lines</span> <span style="color: blue;" onclick="hideWorkspaceForParsing()">click here</span>.\n\
+                                        Otherwise, you can <span style="color: red;" onclick="$(\'#noLineWarning\').hide()">dismiss this message</span>.');
+                                        $("#noLineConfirmation").empty();
+                                        $("#noLineConfirmation").append(message);
+                                    }
+                                });
                                 var count = 0;
                                 var url  = "";
                                 if(activeProject.ls_ms[0] !== undefined){
@@ -2340,7 +2363,6 @@ function splitPage(event, tool) {
     var resize = true;
     var newCanvasWidth = window.innerWidth * .55;
     var ratio = originalCanvasWidth / originalCanvasHeight;
-    var newCanvasHeight = 1 / ratio * newCanvasWidth;
     var fullPageMaxHeight = window.innerHeight - 125; //100 comes from buttons above image and topTrim
     $("#transcriptionTemplate").css({
         "width"   :   "55%",
@@ -2348,8 +2370,7 @@ function splitPage(event, tool) {
     });
     $("#templateResizeBar").show();
     var splitWidthAdjustment = window.innerWidth - ($("#transcriptionTemplate").width() + 35) + "px";
-    var newImgBtmTop = imgBottomPositionRatio * newCanvasHeight;
-    var newImgTopTop = imgTopPositionRatio * newCanvasHeight;
+    
     $("#fullScreenBtn")
         .fadeIn(250);
         $('.split').hide();
@@ -2398,6 +2419,7 @@ function splitPage(event, tool) {
         $("#fullPageSplitCanvas").css("max-width", splitWidthAdjustment); //If we want to keep the full image on page, it cant be taller than that.
         $("#fullPageSplitCanvas").height($("#fullPageImg").height());
         $("#fullPageSplitCanvas").width($("#fullPageImg").width());
+        
         $(".fullP").each(function(i){
             this.title = $("#transcriptlet_"+i+" .theText").text();
         })
@@ -2412,6 +2434,9 @@ function splitPage(event, tool) {
         
     }
     liveTool = tool;
+    var newCanvasHeight = 1 / ratio * newCanvasWidth;
+    var newImgBtmTop = imgBottomPositionRatio * newCanvasHeight;
+    var newImgTopTop = imgTopPositionRatio * newCanvasHeight;
     $("#transcriptionCanvas").css({
         "width"   :   newCanvasWidth + "px",
         "height"   :   newCanvasHeight + "px"
@@ -3063,7 +3088,7 @@ function toggleLineMarkers(){
 
 /* Toggle the drawn lines in the transcription interface. */
 function toggleLineCol(){
-    if ($('.lineColOnLine:first').is(":visible")){
+    if ($('.lineColOnLine:first').css("display") === "block"){
         $('.lineColOnLine').hide();
         $("#showTheLabels").removeClass("selected");
     }
