@@ -1858,7 +1858,6 @@ button,.navigation, #contribution,
     -ms-user-select: none;
     user-select: none;
 }
-
 /* Flexible classing */
 .flex-container{
     display: flex;
@@ -1996,3 +1995,9 @@ a.editButtons {
     width: 100%;
     text-align: center;
 }*/
+.ui-resizable:not(.ui-resizable-disabled),.noTransition,.lineColIndicatorArea {
+    -webkit-transition: all 0s !important;
+    -moz-transition: all 0s !important;
+    -o-transition: all 0s !important;
+    transition: all 0s !important;
+}
