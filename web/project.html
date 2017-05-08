@@ -12,7 +12,9 @@ Open the project management section for a given project ID.
         <script type="text/javascript" src="js/newberry.js"></script>
         <link rel="stylesheet" href="css/newberryTransSkin.css" type="text/css">
         <style type="text/css" >
-            
+            #backToTranscribe{
+                color:black;
+            }
             #folioManagement{
                 display: none;
                 position: absolute;
@@ -402,7 +404,7 @@ Open the project management section for a given project ID.
                         <li><a title="Switch between projects" href="#tabs-1">Projects</a></li>
 <!--                        <li><a title="Alter linebreaks and parsings" href="#tabs-2">Manuscripts</a></li>-->
                         <li><a title="Project Options" href="#tabs-4">Options</a></li>
-                        <li><a id="backToTranscribe" title="Project Options" href="">Transcribe this Project</a></li>
+                        <li><a title="Go To Transcribing" href="#tabs-6">Transcribe this Project</a></li>
 <!--                        <li><a title="Export Options" href="#tabs-5">Export</a></li>-->
                     </ul>
                     <div id="tabs-1">
@@ -411,7 +413,7 @@ Open the project management section for a given project ID.
                                 <h3>Project Selection</h3>
                                 <p id="publicProjectNotice" class="ui-state-highlight">You are viewing public project, <span id="publicProjectName" class="loud bold">THIS PROJECT's NAME</span>. To manage one of your own projects, click below.</p>
                                 
-                                <p id="activeProject">Active project is <span id="activeProjectName" class="loud"></span>.</p>
+                                <p id="activeProject">Active project is <span class="activeProject" class="loud"></span>.</p>
                                 <p> To manage a different project, click one below.</p>
                                 <p>To delete a project click the 'x'.  You must be an administrator for the project.</p>
                                 <h5>All Your Projects</h5>
@@ -606,7 +608,7 @@ Open the project management section for a given project ID.
 
                                         <div class="noBottom" id="characterReview"><h4 class="noBottom">Current Special Characters</h4>
                                             <p>Add a character by clicking 'Add A Character' and entering its numeric unicode value.  </p>
-                                            <p>Rename by clicking on an entry below. Click the "X" icon to remove a button from the list.</p>
+                                            <p>Rename by right-clicking on an entry below. Click the "X" icon to remove a button from the list.</p>
                                             <ul class="specialCharacters"></ul>
                                         </div>
                                     </div>
@@ -619,7 +621,7 @@ Open the project management section for a given project ID.
                                     <div class="right" style="width:440px;">
                                         <h3>Custom XML Tags</h3>
                                         <p>Add a tag without &lsaquo;angle brackets&rsaquo; by clicking 'Add A Tag' below. </p>
-                                        <p>Rename by clicking on an entry below. Click the "X" icon to remove a button from the list.</p>
+                                        <p>Rename by right-clicking on an entry below. Click the "X" icon to remove a button from the list.</p>
                                         <div id="xmlReview"><h4 class="noBottom">Current Tags</h4>
                                             <ul class="xmlTags"></ul>
                                         </div>
@@ -630,6 +632,11 @@ Open the project management section for a given project ID.
                             <input type="hidden" name="selecTab" id="selecTab" value="0"/>
                             </li>
                         </ul>
+                    </div>
+                    <div id="tabs-6">
+                        <p>The project that is currently active is <span class="activeProject"></span></p>
+                        <p>If you would like to go to the transcribing interface, click the link below.</p>
+                        <a id="backToTranscribe"  href="">Transcribe This Project</a>
                     </div>
                 </div>
             </div>
@@ -710,7 +717,7 @@ function getPreloadInformation(){
     $(".returnToTrans").attr("href","newberryTrans.html?projectID="+projectID);
     currentProjectID = parseInt(projectID);
     $("#activeProjectID").val(currentProjectID);
-    $("#backToTranscribe").attr("href", "transcription.html?projectID="+currentProjectID);
+    $("#backToTranscribe").attr("href", "newberryTrans.html?projectID="+currentProjectID);
     $.ajax({
         url: url,
         type: "GET",
@@ -855,7 +862,7 @@ function populateEditableXML(xmlTags){
     for (var tag = 0; tag < xmlTags.length; tag++){ 
         var newTagBtn = xmlTags[tag];
         if(newTagBtn.tag!=="" && newTagBtn.tag!==" "){
-             tagsInOrder.push("<li class='projectTag' position='"+newTagBtn.position+"' onclick='editxmlcnfrm("+newTagBtn.position+", event);'>"+newTagBtn.tag+"\n\
+             tagsInOrder.push("<li class='projectTag' position='"+newTagBtn.position+"' oncontextmenu='editxmlcnfrm("+newTagBtn.position+", event);'>"+newTagBtn.tag+"\n\
                 <span class='removechar' onclick=\"removetagcnfrm("+newTagBtn.position+");\">X</span></li>");
         }
     }
@@ -876,7 +883,7 @@ function populateEditableChars(specialCharacters){
             else{
                 var keyVal = thisChar.key;
                 var position2 = parseInt(thisChar.position);
-                var newCharacter = $("<li position='"+position2+"' onclick='editcharcnfrm("+position2+", event);'  class='character'>&#"+keyVal+";<span class='removechar' onclick='removecharcnfrm("+position2+");'>X</span></li>");
+                var newCharacter = $("<li position='"+position2+"' oncontextmenu='editcharcnfrm("+position2+", event);'  class='character'>&#"+keyVal+";<span class='removechar' onclick='removecharcnfrm("+position2+");'>X</span></li>");
                 if(position2-1 >= 0 && (position2-1) < specialCharacters.length){
                     speCharactersInOrder[position2-1] = newCharacter; 
                 }
@@ -928,19 +935,28 @@ function populateEditableChars(specialCharacters){
     function addnewtag(){
         var tag = $("#newProjectTag").val(); //move out of editcharcnfrm into DOM
         var description = $("#newProjectTagDescr").val(); //move out of editcharcnfrm into DOM
-        var position = parseInt($(".projectTag:last").attr("position"))+1;
+        var position = 1;
+        if($(".projectTag:last").length){
+            position = parseInt($(".projectTag:last").attr("position"))+1;
+        }
         var url = "saveNewProjectXML";
         var params = {"projectID":currentProjectID, "position":position, "tag":tag, "description":description};
         $.post(url, params, function(data){
             var newBtn = $(data);
             $("#newtagpopover").remove();
-            position -=1;
-            $(".xmlTags").children("li[position='"+position+"']").after(newBtn);
+            position -= 1;
+            if(position > 0){
+                $(".xmlTags").children("li[position='"+position+"']").after(newBtn);
+            }
+            else{
+                $("ul.xmlTags").append(newBtn);
+            }
         });
     }
     
     function editcharcnfrm(position, event){
         if (event.target.tagName === "span") return false;
+        event.preventDefault();
         var x = event.pageX;
         var y = event.pageY;
         $("<div class='optionCnfrm' id='editcharpopover'>\n\
@@ -962,6 +978,7 @@ function populateEditableChars(specialCharacters){
     
     function editxmlcnfrm(position, event){
         if (event.target.tagName === "span") return false;
+        event.preventDefault();
         var x = event.pageX;
         var y = event.pageY;       
         $("<div class='optionCnfrm' id='editxmlpopover'>\n\
@@ -987,7 +1004,7 @@ function populateEditableChars(specialCharacters){
         var params = {"projectID":currentProjectID, "position":position, "key":key};
         $.post(url, params, function(data){
             $("#editcharpopover").remove();
-            var newCharacter = $("<li position='"+position+"' onclick=\"editcharcnfrm('"+position+"', event);\"  class='character'>&#"+key+"; <span class='removechar' onclick=\"removecharcnfrm("+position+");\">X</span></li>");
+            var newCharacter = $("<li position='"+position+"' oncontextmen=\"editcharcnfrm('"+position+"', event);\"  class='character'>&#"+key+"; <span class='removechar' onclick=\"removecharcnfrm("+position+");\">X</span></li>");
             $(".specialCharacters").children("li[position='"+position+"']").replaceWith(newCharacter);
         });
     }
@@ -1006,7 +1023,7 @@ function populateEditableChars(specialCharacters){
         var params = {"projectID":currentProjectID, "position":position, "tag":tag};
         $.post(url, params, function(data){
             $("#editxmlpopover").remove();
-            var newxml = $("<li class='projectTag' position='"+position+"' onclick=\"editxmlcnfrm("+position+", event);\">"+tag+"<span class='removechar' onclick=\"removetagcnfrm("+position+");\">X</span></li>");
+            var newxml = $("<li class='projectTag' position='"+position+"' oncontextmenu=\"editxmlcnfrm("+position+", event);\">"+tag+"<span class='removechar' onclick=\"removetagcnfrm("+position+");\">X</span></li>");
             $(".xmlTags").children("li[position='"+position+"']").replaceWith(newxml);
         });
     }
@@ -1141,6 +1158,7 @@ function getActiveProjectMetadata(currentProjectID){
             projectInformation = JSON.parse(projectInformation);
             //console.log("get project information");
             //console.log(projectInformation);
+            
             var projectTitle = projectInformation.title;
             var projectSubtitle = projectInformation.subtitle;
             var msIdentifier = projectInformation.msIdentifier;
@@ -1162,12 +1180,12 @@ function getActiveProjectMetadata(currentProjectID){
             
             //for all non-input areas
             $('.metadataTitle').html(projectTitle);
-            $('#activeProjectName').html(projectTitle);
+            $('.activeProject').html(projectTitle);
             $('.metadataSubtitle').html(projectSubtitle);
             $('.metadataMSID').html(msIdentifier);
             $('.metadataMSIDnum').html(msIDNumber);
             $('.metadataCollection').html(msCollection);
-            $('.metadataSettlement').html(msSettlement)
+            $('.metadataSettlement').html(msSettlement);
             $('.metadataRepository').html(msRepository);
             $('.metadataSubject').html(subject);
             $('.metadataAuthor').html(author);
@@ -1178,12 +1196,12 @@ function getActiveProjectMetadata(currentProjectID){
             
             //for all input areas.  
             $('.metadataTitle').val(projectTitle);
-            $('#activeProjectName').val(projectTitle);
+            //$('#activeProjectName').val(projectTitle);
             $('.metadataSubtitle').val(projectSubtitle)
             $('.metadataMSID').val(msIdentifier);
             $('.metadataMSIDnum').val(msIDNumber);
             $('.metadataCollection').val(msCollection);
-            $('.metadataSettlement').val(msSettlement)
+            $('.metadataSettlement').val(msSettlement);
             $('.metadataRepository').val(msRepository);
             $('.metadataSubject').val(subject);
             $('.metadataAuthor').val(author);

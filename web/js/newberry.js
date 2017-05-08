@@ -341,6 +341,9 @@
             return false;                
         }
         var speCharactersInOrder = new Array(specialCharacters.length);
+        if(!specialCharacters || specialCharacters.length === 0 || specialCharacters[0] === "[]"){
+            $("#toggleXML").hide();
+        }
         for (var char = 0; char < specialCharacters.length; char++){
             var thisChar = specialCharacters[char];
             if (thisChar == ""){ }
@@ -366,35 +369,51 @@
     }
 
     function populateXML(xmlTags){
-        xmlTags = xmlTags.split(","); 
+        try{
+            xmlTags = JSON.parse(xmlTags);
+        }
+        catch(e){ //may not need to do this here
+            $("#transTemplateLoading p").html("Something went wrong. We could not get the information about the leader for this project.  Refresh the page to try again.");
+            $('.transLoader img').attr('src',"images/missingImage.png");
+            $(".trexHead").show();
+            $("#genericIssue").show(1000);
+            return false;                
+        }
         var tagsInOrder = [];
+        if(!xmlTags || xmlTags.length === 0 || xmlTags[0] === "[]"){
+            $("#toggleXML").hide();
+        }
         for (var tagIndex = 0; tagIndex < xmlTags.length; tagIndex++){
             var newTagBtn = "";
             var tagName = xmlTags[tagIndex].tag;
             if(tagName && tagName!== "" && tagName !== " "){
-                var fullTag = "";
+                var fullTag = "<"+tagName+" ";
                 var xmlTagObject = xmlTags[tagIndex];
                 var parametersArray = xmlTagObject.parameters; //This is a string array of properties, paramater1-parameter5 out of the db.
-                if (parametersArray[0] != null) {
-                    fullTag += " " + parametersArray[0];
+                if(parametersArray){
+                    if (parametersArray[0] != null) {
+                        fullTag += " " + parametersArray[0];
+                    }
+                    if (parametersArray[1] != null) {
+                       fullTag += " " + parametersArray[1];
+                    }
+                    if (parametersArray[2] != null) {
+                       fullTag += " " + parametersArray[2];
+                    }
+                    if (parametersArray[3] != null) {
+                       fullTag += " " + parametersArray[3];
+                    }
+                    if (parametersArray[4] != null) {
+                       fullTag += " " + parametersArray[4];
+                    }
+                    
                 }
-                if (parametersArray[1] != null) {
-                   fullTag += " " + parametersArray[1];
-                }
-                if (parametersArray[2] != null) {
-                   fullTag += " " + parametersArray[2];
-                }
-                if (parametersArray[3] != null) {
-                   fullTag += " " + parametersArray[3];
-                }
-                if (parametersArray[4] != null) {
-                   fullTag += " " + parametersArray[4];
-                }
-                if(fullTag !== ""){
-                    fullTag = "<"+tagName+" "+fullTag+">";
-                }
+                fullTag += ">";
                 var description = xmlTagObject.description;
-                newTagBtn = "<div onclick=\"insertAtCursor('" + tagName + "', '', '" + fullTag + "',false);\" class='xmlTag lookLikeButtons' title='" + fullTag + "'>" + description + "</div>"; //onclick=\"insertAtCursor('" + tagName + "', '', '" + fullTag + "');\">
+                if(description == undefined || description == ""){
+                    description = tagName;
+                }
+                newTagBtn = "<div onclick=\"insertAtCursor('"+tagName+"', '', '" + fullTag + "',false);\" class='xmlTag lookLikeButtons' title='" + fullTag + "'>" + description + "</div>"; //onclick=\"insertAtCursor('" + tagName + "', '', '" + fullTag + "');\">
                 var button = $(newTagBtn);
                 $(".xmlTags").append(button);
             }
@@ -554,7 +573,7 @@
                         }
                         populateSpecialCharacters(activeProject.projectButtons);
                         populateXML(activeProject.xml);
-                        if(projectTools.length){
+                        if(projectTools.length && projectTools!=="[]"){
                             $.each(projectTools, function(){
                                 if(count < 4){ //allows 5 tools.  
                                     var splitHeight = window.innerHeight + "px";
@@ -2405,7 +2424,7 @@ function splitPage(event, tool) {
         $("#transcriptionTemplate").css("width", Page.width()-520 + "px");
         newCanvasWidth = Page.width()-520;
         $("#helpSplit").show().height(Page.height()-$("#helpSplit").offset().top).scrollTop(0); // header space
-        $("#helpContainer").height(Page.height()-$("#helpContainer").offset().top);
+        //$("#helpContainer").height(Page.height()-$("#helpContainer").offset().top);
         resize = false; //interupts parsing resizing funcitonaliy, dont need to resize for this anyway.
     }
     else if(tool === "parsing"){
@@ -2929,7 +2948,7 @@ function splitPage(event, tool) {
         var e = focusItem[1].find('textarea')[0];
         if(e!=null) {
             //Data.makeUnsaved();
-            return setCursorPosition(e,insertAtCursor(e,theChar,closeTag));
+            return setCursorPosition(e,insertAtCursor(theChar,closeTag,theChar,true));
         }
         return false;
     }
@@ -2957,48 +2976,109 @@ function splitPage(event, tool) {
         return wrapped;
     }
     
-    function insertAtCursor (myField, myValue, closingTag) {
-        //console.log("insert at cursor");
+    /**
+     * Inserts value at cursor location.
+     *
+     * @param myField element to insert into
+     * @param myValue value to insert
+     * @return int end of inserted value position
+     */
+     function insertAtCursor(myValue, closingTag, fullTag, specChar) {
+         //how do I pass the closing tag in?  How do i know if it exists?
+        var myField = focusItem[1].find('.theText')[0];
         var closeTag = (closingTag == undefined) ? "" : unescape(closingTag);
         //IE support
-        if (document.selection) {
-            myField.focus();
-            sel = document.selection.createRange();
-            sel.text = unescape(myValue);
-            //Preview.updateLine(myField);
-            return sel+unescape(myValue).length;
-        }
-        //MOZILLA/NETSCAPE support
-        else if (myField.selectionStart || myField.selectionStart == '0') {
-            var startPos = myField.selectionStart;
-            var endPos = myField.selectionEnd;
-            if (startPos != endPos) {
-                // something is selected, wrap it instead
-                var toWrap = myField.value.substring(startPos,endPos);
-                myField.value = myField.value.substring(0, startPos)
-                    + unescape(myValue)
-                    + toWrap
-                    + "</" + closeTag +">"
-                    + myField.value.substring(endPos, myField.value.length);
+        if(specChar){
+             if (document.selection) {
                 myField.focus();
-               // Preview.updateLine(myField);
-                var insertLength = startPos + unescape(myValue).length +
-                    toWrap.length + 3 + closeTag.length;
-                return "wrapped" + insertLength;              
-            } else {
-                myField.value = myField.value.substring(0, startPos)
-                    + unescape(myValue)
-                    + myField.value.substring(startPos, myField.value.length);
-                myField.focus();
-                return startPos+unescape(myValue).length;
+                sel = document.selection.createRange();
+                sel.text = unescape(myValue);
+                //console.log("Need to advance cursor pos by 1..." +sel.selectionStart, sel.selectionStart+1 );
+                sel.setSelectionRange(sel.selectionStart+1, sel.selectionStart+1);
+                //updateLine($(myField).parent(), false, true);
             }
-        } else {
-            myField.value += unescape(myValue);
-            myField.focus();
-            return myField.length;
+            //MOZILLA/NETSCAPE support
+            else if (myField.selectionStart || myField.selectionStart == '0') {
+                var startPosChar = myField.selectionStart;
+                var endPos = myField.selectionEnd;
+                var currentValue = myField.value;
+                currentValue = currentValue.slice(0, startPosChar) + unescape(myValue) + currentValue.slice(startPosChar);
+                myField.value = currentValue;
+                myField.focus();
+                //console.log("Need to advance cursor pos by 1..." +startPosChar, startPosChar+1 );
+                myField.setSelectionRange(startPosChar+1, startPosChar+1);
+                //updateLine($(myField).parent(), false, true);
+            }
+            else{
+                myField.value += myValue;
+            }
         }
-    }
+        else{ //its an xml tag
+            if (document.selection) {
+                if(fullTag === ""){
+                    fullTag = "<"+myValue+">";
+                }
+                myField.focus();
+                sel = document.selection.createRange();
+                sel.text = unescape(fullTag);
+                //console.log("Need to advance cursor pos by "+fullTag.length+"..."+sel.selectionStart, sel.selectionStart+fullTag.length);
+                sel.setSelectionRange(sel.selectionStart+fullTag.length, sel.selectionStart+fullTag.length);
+                //updateLine($(myField).parent(), false, true);
+                return sel+unescape(fullTag).length;
+            }
+            //MOZILLA/NETSCAPE support
+            else if (myField.selectionStart || myField.selectionStart == '0') {
+                var startPos = myField.selectionStart;
+                var endPos = myField.selectionEnd;
+                if(fullTag === ""){
+                        fullTag = "<" + myValue +">";
+                }
+                if (startPos !== endPos) {
 
+                    // something is selected, wrap it instead
+                    var toWrap = myField.value.substring(startPos,endPos);
+                    closeTag = "</" + myValue +">";
+                    myField.value =
+                          myField.value.substring(0, startPos)
+                        + unescape(fullTag)
+                        + toWrap
+                        + closeTag
+                        + myField.value.substring(endPos, myField.value.length);
+                    myField.focus();
+                    //console.log("Need to put cursor at end of highlighted spot... "+endPos);
+                    myField.setSelectionRange(endPos+fullTag.length+closeTag.length, endPos+fullTag.length+closeTag.length);
+                    //updateLine($(myField).parent(), false, true);
+
+                }
+                else {
+                    myField.value = myField.value.substring(0, startPos)
+                        + unescape(fullTag)
+                        + myField.value.substring(startPos);
+                    myField.focus();
+                    //console.log("Move caret to startPos + tag length... "+startPos, startPos + fullTag.length);
+                    myField.setSelectionRange(startPos+ fullTag.length, startPos+ fullTag.length);
+                    //updateLine($(myField).parent(), false, true);
+                    //closeAddedTag(myValue, fullTag);
+                    return startPos+unescape(fullTag).length;
+                }
+
+            }
+            else {
+                if(fullTag === ""){
+                    fullTag = "<"+myValue+">";
+                }
+                myField.value += unescape(fullTag);
+                myField.focus();
+                //console.log("Last case... "+myField.selectionStart, myField.selectionStart+ fullTag.length);
+                myField.setSelectionRange(myField.selectionStart+ fullTag.length, myField.selectionStart+ fullTag.length);
+                //updateLine($(myField).parent(), false, true);
+                //closeAddedTag(myValue, fullTag);
+                return myField.length;
+            }
+
+        }
+
+    }
 function toggleCharacters(){
     if($("#charactersPopin .character:first").is(":visible")){
         $("#charactersPopin .character").fadeOut(400);
@@ -4064,10 +4144,10 @@ function stopMagnify(){
  * @see newberryTrans.html to find the iframe elements.
  */
 function loadIframes(){
-    $.each($("iframe"), function(){
-        var src = $(this).attr("data_src");
-        $(this).attr("src",src);
-    });
+//    $.each($("iframe"), function(){
+//        var src = $(this).attr("data_src");
+//        $(this).attr("src",src);
+//    });
 }
 
 /* Clear the resize function attached to the window element. */
@@ -4290,7 +4370,7 @@ function loadIframes(){
             else{
                 toAddressBar = replaceURLVariable("p", tpenFolios[currentFolio-1].folioNumber);
             }
-            var relocator = "buttons.jsp?p="+tpenFolios[currentFolio-1].folioNumber+"&projectID="+projectID;
+            var relocator = "project.html?"+"projectID="+projectID;
             $(".editButtons").attr("href", relocator);
         }  
         

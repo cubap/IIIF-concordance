@@ -621,7 +621,7 @@ public class TagButton {
       PreparedStatement stmt = null;
       try {
          String toret = "";
-         String query = "select distinct(position) from projectbuttons where project=? order by position";
+         String query = "select * from projectbuttons where project=? order by position";
          j = DatabaseWrapper.getConnection();
          stmt = j.prepareStatement(query);
          stmt.setInt(1, projectID);
@@ -630,12 +630,14 @@ public class TagButton {
          JSONArray ja = new JSONArray();
          while (rs.next()) {
             int position = rs.getInt("position");
+            String description = rs.getString("description");
             try {
-               TagButton b = new TagButton(projectID, position, true);
+                TagButton b = new TagButton(projectID, position, true);
                 ctr++;
                 JSONObject jo = new JSONObject();
-                jo.element("position", rs.getInt("position"));
+                jo.element("position", position);
                 jo.element("tag", b.getButton());
+                jo.element("description", b.getDescription());
                 ja.add(jo);
             } catch (NullPointerException e) {
             }

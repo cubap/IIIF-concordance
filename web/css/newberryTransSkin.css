@@ -85,12 +85,12 @@ and open the template in the editor.
     right: 0;
     z-index: 6;
 }*/
+
 body{
     font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
-    overflow: hidden;
-    /*overflow-x: hidden;*/
-    height: 100vh;
+    max-height: 100vh;
     margin: 0;
+    overflow: hidden;
 }
 
 
@@ -1731,8 +1731,7 @@ p{
 #helpSplit{
     width: 500px;
     max-width: 500px;
-    overflow: hidden;
-    background-color: #e1f4fe;
+    background-color: white;
 }
 #helpHeaders{
     padding: 1em 0;
@@ -1766,8 +1765,8 @@ p{
 }
 #helpContainer{
     padding:0 2em;
-    overflow: auto;
-    margin-bottom: 8em;
+    overflow-y: scroll;
+    height: 100%;
 }
 .no-point{
     pointer-events: none;
