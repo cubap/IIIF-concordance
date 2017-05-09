@@ -302,13 +302,13 @@ textarea:focus{
     font-size: 20px;
 }*/
     
-  .transcriptlet {
+.transcriptlet {
     display:block;
     position:relative;
     visibility:visible;
     width:auto;
     /*top:19px;*/
-    /*      z-index:3;*/
+    /*z-index:3;*/
 }
 
     .transcriptletBefore {
@@ -324,10 +324,11 @@ textarea:focus{
         top:100px;
         visibility:hidden;
     }
+    
     #bookmark {
       -moz-box-shadow:0 0 15px #000;
       -webkit-box-shadow:0 0 15px #000;
-/*      border:thin solid #A64129;*/
+      /* border:thin solid #A64129; */
       box-shadow:0 0 15px white;/*#000*/
       height:0;
       left:-600%;
@@ -350,14 +351,17 @@ textarea:focus{
     #imgTop{
         transition: width .5s;
     }
+    
     #imgBottom {
         height:100%;
         z-index:2;
         transition: width .5s;
     }
+    
     #imgTop img{
         transition: left .25s, top .25s, width .25s, max-width .25s;
     }
+    
     #imgBottom img{
         transition: left .25s, width .25s, max-width .25s;
     }
@@ -370,8 +374,7 @@ textarea:focus{
         /*width:100%;*/
         max-height: none !important; 
         z-index:inherit;
-        max-width: 100%;
-        
+        max-width: 100%; 
     }
     
     #transWorkspace textarea {
@@ -1729,8 +1732,8 @@ p{
 
 /* The help area CSS */
 #helpSplit{
-    width: 500px;
-    max-width: 500px;
+    width: 520px;
+    max-width: 520px;
     background-color: white;
 }
 #helpHeaders{

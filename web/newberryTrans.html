@@ -349,7 +349,8 @@
                         <div id="ctrlColumnsInst" class="actions">
                             <h4 id="ctrlColumns" title="Make adjustments at the column level" class="clear-left">Column Controls</h4>
                                 <div class="parsingToolButtons">
-                                    <span id="createColumn" class="tpenButton" title="Create new columns by clicking and dragging" show="createColumnInst">Adjust or Create Columns</span>
+                                    <span id="createColumn" class="tpenButton" title="Create new columns by clicking and dragging" show="createColumnInst">Create Columns</span>
+                                    <span id="adjustColumn" class="tpenButton" title="Adjust created column and clicking and dragging a side" show="adjustColumnInst">Adjust Columns</span>
                                     <span id="destroyColumn" class="tpenButton" title="Remove an entire column and its data with a click" show="destroyColumnInst">Destroy Columns</span>
                                     <span id="clearColumns" class="tpenButton" title="Clear the page, removing all transcription information" show="clearColumnsInst">Clear Page</span>
                                 </div>
@@ -358,6 +359,10 @@
                                         <dl>
                                             <dt>New Column:</dt>
                                             <dd>Click and drag to place</dd><br>
+                                        </dl>
+                                    </div>
+                                    <div class="startHide" id="adjustColumnInst">
+                                        <dl>
                                             <dt>Adjustments:</dt>
                                             <dd>Drag the edges of an existing column</dd>
                                         </dl>
@@ -1316,7 +1321,6 @@
             .css("cursor","n-resize");
     
             $(".parsingToolButtons").children("span").click(function(event){
-               
                 var show = $(this).attr("show");
                 $("#imgTop").unbind("mousemove");
                 $("#imgTop").unbind("mousedown");
@@ -1327,11 +1331,12 @@
                 $(".parsing").unbind('mousemove');
                 $("#ruler1").hide();
                 $("#ruler2").hide();
-                
+                $(".parsingColumn").off();
+                $(".parsingColumn").unbind();
                 var thisID = $(this).attr("id");
                 $(".parsingToolButtons").find(".tpenButton").removeClass("selected");
                 $(this).addClass("selected");
-                if (thisID == "createColumn" || thisID == "destroyColumn" || thisID=="clearColumns") {
+                if (thisID == "createColumn" || thisID == "destroyColumn" || thisID=="clearColumns" || thisID=="adjustColumn") {
                     $("#addLines").removeClass("active");
                     $("#removeLines").removeClass("active");
                     $("#ctrlColumnsInst").find(".startHide").hide();
@@ -1339,22 +1344,25 @@
                     $("#ctrlColumnsInst").find(".activeParsingTool").fadeIn(800);
                     $("#ctrlLinesInst").find(".activeParsingTool").fadeOut(800);
                     $(".parsing").unbind();
-                    $(document).unbind();
+                    $(document).unbind("mousedown");
+                    $(document).unbind("mousemove");
+                    $(document).unbind("mouseup");
                     linesToColumns();
-                    
-                    if (thisID == "createColumn"){
+                    if(thisID == "adjustColumn"){
+                        adjustColumn(event);
+                    }
+                    else if (thisID == "createColumn"){
                         $.each($(".parsingColumn"), function(){
                             $(this).removeClass("parsingColumnSelected");
                         });
 
                         var isCreating = true;
-                        adjustColumn(event);
+                        //adjustColumn(event);
                         //console.log("New or reparse column");
                         var offset = $('#imgTop').offset();
                         var point = {};
                         var deltaPoint = {x:0,y:0};
-                        $(".parsingColumn").off();
-                        $(".parsingColumn").unbind();
+                        
                         $(document).bind({
                                 mousedown: function(event){
                                     //This bit of mouse down ensures it only fires on left mouse click.
@@ -1486,7 +1494,7 @@
 
                         });
                     }
-                    if (thisID === "destroyColumn") {
+                    else if (thisID === "destroyColumn") {
                       //prep for column adjustment
                       $.each($(".parsingColumn"), function(){
                             $(this).removeClass("parsingColumnSelected");
@@ -1507,7 +1515,7 @@
                         }
                       });
                     }
-                    if (thisID === "clearColumns") {
+                    else if (thisID === "clearColumns") {
                             //prep for column adjustment
                             var columnSet = $(".parsingColumn");
                             columnSet.addClass("parsingColumnSelected");
@@ -1526,8 +1534,9 @@
                     $('.parsing').unbind();
                     $(".parsing").css('cursor','default');
                     $(".parsingColumn").remove();
-                    $(document).off();
-                    $(document).unbind();
+                    $(document).unbind("mousedown");
+                    $(document).unbind("mousemove");
+                    $(document).unbind("mouseup");
                     if (thisID == "adjustLines") {
                         $("#addLines").removeClass("active");
                         $("#removeLines").removeClass("active");
@@ -1561,8 +1570,7 @@
                             },
                             stop: function(event, ui) {
                               $("#progress").html("Line Resized - Saving...");
-                              var thisLineID = thisLine.attr("lineserverid");
-                              var thisLineW = parseFloat(thisLine.attr("linewidth")) * (newW / originalW);
+                              var thisLineW = parseFloat(thisLine.attr("linewidth")) * (ui.size.width / originalW);
                               thisLine.attr("linewidth", thisLineW);
                               //console.log("update line with ID: "+thisLineID);
                               updateLine(thisLine);       

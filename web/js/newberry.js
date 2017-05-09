@@ -2884,7 +2884,7 @@ function splitPage(event, tool) {
             });
             $(".parsingColumn").on('resize', function (e) {
                 e.stopPropagation();
-              });
+            });
      }
     
     function reparseColumns(){
@@ -3192,9 +3192,7 @@ function toggleLineCol(){
         var startLine = $(".parsing[lineserverid='"+startLineID+"']"); //Get the start line
         var nextLine = startLine.next(".parsing"); //Get the next line (potentially)
         var linesToUpdate = [];
-        
         linesToUpdate.push(startLine); //push first line
-        
         while(nextLine.length >0 && nextLine.attr("lineserverid") !== endLineID){ //if there is a next line and its not the last line in the column...
             linesToUpdate.push(nextLine);
             nextLine = nextLine.next(".parsing");
@@ -3301,6 +3299,7 @@ function toggleLineCol(){
                 //console.log("list updated with new resources array");
                 currentFolio = parseInt(currentFolio);
                 annoLists[currentFolio - 1]= currentAnnoListID;
+                $("#parsingCover").hide();
             });
             
         });
@@ -3735,10 +3734,11 @@ function toggleLineCol(){
             if ($(e).attr("lineleft") == $(e).next(".parsing").attr("lineleft")) { //merge
                 if(!deleteOnly){ //if user clicked to remove a line, then do not allow merging.  Only delete the last line.
                     removedLine = $(e).next();
-                    var removedLineHeight = removedLine.height();
-                    var currentLineHeight = $(e).height();
-                    var newLineHeight = removedLineHeight + currentLineHeight;
-                    var convertedNewLineHeight = newLineHeight / $("#imgTop").height() * 100;
+                    var removedLineHeight = removedLine.attr("lineheight");
+                    var currentLineHeight = $(e).attr("lineheight");
+                    var newLineHeight = parseFloat(removedLineHeight) + parseFloat(currentLineHeight);
+                    //var convertedNewLineHeight = newLineHeight / $("#imgTop").height() * 100;
+                    var convertedNewLineHeight = newLineHeight;
                     var transcriptletToUpdate = $(".transcriptlet[lineserverid='"+$(e).attr('lineserverid')+"']");
                     $(e).css({
                         "height" :  convertedNewLineHeight + "%",
@@ -3884,10 +3884,10 @@ function toggleLineCol(){
                 }
                 return thisValue;
             });
-            console.log("line height for update is line clicked height "+ toUpdate.attr("lineheight") + " + line being removed height " + parseFloat(removedLine2.attr("lineheight")));
-            var lineHeightForUpdate = parseFloat(toUpdate.attr("lineheight")) + parseFloat(removedLine2.attr("lineheight"));
-            console.log(lineHeightForUpdate);
-            toUpdate.attr("lineheight", lineHeightForUpdate);   
+            //console.log("line height for update is line clicked height "+ toUpdate.attr("lineheight") + " + line being removed height " + parseFloat(removedLine2.attr("lineheight")));
+            //var lineHeightForUpdate = parseFloat(toUpdate.attr("lineheight")) + parseFloat(removedLine2.attr("lineheight"));
+            //console.log(lineHeightForUpdate);
+            //toUpdate.attr("lineheight", lineHeightForUpdate);   
         }
         else{
             console.log("yes it is. delete!");
@@ -4223,6 +4223,7 @@ function loadIframes(){
             var widerThanTall = (parseInt(originalCanvasWidth) > parseInt(originalCanvasHeight));
             var splitWidthAdjustment = window.innerWidth - (newCanvasWidth + 35) + "px";  
             if(liveTool === 'parsing'){
+                var SPLITWIDTH = $("#parsingSplit").width();
                 if(screen.width == $(window).width() && screen.height == window.outerHeight){
                     $(".centerInterface").css("text-align", "center"); //.css("background-color", "#e1f4fe");
                 }
