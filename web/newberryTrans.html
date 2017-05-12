@@ -1388,7 +1388,7 @@
 //                                    }
                                     //else{
                                     event.preventDefault();
-                                    var newCol = "<div id='newCol' class='parsingColumn ui-resizable' style='z-index:1000;'></div>";
+                                    var newCol = "<div id='newCol' class='newColumn parsingColumn ui-resizable' style='z-index:1000;'></div>";
                                     point = {x:event.pageX - offset.left,y:event.pageY - offset.top};
                                     $(newCol).insertBefore($("#imgTop img")).css({
                                         'position'  : 'absolute',
@@ -1416,7 +1416,7 @@
                                     }
                                     $("#newCol").css({
                                       "width": Math.abs(deltaPoint.x),
-                                      "height": Math.abs(deltaPoint.y) - 25 //header (.topTrim)
+                                      "height": Math.abs(deltaPoint.y) - 32 //header (.topTrim)
                                     });
                                 },
                                 mouseup:    function(event){
@@ -1437,19 +1437,20 @@
                                     }
                                     
                                     $newCol.attr({
-                                        "lineserverid"   : "-1",
                                         "newline"       : true,
                                         "newcol"        : true,
-                                        "linetop"       : parseFloat($newCol.css("top")) / $("#imgTop").height() * 100,
-                                        "lineleft"      : parseFloat($newCol.css("left")) / $("#imgTop").width() * 100,
-                                        "linewidth"     : $newCol.width() / $("#imgTop").width() * 100,
-                                        "lineheight"    : $newCol.height() / $("#imgTop").height() * 100,
-                                        "id"            : "",
-                                        "hastranscription": false
+//                                        "linetop"       : parseFloat($newCol.css("top")) / $("#imgTop").height() * 100,
+//                                        "lineleft"      : parseFloat($newCol.css("left")) / $("#imgTop").width() * 100,
+//                                        "linewidth"     : $newCol.width() / $("#imgTop").width() * 100,
+//                                        "lineheight"    : $newCol.height() / $("#imgTop").height() * 100,
+                                        "startid"        : "",
+                                        "endid"          : "",
+                                        "hastranscription": false,
+                                        id: ""
                                     });
                                     $newCol.css("background-color","transparent");
                                     // Prevent tiny columns on accident
-                                    if (parseInt($newCol.attr('linewidth'))+parseInt($newCol.attr('lineheight')) < 12) {
+                                    if (parseInt($newCol.width())+parseInt($newCol.height()) < 12) {
                                         $newCol.remove();
                                         console.log("Hiding cover because of tiny column no save scenario");
                                         $("#parsingCover").hide();
@@ -1477,6 +1478,7 @@
                                     </div>");
                                     if(isCreating){
                                         saveNewLine(null,columnIsLine);
+                                        //TODO FIXME here, we need to set lineserverid
                                         $("#imgTop").append(columnIsLine);
                                     }
                                     //adjustColumn(); //Do this so that the new column is adjustable.

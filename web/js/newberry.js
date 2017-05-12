@@ -22,6 +22,8 @@
     var loggedInUser = false;
     var userIsAdmin = false;
     var adjustRatio = 0;
+    var imgBottomPositionRatio = 0;
+    var imgTopPositionRatio = 0;
     //var basePath = window.location.protocol + "//" + window.location.host;
     
     /* Load the interface to the first page of the manifest. */
@@ -198,18 +200,17 @@
                lines = currentFolioToUse.resources;
                 populatePreview(lines, pageLabel, currentPage, i);    
            }
-//           else{
-//               if(currentFolioToUse.otherContent && currentFolioToUse.otherContent.length>0){
-////                //console.log("this is the tester")
-//                    lines = annoListTester.resources;
-//                    pageLabel = annoListTester.label;
-//                    populatePreview(lines, pageLabel, currentPage);    
-//                }
-//                else{
-//                    //console.log("Gotta get annos on " + currentOn);
-//                    gatherAndPopulate(currentOn, pageLabel, currentPage, i);                   
-//                }
-//           }
+           else{
+               if(currentFolioToUse.otherContent && currentFolioToUse.otherContent.length>0){
+                    lines = currentFolioToUse.otherContent[0].resources;
+                    pageLabel = currentFolioToUse.label;
+                    populatePreview(lines, pageLabel, currentPage);    
+                }
+                else{
+                    //console.log("Gotta get annos on " + currentOn);
+                    gatherAndPopulate(currentOn, pageLabel, currentPage, i);                   
+                }
+           }
 
         }
     }
@@ -268,8 +269,7 @@
                 }
                 else{
                  //   console.log("No matching list by projectID and no master found for "+pageLabel);
-                }
-                
+                }                
                 return false;
             }
         }
@@ -1031,6 +1031,7 @@
                                 currentList = this;
                                 //TODO we do not want someone who is not an admin to be able to edit this list.  Do a check here and make annoLists[currentFolio -1] = "master" so it cannot be written to.
                                 annoLists[currentFolio -1] = this["@id"];
+                                transcriptionFolios[currentFolio-1].otherContent[0] = this;
                             }
                             if(this.proj !== undefined && this.proj!=="" && this.proj == theProjectID){
                                 //These are the lines we want to draw because the projectID matches.  Overwrite master if necessary.
@@ -1038,6 +1039,7 @@
                                 lines = this.resources;
                                 currentList = this;
                                 annoLists[currentFolio -1] = this["@id"];
+                                transcriptionFolios[currentFolio-1].otherContent[0] = this;
                                 return false;
                             }
                             else{
@@ -1057,7 +1059,7 @@
                                 $("#noLineWarning").show();
                                 $("#captions").text("There are no lines for this canavs.");
                             }
-                            $("#imgTop").css("height", "0px");
+                            $("#imgTop").css("height", "0%");
                             $("#transTemplateLoading").hide();
                             $("#transcriptionTemplate").show();
                             $('#transcriptionCanvas').css('height', $("#imgTop img").height() + "px");
@@ -1069,6 +1071,7 @@
                     }
                     else{ // couldnt get list.  one should always exist, even if empty.  We will say no list and changes will be stored locally to the canvas.
                         annoLists[currentFolio -1 ] = "empty";
+                         transcriptionFolios[currentFolio-1].otherContent[0] = {};
                         if(parsing !== "parsing"){
                             $("#noLineWarning").show();
                             $("#captions").text("There are no lines for this canavs.");
@@ -1077,7 +1080,7 @@
                         $("#transcriptionTemplate").show();
                         $('#transcriptionCanvas').css('height', $("#imgTop img").height() + "px");
                         $('.lineColIndicatorArea').css('height', $("#imgTop img").height() + "px");
-                        $("#imgTop").css("height", "0px");
+                        $("#imgTop").css("height", "0%");
                         $("#imgBottom img").css("top", "0px");
                         $("#imgBottom").css("height", "inherit");
                         $("#parsingBtn").css("box-shadow", "0px 0px 6px 5px yellow");
@@ -1336,6 +1339,9 @@ function updatePresentation(transcriptlet) {
     var currentColLineNum = parseInt(transcriptlet.attr("collinenum"));
     var transcriptletBefore = $(transcriptlet.prev());
     var currentColLine = currentCol + "" + currentColLineNum;
+    if(currentColLine.indexOf("NaN")>-1 || currentColLine.indexOf("undefined")>-1 ){
+        currentColLine = "**";
+    }
     $("#currentColLine").html(currentColLine);
     if (parseInt(currentColLineNum) >= 1){
         if (transcriptletBefore.hasClass("transcriptlet")){
@@ -1374,8 +1380,10 @@ function updatePresentation(transcriptlet) {
         focusItem[1].nextAll(".transcriptlet").addClass("transcriptletAfter").removeClass("transcriptletBefore");
     }
     // prevent textareas from going invisible and not moving out of the workspace
-    focusItem[1].removeClass("transcriptletBefore transcriptletAfter")
-        .find('.theText')[0].focus();
+    if(focusItem[1].find('.theText')[0]){
+        focusItem[1].removeClass("transcriptletBefore transcriptletAfter")
+            .find('.theText')[0].focus();
+    }
     // change prev/next at page edges
 //    if($(".transcriptletBefore").size()===0){
 //        $("#prevLine").hide();
@@ -2358,6 +2366,11 @@ function toggleSpecialChars(event){
         $("#canvasControls").removeClass("selected");
         $("#help").css({"left":"100%"}).fadeOut(1000);
         $("#fullScreenBtn").fadeOut(250);
+        $("#parseOptions .tpenButton.selected").removeClass("selected");
+        $(document).unbind("mousemove");
+        $(document).unbind("mousedown");
+        $(document).unbind("mouseup");
+
         isZoomed = false;
         $(".split").hide();
         $(".split").css("width", "43%");
@@ -2475,7 +2488,7 @@ function splitPage(event, tool) {
     if(resize){
         attachTemplateResize();
     } else {
-        detachTemplateResize()
+        detachTemplateResize();
         $("#templateResizeBar").hide();
     }
     setTimeout(function(){
@@ -2573,6 +2586,7 @@ function splitPage(event, tool) {
             removeColumnTranscriptlets(lines, true);
         }
         else{
+            $(".destroyPage").html('All Columns Removed');
             cleanupTranscriptlets(true);
             //var newURL = "newberryTrans.html?projectID="+getURLVariable('projectID')+"&p="+getURLVariable('p')+"&liveTool=parsing";
             //window.location.href= newURL;
@@ -2785,8 +2799,12 @@ function splitPage(event, tool) {
                                 "height" : oldHeight + oldTop - newY +"%"
                             });
                             thisColumn.attr("startid", startLine.attr("lineserverid"));
-                        };
-                            $("#progress").html("Column Saved").delay(3000).fadeOut(1000);
+                        }
+                        else{
+                            updateLine(startLine, true, "");
+                        }
+                        $("#parsingCover").hide();
+                        $("#progress").html("Column Saved").delay(3000).fadeOut(1000);
                     } 
                     else if(adjustment=="bottom"){
                         //console.log("bottom");
@@ -2801,7 +2819,7 @@ function splitPage(event, tool) {
                         
                         oldHeight = parseFloat(endLine.attr("lineheight"));
                         oldTop = parseFloat(endLine.attr("linetop"));
-
+                        originalH = (originalH / $("#imgTop img").height()) * 100
                         endLine.attr({
                             "lineheight" : oldHeight + (newH - originalH)
                         });
@@ -2819,18 +2837,23 @@ function splitPage(event, tool) {
                                 removeLine(endLine, true);
                                 removeTranscriptlet(endLine.attr("lineserverid"),endLine.attr("lineserverid"), true);                           
                                 endLine=nextline;
-                            } while (parseFloat(endLine.attr("linetop"))>actualBottom);
+                            } 
+                            while (parseFloat(endLine.attr("linetop"))>actualBottom);
                             
-                                var currentLineTop = parseFloat(endLine.attr("linetop"));
-                                endLine.attr({
-                                    "lineheight" : actualBottom - currentLineTop
-                                });
-                                endLine.css({
-                                    "height" : actualBottom - currentLineTop + "%"
-                                });
-                                thisColumn.attr("endid", endLine.attr("lineserverid"));
-                        };
-                            $("#progress").html("Column Saved").delay(3000).fadeOut(1000);
+                            var currentLineTop = parseFloat(endLine.attr("linetop"));
+                            endLine.attr({
+                                "lineheight" : actualBottom - currentLineTop
+                            });
+                            endLine.css({
+                                "height" : actualBottom - currentLineTop + "%"
+                            });
+                            thisColumn.attr("endid", endLine.attr("lineserverid"));
+                        }
+                        else{
+                            updateLine(endLine, true, "");
+                        }
+                        $("#parsingCover").hide();
+                        $("#progress").html("Column Saved").delay(3000).fadeOut(1000);
                     }
                     else if(adjustment=="left"){
                             //save a new left,width for all these lines
@@ -3210,36 +3233,36 @@ function toggleLineCol(){
         var onCanvas = $("#transcriptionCanvas").attr("canvasid");
         currentFolio = parseInt(currentFolio);
         var currentAnnoListID = annoLists[currentFolio - 1];
-        var currentAnnoListResources = [];
         var lineTop, lineLeft, lineWidth, lineHeight = 0;
         var ratio = originalCanvasWidth2 / originalCanvasHeight2; 
         var annosURL = "getAnno";
         var properties = {"@id": currentAnnoListID};
         var paramOBJ = {"content": JSON.stringify(properties)};
-        $.post(annosURL, paramOBJ, function(annoLists){
+        //$.post(annosURL, paramOBJ, function(annoLists){
             //console.log("got anno list.  Here are the current resources");
-            try{
-                annoLists = JSON.parse(annoLists);
-            }
-            catch(e){ //may not need to do this here
-                $("#transTemplateLoading p").html("Something went wrong. Could not get annotation lists properly.  Refresh the page to try again.");
-                $('.transLoader img').attr('src',"images/missingImage.png");
-                $(".trexHead").show();
-                $("#genericIssue").show(1000);
-                return false;                
-            }
-            var currentAnnoList; 
-            $.each(annoLists, function(){
-                if(this.proj === "master"){
-                     currentAnnoListResources =this.resources;
-                }
-                if(this.proj !== undefined && this.proj!=="" && this.proj == theProjectID){
-                    //These are the lines we want to draw because the projectID matches.  Overwrite master if necessary.
-                    //console.log("Lines we wanna draw");
-                    currentAnnoListResources =this.resources;
-                    return false;
-                }
-            });
+//            try{
+//                annoLists = JSON.parse(annoLists);
+//            }
+//            catch(e){ //may not need to do this here
+//                $("#transTemplateLoading p").html("Something went wrong. Could not get annotation lists properly.  Refresh the page to try again.");
+//                $('.transLoader img').attr('src',"images/missingImage.png");
+//                $(".trexHead").show();
+//                $("#genericIssue").show(1000);
+//                return false;                
+//            }
+            var currentAnnoList = transcriptionFolios[currentFolio - 1].otherContent[0]; 
+            var currentAnnoListResources = currentAnnoList.resources;
+//            $.each(annoLists, function(){
+//                if(this.proj === "master"){
+//                     currentAnnoListResources =this.resources;
+//                }
+//                if(this.proj !== undefined && this.proj!=="" && this.proj == theProjectID){
+//                    //These are the lines we want to draw because the projectID matches.  Overwrite master if necessary.
+//                    //console.log("Lines we wanna draw");
+//                    currentAnnoListResources =this.resources;
+//                    return false;
+//                }
+//            });
             //console.log(currentAnnoListResources);
             //Go over each line from the column resize.
             $.each(linesInColumn, function(){
@@ -3283,7 +3306,7 @@ function toggleLineCol(){
                     index++;
                     if(this["@id"] == currentLineServerID){
                         //console.log("found, updating index "+index);
-                        currentAnnoListResources[index] = dbLine;
+                        transcriptionFolios[currentFolio - 1].otherContent[0].resources[index] = dbLine;
                         return false;
                     }
                 });
@@ -3299,10 +3322,11 @@ function toggleLineCol(){
                 //console.log("list updated with new resources array");
                 currentFolio = parseInt(currentFolio);
                 annoLists[currentFolio - 1]= currentAnnoListID;
+                transcriptionFolios[currentFolio - 1].resources = currentAnnoListResources;
                 $("#parsingCover").hide();
             });
             
-        });
+       // });
         
         
     }
@@ -3350,20 +3374,20 @@ function toggleLineCol(){
             var properties = {"@id": currentAnnoListID};
             var paramOBJ = {"content": JSON.stringify(properties)};
             //console.log("Query for list...")
-            $.post(annosURL, paramOBJ, function(annoList){
+            //$.post(annosURL, paramOBJ, function(annoList){
                 //console.log("got list");
-                try{
-                    annoList = JSON.parse(annoList);
-                }
-                catch(e){ //may not need to do this here
-                    $("#transTemplateLoading p").html("Something went wrong. The list of lines was not JSON.  Refresh the page to try again.");
-                    $('.transLoader img').attr('src',"images/missingImage.png");
-                    $(".trexHead").show();
-                    $("#genericIssue").show(1000);
-                    return false;                
-                }
+//                try{
+//                    annoList = JSON.parse(annoList);
+//                }
+//                catch(e){ //may not need to do this here
+//                    $("#transTemplateLoading p").html("Something went wrong. The list of lines was not JSON.  Refresh the page to try again.");
+//                    $('.transLoader img').attr('src',"images/missingImage.png");
+//                    $(".trexHead").show();
+//                    $("#genericIssue").show(1000);
+//                    return false;                
+//                }
                 var annoListID = currentAnnoListID;
-                currentAnnoList = annoList[0];
+                currentAnnoList = transcriptionFolios[currentFolio - 1].otherContent[0];
                 //console.log(currentAnnoList);
                 //console.log("Check list resources...");
                 for(var z=0; z<currentAnnoList.resources.length; z++){
@@ -3379,13 +3403,14 @@ function toggleLineCol(){
                             //console.log(currentAnnoList.resources)
                             currentFolio = parseInt(currentFolio);
                             annoLists[currentFolio - 1]= annoListID;
+                            transcriptionFolios[currentFolio-1].otherContent[0]=currentAnnoList;
                             console.log("hide cover in update");
                             $("#parsingCover").hide();
                         });
                         break;
                     }
                 }                   
-            });
+            //});
         }
         else if(currentAnnoList == "empty"){
            //cannot update an empty list
@@ -3393,10 +3418,10 @@ function toggleLineCol(){
         else if(currentAnnoList == "noList"){ //If it is classic T-PEN, we need to update canvas resources
             currentFolio = parseInt(currentFolio);
             var index = -1;
-            $.each(transcriptionFolios[currentFolio - 1].resources, function(){
+            $.each(transcriptionFolios[currentFolio - 1].otherContent[0].resources, function(){
                 index++;
                 if(this["@id"] == currentLineServerID){
-                    transcriptionFolios[currentFolio - 1].resources[index] = dbLine;
+                    transcriptionFolios[currentFolio - 1].otherContent[0].resources[index] = dbLine;
                 }
             });
             //Should we do an update here to support old data? 
@@ -3487,23 +3512,25 @@ function toggleLineCol(){
                         var properties = {"@id": currentAnnoList};
                         var paramOBJ = {"content": JSON.stringify(properties)};
 
-                        $.post(annosURL, paramOBJ, function(annoList){
+                        //$.post(annosURL, paramOBJ, function(annoList){
     //                        //console.log("got list");
                             var annoListID = currentAnnoList;
-                            try{
-                                annoList = JSON.parse(annoList);
-                            }
-                            catch(e){ //may not need to do this here
-                                $("#transTemplateLoading p").html("Something went wrong. Did not save a line correctly.  Refresh the page to try again.");
-                                $('.transLoader img').attr('src',"images/missingImage.png");
-                                $(".trexHead").show();
-                                $("#genericIssue").show(1000);
-                                return false;                
-                            }
-                            currentAnnoList = annoList[0];
+//                            try{
+//                                annoList = JSON.parse(annoList);
+//                            }
+//                            catch(e){ //may not need to do this here
+//                                $("#transTemplateLoading p").html("Something went wrong. Did not save a line correctly.  Refresh the page to try again.");
+//                                $('.transLoader img').attr('src',"images/missingImage.png");
+//                                $(".trexHead").show();
+//                                $("#genericIssue").show(1000);
+//                                return false;                
+//                            }
+                            currentAnnoList = transcriptionFolios[currentFolio -1].otherContent[0];
                             if(beforeIndex == -1){
                                 $(".newColumn").attr({
                                     "lineserverid" : dbLine["@id"],
+                                    "startid" : dbLine["@id"],
+                                    "endid" : dbLine["@id"],
                                     "linenum" : $(".parsing").length
                                 }).removeClass("newColumn");
                                 currentAnnoList.resources.push(dbLine);
@@ -3511,8 +3538,8 @@ function toggleLineCol(){
                             else{
                                 currentAnnoList.resources.splice(beforeIndex + 1, 0, dbLine);
                             }
+                            transcriptionFolios[currentFolio -1].otherContent[0] = currentAnnoList;
                             currentFolio = parseInt(currentFolio);
-                            transcriptionFolios[currentFolio - 1].otherContent[0] = annoListID;
                             annoLists[currentFolio - 1] = annoListID;
                             //Write back to db to update list
                             var url1 = "updateAnnoList";
@@ -3530,7 +3557,7 @@ function toggleLineCol(){
                                     $("#parsingCover").hide();
                                 }
                             });
-                        });
+                        //});
                     
                 }
                 else if(currentAnnoList == "empty"){ 
@@ -3564,7 +3591,7 @@ function toggleLineCol(){
                         newAnnoListCopy["@id"] = data["@id"];
                         currentFolio = parseInt(currentFolio);
                         annoLists[currentFolio - 1] = newAnnoListCopy["@id"];
-                        transcriptionFolios[currentFolio - 1].otherContent[0] = newAnnoListCopy["@id"];
+                        transcriptionFolios[currentFolio - 1].otherContent[0]["@id"] = newAnnoListCopy["@id"];
                         var url3 = "updateAnnoList";
                         var paramObj3 = {"@id":newAnnoListCopy["@id"], "resources": [dbLine]};
 //                            //console.log(paramObj3);
@@ -3592,7 +3619,7 @@ function toggleLineCol(){
                             "linenum" : $(".parsing").length
                         }).removeClass("newColumn");
                         currentFolio = parseInt(currentFolio);
-                        transcriptionFolios[currentFolio - 1].resources.push(dbLine);
+                        transcriptionFolios[currentFolio - 1].otherContent[0].resources.push(dbLine);
                     }
                     else{
                         currentFolio = parseInt(currentFolio);
@@ -3896,73 +3923,72 @@ function toggleLineCol(){
         var index = -1;
         currentFolio = parseInt(currentFolio);
         var currentAnnoList = annoLists[currentFolio -1];
-        
          if(currentAnnoList !== "noList" && currentAnnoList !== "empty"){ // if it IIIF, we need to update the list
             console.log("Get anno list");
             var annosURL = "getAnno";
-                var properties = {"@id": currentAnnoList};
-                var paramOBJ = {"content": JSON.stringify(properties)};
-                $.post(annosURL, paramOBJ, function(annoList){
-                    try{
-                        annoList = JSON.parse(annoList);
+            var properties = {"@id": currentAnnoList};
+            var paramOBJ = {"content": JSON.stringify(properties)};
+            //$.post(annosURL, paramOBJ, function(annoList){
+//                try{
+//                    annoList = JSON.parse(annoList);
+//                }
+//                catch(e){ //may not need to do this here
+//                    $("#transTemplateLoading p").html("Something went wrong. Did not delete a line correctly.  Refresh the page to try again.");
+//                    $('.transLoader img').attr('src',"images/missingImage.png");
+//                    $(".trexHead").show();
+//                    $("#genericIssue").show(1000);
+//                    return false;                
+//                }
+                var currentAnnoList = transcriptionFolios[currentFolio-1].otherContent[0];
+                var annoListID = currentAnnoList["@id"];
+                console.log("got it");
+                //console.log(currentAnnoList.resources);
+                for (var z=0; z<currentAnnoList.resources.length; z++){
+                    var lineIDToCheck = "";
+                    if(removeNextLine){
+                        lineIDToCheck = lineid;
+                        removedLine2.remove(); //remove the transcriptlet from UI
                     }
-                    catch(e){ //may not need to do this here
-                        $("#transTemplateLoading p").html("Something went wrong. Did not delete a line correctly.  Refresh the page to try again.");
-                        $('.transLoader img').attr('src',"images/missingImage.png");
-                        $(".trexHead").show();
-                        $("#genericIssue").show(1000);
-                        return false;                
+                    else{
+                        lineIDToCheck = updatedLineID;
                     }
-                    var annoListID = currentAnnoList;
-                    currentAnnoList = annoList[0];
-                    console.log("got it");
-                    //console.log(currentAnnoList.resources);
-                    $.each(currentAnnoList.resources, function(){
-                        index++;
-                        var lineIDToCheck = "";
-                        if(removeNextLine){
-                            lineIDToCheck = lineid;
-                            removedLine2.remove(); //remove the transcriptlet from UI
-                        }
-                        else{
-                            lineIDToCheck = updatedLineID;
-                        }
-                        console.log(this["@id"]+" == "+lineIDToCheck+"?  Index = "+index);
-                        if(this["@id"] === lineIDToCheck){
-                            currentAnnoList.resources.splice(index, 1);
-                            console.log("Delete from list " + lineIDToCheck+" at index "+index+".  Then update with line removed.");
-                            console.log(currentAnnoList.resources);
-                            var url = "updateAnnoList";
-                            var paramObj = {"@id":annoListID, "resources": currentAnnoList.resources};
-                            var params = {"content":JSON.stringify(paramObj)};
-                            $.post(url, params, function(data){
-                                //console.log("update from delete finished");
-                                currentFolio = parseInt(currentFolio);
-                                annoLists[currentFolio - 1] = annoListID;
-                                if(!removeNextLine){
-                                    $("#parsingCover").hide();
-                                    console.log("hide cover.");
-                                }
-                                else{
-                                    console.log("now we have to update the line that was clicked with the new line height from the one we removed.")
-                                    updateLine(toUpdate);
-                                }
-                                
-                            });
-                            return false;
-                        }
-                    });                       
-                });
+                    console.log(currentAnnoList.resources[z]["@id"]+" == "+lineIDToCheck+"?  Index = "+z);
+                    if(currentAnnoList.resources[z]["@id"] === lineIDToCheck){
+                        currentAnnoList.resources.splice(z, 1);
+                        console.log("Delete from list " + lineIDToCheck+" at index "+z+".  Then update with line removed.");
+                        console.log(currentAnnoList.resources);
+                        var url = "updateAnnoList";
+                        var paramObj = {"@id":annoListID, "resources": currentAnnoList.resources};
+                        var params = {"content":JSON.stringify(paramObj)};
+                        $.post(url, params, function(data){
+                            //console.log("update from delete finished");
+                            currentFolio = parseInt(currentFolio);
+                            annoLists[currentFolio - 1] = annoListID;
+                            if(!removeNextLine){
+                                $("#parsingCover").hide();
+                                console.log("hide cover.");
+                            }
+                            else{
+                                console.log("now we have to update the line that was clicked with the new line height from the one we removed.")
+                                updateLine(toUpdate);
+                            }
+
+                        });
+                        break;
+                    }
+                }                                         
+            //});
         }
         else if(currentAnnoList == "empty"){
             //There is no anno list assosiated with this anno.  This is an error.
         }
         else{ //If it is classic T-PEN, we need to update canvas resources
             currentFolio = parseInt(currentFolio);
-            $.each(transcriptionFolios[currentFolio - 1].resources, function(){
+            $.each(transcriptionFolios[currentFolio - 1].otherContent[0].resources, function(){
                 index++;
                 if(this["@id"] == lineid){
-                    transcriptionFolios[currentFolio - 1].resources.splice(index, 1);
+                    transcriptionFolios[currentFolio - 1].resources.otherContent[0].splice(index, 1);
+                    return false;
                     //update forreal
                 }
             });
@@ -3985,19 +4011,19 @@ function toggleLineCol(){
             var annosURL = "getAnno";
             var properties = {"@id": currentAnnoList};
             var paramOBJ = {"content": JSON.stringify(properties)};
-            $.post(annosURL, paramOBJ, function(annoList){
-                try{
-                    annoList = JSON.parse(annoList);
-                }
-                catch(e){ //may not need to do this here
-                    $("#transTemplateLoading p").html("Something went wrong. Did not remove a line correctly.  Refresh the page to try again.");
-                    $('.transLoader img').attr('src',"images/missingImage.png");
-                    $(".trexHead").show();
-                    $("#genericIssue").show(1000);
-                    return false;                
-                }
-                var annoListID = currentAnnoList;
-                currentAnnoList = annoList[0];
+            currentAnnoList = transcriptionFolios[currentFolio-1].otherContent[0];
+           // $.post(annosURL, paramOBJ, function(annoList){
+//                try{
+//                    annoList = JSON.parse(annoList);
+//                }
+//                catch(e){ //may not need to do this here
+//                    $("#transTemplateLoading p").html("Something went wrong. Did not remove a line correctly.  Refresh the page to try again.");
+//                    $('.transLoader img').attr('src',"images/missingImage.png");
+//                    $(".trexHead").show();
+//                    $("#genericIssue").show(1000);
+//                    return false;                
+//                }
+                var annoListID = currentAnnoList["@id"];
                 //console.log("got them");
                 //console.log(currentAnnoList.resources);
                 for(var l=lines.length-1; l>=0; l--){
@@ -4024,6 +4050,7 @@ function toggleLineCol(){
                         $.post(url, params, function(data){
                             //console.log("update from delete finished");
                             annoLists[currentFolio - 1] = annoListID;
+                            transcriptionFolios[currentFolio -1].otherContent[0] = currentAnnoList;
                             if(recurse){
                                 nextColumnToRemove.remove();
                                 destroyPage();
@@ -4036,7 +4063,7 @@ function toggleLineCol(){
                         });
                     }
                 }
-            });
+            //});
                 
          }
          else{
@@ -4183,7 +4210,7 @@ function loadIframes(){
                 $(".split:visible").css("width", splitWidth);
                 //var newHeight1 = parseFloat($("#fullPageImg").height()) + parseFloat($("#fullpageSplit .toolLinks").height()); //For resizing properly when transcription template is resized
                 //var newHeight2 = parseFloat($(".compareImage").height()) + parseFloat($("#compareSplit .toolLinks").height()); //For resizing properly when transcription template is resized
-                var fullPageMaxHeight = window.innerHeight - 125; //100 comes from buttons above image and topTrim
+                var fullPageMaxHeight = window.innerHeight - 15; //100 comes from buttons above image and topTrim
                 $("#fullPageImg").css("max-height", fullPageMaxHeight); //If we want to keep the full image on page, it cant be taller than that.
                 $("#fullPageSplitCanvas").height($("#fullPageImg").height());
                 $("#fullPageSplitCanvas").width($("#fullPageImg").width());
@@ -4222,6 +4249,7 @@ function loadIframes(){
             var PAGEWIDTH = Page.width();
             var widerThanTall = (parseInt(originalCanvasWidth) > parseInt(originalCanvasHeight));
             var splitWidthAdjustment = window.innerWidth - (newCanvasWidth + 35) + "px";  
+            var parsingMaxHeight = PAGEHEIGHT - 35;
             if(liveTool === 'parsing'){
                 var SPLITWIDTH = $("#parsingSplit").width();
                 if(screen.width == $(window).width() && screen.height == window.outerHeight){
@@ -4236,7 +4264,7 @@ function loadIframes(){
                     }
                 }
                 else if (PAGEHEIGHT <= originalCanvasHeight){ //allow it to be as tall as possible, but not taller.
-                    newCanvasHeight = PAGEHEIGHT;
+                    newCanvasHeight = parsingMaxHeight;
                     newCanvasWidth = ratio*newCanvasHeight;
                 }
                 else if(PAGEHEIGHT > originalCanvasHeight){ //I suppose this is possible for small images, so handle if its trying to be bigger than possible
@@ -4248,6 +4276,10 @@ function loadIframes(){
                     if (PAGEWIDTH < newCanvasWidth + SPLITWIDTH){ //If the page width is less than that of the image width plus the split area
                         newCanvasWidth = PAGEWIDTH - SPLITWIDTH; //make sure it respects the split area's space
                         newCanvasHeight = 1/ratio*newCanvasWidth; //make the height of the canvas relative to this width
+                        if(newCanvasHeight > parsingMaxHeight){
+                            newCanvasHeight = parsingMaxHeight;
+                            newCanvasWidth = ratio * newCanvasHeight;
+                        }
                     }
                     if(widerThanTall){
                         $("#parsingSplit").show();
@@ -4257,6 +4289,10 @@ function loadIframes(){
                     if(widerThanTall){ //if the image is wider than tall
                         newCanvasWidth = 900; //make it as wide as the limit.  The split area is hidden, we do not need to take it into account
                         newCanvasHeight = 1/ratio*newCanvasWidth; //make the height of the image what it needs to be for this width limit
+                        if(newCanvasHeight > parsingMaxHeight){
+                            newCanvasHeight = parsingMaxHeight;
+                            newCanvasWidth = ratio * newCanvasHeight;
+                        }
                         $("#parsingSplit").hide();
                     }
                     else{
