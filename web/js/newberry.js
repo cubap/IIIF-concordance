@@ -2469,7 +2469,7 @@ function splitPage(event, tool) {
         $("#compareSplit").css("width", splitWidthAdjustment);
     }
     else{
-        
+        splitScreen.find("iframe").attr("src", splitScreen.find("iframe").attr("data_src"));
     }
     liveTool = tool;
     var newCanvasHeight = 1 / ratio * newCanvasWidth;
