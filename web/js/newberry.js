@@ -201,14 +201,15 @@
                 populatePreview(lines, pageLabel, currentPage, i);    
            }
            else{
-               if(currentFolioToUse.otherContent && currentFolioToUse.otherContent.length>0){
+               if(currentFolioToUse.otherContent && currentFolioToUse.otherContent.length === 1){
                     lines = currentFolioToUse.otherContent[0].resources;
                     pageLabel = currentFolioToUse.label;
-                    populatePreview(lines, pageLabel, currentPage);    
+                    populatePreview(lines, pageLabel, currentPage, i);    
                 }
                 else{
+                    //This is no longer a case we need to handle
                     //console.log("Gotta get annos on " + currentOn);
-                    gatherAndPopulate(currentOn, pageLabel, currentPage, i);                   
+                    //gatherAndPopulate(currentOn, pageLabel, currentPage, i);                   
                 }
            }
 
@@ -226,7 +227,7 @@
                 annoList = JSON.parse(annoList);
             }
             catch(e){ //dont kill it here
-                $("#transTemplateLoading p").html("Something went wrong. We could not get the annotation data FOR THE PREVIEW MODULE.  Refresh the page to try again.");
+//                $("#transTemplateLoading p").html("Something went wrong. We could not get the annotation data FOR THE PREVIEW MODULE.  Refresh the page to try again.");
 //                $('.transLoader img').attr('src',"images/missingImage.png");
 //                $(".trexHead").show();
 //                $("#genericIssue").show(1000);
@@ -326,7 +327,13 @@
                 num--;
             }
         }
-        $("#previewDiv").append(previewPage);
+        $(".previewPage[order='"+order+"']").remove();
+        if(order > 0){
+            $(".previewPage[order='"+order-1+"']").after(previewPage);
+        }
+        else{
+            $("#previewDiv").prepend(previewPage);
+        }
     }
     
     function populateSpecialCharacters(specialCharacters){
@@ -485,30 +492,48 @@
                                 $("#noLineConfirmation").append(message);
                             }
                         });
-                        if(activeProject.ls_ms[0] !== undefined){
-                            var getURLfromThis = activeProject.ls_ms;
+                        if(activeProject.manifest !== undefined && activeProject.manifest !== ""){
+//                            var getURLfromThis = activeProject.ls_ms;
+//                            try{
+//                                getURLfromThis = JSON.parse(getURLfromThis);
+//                            }
+//                            catch(e){ //may not need to do this here
+//                                $("#transTemplateLoading p").html("Something went wrong. We could not get the manifest from the TPEN data.  Refresh the page to try again.");
+//                                $('.transLoader img').attr('src',"images/missingImage.png");
+//                                //$(".trexHead").show();
+//                                //$("#genericIssue").show(1000);
+//                                return false;                
+//                            }
+                            
+                            /*BH Note:  
+                            This is unreliable.  version.properties CREATE_PROJECT_RETURN_DOMAIN must be set to the correct current domain of the application
+                            The CreateProject and CopyProject servlets must also respect this when creating the project for the first time when storing it to the archive property.
+                            What if we always asked for it via /project/projectID no matter what?
+                            I made this change, if we notice problems on UTL side, this is a possible spot.
+                            */
+                            //url  = getURLfromThis[0].archive; //This is the manifest inside the project data.  It refers to (most likely) an external manifest
+                            //url = "project/"+projectID;
+//                            if(url.indexOf("http") < 0){ //then there is no external manifest or it is one we cannot get
+//                                url = "project/"+projectID; //ask for it internally through the application instead
+//                            }
+                            //$.ajax({ /* Causes CORS */
+                                //url: url,
+                                //success: function(projectData){
+//                                    //console.log("Manifest data: ");
+//                                    //console.log(projectData);
+                            var projectData = "";
                             try{
-                                getURLfromThis = JSON.parse(getURLfromThis);
+                                projectData = JSON.parse(activeProject.manifest);
                             }
-                            catch(e){ //may not need to do this here
-                                $("#transTemplateLoading p").html("Something went wrong. We could not get the manifest from the TPEN data.  Refresh the page to try again.");
+                            catch(e){
+                                $("#transTemplateLoading p").html("Something went wrong. We could not parse the manifest data.  Refresh the page to try again.");
                                 $('.transLoader img').attr('src',"images/missingImage.png");
                                 //$(".trexHead").show();
                                 //$("#genericIssue").show(1000);
                                 return false;                
                             }
-                            
-                            url  = getURLfromThis[0].archive; //This is the manifest inside the project data
-                            if(url.indexOf("http") < 0){
-                                //create the newberry url
-                                url = "project/"+projectID;
-                            }
-                            $.ajax({ /* Causes CORS */
-                                url: url,
-                                success: function(projectData){
-//                                    //console.log("Manifest data: ");
-//                                    //console.log(projectData);
-                                    if(projectData.sequences[0] !== undefined && projectData.sequences[0].canvases !== undefined
+                                    
+                                if(projectData.sequences[0] !== undefined && projectData.sequences[0].canvases !== undefined
                                     && projectData.sequences[0].canvases.length > 0){
                                         transcriptionFolios = projectData.sequences[0].canvases;
                                         if(pageToLoad){
@@ -551,20 +576,25 @@
                                         //load Iframes after user check and project information data call    
                                         loadIframes();
                                         //getProjectTools(projectID);
+                                        createPreviewPages();
                                     }
                                     else{
-                                        //ERROR! It is a malformed transcription object.  There is no canvas sequence defined.  
+                                        $("#transTemplateLoading p").html("Something went wrong. We could not get the sequence from the manifest.  Refresh the page to try again.");
+                                        $('.transLoader img').attr('src',"images/missingImage.png");
+                                        //$(".trexHead").show();
+                                        //$("#genericIssue").show(1000);
+                                        return false;               
                                     }
-                                },
-                                error: function(jqXHR,error, errorThrown) {  
-                                    clearTimeout(longLoadingProject);
-                                    $("#transTemplateLoading p").html("Something went wrong. We could not get the project data.  Refresh the page to try again.");
-                                    $('.transLoader img').attr('src',"images/missingImage.png");
-                                    //alert("Something went wrong. Could not get the project. 1");
-                                    //load Iframes after user check and project information data call    
-                                    loadIframes();
-                               }
-                            });
+                                //},
+                                //error: function(jqXHR,error, errorThrown) {  
+                                clearTimeout(longLoadingProject);
+                                //$("#transTemplateLoading p").html("Something went wrong. We could not get the manifest data.  Refresh the page to try again.");
+                                //$('.transLoader img').attr('src',"images/missingImage.png");
+                                //alert("Something went wrong. Could not get the project. 1");
+                                //load Iframes after user check and project information data call    
+                                //loadIframes();
+                               //}
+                            //});
                         }
                         else{
                             clearTimeout(longLoadingProject);
@@ -589,7 +619,6 @@
                                 count++;
                             });
                         }
-                        
                     },
                     error: function(jqXHR,error, errorThrown) {  
                         clearTimeout(longLoadingProject);
@@ -642,6 +671,7 @@
                             $(".hideme").hide();
                             //load Iframes after user check and project information data call    
                             loadIframes();
+                            createPreviewPages();
                         }
                         else{
                             //ERROR!  It is a valid JSON object, but it is malformed and cannot be read as a transcription object.
@@ -711,24 +741,35 @@
                                 });
                                 var count = 0;
                                 var url  = "";
-                                if(activeProject.ls_ms[0] !== undefined){
-                                    var getURLfromThis = activeProject.ls_ms;
-                                    try{
-                                        getURLfromThis = JSON.parse(getURLfromThis);
-                                    }
-                                    catch(e){ //may not need to do this here
-                                        $("#transTemplateLoading p").html("Something went wrong. We could not get the manifest out of the TPEN data for this project.  Refresh the page to try again.");
-                                        $('.transLoader img').attr('src',"images/missingImage.png");
-                                        //$(".trexHead").show();
-                                        //$("#genericIssue").show(1000);
-                                        return false;                
-                                    }
+                                if(activeProject.manifest !== undefined && activeProject.manifest !== ""){
+//                                    var getURLfromThis = activeProject.ls_ms;
+//                                    try{
+//                                        getURLfromThis = JSON.parse(getURLfromThis);
+//                                    }
+//                                    catch(e){ //may not need to do this here
+//                                        $("#transTemplateLoading p").html("Something went wrong. We could not get the manifest out of the TPEN data for this project.  Refresh the page to try again.");
+//                                        $('.transLoader img').attr('src',"images/missingImage.png");
+//                                        //$(".trexHead").show();
+//                                        //$("#genericIssue").show(1000);
+//                                        return false;                
+//                                    }
                                     
-                                    url  = getURLfromThis[0].archive;
-                                    $.ajax({
-                                        url: url,
-                                        success: function(projectData){
-                                            if(projectData.sequences[0] !== undefined && projectData.sequences[0].canvases !== undefined
+                                    //url  = getURLfromThis[0].archive;
+                                    //$.ajax({
+                                        //url: url,
+                                        //success: function(projectData){
+                                        var projectData = ""
+                                        try{
+                                        projectData = JSON.parse(activeProject.manifest);;
+                                        }
+                                        catch(e){ //may not need to do this here
+                                            $("#transTemplateLoading p").html("Something went wrong. We could not get the manifest out of the TPEN data for this project.  Refresh the page to try again.");
+                                            $('.transLoader img').attr('src',"images/missingImage.png");
+                                            //$(".trexHead").show();
+                                            //$("#genericIssue").show(1000);
+                                            return false;                
+                                        }
+                                        if(projectData.sequences[0] !== undefined && projectData.sequences[0].canvases !== undefined
                                             && projectData.sequences[0].canvases.length > 0){
                                                 transcriptionFolios = projectData.sequences[0].canvases;
                                                 if(pageToLoad){
@@ -770,21 +811,22 @@
                                                 //getProjectTools(projectID);
                                                 //load Iframes after user check and project information data call    
                                                 loadIframes();
+                                                createPreviewPages();
                                             }
                                             else{
                                                 //ERROR! It is a malformed transcription object.  There is no canvas sequence defined.  
                                                 //load Iframes after user check and project information data call    
                                                 loadIframes();
                                             }
-                                        },
-                                        error: function(jqXHR,error, errorThrown) {  
-                                            clearTimeout(longLoadingProject);
-                                            $("#transTemplateLoading p").html("We could not get project data.  Refresh the page to try again.");
-                                            $('.transLoader img').attr('src',"images/missingImage.png");
-                                            //load Iframes after user check and project information data call    
-                                            loadIframes();
-                                       }
-                                });
+                                        //},
+//                                        error: function(jqXHR,error, errorThrown) {  
+//                                            clearTimeout(longLoadingProject);
+//                                            $("#transTemplateLoading p").html("We could not get project data.  Refresh the page to try again.");
+//                                            $('.transLoader img').attr('src',"images/missingImage.png");
+//                                            //load Iframes after user check and project information data call    
+//                                            loadIframes();
+//                                       }
+                                //});
                             }
                             else{
                                 clearTimeout(longLoadingProject);
@@ -809,6 +851,7 @@
                                 }
                                 count++;
                             });
+                            //createPreviewPages();
                         },
                         error: function(jqXHR,error, errorThrown) {  
                                     clearTimeout(longLoadingProject);
@@ -854,6 +897,7 @@
                                     $('#setTranscriptionObjectArea').hide();
                                     $(".instructions").hide();
                                     $(".hideme").hide(); 
+                                    createPreviewPages();
                                     //getProjectTools(projectID);
                                 }
                                 else{
@@ -861,6 +905,7 @@
                                 }
                                 //load Iframes after user check and project information data call    
                                 loadIframes();
+                                
                             },
                             error: function(jqXHR,error, errorThrown) {  
                                 clearTimeout(longLoadingProject);
@@ -971,7 +1016,7 @@
         $.each($("#previewDiv").children(".previewPage:eq("+(parseInt(currentFolio)-1)+")").find(".previewLine"),function(){
             $(this).find('.previewText').addClass("currentPage");
         });
-        createPreviewPages(); //each time you load a canvas to the screen with all of its updates, remake the preview pages.
+        
     }
     
       /*
@@ -1088,6 +1133,7 @@
                     updateURL("p");
                 });
         }
+        
     }
     
     /* Take line data, turn it into HTML elements and put them to the DOM */
@@ -1326,6 +1372,12 @@
                 updateLine(lineToUpdate, "no");
             }, 2000);
         });
+        textSize();
+        //With this, every time the lines are redrawn for a canvas, they are repopulated to the preview text split.
+        populatePreview(transcriptionFolios[currentFolio-1].otherContent[0].resources, transcriptionFolios[currentFolio-1].label, "currentPage", currentFolio-1);
+        
+        //With this, we call to the annotation store to gather the lines again then popluate the preview.  
+        //gatherAndPopluate(transcriptionFolios[currentFolio-1]["@id"], transcriptionFolios[currentFolio-1]["@id"], "currentPage", currentFolio-1);
     }
     
     /* Make the transcription interface focus to the transcriptlet passed in as the parameter. */
@@ -2437,7 +2489,7 @@ function splitPage(event, tool) {
         $("#transcriptionTemplate").css("width", Page.width()-520 + "px");
         newCanvasWidth = Page.width()-520;
         $("#helpSplit").show().height(Page.height()-$("#helpSplit").offset().top).scrollTop(0); // header space
-        //$("#helpContainer").height(Page.height()-$("#helpContainer").offset().top);
+        $("#helpContainer").height(Page.height()-$("#helpContainer").offset().top);
         resize = false; //interupts parsing resizing funcitonaliy, dont need to resize for this anyway.
     }
     else if(tool === "parsing"){
@@ -2450,14 +2502,12 @@ function splitPage(event, tool) {
         $(".split:visible").css("width", splitWidthAdjustment);
     }
     else if(tool === "fullPage"){ //set this to be the max height initially when the split happens.
-        
         $("#fullPageImg").css("max-height", fullPageMaxHeight); //If we want to keep the full image on page, it cant be taller than that.
         $("#fullPageImg").css("max-width", splitWidthAdjustment);
         $("#fullPageSplitCanvas").css("max-height", fullPageMaxHeight); //If we want to keep the full image on page, it cant be taller than that.
         $("#fullPageSplitCanvas").css("max-width", splitWidthAdjustment); //If we want to keep the full image on page, it cant be taller than that.
         $("#fullPageSplitCanvas").height($("#fullPageImg").height());
         $("#fullPageSplitCanvas").width($("#fullPageImg").width());
-        
         $(".fullP").each(function(i){
             this.title = $("#transcriptlet_"+i+" .theText").text();
         })
@@ -2803,7 +2853,7 @@ function splitPage(event, tool) {
                         else{
                             updateLine(startLine, true, "");
                         }
-                        $("#parsingCover").hide();
+                        //$("#parsingCover").hide();
                         $("#progress").html("Column Saved").delay(3000).fadeOut(1000);
                     } 
                     else if(adjustment=="bottom"){
@@ -2852,7 +2902,7 @@ function splitPage(event, tool) {
                         else{
                             updateLine(endLine, true, "");
                         }
-                        $("#parsingCover").hide();
+                        //$("#parsingCover").hide();
                         $("#progress").html("Column Saved").delay(3000).fadeOut(1000);
                     }
                     else if(adjustment=="left"){
@@ -3434,11 +3484,11 @@ function toggleLineCol(){
     function saveNewLine(lineBefore, newLine){
         var theURL = window.location.href;
         var projID = -1;
-        if(theURL.indexOf("projectID") === -1){
+        if(!getURLVariable("projectID")){
             projID = theProjectID;
         }
         else{
-            projID = theURL.substring(theURL.indexOf("projectID=")+10);
+            projID = getURLVariable("projectID");
         }
         
         var beforeIndex = -1;
@@ -3570,7 +3620,7 @@ function toggleLineCol(){
                             "version" : 1,
                             "permission" : 0,
                             "forkFromID" : "",
-                            "resources" : [],
+                            "resources" : [dbLine],
                             "proj" : projID
                         };
                     var url2 = "saveNewTransLineServlet";
@@ -3591,23 +3641,32 @@ function toggleLineCol(){
                         newAnnoListCopy["@id"] = data["@id"];
                         currentFolio = parseInt(currentFolio);
                         annoLists[currentFolio - 1] = newAnnoListCopy["@id"];
-                        transcriptionFolios[currentFolio - 1].otherContent[0]["@id"] = newAnnoListCopy["@id"];
-                        var url3 = "updateAnnoList";
-                        var paramObj3 = {"@id":newAnnoListCopy["@id"], "resources": [dbLine]};
-//                            //console.log(paramObj3);
-                        var params3 = {"content":JSON.stringify(paramObj3)};
-                        $.post(url3, params3, function(data){
-//                                //console.log("New list updated with new anno");
-                               $(".newColumn").attr({
-                                    "lineserverid" : dbLine["@id"],
-                                    "startid" : dbLine["@id"],
-                                    "endid" : dbLine["@id"],
-                                    "linenum" : $(".parsing").length
-                                }).removeClass("newColumn");
-                                newLine.attr("lineserverid", dbLine["@id"]);
-                                console.log("added line into new list, so I can hide cover.");
-                                $("#parsingCover").hide();
-                            });
+                        transcriptionFolios[currentFolio - 1].otherContent[0] = newAnnoListCopy;
+                        $(".newColumn").attr({
+                            "lineserverid" : dbLine["@id"],
+                            "startid" : dbLine["@id"],
+                            "endid" : dbLine["@id"],
+                            "linenum" : $(".parsing").length
+                        }).removeClass("newColumn");
+                        newLine.attr("lineserverid", dbLine["@id"]);
+                        console.log("added line into new list, so I can hide cover.");
+                        $("#parsingCover").hide();
+//                        var url3 = "updateAnnoList";
+//                        var paramObj3 = {"@id":newAnnoListCopy["@id"], "resources": [dbLine]};
+////                            //console.log(paramObj3);
+//                        var params3 = {"content":JSON.stringify(paramObj3)};
+//                        $.post(url3, params3, function(data){
+////                                //console.log("New list updated with new anno");
+//                               $(".newColumn").attr({
+//                                    "lineserverid" : dbLine["@id"],
+//                                    "startid" : dbLine["@id"],
+//                                    "endid" : dbLine["@id"],
+//                                    "linenum" : $(".parsing").length
+//                                }).removeClass("newColumn");
+//                                newLine.attr("lineserverid", dbLine["@id"]);
+//                                console.log("added line into new list, so I can hide cover.");
+//                                $("#parsingCover").hide();
+//                            });
                     });
                 }
                 else if(currentAnnoList == "noList"){ //noList is a special scenario for handling classic T-PEN objects.
@@ -4227,6 +4286,7 @@ function loadIframes(){
                     var height = $(this).height() + "px";
                     $(this).css("line-height", height);
                 });
+                textSize();
             }
         });
         $("#transcriptionTemplate").on('resize', function (e) {
@@ -4358,7 +4418,7 @@ function loadIframes(){
             if(liveTool !== "parsing"){
                 doit = setTimeout(attachTemplateResize, 100);
             }
-            
+            textSize();
         };
 
     }
@@ -4413,6 +4473,20 @@ function loadIframes(){
         
         window.history.pushState("", "T&#8209;PEN Transcription", toAddressBar);
     }
+    
+    /**
+     * Adjusts font-size in transcription and notes fields based on size of screen.
+     * Minimum is 13px and maximum is 18px.
+     *
+     */
+    function textSize() {
+        var wrapperWidth = $('#transcriptionCanvas').width();
+        var textSize = Math.floor(wrapperWidth / 60),
+        resize = (textSize > 18) ? 18 : textSize,
+        resize = (resize < 13) ? 13 : resize;
+        $(".theText,.notes,#previous span,#helpPanels ul").css("font-size",resize+"px");
+    };
+
     
     /**
  * Make sure all image tools reset to their default values.

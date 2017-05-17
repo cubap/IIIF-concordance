@@ -36,7 +36,7 @@ import static edu.slu.util.LangUtils.getMessage;
 import static edu.slu.util.ServletUtils.reportInternalError;
 import textdisplay.Folio;
 import textdisplay.Archive;
-import edu.slu.util.ServletUtils;
+import static edu.slu.util.ServletUtils.getUID;
 
 
 /**
@@ -73,17 +73,18 @@ public class ImageResize extends HttpServlet {
    protected void doGet(HttpServletRequest request, HttpServletResponse response)
            throws ServletException, IOException {
       try {
-         int uID = ServletUtils.getUID(request, response);
-         if (uID < 0) {
-            if (request.getParameter("code") == null) {
-               response.sendError(403);
-               return;
-            }
-            if (request.getParameter("code").compareTo(Folio.getRbTok("imageCode")) != 0) {
-               response.sendError(403);
-               return;
-            }
-         }
+         int uID = getUID(request, response);
+         System.out.println("UID gathered from session: "+uID);
+//         if (uID < 0) {
+//            if (request.getParameter("code") == null) {
+//               response.sendError(403);
+//               return;
+//            }
+//            if (request.getParameter("code").compareTo(Folio.getRbTok("imageCode")) != 0) {
+//               response.sendError(403);
+//               return;
+//            }
+//         }
          response.addHeader("Cache-Control", "max-age=3600");
          long relExpiresInMillis = System.currentTimeMillis() + (1000 * 2600);
          response.addHeader("Expires", getGMTTimeString(relExpiresInMillis));

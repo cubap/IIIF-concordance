@@ -50,9 +50,11 @@ import utils.UserTool;
 import com.google.gson.Gson;
 
 import edu.slu.tpen.transfer.JsonImporter;
+import edu.slu.tpen.transfer.JsonLDExporter;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
+import net.sf.json.JSONException;
 
 /**
  * Get tpen project. 
@@ -75,10 +77,10 @@ public class GetProjectTPENServlet extends HttpServlet {
         HttpSession session = request.getSession();
         boolean isTPENAdmin = false;
         try {
-        	isTPENAdmin = (new User(uid)).isAdmin();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+            isTPENAdmin = (new User(uid)).isAdmin();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 // Force PrintWriter to use UTF-8 encoded strings.
         response.setContentType("application/json; charset=UTF-8");
         //PrintWriter out = response.getWriter();
@@ -168,6 +170,24 @@ public class GetProjectTPENServlet extends HttpServlet {
                             jsonMap.put("xml", allProjectButtons);
                             //get special characters
                             jsonMap.put("projectButtons", hk.javascriptToAddProjectButtonsRawData(projectID));
+                            
+                            JSONObject man_obj = null;
+                            String manifest_obj_str = "";
+                            JSONObject manifest = new JSONObject();    
+                                    System.out.println("UID gathered from session for exporter "+uid);
+
+                            manifest_obj_str = new JsonLDExporter(proj, new User(uid)).export();
+                           // }
+                            try{ //Try to parse the manifest string
+                                man_obj = JSONObject.fromObject(manifest_obj_str);
+                                manifest = man_obj;
+                            }
+                            catch (JSONException e2){
+                                response.sendError(500);
+                                //jo_error.element("error", "Not a valid JSON manifest");
+                                //manifest = jo_error;
+                            }
+                            jsonMap.put("manifest", manifest.toString());
                             
                             response.setStatus(HttpServletResponse.SC_OK);
                             out.println(JSONObject.fromObject(jsonMap));

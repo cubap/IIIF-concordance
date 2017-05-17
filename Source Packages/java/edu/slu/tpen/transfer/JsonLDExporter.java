@@ -30,6 +30,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.slu.tpen.entity.Image.Canvas;
 import imageLines.ImageCache;
 import org.apache.commons.lang.StringUtils;
 import org.owasp.esapi.ESAPI;
@@ -38,6 +39,7 @@ import textdisplay.Project;
 import user.User;
 import static edu.slu.util.LangUtils.buildQuickMap;
 import static edu.slu.util.ServletUtils.getDBConnection;
+import net.sf.json.JSONArray;
 
 /**
  * Class which manages serialisation to JSON-LD. Builds a Map containing the
@@ -109,6 +111,7 @@ public class JsonLDExporter {
       LOG.log(Level.INFO, "pageDim={0}", pageDim);
 
       Map<String, Object> result = new LinkedHashMap<>();
+      List<Object> images = new ArrayList<>();
       result.put("@id", canvasID);
       result.put("@type", "sc:Canvas");
       result.put("label", f.getPageName());
@@ -134,51 +137,58 @@ public class JsonLDExporter {
       imageAnnot.put("resource", imageResource);
 
       imageAnnot.put("on", canvasID);
+      images.add(imageAnnot);
       resources.add(imageAnnot);
-
       // lineID, textUnencoded, x, y, width, height, comment
-      try (Connection conn = getDBConnection()) {
-         try (PreparedStatement stmt = conn.prepareStatement("SELECT * FROM transcription WHERE projectID = ? AND folio = ? ORDER BY x, y")) {
-            stmt.setInt(1, projID);
-            stmt.setInt(2, f.getFolioNumber());
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-               // Body of the annotation.  Contains the actual text.
-/*            text = rs.getString("text");
-            comment = rs.getString("comment");
-            UID = rs.getInt("creator");
-            lineID = rs.getInt("id");
-            x = rs.getInt("x");
-            y = rs.getInt("y");
-            width = rs.getInt("width");
-            height = rs.getInt("height");
-            this.projectID = rs.getInt("projectID");
-            this.folio = rs.getInt("folio");
-            date = rs.getDate("date"); */
-               int lineID = rs.getInt("id");
-               Map<String, Object> lineAnnot = new LinkedHashMap<>();
-               String lineURI = projName + "/line/" + lineID;
-               lineAnnot.put("@id", lineURI);
-               lineAnnot.put("@type", "oa:Annotation");
-               lineAnnot.put("motivation", "sc:painting");
-               lineAnnot.put("resource", buildQuickMap("@type", "cnt:ContentAsText", "cnt:chars", ESAPI.encoder().decodeForHTML(rs.getString("text"))));
-               lineAnnot.put("on", String.format("%s#xywh=%d,%d,%d,%d", canvasID, rs.getInt("x"), rs.getInt("y"), rs.getInt("width"), rs.getInt("height")));
-               resources.add(lineAnnot);
-
-               String note = rs.getString("comment");
-               if (StringUtils.isNotBlank(note)) {
-                  Map<String, Object> noteAnnot = new LinkedHashMap<>();
-                  noteAnnot.put("@id", projName + "/note/" + lineID);
-                  noteAnnot.put("@type", "oa:Annotation");
-                  noteAnnot.put("motivation", "oa:commenting");
-                  noteAnnot.put("resource", buildQuickMap("@type", "cnt:ContentAsText", "cnt:chars", note));
-                  noteAnnot.put("on", lineURI);
-                  resources.add(noteAnnot);
-               }
-            }
-         }
-      }
-      result.put("resources", resources);
+//      try (Connection conn = getDBConnection()) {
+//         try (PreparedStatement stmt = conn.prepareStatement("SELECT * FROM transcription WHERE projectID = ? AND folio = ? ORDER BY x, y")) {
+//            stmt.setInt(1, projID);
+//            stmt.setInt(2, f.getFolioNumber());
+//            ResultSet rs = stmt.executeQuery();
+//            while (rs.next()) {
+//               // Body of the annotation.  Contains the actual text.
+///*            text = rs.getString("text");
+//            comment = rs.getString("comment");
+//            UID = rs.getInt("creator");
+//            lineID = rs.getInt("id");
+//            x = rs.getInt("x");
+//            y = rs.getInt("y");
+//            width = rs.getInt("width");
+//            height = rs.getInt("height");
+//            this.projectID = rs.getInt("projectID");
+//            this.folio = rs.getInt("folio");
+//            date = rs.getDate("date"); */
+//               int lineID = rs.getInt("id");
+//               Map<String, Object> lineAnnot = new LinkedHashMap<>();
+//               String lineURI = projName + "/line/" + lineID;
+//               lineAnnot.put("@id", lineURI);
+//               lineAnnot.put("@type", "oa:Annotation");
+//               lineAnnot.put("motivation", "sc:painting");
+//               lineAnnot.put("resource", buildQuickMap("@type", "cnt:ContentAsText", "cnt:chars", ESAPI.encoder().decodeForHTML(rs.getString("text"))));
+//               lineAnnot.put("on", String.format("%s#xywh=%d,%d,%d,%d", canvasID, rs.getInt("x"), rs.getInt("y"), rs.getInt("width"), rs.getInt("height")));
+//               resources.add(lineAnnot);
+//
+//               String note = rs.getString("comment");
+//               if (StringUtils.isNotBlank(note)) {
+//                  Map<String, Object> noteAnnot = new LinkedHashMap<>();
+//                  noteAnnot.put("@id", projName + "/note/" + lineID);
+//                  noteAnnot.put("@type", "oa:Annotation");
+//                  noteAnnot.put("motivation", "oa:commenting");
+//                  noteAnnot.put("resource", buildQuickMap("@type", "cnt:ContentAsText", "cnt:chars", note));
+//                  noteAnnot.put("on", lineURI);
+//                  resources.add(noteAnnot);
+//               }
+//            }
+//         }
+//      }
+      
+      JSONArray otherContent = new JSONArray();
+      otherContent = Canvas.getAnnotationListsForProject(projID, canvasID, u.getUID());
+      //System.out.println("Finalize result");
+      
+      //result.put("resources", resources);
+      result.put("otherContent", otherContent);
+      result.put("images", images);
       return result;
    }
 

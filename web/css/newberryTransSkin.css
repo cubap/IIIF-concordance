@@ -1715,7 +1715,7 @@ p{
 .ui-slider-horizontal{
     height: .3em;
 }
-
+helpCon
 .ui-slider-horizontal .ui-slider-handle {
     top: -.4em;
     margin-left: -.6em;
@@ -1769,7 +1769,6 @@ p{
 #helpContainer{
     padding:0 2em;
     overflow-y: scroll;
-    height: 100%;
 }
 .no-point{
     pointer-events: none;

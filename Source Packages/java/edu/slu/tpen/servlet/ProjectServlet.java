@@ -48,8 +48,14 @@ public class ProjectServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        int uid = getUID(req, resp);
+        //int uid = getUID(req, resp);
         int projID = 0;
+        int uid = 0;
+        boolean skip = true;
+        //If you choose not to automatically skip, put some method here to define what makes skip true.
+        resp.addHeader("Access-Control-Allow-Origin", "*");
+        resp.addHeader("Access-Control-Allow-Headers", "Content-Type");
+        resp.addHeader("Access-Control-Allow-Methods", "GET");
         if (uid >= 0) {
             try {
                 String check = "transcribe";
@@ -62,7 +68,7 @@ public class ProjectServlet extends HttpServlet {
                     projID = Integer.parseInt(req.getPathInfo().substring(1).replace("/", ""));
                     Project proj = new Project(projID);
                     if (proj.getProjectID() > 0) {
-                        if (new Group(proj.getGroupID()).isMember(uid)) {
+                        if (new Group(proj.getGroupID()).isMember(uid) || skip) {
                             if (checkModified(req, proj)) {
                                 resp.setContentType("application/ld+json; charset=UTF-8");
                                 resp.getWriter().write(new JsonLDExporter(proj, new User(uid)).export());
