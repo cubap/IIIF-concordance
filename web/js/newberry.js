@@ -328,8 +328,9 @@
             }
         }
         $(".previewPage[order='"+order+"']").remove();
-        if(order > 0){
-            $(".previewPage[order='"+order-1+"']").after(previewPage);
+        if(parseInt(order) > 0){
+            var afterOrder = parseInt(order)-1;
+            $(".previewPage[order='"+afterOrder+"']").after(previewPage);
         }
         else{
             $("#previewDiv").prepend(previewPage);
