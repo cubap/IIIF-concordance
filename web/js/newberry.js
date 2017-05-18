@@ -1801,6 +1801,10 @@ function updatePresentation(transcriptlet) {
           }
           else{
               //captions already say "You are on the first line"
+              $('#captionsText').css("background-color", 'red');
+              setTimeout(function(){ $('#captionsText').css("background-color", '#E6E7E8'); }, 500);
+              setTimeout(function(){ $('#captionsText').css("background-color", 'red'); }, 1000);
+              setTimeout(function(){ $('#captionsText').css("background-color", '#E6E7E8');  $("#captionsText").html(captionText); }, 1500);
           }
     }
 
@@ -3376,10 +3380,7 @@ function toggleLineCol(){
                 transcriptionFolios[currentFolio - 1].resources = currentAnnoListResources;
                 $("#parsingCover").hide();
             });
-            
-       // });
-        
-        
+                    
     }
     
     /* Update line information for a particular line. */
@@ -3421,22 +3422,6 @@ function toggleLineCol(){
         };
 
         if(currentAnnoListID !== "noList" && currentAnnoListID !== "empty"){ // if its IIIF, we need to update the list
-            var annosURL = "getAnno";
-            var properties = {"@id": currentAnnoListID};
-            var paramOBJ = {"content": JSON.stringify(properties)};
-            //console.log("Query for list...")
-            //$.post(annosURL, paramOBJ, function(annoList){
-                //console.log("got list");
-//                try{
-//                    annoList = JSON.parse(annoList);
-//                }
-//                catch(e){ //may not need to do this here
-//                    $("#transTemplateLoading p").html("Something went wrong. The list of lines was not JSON.  Refresh the page to try again.");
-//                    $('.transLoader img').attr('src',"images/missingImage.png");
-//                    $(".trexHead").show();
-//                    $("#genericIssue").show(1000);
-//                    return false;                
-//                }
                 var annoListID = currentAnnoListID;
                 currentAnnoList = transcriptionFolios[currentFolio - 1].otherContent[0];
                 //console.log(currentAnnoList);
@@ -3455,13 +3440,11 @@ function toggleLineCol(){
                             currentFolio = parseInt(currentFolio);
                             annoLists[currentFolio - 1]= annoListID;
                             transcriptionFolios[currentFolio-1].otherContent[0]=currentAnnoList;
-                            console.log("hide cover in update");
                             $("#parsingCover").hide();
                         });
                         break;
                     }
                 }                   
-            //});
         }
         else if(currentAnnoList == "empty"){
            //cannot update an empty list
@@ -3475,7 +3458,6 @@ function toggleLineCol(){
                     transcriptionFolios[currentFolio - 1].otherContent[0].resources[index] = dbLine;
                 }
             });
-            //Should we do an update here to support old data? 
         }
        if(cleanup !== "no") cleanupTranscriptlets(true);
         //$(".previewLineNumber[lineserverid='"+currentLineServerID+"']").siblings(previewText).html(scrub(line.val()));
@@ -3562,20 +3544,7 @@ function toggleLineCol(){
                         var annosURL = "getAnno";
                         var properties = {"@id": currentAnnoList};
                         var paramOBJ = {"content": JSON.stringify(properties)};
-
-                        //$.post(annosURL, paramOBJ, function(annoList){
-    //                        //console.log("got list");
                             var annoListID = currentAnnoList;
-//                            try{
-//                                annoList = JSON.parse(annoList);
-//                            }
-//                            catch(e){ //may not need to do this here
-//                                $("#transTemplateLoading p").html("Something went wrong. Did not save a line correctly.  Refresh the page to try again.");
-//                                $('.transLoader img').attr('src',"images/missingImage.png");
-//                                $(".trexHead").show();
-//                                $("#genericIssue").show(1000);
-//                                return false;                
-//                            }
                             currentAnnoList = transcriptionFolios[currentFolio -1].otherContent[0];
                             if(beforeIndex == -1){
                                 $(".newColumn").attr({
@@ -3596,20 +3565,18 @@ function toggleLineCol(){
                             var url1 = "updateAnnoList";
                             var paramObj1 = {"@id":annoListID, "resources": currentAnnoList.resources};
                             var params1 = {"content":JSON.stringify(paramObj1)};
-                            $.post(url1, params1, function(data){
-    //                            //console.log("Updated list on anno store");
-                                if(lineBefore !== undefined && lineBefore !== null){
-                                    //This is the good case.  We called split line and saved the new line, now we need to update the other one. 
-                                    console.log("mergeness happened.  Saved new line, now update a line, and in that update hide the parsing cover.  ")
-                                    updateLine(lineBefore);
-                                }
-                                else{
-                                    console.log("We just saved a new line with column creation, so no update needs to be called");
-                                    $("#parsingCover").hide();
-                                }
-                            });
-                        //});
-                    
+                            if(lineBefore !== undefined && lineBefore !== null){
+                                //This means we haved saved a new line in a column.  Dont update the list yet, that will happen in updateLine();  Everything else is cached.
+                                //console.log("saved a new line in a column or mergeness happened.  Saved new line, now update a line, and in that update hide the parsing cover.  ")
+                                updateLine(lineBefore);
+                            }
+                            else{
+                                //console.log("We just saved a new line with column creation, so no update needs to be called");
+                                $.post(url1, params1, function(data){
+                               //console.log("Updated list on anno store");
+                                });
+                                $("#parsingCover").hide();
+                            }
                 }
                 else if(currentAnnoList == "empty"){ 
                     //This means we know no AnnotationList was on the store for this canvas, and otherContent stored with the canvas object did not have the list.  Make a new one in this case. 
@@ -3652,25 +3619,9 @@ function toggleLineCol(){
                         newLine.attr("lineserverid", dbLine["@id"]);
                         console.log("added line into new list, so I can hide cover.");
                         $("#parsingCover").hide();
-//                        var url3 = "updateAnnoList";
-//                        var paramObj3 = {"@id":newAnnoListCopy["@id"], "resources": [dbLine]};
-////                            //console.log(paramObj3);
-//                        var params3 = {"content":JSON.stringify(paramObj3)};
-//                        $.post(url3, params3, function(data){
-////                                //console.log("New list updated with new anno");
-//                               $(".newColumn").attr({
-//                                    "lineserverid" : dbLine["@id"],
-//                                    "startid" : dbLine["@id"],
-//                                    "endid" : dbLine["@id"],
-//                                    "linenum" : $(".parsing").length
-//                                }).removeClass("newColumn");
-//                                newLine.attr("lineserverid", dbLine["@id"]);
-//                                console.log("added line into new list, so I can hide cover.");
-//                                $("#parsingCover").hide();
-//                            });
                     });
                 }
-                else if(currentAnnoList == "noList"){ //noList is a special scenario for handling classic T-PEN objects.
+                else if(currentAnnoList == "noList"){ //noList is a special scenario, it is depricated at this point.
                     if(beforeIndex == -1){ //New line vs new column
                         $(".newColumn").attr({
                             "lineserverid" : dbLine["@id"],
@@ -3836,21 +3787,19 @@ function toggleLineCol(){
                     transcriptletToUpdate.attr("lineheight", convertedNewLineHeight); //Need to put this on the transcriptlet so updateLine() passes the correct value. 
                 }
                 else{ //User is trying to delete a line that is not the last line, do nothing
-                    //removedLine = $(e);
-                    //tpen.screen.isDestroyingLine = true;
                     $("#parsingCover").hide();
                     return false;
                 }
             }
             else{ //user is deleting a line, could be merge or delete mode
-                    if(deleteOnly){ //this would mean it is delete happening in delete mode, so allow it.
+                if(deleteOnly){ //this would mean it is delete happening in delete mode, so allow it.
 
-                    }
-                    else{ //this would mean it is a delete happening in merge mode.
-                        alert("To delete a line, deactivate 'Merge Lines' and activate 'Remove Last Line'.");
-                        $("#parsingCover").hide();
-                        return false;
-                    }
+                }
+                else{ //this would mean it is a delete happening in merge mode.
+                    alert("To delete a line, deactivate 'Merge Lines' and activate 'Remove Last Line'.");
+                    $("#parsingCover").hide();
+                    return false;
+                }
             }
             var params = new Array({name:"remove", value:removedLine.attr("lineserverid")});
 
@@ -3880,53 +3829,6 @@ function toggleLineCol(){
         }
     }
     
-//    function removeLine(e, columnDelete, deleteOnly){
-//        /**
-//     * Removes clicked line, merges if possible with the following line.
-//     * updateLine(e,additionalParameters) handles the original, resized line.
-//     * 
-//     * @param e clicked line element from lineChange(e) via saveNewLine(e)
-//     * @see lineChange(e)
-//     * @see saveNewLine(e)
-//     */
-//    console.log("remove line");
-//        $("#imageTip").hide();
-//        var removedLine = $(e);
-//        if(columnDelete){
-//            var lineID = "";
-//            removedLine.remove();
-//            return false;
-//        }
-//        else{
-//            if ($(e).attr("lineleft") == $(e).next(".parsing").attr("lineleft")) {
-//                console.log("this will be a merge....");
-//                removedLine = $(e).next();
-//                var removedLineHeight = removedLine.height();
-//                var currentLineHeight = $(e).height();
-//                var newLineHeight = removedLineHeight + currentLineHeight;
-//                var convertedNewLineHeight = newLineHeight / $("#imgTop").height() * 100;
-//                $(e).css({
-//                    "height" :  convertedNewLineHeight+"%",
-//                    "top" :     $(e).css("top")
-//                }).addClass("newDiv").attr({
-//                    "lineheight":   convertedNewLineHeight
-//                });
-//            } else if ($(e).hasClass("deletable")){ //&& $(".transcriptlet[lineserverid='"+$(e).attr("lineserverid")+"']").find("textarea").val().length > 0
-//                console.log("this will be a delete...");
-//                var cfrm = confirm("Removing this line will remove any data contained as well.\n\nContinue?");
-//                if(!cfrm){
-//                    $("#parsingCover").hide();
-//                    return false;
-//                }
-//                isDestroyingLine = true;
-//            } 
-//            var params = new Array({name:"remove",value:removedLine.attr("lineserverid")});
-//            removedLine.remove(); 
-//            removeTranscriptlet(removedLine.attr("lineserverid"),$(e).attr("lineserverid"), true, "cover");
-//            return params;
-//        }
-//    
-//    }
      /**
      * Removes transcriptlet when line is removed. Updates transcriplet
      * if line has been merged with previous.
@@ -3971,34 +3873,16 @@ function toggleLineCol(){
                 }
                 return thisValue;
             });
-            //console.log("line height for update is line clicked height "+ toUpdate.attr("lineheight") + " + line being removed height " + parseFloat(removedLine2.attr("lineheight")));
-            //var lineHeightForUpdate = parseFloat(toUpdate.attr("lineheight")) + parseFloat(removedLine2.attr("lineheight"));
-            //console.log(lineHeightForUpdate);
-            //toUpdate.attr("lineheight", lineHeightForUpdate);   
+
         }
         else{
-            console.log("yes it is. delete!");
+            //console.log("yes it is. delete!");
         }
 
         var index = -1;
         currentFolio = parseInt(currentFolio);
         var currentAnnoList = annoLists[currentFolio -1];
          if(currentAnnoList !== "noList" && currentAnnoList !== "empty"){ // if it IIIF, we need to update the list
-            console.log("Get anno list");
-            var annosURL = "getAnno";
-            var properties = {"@id": currentAnnoList};
-            var paramOBJ = {"content": JSON.stringify(properties)};
-            //$.post(annosURL, paramOBJ, function(annoList){
-//                try{
-//                    annoList = JSON.parse(annoList);
-//                }
-//                catch(e){ //may not need to do this here
-//                    $("#transTemplateLoading p").html("Something went wrong. Did not delete a line correctly.  Refresh the page to try again.");
-//                    $('.transLoader img').attr('src',"images/missingImage.png");
-//                    $(".trexHead").show();
-//                    $("#genericIssue").show(1000);
-//                    return false;                
-//                }
                 var currentAnnoList = transcriptionFolios[currentFolio-1].otherContent[0];
                 var annoListID = currentAnnoList["@id"];
                 console.log("got it");
@@ -4020,20 +3904,19 @@ function toggleLineCol(){
                         var url = "updateAnnoList";
                         var paramObj = {"@id":annoListID, "resources": currentAnnoList.resources};
                         var params = {"content":JSON.stringify(paramObj)};
-                        $.post(url, params, function(data){
-                            //console.log("update from delete finished");
-                            currentFolio = parseInt(currentFolio);
-                            annoLists[currentFolio - 1] = annoListID;
-                            if(!removeNextLine){
+                        if(!removeNextLine){
+                            $.post(url, params, function(data){
+                                //console.log("update from delete finished");
+                                currentFolio = parseInt(currentFolio);
+                                annoLists[currentFolio - 1] = annoListID;
                                 $("#parsingCover").hide();
-                                console.log("hide cover.");
-                            }
-                            else{
-                                console.log("now we have to update the line that was clicked with the new line height from the one we removed.")
-                                updateLine(toUpdate);
-                            }
-
-                        });
+                            });
+                            
+                        }
+                        else{
+                            console.log("now we have to update the line that was clicked with the new line height from the one we removed.")
+                            updateLine(toUpdate);
+                        }
                         break;
                     }
                 }                                         
@@ -4068,21 +3951,7 @@ function toggleLineCol(){
         //console.log(currentAnnoList);
          if(currentAnnoList !== "noList" && currentAnnoList !== "empty"){ // if it IIIF, we need to update the list
         //console.log("Get annos for column removal");
-            var annosURL = "getAnno";
-            var properties = {"@id": currentAnnoList};
-            var paramOBJ = {"content": JSON.stringify(properties)};
             currentAnnoList = transcriptionFolios[currentFolio-1].otherContent[0];
-           // $.post(annosURL, paramOBJ, function(annoList){
-//                try{
-//                    annoList = JSON.parse(annoList);
-//                }
-//                catch(e){ //may not need to do this here
-//                    $("#transTemplateLoading p").html("Something went wrong. Did not remove a line correctly.  Refresh the page to try again.");
-//                    $('.transLoader img').attr('src',"images/missingImage.png");
-//                    $(".trexHead").show();
-//                    $("#genericIssue").show(1000);
-//                    return false;                
-//                }
                 var annoListID = currentAnnoList["@id"];
                 //console.log("got them");
                 //console.log(currentAnnoList.resources);
@@ -4123,7 +3992,6 @@ function toggleLineCol(){
                         });
                     }
                 }
-            //});
                 
          }
          else{
