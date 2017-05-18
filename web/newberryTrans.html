@@ -873,6 +873,12 @@
     //Page load event triggers and attached here.
     $(document).ready(function(){
         attachWindowResize();
+        //Stop page from being out of wack after following a help header link
+        $("#helpHeaders a").click(function(){
+            setTimeout(function(){
+                document.body.scrollTop = document.documentElement.scrollTop = 0;
+            },1);
+        });
         $("#imgTop, #imgBottom").css("height", "400px");
         $("#imgTop img, #imgBottom img").css("height", "400px");
         $("#imgTop img, #imgBottom img").css("width", "auto");

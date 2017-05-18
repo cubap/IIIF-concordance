@@ -2160,97 +2160,6 @@ function toggleSpecialChars(event){
      * to full height. From here, we need to load to interface
      * for the selected tool. 
      */
-//     function hideWorkspaceForParsing(){
-//        $("#parsingBtn").css("box-shadow: none;");
-//        originalCanvasHeight = $("#transcriptionCanvas").height();
-//        originalCanvasWidth = $("#transcriptionCanvas").width();
-//        imgTopOriginalTop = $("#imgTop img").css("top");
-//        //$("#pageJump").attr("disabled", "disabled");
-//         var pageJumpIcons = $("#pageJump").parent().children("i");
-//            pageJumpIcons[0].setAttribute('onclick', 'firstFolio("parsing");');
-//            pageJumpIcons[1].setAttribute('onclick', 'previousFolio("parsing");');
-//            pageJumpIcons[2].setAttribute('onclick', 'nextFolio("parsing");');
-//            pageJumpIcons[3].setAttribute('onclick', 'lastFolio("parsing");');
-//        $("#prevCanvas").attr("onclick", "");
-//        $("#nextCanvas").attr("onclick", "");
-//        
-//        //$("#pageJump").siblings().removeAttr("onclick").css("color", "red");
-////        bookmarkInfo = {"top": $("#bookmark").position().top, "left":$("#bookmark").position().left,
-////            "height": $("#bookmark").height()+"px", "width":$("#bookmark").width+"px"};
-//
-//        $("#imgTop").addClass("fixingParsing");
-//        var topImg = $("#imgTop img");
-//        imgRatio = topImg.width() / topImg.height();
-//        var wrapWidth = imgRatio*$("#transcriptionTemplate").height();
-//        var PAGEWIDTH = $("#transcriptionTemplate").width();
-//        
-//        if (wrapWidth > PAGEWIDTH-350)wrapWidth = PAGEWIDTH-350;
-//        $("#tools").children("[id$='Split']").hide();
-//        $("#parsingSplit").css({
-//            "display": "inline-block",
-//            "height": window.innerHeight+"px"
-//        }).fadeIn();
-//        
-//        topImg.css({
-//                "top":"0px",
-//                "left":"0px",
-//                "height":"auto",
-//                "overflow":"auto"
-//        });
-//        $("#imgTop .lineColIndicatorArea").css({
-//            "top":"0px",
-//            "left":"0px"
-//        });
-//        
-//        $("#transcriptionTemplate").css("max-width", "57%");
-//        //the width and max-width here may need to be played with a bit.
-//        $("#transcriptionTemplate").resizable({
-//              disabled:false,
-//              minWidth: window.innerWidth / 2,
-//              maxWidth: window.innerWidth * .75,
-//              start: function(event, ui){
-//                  originalRatio = $("#transcriptionCanvas").width() / $("#transcriptionCanvas").height();
-//              },
-//              resize: function(event, ui) {
-//                  var width = ui.size.width;
-//                  var height = 1/originalRatio * width;
-//
-//                  $("#transcriptionCanvas").css("height", height+"px").css("width", width+"px");
-//                  $(".lineColIndicatorArea").css("height", height+"px");
-//                  var splitWidth = window.innerWidth - (width+35) + "px";
-//                  $(".split img").css("max-width", splitWidth);
-//                  $(".split:visible").css("width", splitWidth);
-//              },
-//              stop: function(event, ui){;
-//                  //$(".lineColIndicator .lineColOnLine").css("line-height", $(this).height()+"px");
-//              }
-//            });
-//        
-//        $("#transWorkspace,#imgBottom").hide();
-//        if(screen.width == $(window).width() && screen.height == window.outerHeight){
-//        $(".centerInterface").css("text-align", "center"); //.css("background-color", "#e1f4fe")
-//        }
-//        else{
-//            $(".centerInterface").css("text-align", "left"); //.css("background-color", "#e1f4fe")
-//        }
-//        $("#noLineWarning").hide();
-//            window.setTimeout(function(){
-//                $("#imgTop, #imgTop img").height($(window).innerHeight()); 
-//                $("#imgTop img").css("width" , "auto");
-//                $("#imgTop").css("width" , $("#imgTop img").width());
-//                $("#imgTop").css("height" , $("#imgTop img").height());
-//                //At this point, transcription canvas is the original height and width of the full page image.  We can use that for when we resume transcription. 
-//                $("#transcriptionCanvas").css("height" , $(window).innerHeight());
-//                $(".lineColIndicatorArea").css("height", $(window).innerHeight());
-//                $("#transcriptionCanvas").css("display" , "block");
-//            }, 500);
-//            window.setTimeout(function(){
-//                //in here we can control what interface loads up.  writeLines draws lines onto the new full size transcription image.
-//                $('.lineColIndicatorArea').hide();
-//                writeLines($("#imgTop img"));
-//            },1200);
-//         
-//    };
     
     function hideWorkspaceForParsing(){
         if(liveTool === "parsing"){
@@ -2258,15 +2167,11 @@ function toggleSpecialChars(event){
         }
         liveTool = "parsing";
         $("#parsingBtn").css("box-shadow: none;");
-        //originalCanvasHeight = $("#transcriptionCanvas").height(); //make sure these are set correctly
-        //originalCanvasWidth = $("#transcriptionCanvas").width(); //make sure these are set correctly
         imgTopOriginalTop = $("#imgTop img").css("top");
         if ($("#transcriptionTemplate").hasClass("ui-resizable")){
             $("#transcriptionTemplate").resizable('destroy');
         }
         $("#transcriptionTemplate").css("max-width", "55%").css("width", "55%");
-        //$("#transcriptionCanvas").css("max-height", window.innerHeight + "px");
-        //$("#transcriptionTemplate").css("max-height", window.innerHeight + "px");
         $("#controlsSplit").hide();
         var ratio = originalCanvasWidth / originalCanvasHeight;
         var newCanvasWidth = originalCanvasWidth * .55;
@@ -2395,7 +2300,7 @@ function toggleSpecialChars(event){
 
 
     /* Reset the interface to the full screen transcription view. */
-    function fullPage(){;
+    function fullPage(){
         if ($("#overlay").is(":visible")) {
             $("#overlay").click();
             return false;
@@ -2439,19 +2344,12 @@ function toggleSpecialChars(event){
         var adjustedHeightForFullscreen = (originalCanvasHeight2 / originalCanvasWidth2) * screenWidth;
         $("#transcriptionCanvas").css("height", adjustedHeightForFullscreen+"px");
         $(".lineColIndicatorArea").css("height", adjustedHeightForFullscreen+"px");
-//        $("#imgTop, #imgBottom").hover(function(){
-//            var color = colorThisTime.replace(".4", "1");
-//            $('.activeLine').css('box-shadow', '0px 0px 15px 8px '+color);
-//        }, function(){
-//            $('.activeLine').css('box-shadow', '0px 0px 15px 8px '+colorThisTime);
-//        });
         $.each($(".lineColOnLine"),function(){
               $(this).css("line-height", $(this).height()+"px");
           });
-//        if(focusItem[0] == null && focusItem[1] == null){
-//              updatePresentation($("#transcriptlet_1"));
-//        }
-        
+        setTimeout(function(){
+              document.body.scrollTop = document.documentElement.scrollTop = 0;
+          },1);
     }
     
 function splitPage(event, tool) {
