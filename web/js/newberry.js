@@ -24,6 +24,7 @@
     var adjustRatio = 0;
     var imgBottomPositionRatio = 0;
     var imgTopPositionRatio = 0;
+    var navMemory = 0;
     //var basePath = window.location.protocol + "//" + window.location.host;
     
     /* Load the interface to the first page of the manifest. */
@@ -227,6 +228,7 @@
                 annoList = JSON.parse(annoList);
             }
             catch(e){ //dont kill it here
+                  console.warn("I could not gather and populate for the preview pages.");
 //                $("#transTemplateLoading p").html("Something went wrong. We could not get the annotation data FOR THE PREVIEW MODULE.  Refresh the page to try again.");
 //                $('.transLoader img').attr('src',"images/missingImage.png");
 //                $(".trexHead").show();
@@ -343,6 +345,7 @@
         }
         catch(e){ //dont kill it here
             $("#transTemplateLoading p").html("Something went wrong. We could not get the special characters.  Refresh the page to try again.");
+            console.warn("I could not parse special chars.");
 //            $('.transLoader img').attr('src',"images/missingImage.png");
 //            $(".trexHead").show();
 //            $("#genericIssue").show(1000);
@@ -381,10 +384,12 @@
             xmlTags = JSON.parse(xmlTags);
         }
         catch(e){ //may not need to do this here
-            $("#transTemplateLoading p").html("Something went wrong. We could not get the information about the leader for this project.  Refresh the page to try again.");
-            $('.transLoader img').attr('src',"images/missingImage.png");
-            $(".trexHead").show();
-            $("#genericIssue").show(1000);
+            $("#transTemplateLoading p").html("Something went wrong. We could not get the information about the XML tags for this project.  Refresh the page to try again.");
+//            $('.transLoader img').attr('src',"images/missingImage.png");
+//            $(".trexHead").show();
+//            $("#genericIssue").show(1000);
+                console.warn("I could not parse XML.");
+
             return false;                
         }
         var tagsInOrder = [];
@@ -468,6 +473,8 @@
                         catch(e){ //may not need to do this here
                             $("#transTemplateLoading p").html("Something went wrong. We could not get the information about the leader for this project.  Refresh the page to try again.");
                             $('.transLoader img').attr('src',"images/missingImage.png");
+                            console.warn("I could not leaders of the project.");
+
                             //$(".trexHead").show();
                             //$("#genericIssue").show(1000);
                             //return false;                
@@ -478,6 +485,8 @@
                         catch(e){ //may not need to do this here
                             $("#transTemplateLoading p").html("Something went wrong. We could not get the information about the folios for this project.  Refresh the page to try again.");
                             $('.transLoader img').attr('src',"images/missingImage.png");
+                            console.warn("I could not parse folios.");
+
                             //$(".trexHead").show();
                             //$("#genericIssue").show(1000);
                             //return false;                
@@ -529,6 +538,8 @@
                             catch(e){
                                 $("#transTemplateLoading p").html("Something went wrong. We could not parse the manifest data.  Refresh the page to try again.");
                                 $('.transLoader img').attr('src',"images/missingImage.png");
+                                console.warn("I could not parse project data.");
+
                                 //$(".trexHead").show();
                                 //$("#genericIssue").show(1000);
                                 return false;                
@@ -582,6 +593,8 @@
                                     else{
                                         $("#transTemplateLoading p").html("Something went wrong. We could not get the sequence from the manifest.  Refresh the page to try again.");
                                         $('.transLoader img').attr('src',"images/missingImage.png");
+                                                    console.warn("I could not find a manifest sequence.");
+
                                         //$(".trexHead").show();
                                         //$("#genericIssue").show(1000);
                                         return false;               
@@ -635,6 +648,8 @@
                     catch(e){ //may not need to do this here
                         $("#transTemplateLoading p").html("Something went wrong. The data for this object is not proper JSON.  Resubmit or refresh the page to try again.");
                         $('.transLoader img').attr('src',"images/missingImage.png");
+                                    console.warn("I could not parse user json input.");
+
                         //$(".trexHead").show();
                         //$("#genericIssue").show(1000);
                         return false;                
@@ -715,6 +730,8 @@
                                 catch(e){ //may not need to do this here
                                     $("#transTemplateLoading p").html("Something went wrong. We could not get the information about the leader for this project.  Refresh the page to try again.");
                                     $('.transLoader img').attr('src',"images/missingImage.png");
+                                                console.warn("I could not parse leaders.");
+
                                     //$(".trexHead").show();
                                     //$("#genericIssue").show(1000);
                                     //return false;                
@@ -725,6 +742,8 @@
                                 catch(e){ //may not need to do this here
                                     $("#transTemplateLoading p").html("Something went wrong. We could not get the information about the folios for this project.  Refresh the page to try again.");
                                     $('.transLoader img').attr('src',"images/missingImage.png");
+                                                console.warn("I could not parse folios.");
+
                                     //$(".trexHead").show();
                                     //$("#genericIssue").show(1000);
                                     //return false;                
@@ -766,6 +785,8 @@
                                         catch(e){ //may not need to do this here
                                             $("#transTemplateLoading p").html("Something went wrong. We could not get the manifest out of the TPEN data for this project.  Refresh the page to try again.");
                                             $('.transLoader img').attr('src',"images/missingImage.png");
+                                                        console.warn("I could get parse a manifest object.");
+
                                             //$(".trexHead").show();
                                             //$("#genericIssue").show(1000);
                                             return false;                
@@ -1021,11 +1042,13 @@
     }
     
       /*
-     * @paran canvasObj  A canvas object to extrac transcription lines from and draw to the interface. 
+     * @paran canvasObj  A canvas object to extrac transcription lines from and draw to the interface. Handles master project designation.
      */
     function drawLinesToCanvas(canvasObj, parsing){
         var lines = [];
         currentFolio = parseInt(currentFolio);
+        //Clear any existing stuff.  
+        $(".transcriptlet, .parsing, .line, .lineColdIndicator, .fullP").remove();
         //console.log("Draw lines");
 //        //console.log(canvasObj);
         if(canvasObj.resources !== undefined && canvasObj.resources.length > 0){
@@ -1036,11 +1059,68 @@
                 }
             }
             linesToScreen(lines);
-            updateURL("p");
             $("#transTemplateLoading").hide();
             $("#transcriptionTemplate").show();
         }
-        else{ //we have the anno list for this canvas (potentially), so query for it.  If not found, then consider this an empty canvas.
+        else if(canvasObj.otherContent && canvasObj.otherContent.length > 0){
+            var annoList = transcriptionFolios[currentFolio-1].otherContent;
+            var currentList = {};
+            if(annoList.length > 0){
+                //Always default to the master list, which was the first list created for the canvas.  That way, the annotation lists associated with the master are still supported.
+                var masterList = {};
+                //lines = masterList.resources;
+                //currentList = masterList;
+                //annoLists[currentFolio -1] = masterList["@id"];
+                $.each(annoList, function(){
+                    //if we find the master list, make that the default
+                    if(this.proj === "master"){
+                        //console.log("master set to default");
+                        masterList = this;
+                        lines = this.resources;
+                        currentList = this;
+                        //TODO we do not want someone who is not an admin to be able to edit this list.  Do a check here and make annoLists[currentFolio -1] = "master" so it cannot be written to.
+                        annoLists[currentFolio -1] = this["@id"];
+                        transcriptionFolios[currentFolio-1].otherContent[0] = this;
+                    }
+                    if(this.proj !== undefined && this.proj!=="" && this.proj == theProjectID){
+                        //These are the lines we want to draw because the projectID matches.  Overwrite master if necessary.
+                        //console.log("Lines we wanna draw");
+                        lines = this.resources;
+                        currentList = this;
+                        annoLists[currentFolio -1] = this["@id"];
+                        transcriptionFolios[currentFolio-1].otherContent[0] = this;
+                        return false;
+                    }
+                    else{
+                        //It is an annotation list for this canvas in a different project.  We have defaulted to master already.
+                        //console.log("Anno list for this canvas but different project.  ");
+                    }
+                });
+                if(lines.length > 0){
+                    //console.log("Got lines to draw");
+                    $("#transTemplateLoading").hide();
+                    $("#transcriptionTemplate").show();
+                    linesToScreen(lines);
+                }
+                else{ //list has no lines
+                    //console.log("no lines in what we got");
+                    if(parsing !== "parsing"){
+                        $("#noLineWarning").show();
+                        $("#captions").text("There are no lines for this canavs.");
+                    }
+                    $("#imgTop").css("height", "0%");
+                    $("#transTemplateLoading").hide();
+                    $("#transcriptionTemplate").show();
+                    $('#transcriptionCanvas').css('height', $("#imgTop img").height() + "px");
+                    $('.lineColIndicatorArea').css('height', $("#imgTop img").height() + "px");
+                    $("#imgTop img").css("top", "0px");
+                    $("#imgBottom").css("height", "inherit");
+                    $("#parsingBtn").css("box-shadow", "0px 0px 6px 5px yellow");
+                }
+            }
+            updateURL("p");
+        }
+        else{ //Double check in the store for the list.
                 var annosURL = "getAnno";
                 var onValue = canvasObj["@id"];
                 //console.log("get annos for draw for canvas "+onValue);
@@ -1056,6 +1136,7 @@
                         $('.transLoader img').attr('src',"images/missingImage.png");
                         $(".trexHead").show();
                         $("#genericIssue").show(1000);
+                        console.warn("I could not parse the anno list.");
                         return false;                
                     }
                     
@@ -2521,9 +2602,7 @@ function splitPage(event, tool) {
         }
         var colX = column.attr("lineleft");
         // collect lines from column
-        var lines = $(".parsing[lineleft='"+colX+"']");
-        var lineLen = lines.length;
-        var lineCnt = 0;
+        var lines = $(".parsing[lineleft='"+colX+"']");;
         lines.addClass("deletable");
         removeColumnTranscriptlets(lines);
         column.remove();
@@ -3427,6 +3506,8 @@ function toggleLineCol(){
                         $('.transLoader img').attr('src',"images/missingImage.png");
                         $(".trexHead").show();
                         $("#genericIssue").show(1000);
+                        console.warn("I could not parse return from save new line.");
+
                         return false;                
                     }
                     dbLine["@id"] = data["@id"];
@@ -3501,6 +3582,8 @@ function toggleLineCol(){
                             $('.transLoader img').attr('src',"images/missingImage.png");
                             $(".trexHead").show();
                             $("#genericIssue").show(1000);
+                        console.warn("I could not the return from save new line.");
+
                             return false;                
                         }
                         var newAnnoListCopy = newAnnoList;
@@ -3761,6 +3844,8 @@ function toggleLineCol(){
                 console.warn("I could not find the lines to perform this action with, it has gone unsaved.");
                 $(".trexHead").show();
                 $("#genericIssue").show(1000);
+                console.warn("Did not know line to remove.");
+
                 return false;
             }
             toUpdate.find("textarea").val(function(){
@@ -3849,7 +3934,7 @@ function toggleLineCol(){
         //console.log(currentAnnoList);
          if(currentAnnoList !== "noList" && currentAnnoList !== "empty"){ // if it IIIF, we need to update the list
         //console.log("Get annos for column removal");
-            currentAnnoList = transcriptionFolios[currentFolio-1].otherContent[0];
+                currentAnnoList = transcriptionFolios[currentFolio-1].otherContent[0];
                 var annoListID = currentAnnoList["@id"];
                 //console.log("got them");
                 //console.log(currentAnnoList.resources);
@@ -4186,6 +4271,7 @@ function loadIframes(){
                 doit = setTimeout(attachTemplateResize, 100);
             }
             textSize();
+            responsiveNavigation();
         };
 
     }
@@ -4253,6 +4339,37 @@ function loadIframes(){
         resize = (resize < 13) ? 13 : resize;
         $(".theText,.notes,#previous span,#helpPanels ul").css("font-size",resize+"px");
     };
+    
+    function responsiveNavigation(severeCheck){
+        if(!severeCheck && navMemory > 0 && $('.collapsed.navigation').size()){
+            $('.collapsed.navigation').removeClass('collapsed severe');
+            navMemory = 0;
+        }
+        var width = Page.width();
+        var contentWidth = (function(){
+            var w=0;
+            $('.trimSection').each(function(){
+                w+=$(this).width();
+            });
+            return w;
+        })();
+        var addClass = (severeCheck) ? "severe" : "collapsed";
+        var trims = $(".trimSection:visible").length;
+        if(contentWidth>width-(trims*20)){ // margin not accounted for otherwise
+            // content is encroaching and will overlap
+            $('.topTrim.navigation').addClass(addClass);
+            navMemory = contentWidth;
+            !severeCheck && responsiveNavigation(true);
+        }
+        var visibleButtons = $(".buttons button:visible").length + 1; //+1 for split screen 
+        if(window.innerWidth < 700){
+            //We could account for what buttons are visible, but this also controls the buttons to the side of the 
+            //textarea in the .transcriptlet, so I think this minimum is good all around
+            $('#transWorkspace .navigation').addClass(addClass);
+            !severeCheck && responsiveNavigation(true);
+        }
+    }
+    
 
     
     /**

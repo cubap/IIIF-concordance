@@ -1125,10 +1125,7 @@ label {width:auto;padding: 0;float: none;}/*fixme should not have to overwrite*/
     z-index: 3;
     text-align: center;
 }
-.navigation.collapsed #pageJump {
-    max-width: 1.5em;
-    margin: 0 .5em;
-}
+
 #splitScreenTools{
     position: relative;
     border: 2px solid #000;
@@ -1337,10 +1334,7 @@ button.imgTool{
     height: auto;
     width:auto;
 }
-#trimCurrentUser::before {
-    content: "Transcribing as ";
-    white-space: nowrap;
-}
+
 /*a{
     text-decoration: none !important;
     color: white;
@@ -1858,6 +1852,118 @@ button,.navigation, #contribution,
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+}
+
+#helpMe::before {
+    content:"Help ";
+}
+#helpContact::before {
+    content:"Contact ";
+}
+#homeBtn::after {
+    content:" T-PEN Home";
+    white-space: nowrap;
+}
+#projectsBtn::after {
+    content:" Projects";
+    white-space: nowrap;
+}
+#trimCurrentUser::before {
+    content: "Transcribing as ";
+    white-space: nowrap;
+}
+/*#prevPage::after {
+    content:"Prev";
+    white-space: nowrap;
+}
+#prevLine::after{
+    content:"Prev";
+    white-space: nowrap;
+}
+#nextPage::before {
+    content:"Next";
+    white-space: nowrap;
+}
+#nextLine::before{
+    content:"Next";
+    white-space: nowrap;
+}
+#toggleNotes::after{
+    content:"Notes";
+    white-space: nowrap;
+}
+#canvasControls::before {
+    content:"Page Tools ";
+    white-space: nowrap;
+}
+#magnify1::before {
+    content:"Inspect ";
+    white-space: nowrap;
+}
+#toggleChars::before {
+    content:"Characters ";
+    white-space: nowrap;
+}
+#toggleXML::before {
+    content:"XML Tags ";
+    white-space: nowrap;
+}
+
+#transWorkspace .navigation{
+    background-color: transparent !important;
+}*/
+
+
+.navigation.collapsed #pageJump {
+    max-width: 1.5em;
+    margin: 0 .5em;
+}
+.navigation {
+    color: white;
+    background: black; 
+}
+a.navigation {
+    border-color: white;
+}
+.navigation.collapsed #classicSwitch::before,
+.navigation.collapsed #helpMe::before,
+.navigation.collapsed #currentUser::before,
+.navigation.collapsed #homeBtn::after,
+.navigation.collapsed #projectsBtn::after,
+.navigation.collapsed #toggleNotes::after,
+.navigation.collapsed #helpContact::before,
+.navigation.collapsed #prevPage::after,
+.navigation.collapsed #prevLine::after,
+.navigation.collapsed #nextPage::before,
+.navigation.collapsed #nextLine::before,
+.navigation.collapsed #canvasControls::before,
+.navigation.collapsed #magnify1::before,
+.navigation.collapsed #toggleChars::before,
+.navigation.collapsed #toggleXML::before
+{
+    content:"";
+}
+.navigation.collapsed #trimPage,.navigation.collapsed #titleSection {
+    max-width: 4em;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    float: left;
+}
+.navigation.collapsed #titleSection{
+    max-width: 6em;
+}
+.navigation.collapsed #pageJump {
+    max-width: 1.5em;
+    margin: 0 .5em;
+}
+.navigation.collapsed.severe #titleSection,
+.navigation.collapsed.severe #classicSection,
+.navigation.collapsed.severe #currentUser,
+.navigation.collapsed.severe #contactSection,
+.navigation.collapsed.severe #maintenance
+{
+    display:none;
 }
 /* Flexible classing */
 .flex-container{

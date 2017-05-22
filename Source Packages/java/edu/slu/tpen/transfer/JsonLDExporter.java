@@ -139,48 +139,6 @@ public class JsonLDExporter {
       imageAnnot.put("on", canvasID);
       images.add(imageAnnot);
       resources.add(imageAnnot);
-      // lineID, textUnencoded, x, y, width, height, comment
-//      try (Connection conn = getDBConnection()) {
-//         try (PreparedStatement stmt = conn.prepareStatement("SELECT * FROM transcription WHERE projectID = ? AND folio = ? ORDER BY x, y")) {
-//            stmt.setInt(1, projID);
-//            stmt.setInt(2, f.getFolioNumber());
-//            ResultSet rs = stmt.executeQuery();
-//            while (rs.next()) {
-//               // Body of the annotation.  Contains the actual text.
-///*            text = rs.getString("text");
-//            comment = rs.getString("comment");
-//            UID = rs.getInt("creator");
-//            lineID = rs.getInt("id");
-//            x = rs.getInt("x");
-//            y = rs.getInt("y");
-//            width = rs.getInt("width");
-//            height = rs.getInt("height");
-//            this.projectID = rs.getInt("projectID");
-//            this.folio = rs.getInt("folio");
-//            date = rs.getDate("date"); */
-//               int lineID = rs.getInt("id");
-//               Map<String, Object> lineAnnot = new LinkedHashMap<>();
-//               String lineURI = projName + "/line/" + lineID;
-//               lineAnnot.put("@id", lineURI);
-//               lineAnnot.put("@type", "oa:Annotation");
-//               lineAnnot.put("motivation", "sc:painting");
-//               lineAnnot.put("resource", buildQuickMap("@type", "cnt:ContentAsText", "cnt:chars", ESAPI.encoder().decodeForHTML(rs.getString("text"))));
-//               lineAnnot.put("on", String.format("%s#xywh=%d,%d,%d,%d", canvasID, rs.getInt("x"), rs.getInt("y"), rs.getInt("width"), rs.getInt("height")));
-//               resources.add(lineAnnot);
-//
-//               String note = rs.getString("comment");
-//               if (StringUtils.isNotBlank(note)) {
-//                  Map<String, Object> noteAnnot = new LinkedHashMap<>();
-//                  noteAnnot.put("@id", projName + "/note/" + lineID);
-//                  noteAnnot.put("@type", "oa:Annotation");
-//                  noteAnnot.put("motivation", "oa:commenting");
-//                  noteAnnot.put("resource", buildQuickMap("@type", "cnt:ContentAsText", "cnt:chars", note));
-//                  noteAnnot.put("on", lineURI);
-//                  resources.add(noteAnnot);
-//               }
-//            }
-//         }
-//      }
       
       JSONArray otherContent = new JSONArray();
       otherContent = Canvas.getAnnotationListsForProject(projID, canvasID, u.getUID());

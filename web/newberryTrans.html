@@ -5,9 +5,9 @@
         <title>Newberry Transcription</title>
         <link type="text/css" href="css/custom-theme/jQuery.css" rel="Stylesheet" />
         <link type="text/css" href="css/newberryTransSkin.css" rel="Stylesheet" />
+        <script type="text/javascript" src="js/newberry.js"></script>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.js"></script>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.js"></script>
-        <script type="text/javascript" src="js/newberry.js"></script>
         <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
         <script src="https://use.fontawesome.com/4ae676603d.js"></script>
     </head>    
@@ -76,14 +76,14 @@
 <!--            <span class="trimSection">Help</span> -->
             <div class="trimDividor" style="position:absolute;right:0;top:0;z-index: 1;">
                 <span class="trimSection">
-                    <span class="fa fa-home"></span><a title="Paleography Home" href="https://paleography.library.utoronto.ca/contact" target="_blank">Home</a>
+                    <span class="fa fa-home"></span><a id="homeBtn" title="Paleography Home" href="https://paleography.library.utoronto.ca/contact" target="_blank"></a>
                 </span>
                 <span class="trimSection">
-                    <a id="projectsBtn" class="exitPage wBtn ui-state-default ui-button" title="My Paleography Projects" href="project.jsp">Projects</a>
+                    <a id="projectsBtn" class="exitPage wBtn ui-state-default ui-button" title="My Paleography Projects" href="project.jsp"></a>
                     <span class="fa fa-book"></span>       
                 </span>
-                <span class="trimSection"><a href="https://paleography.library.utoronto.ca/contact" target="_blank">Contact</a><span class="fa fa-comment"></span></span> 
-                <span class="trimSection"><a href="https://paleography.library.utoronto.ca/contact" target="_blank">Help</a><i class="fa fa-question" aria-hidden="true"></i></span>
+                <span class="trimSection"><a id="helpContact" title="Contact the French Paleography team" href="https://paleography.library.utoronto.ca/contact" target="_blank"></a><span class="fa fa-comment"></span></span> 
+                <span class="trimSection"><a id="helpMe" title="Get Help" href="https://paleography.library.utoronto.ca/contact" target="_blank"></a><i class="fa fa-question" aria-hidden="true"></i></span>
             </div>
         </div>
 
@@ -871,7 +871,7 @@
     };
     
     //Page load event triggers and attached here.
-    $(document).ready(function(){
+    $(window).on('load',function(){
         attachWindowResize();
         //Stop page from being out of wack after following a help header link
         $("#helpHeaders a").click(function(){
