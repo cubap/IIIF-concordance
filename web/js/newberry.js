@@ -4433,5 +4433,3 @@ function resetImageTools(newPage){
 // Shim console.log to avoid blowing up browsers without it
 if (!window.console) window.console = {};
 if (!window.console.log) window.console.log = function () { };
-
-
