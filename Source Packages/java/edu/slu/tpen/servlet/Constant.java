@@ -19,7 +19,7 @@ package edu.slu.tpen.servlet;
  * @author hanyan
  */
 public class Constant {
-      public static String ANNOTATION_SERVER_ADDR = "http://165.134.105.29/annotationstore";
+      public static String ANNOTATION_SERVER_ADDR = "http://165.134.107.94/annotationstore";
       public static String PALEO_CANVAS_ID_PREFIX = "https://paleography.library.utoronto.ca/islandora/object";
     //public static String ANNOTATION_SERVER_ADDR = "http://localhost:8080/annotationstore";
 }

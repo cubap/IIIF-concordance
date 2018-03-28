@@ -2438,6 +2438,7 @@ function splitPage(event, tool) {
     var newCanvasWidth = window.innerWidth * .55;
     var ratio = originalCanvasWidth / originalCanvasHeight;
     var fullPageMaxHeight = window.innerHeight - 125; //100 comes from buttons above image and topTrim
+    var iframeDirectLink = "";
     $("#transcriptionTemplate").css({
         "width"   :   "55%",
         "display" : "inline-table"
@@ -2501,6 +2502,39 @@ function splitPage(event, tool) {
         $("#compareSplit img").css("max-height", fullPageMaxHeight); //If we want to keep the full image on page, it cant be taller than that.
         $("#compareSplit img").css("max-width", splitWidthAdjustment); //If we want to keep the full image on page, it cant be taller than that.
         $("#compareSplit").css("width", splitWidthAdjustment);
+    }
+    else if(tool === "partialTrans"){
+        //default is https://paleography.library.utoronto.ca/content/partial_transcriptions?response_type=embed
+        var currentCanvasID = transcriptionFolios[currentFolio - 1]["@id"];
+        var utlID = ""
+        if(currentCanvasID.indexOf("paleography:" > -1)){
+            //We need to get the UTL canvasID for this particular canvas to support direct linking to the transcription for this object
+            utlID = currentCanvasID.substr(currentCanvasID.indexOf("paleography:"));
+            iframeDirectLink = "https://paleography.library.utoronto.ca/content/transcript_"+utlID;
+            $("#partialTransSplit").children("iframe").attr("data_src", iframeDirectLink);
+        }
+        else{
+            //This is not a UTL canvas or a canvas with a different @id format.  Default to list of partial trans
+            //The default is already populated in the html, so do nothing and the default will fire.
+        }
+        splitScreen.find("iframe").attr("src", splitScreen.find("iframe").attr("data_src"));
+        
+    }
+    else if(tool === "essay"){
+        //deault is https://paleography.library.utoronto.ca/content/background-essays?response_type=embed
+        var currentCanvasID = transcriptionFolios[currentFolio - 1]["@id"];
+        var utlID = "";
+        if(currentCanvasID.indexOf("paleography:" > -1)){
+            //We need to get the UTL canvasID for this particular canvas to support direct linking to the transcription for this object
+            utlID = currentCanvasID.substr(currentCanvasID.indexOf("paleography:"));
+            iframeDirectLink = "https://paleography.library.utoronto.ca/content/transcript_"+utlID;
+            $("#partialTransSplit").children("iframe").attr("data_src", iframeDirectLink);
+        }
+        else{
+            //This is not a UTL canvas or a canvas with a different @id format.  Default to list of partial trans
+            //The default is already populated in the html, so do nothing and the default will fire.
+        }
+        splitScreen.find("iframe").attr("src", splitScreen.find("iframe").attr("data_src"));
     }
     else{
         splitScreen.find("iframe").attr("src", splitScreen.find("iframe").attr("data_src"));
