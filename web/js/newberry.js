@@ -468,6 +468,15 @@
                         var leaders = activeProject.ls_leader;
                         tpenFolios = activeProject.ls_fs;
                         try{
+                            projectTools = JSON.parse(projectTools);
+                        }
+                        catch(e){ //may not need to do this here
+                            console.warn("I could not get project tools...reload to try again");
+                            //$(".trexHead").show();
+                            //$("#genericIssue").show(1000);
+                            //return false;                
+                        }
+                        try{
                             leaders = JSON.parse(leaders);
                         }
                         catch(e){ //may not need to do this here
@@ -2507,16 +2516,18 @@ function splitPage(event, tool) {
     }
     else if(tool === "partialTrans"){
         //default is https://paleography.library.utoronto.ca/content/partial_transcriptions?response_type=embed
-        var currentCanvasID = transcriptionFolios[currentFolio - 1]["@id"];
-        var utlID = ""
-        if(currentCanvasID.indexOf("paleography:" > -1)){
-            //We need to get the UTL canvasID for this particular canvas to support direct linking to the transcription for this object
-            utlID = currentCanvasID.substr(currentCanvasID.indexOf("paleography:"));
+        var currentCanvasLabel = transcriptionFolios[currentFolio - 1]["label"];
+        var utlID = "";
+      
+        if(currentCanvasLabel.split("_").length - 1 === 2){ //Must be in format like FP_000_000
+            //We need to get the UTL canvas id for this particular canvas to support direct linking to the transcription for this object
+            utlID = currentCanvasLabel.substring(0,currentCanvasLabel.lastIndexOf("_")).toLowerCase();
             iframeDirectLink = "https://paleography.library.utoronto.ca/content/transcript_"+utlID;
+            console.log("Iframe direct link is" +iframeDirectLink);
             $("#partialTransSplit").children("iframe").attr("data_src", iframeDirectLink);
         }
         else{
-            //This is not a UTL canvas or a canvas with a different @id format.  Default to list of partial trans
+            //This is not a UTL canvas or a canvas with a different label format.  Default to list of partial trans
             //The default is already populated in the html, so do nothing and the default will fire.
         }
         splitScreen.find("iframe").attr("src", splitScreen.find("iframe").attr("data_src"));
@@ -2524,13 +2535,14 @@ function splitPage(event, tool) {
     }
     else if(tool === "essay"){
         //deault is https://paleography.library.utoronto.ca/content/background-essays?response_type=embed
-        var currentCanvasID = transcriptionFolios[currentFolio - 1]["@id"];
+        var currentCanvasLabel = transcriptionFolios[currentFolio - 1]["label"];
         var utlID = "";
-        if(currentCanvasID.indexOf("paleography:" > -1)){
+        if(currentCanvasLabel.split("_").length - 1 === 2){ //Must be in format like FP_000_000
             //We need to get the UTL canvasID for this particular canvas to support direct linking to the essay for this object
-            utlID = currentCanvasID.substr(currentCanvasID.indexOf("paleography:"));
-            iframeDirectLink = "https://paleography.library.utoronto.ca/content/transcript_"+utlID;
-            $("#partialTransSplit").children("iframe").attr("data_src", iframeDirectLink);
+            utlID = currentCanvasLabel.substring(0, currentCanvasLabel.lastIndexOf("_")).toLowerCase();
+            iframeDirectLink = "https://paleography.library.utoronto.ca/content/about_"+utlID;
+            console.log("Iframe direct link is" +iframeDirectLink);
+            $("#essaySplit").children("iframe").attr("data_src", iframeDirectLink);
         }
         else{
             //This is not a UTL canvas or a canvas with a different @id format.  Default to list of essays
