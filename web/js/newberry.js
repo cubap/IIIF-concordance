@@ -992,6 +992,9 @@
 
         if(canvasObj.images[0].resource['@id'] !== undefined && canvasObj.images[0].resource['@id'] !== ""){ //Only one image
             var image = new Image();
+            var origImageURL = canvasObj.images[0].resource['@id'].replace('amp;','');
+            var largerImageURL = origImageURL.replace("/2000", "/3000"); //By default, they server out at height 2000.  Try to get a better image up front at 3000
+            //Ex. https://iiif.library.utoronto.ca/v2/paleography:2083/full/2000,/0/default.jpg
             $(image)
                     .on("load",function() {
                         $("#transTemplateLoading").hide();
@@ -1034,7 +1037,7 @@
                         })
                         .attr("src", "images/missingImage.png");
                     })
-                    .attr("src", canvasObj.images[0].resource['@id'].replace('amp;',''));
+                    .attr("src", largerImageURL);
         }
         else{
              $('.transcriptionImage').attr('src',"images/missingImage.png");
