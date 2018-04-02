@@ -1,10 +1,9 @@
 build.xml
 .settings/
 build/
-src/version.properties
+Source Packages/java/version.properties
 WebContent/WEB-INF/classes/
 .project
 .classpath
 /dist/
-/nbproject/private/
-version.properties
+nbproject/
