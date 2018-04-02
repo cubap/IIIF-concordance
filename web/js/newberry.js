@@ -2451,7 +2451,9 @@ function splitPage(event, tool) {
         $('.split').hide();
     
     var splitScreen = $("#" + tool + "Split");
-    if(!splitScreen.size()) splitScreen = $('div[toolname="' + tool + '"]');
+    if(!splitScreen.size()){
+        //Not sure what this is for...
+    }
     splitScreen.css("display", "block");
     if(tool==="controls"){
         if(liveTool === "controls"){
@@ -2525,13 +2527,13 @@ function splitPage(event, tool) {
         var currentCanvasID = transcriptionFolios[currentFolio - 1]["@id"];
         var utlID = "";
         if(currentCanvasID.indexOf("paleography:" > -1)){
-            //We need to get the UTL canvasID for this particular canvas to support direct linking to the transcription for this object
+            //We need to get the UTL canvasID for this particular canvas to support direct linking to the essay for this object
             utlID = currentCanvasID.substr(currentCanvasID.indexOf("paleography:"));
             iframeDirectLink = "https://paleography.library.utoronto.ca/content/transcript_"+utlID;
             $("#partialTransSplit").children("iframe").attr("data_src", iframeDirectLink);
         }
         else{
-            //This is not a UTL canvas or a canvas with a different @id format.  Default to list of partial trans
+            //This is not a UTL canvas or a canvas with a different @id format.  Default to list of essays
             //The default is already populated in the html, so do nothing and the default will fire.
         }
         splitScreen.find("iframe").attr("src", splitScreen.find("iframe").attr("data_src"));

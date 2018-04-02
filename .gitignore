@@ -7,3 +7,4 @@ WebContent/WEB-INF/classes/
 .classpath
 /dist/
 /nbproject/private/
+version.properties
