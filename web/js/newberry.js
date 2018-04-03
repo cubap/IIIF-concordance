@@ -3260,9 +3260,10 @@ function toggleZenLine(){
 function toggleMinimalLines(){
     if($("#zenLine").hasClass("selected")){
         $('#zenLine')
-        .animate({'background-color':'red'}, 400, 'linear')
-        .delay(400)
-        .animate({'background-color':'#8198AA'}, 2800, 'easeOutCirc');
+        .animate({'background-color':'red'}, 200, 'linear')
+        .animate({'background-color':'#8198AA'}, 200, 'easeOutCirc')
+        .animate({'background-color':'red'}, 200, 'linear')
+        .animate({'background-color':'#8198AA'}, 200, 'easeOutCirc');
         return false;
     }
     minimalLines = !minimalLines;
@@ -3288,9 +3289,10 @@ function toggleMinimalLines(){
 function toggleLineMarkers(){
     if($("#zenLine").hasClass("selected")){
         $('#zenLine')
-        .animate({'background-color':'red'}, 400, 'linear')
-        .delay(400)
-        .animate({'background-color':'#8198AA'}, 2800, 'easeOutCirc');
+        .animate({'background-color':'red'}, 200, 'linear')
+        .animate({'background-color':'#8198AA'}, 200, 'easeOutCirc')
+        .animate({'background-color':'red'}, 200, 'linear')
+        .animate({'background-color':'#8198AA'}, 200, 'easeOutCirc');
         return false;
     }
     if (($('.lineColIndicator:first').is(":visible")&& $('.lineColIndicator:eq(1)').is(":visible"))
@@ -3311,9 +3313,10 @@ function toggleLineMarkers(){
 function toggleLineCol(){
     if($("#zenLine").hasClass("selected")){
         $('#zenLine')
-        .animate({'background-color':'red'}, 400, 'linear')
-        .delay(400)
-        .animate({'background-color':'#8198AA'}, 2800, 'easeOutCirc');
+        .animate({'background-color':'red'}, 200, 'linear')
+        .animate({'background-color':'#8198AA'}, 200, 'easeOutCirc')
+        .animate({'background-color':'red'}, 200, 'linear')
+        .animate({'background-color':'#8198AA'}, 200, 'easeOutCirc');
         return false;
     }
     if ($('.lineColOnLine:first').css("display") === "block"){
