@@ -2520,8 +2520,7 @@ function splitPage(event, tool) {
     else if(tool === "partialTrans"){
         //default is https://paleography.library.utoronto.ca/content/partial_transcriptions?response_type=embed
         var currentCanvasLabel = transcriptionFolios[currentFolio - 1]["label"];
-        var utlID = "";
-      
+        var utlID = "";    
         if(currentCanvasLabel.split("_").length - 1 === 2){ //Must be in format like FP_000_000
             //We need to get the UTL canvas id for this particular canvas to support direct linking to the transcription for this object
             utlID = currentCanvasLabel.substring(0,currentCanvasLabel.lastIndexOf("_")).toLowerCase();
@@ -2534,7 +2533,6 @@ function splitPage(event, tool) {
             //The default is already populated in the html, so do nothing and the default will fire.
         }
         splitScreen.find("iframe").attr("src", splitScreen.find("iframe").attr("data_src"));
-        
     }
     else if(tool === "essay"){
         //deault is https://paleography.library.utoronto.ca/content/background-essays?response_type=embed

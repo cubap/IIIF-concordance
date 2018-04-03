@@ -208,23 +208,7 @@ textarea:focus{
     position: relative;
     /*display: none;*/
 }
-.lookLikeButtons{
-/*    font-family: "Open Sans","Helvetica Neue",sans-serif;*/
-    font-weight: bold;
-    color: #FFF;
-    border-radius: 4px;
-    height: 26px;
-    background-clip: border-box;
-    background-origin: padding-box;
-    cursor: pointer;
-    background-color: #D14836;
-    position: relative;
-    margin: 0px 3px;
-    padding: 4px 6px;
-    margin: 3px 2px;
-    line-height: 26px;
-    background-color: #272727;
-}
+
 /*.lookLikeButtons:hover{
     background-color: #d14836;
 }*/
@@ -1165,17 +1149,6 @@ label {width:auto;padding: 0;float: none;}/*fixme should not have to overwrite*/
 #brightnessSlider, #contrastSlider{
     margin: 7px 0px 18px 0px;
 }
-.character, .lookLikeButtons{
-  display: block;
-  /*background-color: #D14836;*/
-  background-color:white;
-  cursor: pointer;
-  color: black;
-  padding: 4px 6px;
-}
-.character, .xmlTag{
-    display: inline-block !important;
-}
 
 #parse,#linebreak,#moveimg{
   position: relative;
@@ -1562,7 +1535,7 @@ button.imgTool{
 }*/
 
 
-button, #uploadText, .lookLikeButtons {
+button, #uploadText{
     color:white;
     border-radius: 2px;
     padding: 4px 6px;
@@ -1581,7 +1554,7 @@ button.active {
 button.selected{
     background-color: #8198AA !important;
 }
-.lookLikeButtons, button{
+button{
     font-family: "Open Sans","Helvetica Neue",sans-serif;
     color: #FFF;
     border-radius: 2px;
@@ -2008,7 +1981,6 @@ a.navigation {
 }
 
 #charactersPopin,#xmlTagPopin {
-    background: #ddd;
     margin: -4px;
     padding: 4px 1px;
     margin-right: 4px;
@@ -2063,11 +2035,12 @@ a.navigation {
 .ui-widget-overlay{}
 
 a.editButtons {
-    height: 1.4em;
+    height: 1.2em;
     white-space: nowrap;
     min-width: 4em;
     font-size: small;
-    line-height: 1.4;
+    line-height: 1.2;
+    background-color: #272732;
 }
 /* Center the images inside compare page and view full page */
 /*.compareImage, #fullPageImg{
@@ -2080,10 +2053,56 @@ a.editButtons {
 /*.editButtons::after{
     content: "";
 }
-.character::after,.editButtons::after {
+*/
+.lookLikeButtons{
+/*    font-family: "Open Sans","Helvetica Neue",sans-serif;*/
+    font-weight: bold;
+    color: #FFF;
+    border-radius: 4px;
+    height: 26px;
+    background-clip: border-box;
+    background-origin: padding-box;
+    cursor: pointer;
+    background-color: #D14836;
+    position: relative;
+    margin: 0px 3px;
+    padding: 4px 6px;
+    margin: 3px 2px;
+    line-height: 26px;
+    background-color: #272727;
+}
+
+.xmlTag, .character {
+    display: inline-block !important;
+    line-height: 1.25;
+    min-width: 1em;
+    margin: 0 .25em;
+    counter-increment: hotkey;
+    height: 1.8em;
+    cursor: pointer;
+    color: white;
+    padding: 3px 11px;
+    text-align: center;
+    top: 0px;
+    font-size: 10pt;
+}
+
+.xmlTag::after {
+    content: attr(title);
+    position: absolute;
+    color: #ffe6ff;
+    font-size: .75em;
+    bottom: 0;
+    left: 0;
+    font-family: monospace;
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.character::after {
     content: "CTRL+" counter(hotkey);
     position: absolute;
-    color: #999;
+    color: #ffe6ff;
     font-size: .75em;
     bottom: 0;
     left: 0;
@@ -2091,17 +2110,6 @@ a.editButtons {
     width: 100%;
     text-align: center;
 }
-.character::after, .editButtons::after, .editXMLs::after {
-    content: "CTRL+" counter(hotkey);
-    position: absolute;
-    color: #999;
-    font-size: .75em;
-    bottom: 0;
-    left: 0;
-    font-family: monospace;
-    width: 100%;
-    text-align: center;
-}*/
 .ui-resizable:not(.ui-resizable-disabled),.noTransition,.lineColIndicatorArea {
     -webkit-transition: all 0s !important;
     -moz-transition: all 0s !important;
