@@ -1551,9 +1551,9 @@ button.active {
 .selected button{
     background-color: #8198AA;
 }
-button.selected{
+/*button.selected{
     background-color: #8198AA !important;
-}
+}*/
 button{
     font-family: "Open Sans","Helvetica Neue",sans-serif;
     color: #FFF;
@@ -2115,4 +2115,14 @@ a.editButtons {
     -moz-transition: all 0s !important;
     -o-transition: all 0s !important;
     transition: all 0s !important;
+}
+
+.minimal{
+    border-top: none !important;
+    border-left: none !important;
+    border-right: none !important;
+}
+
+.lineColonLine.minimal{
+    padding:0px;
 }

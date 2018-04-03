@@ -738,6 +738,12 @@
                         </dl>
                         <div class="helpSubsection">column controls</div>
                             <dl>
+                                <dt>Zen Line </dt>
+                                <dd>Remove all line information and just focus on the line you are looking at. </dd>
+                                
+                                <dt>Minimal Lines </dt>
+                                <dd>Reduce all lines to their minimal form (only a single line will show, not the box) </dd>
+                                
                                 <dt>Show Lines </dt>
                                 <dd>Toggle the text column lines on and off. </dd>
 
@@ -802,6 +808,8 @@
                         <div id="contrastSlider"></div>
                     </div>
                     <header> Column Controls</header>
+                    <button role="button" id="zenLine" class="block" onclick="toggleZenLine();">Zen Line</button>
+                    <button role="button" id="minimalLines" class="block" onclick="toggleMinimalLines();">Minimal Lines</button>
                     <button id="showTheLines" role="button" class="block selected" onclick="toggleLineMarkers();">
                         Lines
                     </button>
@@ -865,9 +873,14 @@
         var newHeight = $("#imgBottom img").height();
         $("#transcriptionCanvas").css("height",newHeight+"px");
         $(".lineColIndicatorArea").css("height",newHeight+"px");
-        $.each($(".lineColOnLine"),function(){
-              $(this).css("line-height", $(this).height()+"px");
-          });
+        if(minimalLines){
+            $.each($(".lineColOnLine"), function(){$(this).css("line-height", ($(this).height() * 2)-15 + "px"); });
+        }
+        else{
+            $.each($(".lineColOnLine"), function(){
+                $(this).css("line-height", $(this).height() + "px");
+            });
+        }
     };
     
     //Page load event triggers and attached here.
@@ -1022,13 +1035,18 @@
         });
         
         $("#imgTop, #imgBottom").hover(function(){
-            var color = colorThisTime.replace(".4", "1");
-            $('.activeLine').css('box-shadow', '0px 0px 15px 8px '+color);
-            $('.activeLine').css('opacity', '1');
-        }, function(){
-            var color2 = colorThisTime.replace(".4", "1");
-            $('.activeLine').css('box-shadow', '0px 0px 15px 8px '+color2);
-            $('.activeLine').css('opacity', '.6');
+            if(!minimalLines){
+                var color = colorThisTime.replace(".4", "1");
+                $('.activeLine').css('box-shadow', '0px 0px 15px 8px '+color);
+                $('.activeLine').css('opacity', '1');
+            }
+        }
+        , function(){
+            if(!minimalLines){
+                var color2 = colorThisTime.replace(".4", "1");
+                $('.activeLine').css('box-shadow', '0px 0px 15px 8px '+color2);
+                $('.activeLine').css('opacity', '.6');
+            }
         });
 
         
