@@ -3230,6 +3230,7 @@ function markerColors(){
 function toggleZenLine(){
     if($("#zenLine").hasClass("selected")){
         $("#zenLine").removeClass("selected");
+        $("#zenLine").css("background-color", "#272727");
         if($("#minimalLines").hasClass("selected")){
             toggleMinimalLines();
         }

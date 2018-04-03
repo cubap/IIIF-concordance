@@ -1523,18 +1523,6 @@ button.imgTool{
 }
 #ruler1,#ruler2 {display: none;background: black;position: absolute;z-index: 6; pointer-events:none;}
 
-
-
-/* 
-* Paleography Site Skinning
-*
-*/
-/*body{
-    font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
-    overflow-x: hidden;
-}*/
-
-
 button, #uploadText{
     color:white;
     border-radius: 2px;
@@ -1548,12 +1536,10 @@ button, #uploadText{
 button.active {
     background-color: #618797;
 }
-.selected button{
+.selected{
     background-color: #8198AA;
 }
-/*button.selected{
-    background-color: #8198AA !important;
-}*/
+
 button{
     font-family: "Open Sans","Helvetica Neue",sans-serif;
     color: #FFF;
@@ -1568,25 +1554,6 @@ button{
     border:none;
 }
 
-
-
-
-/*button{
-    font-family: 'Open Sans','Helvetica Neue',sans-serif;
-    font-weight: bold;
-    color:white;
-    border-radius: 4px;
-    padding-bottom: 4px;
-    padding-left: 6px;
-    padding-right: 6px;
-    padding-top: 4px;
-    height: 35px;
-    background-clip: border-box;
-    background-origin: padding-box;
-    cursor: pointer;
-    background-color: #272727;
-    border: none;
-}*/
 button:hover{
     background-color: #d14836;
 }
@@ -1600,13 +1567,7 @@ p{
     border:1px solid black;
     display: block;
 }
-/*.lineColIndicator{
-    z-index:10; 
-    position: absolute;
-    border:1px solid white;
-    font-size:.8em;
-    color:white;
-}*/
+
 .lineColIndicator{
     z-index: 10;
     position: absolute;
@@ -1686,10 +1647,6 @@ helpCon
 .ui-slider-horizontal .ui-slider-handle {
     top: -.4em;
     margin-left: -.6em;
-}
-
-.selected{
-    background-color: #D14836;
 }
 
 .nohover:hover{
