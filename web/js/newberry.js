@@ -1673,18 +1673,19 @@ function updatePresentation(transcriptlet) {
       focusItem[1].removeClass("transcriptletBefore transcriptletAfter");
       focusItem[1].prevAll(".transcriptlet").addClass("transcriptletBefore").removeClass("transcriptletAfter");
       focusItem[1].nextAll(".transcriptlet").addClass("transcriptletAfter").removeClass("transcriptletBefore");
-      if($('.transcriptletAfter').length == 0){
-          $('#nextTranscriptlet').hide();
-      }
-      else{
-          $('#nextTranscriptlet').show();
-      }
-      if($('.transcriptletBefore').length == 0){
-          $('#previousTranscriptlet').hide();
-      }
-      else{
-           $('#previousTranscriptlet').show();
-      }
+      //support hide/show of previous/next line buttons if no next/prev line.
+//      if($('.transcriptletAfter').length == 0){
+//          $('#nextTranscriptlet').hide();
+//      }
+//      else{
+//          $('#nextTranscriptlet').show();
+//      }
+//      if($('.transcriptletBefore').length == 0){
+//          $('#previousTranscriptlet').hide();
+//      }
+//      else{
+//           $('#previousTranscriptlet').show();
+//      }
     };
     
   /**
@@ -1696,6 +1697,7 @@ function updatePresentation(transcriptlet) {
       //move background images above and below the workspace
         var lineToMakeActive = $(".lineColIndicator[pair='"+positions.activeLine+"']"); //:first
         var topImageHeight = $("#imgTop img").height();
+        $("#imgTop img,#imgBottom img,#imgTop .lineColIndicatorArea, #imgBottom .lineColIndicatorArea, #bookmark, #imgTop, #imgBottom").addClass('noTransition');
         $("#imgTop").animate({
           "height": positions.imgTopHeight + "%"
         },250)
@@ -1703,18 +1705,22 @@ function updatePresentation(transcriptlet) {
           top: positions.topImgPositionPx + "px",
           left: "0px"
         },250);
+        
        $("#imgTop .lineColIndicatorArea").animate({
           top: positions.topImgPositionPx + "px",
           left: "0px"
         },250);
+        
         $("#imgBottom").find("img").animate({
           top: positions.bottomImgPositionPx  + "px",
           left: "0px"
-        },250)
+        },250);
+        
         $("#imgBottom .lineColIndicatorArea").animate({
           top: positions.bottomImgPositionPx  + "px",
           left: "0px"
         },250);
+        
         if($('.activeLine').hasClass('linesHidden')){
             $('.activeLine').hide();
         }
@@ -1729,19 +1735,20 @@ function updatePresentation(transcriptlet) {
         });
           lineToMakeActive.addClass("activeLine");
           //use the active line color to give the active line a little background color to make it stand out if the box shadow is not enough.
-            if(!minimalLines){
+            if(minimalLines){
                 lineToMakeActive.css({
-                    "box-shadow" : "0px 0px 15px 8px "+activeColor,
-                    "border" : "2px solid "+activeColor,
-                    "opacity" : ".6"
+                    "box-shadow" : "0px 9px 5px -5px "+colorThisTime,
+                    "opacity" : "1"
                 });
             }
             else{
-                lineToMakeActive.css({
-                    "box-shadow" : "0px 9px 5px -5px "+colorThisTime,
+                 lineToMakeActive.css({
+                    "box-shadow" : "0px 0px 15px 8px "+activeColor,
+                    "border" : "2px solid "+activeColor,
                     "opacity" : ".75"
-                });
+                });             
             }
+            setTimeout(function(){ $("#imgTop img,#imgBottom img,#imgTop .lineColIndicatorArea, #imgBottom .lineColIndicatorArea, #bookmark, #imgTop, #imgBottom").removeClass('noTransition'); }, 300);
     }  
     
     /**
@@ -3243,6 +3250,7 @@ function toggleZenLine(){
             toggleLineCol();
         } 
         $("#zenLine").addClass("selected"); //It is important this happen last here.
+        $("#zenLine").css("background-color", "#8198AA");
     }
     
 }
@@ -3265,6 +3273,7 @@ function toggleMinimalLines(){
         adjustForMinimalLines();
         $('.activeLine').addClass("minimal");
         $('.activeLine').css('box-shadow', '0px 9px 5px -5px '+colorThisTime);
+        $('.activeLine').css('opacity', '1');
     }
     else { //remove minimal lines settings
         $("#minimalLines").removeClass("selected");
@@ -3272,7 +3281,9 @@ function toggleMinimalLines(){
         $('.lineColOnLine').removeClass("minimal");
         adjustForMinimalLines();
         $('.activeLine').removeClass("minimal");
-        $('.activeLine').css('box-shadow', '0px 0px 15px 8px '+colorThisTime);
+        var color2 = colorThisTime.replace(".4", "1");
+        $('.activeLine').css('box-shadow', '0px 0px 15px 8px '+color2);
+        $('.activeLine').css('opacity', '.75');
     }
 }
 
