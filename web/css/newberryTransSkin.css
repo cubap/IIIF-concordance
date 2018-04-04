@@ -1785,17 +1785,17 @@ button,.navigation, #contribution,
 }
 
 #helpMe::before {
-    content:"Help ";
+    content:"Help";
 }
 #helpContact::before {
-    content:"Contact ";
+    content:"Contact";
 }
 #homeBtn::after {
-    content:" T-PEN Home";
+    content:"Paleography Home";
     white-space: nowrap;
 }
 #projectsBtn::after {
-    content:" Projects";
+    content:"Projects";
     white-space: nowrap;
 }
 #trimCurrentUser::before {

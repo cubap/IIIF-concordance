@@ -1550,18 +1550,8 @@ function updatePresentation(transcriptlet) {
 //        $("#nextLine").show();
 //        $("#nextPage").hide();
 //    }
-    if(minimalLines){
-        $.each($(".lineColOnLine"), function(){$(this).css("line-height", ($(this).height() * 2)-15 + "px"); });
-    }
-    else{
-        $.each($(".lineColOnLine"), function(){
-            $(this).css("line-height", $(this).height() + "px");
-        });
-    }
-
+    adjustForMinimalLines();
 }
-   
-      
     function setPositions() {
         // Determine size of section above workspace
         var bottomImageHeight = $("#imgBottom img").height();
@@ -1749,12 +1739,29 @@ function updatePresentation(transcriptlet) {
             else{
                 lineToMakeActive.css({
                     "box-shadow" : "0px 9px 5px -5px "+colorThisTime,
-                    "opacity" : ".6"
+                    "opacity" : ".75"
                 });
             }
     }  
+    
+    /**
+     * Helper function to move the line+column marker when toggling minimal line page setting.
+     */
+    function adjustForMinimalLines(){
+        if(minimalLines){
+            $.each($(".lineColOnLine"), function(){$(this).css("line-height", ($(this).height() * 2)-15 + "px"); });
+        }
+        else{
+            $.each($(".lineColOnLine"), function(){
+                $(this).css("line-height", $(this).height() + "px");
+            });
+        }
+    }
    
-   /* Update the line information of the line currently focused on, then load the focus to a line that was clicked on */
+   /**
+    *  Update the line information of the line currently focused on, then load the focus to a line that was clicked on 
+    *  
+    */
    function loadTranscriptlet(lineid){
         var currentLineServerID = focusItem[1].attr("lineserverid");
         if($('#transcriptlet_'+lineid).length > 0){
@@ -2383,16 +2390,7 @@ function toggleSpecialChars(event){
         var adjustedHeightForFullscreen = (originalCanvasHeight2 / originalCanvasWidth2) * screenWidth;
         $("#transcriptionCanvas").css("height", adjustedHeightForFullscreen+"px");
         $(".lineColIndicatorArea").css("height", adjustedHeightForFullscreen+"px");
-        if(minimalLines){
-            $.each($(".lineColOnLine"), function(){
-                $(this).css("line-height", ($(this).height() * 2)-15 + "px"); 
-            });
-        }
-        else{
-            $.each($(".lineColOnLine"), function(){
-                $(this).css("line-height", $(this).height() + "px");
-            });
-        }
+        adjustForMinimalLines();
         setTimeout(function(){
               document.body.scrollTop = document.documentElement.scrollTop = 0;
           },1);
@@ -2528,14 +2526,7 @@ function splitPage(event, tool) {
         $("#templateResizeBar").hide();
     }
     setTimeout(function(){
-        if(minimalLines){
-            $.each($(".lineColOnLine"), function(){$(this).css("line-height", ($(this).height() * 2)-15 + "px"); });
-        }
-        else{
-            $.each($(".lineColOnLine"), function(){
-                $(this).css("line-height", $(this).height() + "px");
-            });
-        }
+        adjustForMinimalLines();
     }, 1000);
     
 }
@@ -3271,7 +3262,7 @@ function toggleMinimalLines(){
         $("#minimalLines").addClass("selected");
         $('.lineColIndicator').addClass("minimal");
         $('.lineColOnLine').addClass("minimal");
-        $.each($(".lineColOnLine"), function(){$(this).css("line-height", ($(this).height() * 2)-15 + "px"); });
+        adjustForMinimalLines();
         $('.activeLine').addClass("minimal");
         $('.activeLine').css('box-shadow', '0px 9px 5px -5px '+colorThisTime);
     }
@@ -3279,7 +3270,7 @@ function toggleMinimalLines(){
         $("#minimalLines").removeClass("selected");
         $('.lineColIndicator').removeClass("minimal");
         $('.lineColOnLine').removeClass("minimal");
-        $.each($(".lineColOnLine"), function(){$(this).css("line-height", $(this).height() + "px"); });
+        adjustForMinimalLines();
         $('.activeLine').removeClass("minimal");
         $('.activeLine').css('box-shadow', '0px 0px 15px 8px '+colorThisTime);
     }
@@ -3305,7 +3296,7 @@ function toggleLineMarkers(){
         $('.lineColIndicator').css("display", "block");
         $(".lineColIndicator").removeClass("linesHidden");
         $("#showTheLines").addClass("selected");
-        $.each($(".lineColOnLine"), function(){$(this).css("line-height", $(this).height() + "px"); });
+        adjustForMinimalLines();
     }
 }
 
@@ -3326,14 +3317,7 @@ function toggleLineCol(){
     else {
         $('.lineColOnLine').show();
         $("#showTheLabels").addClass("selected");
-        if(minimalLines){
-            $.each($(".lineColOnLine"), function(){$(this).css("line-height", ($(this).height() * 2)-15 + "px"); });
-        }
-        else{
-            $.each($(".lineColOnLine"), function(){
-                $(this).css("line-height", $(this).height() + "px");
-            });
-        }
+        adjustForMinimalLines();
     }
 }
 
@@ -4231,14 +4215,7 @@ function loadIframes(){
             },
             stop: function(event, ui){
                 attachWindowResize();
-                if(minimalLines){
-                    $.each($(".lineColOnLine"), function(){$(this).css("line-height", ($(this).height() * 2)-15 + "px"); });
-                }
-                else{
-                    $.each($(".lineColOnLine"), function(){
-                        $(this).css("line-height", $(this).height() + "px");
-                    });
-                }
+                adjustForMinimalLines();
                 textSize();
             }
         });
@@ -4363,14 +4340,7 @@ function loadIframes(){
                 $("#transcriptionCanvas").css("height",newHeight+"px");
                 $(".lineColIndicatorArea").css("height",newHeight+"px");
             }
-            if(minimalLines){
-                $.each($(".lineColOnLine"), function(){$(this).css("line-height", ($(this).height() * 2)-15 + "px"); });
-            }
-            else{
-                $.each($(".lineColOnLine"), function(){
-                    $(this).css("line-height", $(this).height() + "px");
-                });
-            }
+            adjustForMinimalLines();
             clearTimeout(doit);
             var doit = "";
             if(liveTool !== "parsing"){
