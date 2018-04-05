@@ -578,14 +578,7 @@
                                             annoLists.push("noList");
                                         }
                                     });
-                                    if(!loadTranscriptionCanvas(transcriptionFolios[currentFolio - 1],"")){
-                                        // ERROR!
-                                        $("#transTemplateLoading p").html("Something went wrong.  We could not get canvas data.  Refresh the page to try again.");
-                                        $('.transLoader img').attr('src',"images/missingImage.png");
-                                        console.warn("Had trouble with the canvas data");
-                                        clearTimeout(longLoadingProject);
-                                        return false;
-                                    }
+                                    loadTranscriptionCanvas(transcriptionFolios[currentFolio - 1],"")
                                     
                                     var projectTitle = projectData.label;
                                     $("#trimTitle").html(projectTitle);
@@ -679,15 +672,14 @@
                                     annoLists.push("noList");
                                 }
                             });
-                            if(!loadTranscriptionCanvas(transcriptionFolios[0],"")){
-                                // ERROR!
-                                $("#transTemplateLoading p").html("Something went wrong.  We could not get canvas data.  Refresh the page to try again.");
-                                $('.transLoader img').attr('src',"images/missingImage.png");
-                                console.warn("Had trouble with the canvas data");
-                                clearTimeout(longLoadingProject);
-                                return false;
-                            }
-                            
+                            loadTranscriptionCanvas(transcriptionFolios[0],"")
+                            // ERROR!
+                            $("#transTemplateLoading p").html("Something went wrong.  We could not get canvas data.  Refresh the page to try again.");
+                            $('.transLoader img').attr('src',"images/missingImage.png");
+                            console.warn("Had trouble with the canvas data");
+                            clearTimeout(longLoadingProject);
+                            return false;
+
                             var projectTitle = userTranscription.label;
                             $("#trimTitle").html(projectTitle);
                             $("#trimTitle").attr("title", projectTitle);
@@ -828,14 +820,7 @@
                                                 annoLists.push("noList");
                                             }
                                         });
-                                        if(!loadTranscriptionCanvas(transcriptionFolios[currentFolio - 1],"")){
-                                            // ERROR!
-                                            $("#transTemplateLoading p").html("Something went wrong.  We could not get canvas data.  Refresh the page to try again.");
-                                            $('.transLoader img').attr('src',"images/missingImage.png");
-                                            console.warn("Had trouble with the canvas data");
-                                            clearTimeout(longLoadingProject);
-                                            return false;
-                                        }
+                                        loadTranscriptionCanvas(transcriptionFolios[currentFolio - 1],"")                                        
                                         
                                         var projectTitle = projectData.label;
                                         $("#trimTitle").html(projectTitle);
@@ -924,14 +909,7 @@
                                             annoLists.push("noList");
                                         }
                                     });
-                                    if(!loadTranscriptionCanvas(transcriptionFolios[0],"")){
-                                        // ERROR!
-                                        $("#transTemplateLoading p").html("Something went wrong.  We could not get canvas data.  Refresh the page to try again.");
-                                        $('.transLoader img').attr('src',"images/missingImage.png");
-                                        console.warn("Had trouble with the canvas data");
-                                        clearTimeout(longLoadingProject);
-                                        return false;
-                                    }
+                                    loadTranscriptionCanvas(transcriptionFolios[0],"")
                                     var projectTitle = projectData.label;
                                     $("#trimTitle").html(projectTitle);
                                     $("#trimTitle").attr("title", projectTitle);$('#transcriptionTemplate').css("display", "inline-block");
@@ -973,7 +951,7 @@
                     //loadIframes();
                 }
             
-    } 
+    }
     
     /*
      * Load a canvas from the manifest to the transcription interface. 
@@ -1017,61 +995,61 @@
             var largerImageURL = origImageURL.replace("/2000", "/3500"); //By default, they server out at height 2000.  Try to get a better image up front at 3000
             //Ex. https://iiif.library.utoronto.ca/v2/paleography:2083/full/2000,/0/default.jpg
             $(image)
-                    .on("load",function() {
-                        $("#transTemplateLoading").hide();
+                .on("load",function() {
+                    $("#transTemplateLoading").hide();
+                    $("#imgTop, #imgTop img, #imgBottom img, #imgBottom, #transcriptionCanvas").css("height", "auto");
+                    $("#imgTop img, #imgBottom img").css("width", "100%");
+                    $("#imgBottom").css("height", "inherit");
+                    $('.transcriptionImage').attr('src', canvasObj.images[0].resource['@id'].replace('amp;',''));
+                    $("#fullPageImg").attr("src", canvasObj.images[0].resource['@id'].replace('amp;',''));
+                    originalCanvasHeight2 = $("#imgTop img").height();
+                    originalCanvasWidth2 = $("#imgTop img").width();
+                    originalCanvasHeight = $("#imgTop img").height();; //make sure these are set correctly
+                    originalCanvasWidth = $("#imgTop img").width(); //make sure these are set correctly
+                    drawLinesToCanvas(canvasObj, parsing);
+                    populateCompareSplit(currentFolio);
+                    $("#transcriptionCanvas").attr("canvasid", canvasObj["@id"]);
+                    $("#transcriptionCanvas").attr("annoList", canvasAnnoList);
+                    $("#parseOptions").find(".tpenButton").removeAttr("disabled");
+                    $("#parsingBtn").removeAttr("disabled");
+                    return true;
+                })
+                .on("error", function(){
+                    var image2 = new Image();
+                    $(image2)
+                    .on("load", function(){
+                        $("#noLineWarning").hide();
                         $("#imgTop, #imgTop img, #imgBottom img, #imgBottom, #transcriptionCanvas").css("height", "auto");
                         $("#imgTop img, #imgBottom img").css("width", "100%");
-                        $("#imgBottom").css("height", "inherit");
-                        $('.transcriptionImage').attr('src', canvasObj.images[0].resource['@id'].replace('amp;',''));
-                        $("#fullPageImg").attr("src", canvasObj.images[0].resource['@id'].replace('amp;',''));
-                        originalCanvasHeight2 = $("#imgTop img").height();
-                        originalCanvasWidth2 = $("#imgTop img").width();
-                        originalCanvasHeight = $("#imgTop img").height();; //make sure these are set correctly
-                        originalCanvasWidth = $("#imgTop img").width(); //make sure these are set correctly
-                        drawLinesToCanvas(canvasObj, parsing);
-                        populateCompareSplit(currentFolio);
-                        $("#transcriptionCanvas").attr("canvasid", canvasObj["@id"]);
-                        $("#transcriptionCanvas").attr("annoList", canvasAnnoList);
-                        $("#parseOptions").find(".tpenButton").removeAttr("disabled");
-                        $("#parsingBtn").removeAttr("disabled");
-                        return true;
+                        //$('.transcriptionImage').attr('src', "images/missingImage.png");
+                        //$("#fullPageImg").attr("src", "images/missingImage.png");
+                        $('#transcriptionCanvas').css('height', $("#imgTop img").height() + "px");
+                        $('.lineColIndicatorArea').css('height', $("#imgTop img").height() + "px");
+                        $("#imgTop").css("height", "0px");
+                        $("#imgBottom img").css("top", "0px");
+                        $("#imgBottom").css("height", "inherit"); 
+                        $("#parsingButton").attr("disabled", "disabled");
+                        //Error!  Could not load this canvas image.  Error out?
+                        $("#parseOptions").find(".tpenButton").attr("disabled", "disabled");
+                        $("#parsingBtn").attr("disabled", "disabled");
+                        clearTimeout(longLoadingProject);
+                        $("#transTemplateLoading p").html("Something went wrong.  We could not get canvas data.  Refresh the page to try again.");
+                        $('.transLoader img').attr('src',"images/missingImage.png");
+                        console.warn("Had trouble with the canvas data");
+                        $("#transWorkspace").hide();
+                        alert("We had trouble getting the image for this canvas.  Refresh the page to try again.");
                     })
-                    .on("error", function(){
-                        var image2 = new Image();
-                        $(image2)
-                        .on("load", function(){
-                            $("#noLineWarning").hide();
-                            $("#imgTop, #imgTop img, #imgBottom img, #imgBottom, #transcriptionCanvas").css("height", "auto");
-                            $("#imgTop img, #imgBottom img").css("width", "100%");
-                            $('.transcriptionImage').attr('src', "images/missingImage.png");
-                            $("#fullPageImg").attr("src", "images/missingImage.png");
-                            $('#transcriptionCanvas').css('height', $("#imgTop img").height() + "px");
-                            $('.lineColIndicatorArea').css('height', $("#imgTop img").height() + "px");
-                            $("#imgTop").css("height", "0px");
-                            $("#imgBottom img").css("top", "0px");
-                            $("#imgBottom").css("height", "inherit"); 
-                            $("#parsingButton").attr("disabled", "disabled");
-                            //Error!  Could not load this canvas image.  Error out?
-                            $("#transTemplateLoading").hide();
-                            $("#parseOptions").find(".tpenButton").attr("disabled", "disabled");
-                            $("#parsingBtn").attr("disabled", "disabled");
-                            clearTimeout(longLoadingProject);
-                            //loadTranscription() will show the users the error message where the spinny was.  
-                            // The user could have changed pages and had this problem, in which case they need the alert.
-                            //Not sure how to differentiate between the two here, so i am throwing the alert no matter what. 
-                            alert("We had trouble getting the image for this canvas.  Refresh the page to try again.");
-                            return false;
-                        })
-                        .attr("src", "images/missingImage.png");
-                    })
-                    .attr("src", largerImageURL);
+                    .attr("src", "images/missingImage.png");
+                    return false;
+                })
+                .attr("src", largerImageURL);
         }
         else{
-             $('.transcriptionImage').attr('src',"images/missingImage.png");
-             alert("The canvas is malformed.  No 'images' field in canvas object or images:[0]['@id'] does not exist.  Cannot draw lines.");
-             $("#transTemplateLoading").hide();
-             clearTimeout(longLoadingProject);
-             return false;
+            $('.transcriptionImage').attr('src',"images/missingImage.png");
+            alert("The canvas is malformed.  No 'images' field in canvas object or images:[0]['@id'] does not exist.  Cannot draw lines.");
+            $("#transTemplateLoading").hide();
+            clearTimeout(longLoadingProject);
+            return false;
         }
         $(".previewText").removeClass("currentPage");
         $.each($("#previewDiv").children(".previewPage:eq("+(parseInt(currentFolio)-1)+")").find(".previewLine"),function(){
