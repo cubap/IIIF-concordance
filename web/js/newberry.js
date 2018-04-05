@@ -26,6 +26,7 @@
     var imgTopPositionRatio = 0;
     var navMemory = 0;
     var minimalLines = false;
+    var zoomLock = false;
     //var basePath = window.location.protocol + "//" + window.location.host;
     
     /* Load the interface to the first page of the manifest. */
@@ -2387,6 +2388,7 @@ function toggleSpecialChars(event){
         $(document).unbind("mouseup");
 
         isZoomed = false;
+        
         $(".split").hide();
         $(".split").css("width", "43%");
 //        //console.log("RESTORE WORKSPACE");
@@ -3194,6 +3196,52 @@ function pageJump(page,parsing){
 
 function compareJump(folio){
     populateCompareSplit(folio);
+}
+
+/**
+ * Make sure all image tools reset to their default values.
+*/
+function resetImageTools(newPage){
+    $("#brightnessSlider").slider("value", "100");
+    $("#contrastSlider").slider("value", "100");
+    if($("button[which='grayscale']").hasClass("selected")){
+        toggleFilter("grayscale");
+    }
+    if($("button[which='invert']").hasClass("selected")){
+        toggleFilter("invert");
+    }
+    if($("#zoomLock").hasClass("selected")){
+        toggleLocking();
+    }
+    if($("#zenLine").hasClass("selected")){
+        toggleZenLine();
+        //This will restore column controls to the default
+    }
+    else{
+        //We need to check the column controls
+        if($("#minimalLines").hasClass("selected")){
+            toggleMinimalLines();
+        }
+        if(!$("#showTheLines").hasClass("selected")){
+            toggleLineMarkers();
+        }
+        if(!$("#showTheLabels").hasClass("selected")){
+            toggleLineCol();
+        }
+    }
+}
+
+/* 
+ * Make peek zomm lock so user does not have to hold to buttons down.
+ */
+function toggleLocking(){
+    zoomLock = !zoomLock;
+    if(zoomLock){
+        $("#zoomLock").addClass("selected");
+    }
+    else{
+        $("#zoomLock").removeClass("selected");
+    }
 }
 
 /* Change color of lines on screen */
@@ -4456,30 +4504,7 @@ function loadIframes(){
             !severeCheck && responsiveNavigation(true);
         }
     }
-    
 
-    
-    /**
- * Make sure all image tools reset to their default values.
-*/
-function resetImageTools(newPage){
-    $("#brightnessSlider").slider("value", "100");
-    $("#contrastSlider").slider("value", "100");
-    if($("button[which='grayscale']").hasClass("selected")){
-            toggleFilter("grayscale");
-        }
-    if($("button[which='invert']").hasClass("selected")){
-        toggleFilter("invert");
-    }
-    if(!$("#showTheLines").hasClass("selected")){
-        toggleLineMarkers();
-    }
-    if(!$("#showTheLabels").hasClass("selected")){
-        toggleLineCol();
-    }
-    
-}
-    
     var Page = {
     /**
      *  Returns converted number to CSS consumable string rounded to n decimals.

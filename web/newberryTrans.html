@@ -794,9 +794,14 @@
                     Reset to Defaults
                     </button>
                     <header> Image Controls </header>
+                    <button id="zoomLock" class="block" onclick="toggleLocking();" title="Peek Zoom Lock Setting">
+                        Zoom Lock
+<!--                        <i class="fa fa-picture-o" style="color: #999;background: #DDD;border-radius: 2px;"></i>-->
+                    </button>
                     <button which="grayscale" class="block" onclick="toggleFilter('grayscale');" title="Grayscale">
                         Grayscale
-                        <i class="fa fa-picture-o" style="color: #999;background: #DDD;border-radius: 2px;"></i></button>
+                        <i class="fa fa-picture-o" style="color: #999;background: #DDD;border-radius: 2px;"></i>
+                    </button>
                     <button which="invert" class="block" onclick="toggleFilter('invert');">
                         Invert
                         <i class="fa fa-picture-o" style="background: #FFF;border-radius: 2px;color: #000;"></i>
@@ -1120,11 +1125,12 @@
                     $(".magnifyBtn").removeClass("selected");
                     $("#moveImage").removeClass("selected");
                     $(".transcriptlet").children("textarea").removeClass("imageMove").removeAttr("disabled");
-
-                    if(liveTool && liveTool !== "none" && liveTool !== "parsing"){
-                        fullPage();
+                    if(isPeeking && zoomLock){
+                        //Maybe isPeeking should play into liveTool when zoomLock...
+                        //There will be no oother liveTool if isPeeking and zoomLock...
+                        peekZoom(true);
                     }
-                    else{ //this stuff needs to happen when tpen.screen.liveTool="parsing"
+                    else if(liveTool == "parsing"){//this stuff needs to happen when tpen.screen.liveTool="parsing"
                         //Make sure all the parsing stuff is unselected.  The function that does this is toggleSelected(), but it doesn't work quite right here...
                         $("#ctrlColumnsInst").find(".activeParsingTool").fadeOut(800);
                         $("#ctrlLinesInst").find(".activeParsingTool").fadeOut(800);
@@ -1138,6 +1144,10 @@
                         $(document).unbind("mousemove");
                         $(document).unbind("mousedown");
                         $(document).unbind("mouseup");
+                    } 
+                    else if(liveTool && liveTool !== "none"){ 
+                        //Cancel any live tool and go full page mode
+                         fullPage();
                     }
 
                 }
@@ -1172,7 +1182,8 @@
                         if($("div[pair='A1']").length){
                             $("div[pair='A1']").click();
                         }
-                    } else if (event.shiftKey && !isPeeking && !isMagnifying) {
+                    } 
+                    else if (event.shiftKey && !isPeeking && !isMagnifying) {
                         // Peek-Zoom
                         peekZoom(false);
                     }
@@ -1191,8 +1202,8 @@
                     $("#imgTop, #imgBottom").unbind("mousedown");
                     $("#imgTop, #imgBottom").unbind("mouseup");
                 }
-                else if(isPeeking && (!event.shiftKey || !(event.ctrlKey||event.metaKey))){
-                    // cancel Peek-Zoom
+                else if(isPeeking && (!event.shiftKey || !(event.ctrlKey||event.metaKey)) && !zoomLock){
+                    // cancel Peek-Zoom, only if user does not have zoom lock setting active.
                     peekZoom(true);
                 }
                 else if(toggleMove && (!event.altKey || !event.ctrlKey || !event.metaKey)){
@@ -2072,7 +2083,8 @@
                 "max-width" : imgDims[1] * zoomRatio / availableRoom[1] * 100 + "%"
             });
             isPeeking = true;
-        } else {
+        } 
+        else {
             //zoom out
             //$("#imgTop img,#imgBottom img,#imgTop .lineColIndicatorArea, #imgBottom .lineColIndicatorArea, #bookmark, #imgTop, #imgBottom").removeClass('noTransition');
             topImg.css({
