@@ -4182,8 +4182,9 @@ function loadIframes(){
 
 /* Clear the resize function attached to the window element. */
     function detachWindowResize(){
-        window.onresize = function(event, ui){
-        };
+        window.addEventListener('resize', function(event, ui) {
+            
+        });
     }
     
     function detachTemplateResize(){
@@ -4238,7 +4239,7 @@ function loadIframes(){
     //Must explicitly set new height and width for percentages values in the DOM to take effect.
     //with resizing because the img top position puts it up off screen a little.
     function attachWindowResize(){
-        window.onresize = function(event, ui) {
+        window.addEventListener('resize', function(event, ui) {
             detachTemplateResize();
             event.stopPropagation();
             var newImgBtmTop = "0px";
@@ -4359,8 +4360,7 @@ function loadIframes(){
             }
             textSize();
             responsiveNavigation();
-        };
-
+        });
     }
     
     function getURLVariable(variable)

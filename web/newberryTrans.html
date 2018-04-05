@@ -868,21 +868,6 @@
 <script>
     var theProjectID = -1;
     
-    //Must explicitly set new height and width for percentages values in the DOM to take effect.
-    window.onresize = function(event) {
-        var newHeight = $("#imgBottom img").height();
-        $("#transcriptionCanvas").css("height",newHeight+"px");
-        $(".lineColIndicatorArea").css("height",newHeight+"px");
-        if(minimalLines){
-            $.each($(".lineColOnLine"), function(){$(this).css("line-height", ($(this).height() * 2)-15 + "px"); });
-        }
-        else{
-            $.each($(".lineColOnLine"), function(){
-                $(this).css("line-height", $(this).height() + "px");
-            });
-        }
-    };
-    
     //Page load event triggers and attached here.
     $(window).on('load',function(){
         attachWindowResize();

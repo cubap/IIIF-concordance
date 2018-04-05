@@ -343,11 +343,11 @@ textarea:focus{
     }
     
     #imgTop img{
-        transition: left .25s, top .25s, width .25s, max-width .25s;
+        transition: left .25s, width .25s, max-width .25s; //top: .25s
     }
     
     #imgBottom img{
-        transition: left .25s, width .25s, max-width .25s;
+        transition: left .25s, width .25s, max-width .25s; //top: .25s
     }
 
     #imgTop img,#imgBottom img {
