@@ -346,12 +346,12 @@
             specialCharacters = JSON.parse(specialCharacters);
         }
         catch(e){ //dont kill it here
-            $("#transTemplateLoading p").html("Something went wrong. We could not get the special characters.  Refresh the page to try again.");
+            //$("#transTemplateLoading p").html("Something went wrong. We could not get the special characters.  Refresh the page to try again.");
             console.warn("I could not parse special chars.");
 //            $('.transLoader img').attr('src',"images/missingImage.png");
 //            $(".trexHead").show();
 //            $("#genericIssue").show(1000);
-            return false;                
+            //return false;                
         }
         var speCharactersInOrder = new Array(specialCharacters.length);
         if(!specialCharacters || specialCharacters.length === 0 || specialCharacters[0] === "[]"){
@@ -386,13 +386,12 @@
             xmlTags = JSON.parse(xmlTags);
         }
         catch(e){ //may not need to do this here
-            $("#transTemplateLoading p").html("Something went wrong. We could not get the information about the XML tags for this project.  Refresh the page to try again.");
+            //$("#transTemplateLoading p").html("Something went wrong. We could not get the information about the XML tags for this project.  Refresh the page to try again.");
 //            $('.transLoader img').attr('src',"images/missingImage.png");
 //            $(".trexHead").show();
 //            $("#genericIssue").show(1000);
                 console.warn("I could not parse XML.");
-
-            return false;                
+            //return false;                
         }
         var tagsInOrder = [];
         if(!xmlTags || xmlTags.length === 0 || xmlTags[0] === "[]"){
@@ -474,9 +473,12 @@
                         }
                         catch(e){ //may not need to do this here
                             console.warn("I could not get project tools...reload to try again");
+                            $("#transTemplateLoading p").html("Something went wrong. We could not get the project tools.  Refresh the page to try again.");
+                            $('.transLoader img').attr('src',"images/missingImage.png");
+                            clearTimeout(longLoadingProject);
                             //$(".trexHead").show();
                             //$("#genericIssue").show(1000);
-                            //return false;                
+                            return false;                
                         }
                         try{
                             leaders = JSON.parse(leaders);
@@ -485,10 +487,10 @@
                             $("#transTemplateLoading p").html("Something went wrong. We could not get the information about the leader for this project.  Refresh the page to try again.");
                             $('.transLoader img').attr('src',"images/missingImage.png");
                             console.warn("I could not leaders of the project.");
-
+                            clearTimeout(longLoadingProject);
                             //$(".trexHead").show();
                             //$("#genericIssue").show(1000);
-                            //return false;                
+                            return false;                
                         }
                         try{
                             tpenFolios = JSON.parse(tpenFolios);
@@ -497,10 +499,10 @@
                             $("#transTemplateLoading p").html("Something went wrong. We could not get the information about the folios for this project.  Refresh the page to try again.");
                             $('.transLoader img').attr('src',"images/missingImage.png");
                             console.warn("I could not parse folios.");
-
+                            clearTimeout(longLoadingProject);
                             //$(".trexHead").show();
                             //$("#genericIssue").show(1000);
-                            //return false;                
+                            return false;                
                         }
                         $.each(leaders, function(){
                             if(this.UID === parseInt(currentUser)){
@@ -514,6 +516,12 @@
                             }
                         });
                         if(activeProject.manifest !== undefined && activeProject.manifest !== ""){
+                            /*BH Note:  
+                            This is unreliable.  version.properties CREATE_PROJECT_RETURN_DOMAIN must be set to the correct current domain of the application
+                            The CreateProject and CopyProject servlets must also respect this when creating the project for the first time when storing it to the archive property.
+                            What if we always asked for it via /project/projectID no matter what?
+                            I made this change, if we notice problems on UTL side, this is a possible spot.
+                            */
 //                            var getURLfromThis = activeProject.ls_ms;
 //                            try{
 //                                getURLfromThis = JSON.parse(getURLfromThis);
@@ -525,23 +533,6 @@
 //                                //$("#genericIssue").show(1000);
 //                                return false;                
 //                            }
-                            
-                            /*BH Note:  
-                            This is unreliable.  version.properties CREATE_PROJECT_RETURN_DOMAIN must be set to the correct current domain of the application
-                            The CreateProject and CopyProject servlets must also respect this when creating the project for the first time when storing it to the archive property.
-                            What if we always asked for it via /project/projectID no matter what?
-                            I made this change, if we notice problems on UTL side, this is a possible spot.
-                            */
-                            //url  = getURLfromThis[0].archive; //This is the manifest inside the project data.  It refers to (most likely) an external manifest
-                            //url = "project/"+projectID;
-//                            if(url.indexOf("http") < 0){ //then there is no external manifest or it is one we cannot get
-//                                url = "project/"+projectID; //ask for it internally through the application instead
-//                            }
-                            //$.ajax({ /* Causes CORS */
-                                //url: url,
-                                //success: function(projectData){
-//                                    //console.log("Manifest data: ");
-//                                    //console.log(projectData);
                             var projectData = "";
                             try{
                                 projectData = JSON.parse(activeProject.manifest);
@@ -550,81 +541,81 @@
                                 $("#transTemplateLoading p").html("Something went wrong. We could not parse the manifest data.  Refresh the page to try again.");
                                 $('.transLoader img').attr('src',"images/missingImage.png");
                                 console.warn("I could not parse project data.");
-
+                                clearTimeout(longLoadingProject);
                                 //$(".trexHead").show();
                                 //$("#genericIssue").show(1000);
                                 return false;                
                             }
                                     
-                                if(projectData.sequences[0] !== undefined && projectData.sequences[0].canvases !== undefined
-                                    && projectData.sequences[0].canvases.length > 0){
-                                        transcriptionFolios = projectData.sequences[0].canvases;
-                                        if(pageToLoad){
-                                            $.each(tpenFolios, function(i){
-                                                if(this.folioNumber === parseInt(pageToLoad)){
-                                                    currentFolio = i + 1;
-                                                    return true;
-                                                }
-                                            });
-                                        }
-                                        scrubFolios();
-                                        var count = 1;
-                                        $.each(transcriptionFolios, function(){
-                                            $("#pageJump").append("<option folioNum='"+count+"' class='folioJump' val='"+this.label+"'>"+this.label+"</option>");
-                                            $("#compareJump").append("<option class='compareJump' folioNum='"+count+"' val='"+this.label+"'>"+this.label+"</option>");
-                                            count++;
-                                            if(this.otherContent){
-                                                if(this.otherContent.length > 0){
-                                                    annoLists.push(this.otherContent[0]);
-                                                }
-                                                else{
-                                                    //console.log("push empty 1");
-                                                    //otherContent was empty (IIIF says otherContent should have URI's to AnnotationLists).  We will check the store for these lists still.
-                                                    annoLists.push("empty");
-                                                }
-                                            }
-                                            else{
-                                                annoLists.push("noList");
+                            if(projectData.sequences[0] !== undefined && projectData.sequences[0].canvases !== undefined
+                                && projectData.sequences[0].canvases.length > 0){
+                                    transcriptionFolios = projectData.sequences[0].canvases;
+                                    if(pageToLoad){
+                                        $.each(tpenFolios, function(i){
+                                            if(this.folioNumber === parseInt(pageToLoad)){
+                                                currentFolio = i + 1;
+                                                return true;
                                             }
                                         });
-                                        loadTranscriptionCanvas(transcriptionFolios[currentFolio - 1],"");
-                                        var projectTitle = projectData.label;
-                                        $("#trimTitle").html(projectTitle);
-                                        $("#trimTitle").attr("title", projectTitle);
-                                        
-                                        $('#transcriptionTemplate').css("display", "inline-block");
-                                        $('#setTranscriptionObjectArea').hide();
-                                        $(".instructions").hide();
-                                        $(".hideme").hide();
-                                        //load Iframes after user check and project information data call    
-                                        loadIframes();
-                                        //getProjectTools(projectID);
-                                        createPreviewPages();
                                     }
-                                    else{
-                                        $("#transTemplateLoading p").html("Something went wrong. We could not get the sequence from the manifest.  Refresh the page to try again.");
+                                    scrubFolios();
+                                    var count = 1;
+                                    $.each(transcriptionFolios, function(){
+                                        $("#pageJump").append("<option folioNum='"+count+"' class='folioJump' val='"+this.label+"'>"+this.label+"</option>");
+                                        $("#compareJump").append("<option class='compareJump' folioNum='"+count+"' val='"+this.label+"'>"+this.label+"</option>");
+                                        count++;
+                                        if(this.otherContent){
+                                            if(this.otherContent.length > 0){
+                                                annoLists.push(this.otherContent[0]);
+                                            }
+                                            else{
+                                                //console.log("push empty 1");
+                                                //otherContent was empty (IIIF says otherContent should have URI's to AnnotationLists).  We will check the store for these lists still.
+                                                annoLists.push("empty");
+                                            }
+                                        }
+                                        else{
+                                            annoLists.push("noList");
+                                        }
+                                    });
+                                    if(!loadTranscriptionCanvas(transcriptionFolios[currentFolio - 1],"")){
+                                        // ERROR!
+                                        $("#transTemplateLoading p").html("Something went wrong.  We could not get canvas data.  Refresh the page to try again.");
                                         $('.transLoader img').attr('src',"images/missingImage.png");
-                                                    console.warn("I could not find a manifest sequence.");
-
-                                        //$(".trexHead").show();
-                                        //$("#genericIssue").show(1000);
-                                        return false;               
+                                        console.warn("Had trouble with the canvas data");
+                                        clearTimeout(longLoadingProject);
+                                        return false;
                                     }
-                                //},
-                                //error: function(jqXHR,error, errorThrown) {  
+                                    
+                                    var projectTitle = projectData.label;
+                                    $("#trimTitle").html(projectTitle);
+                                    $("#trimTitle").attr("title", projectTitle);
+
+                                    $('#transcriptionTemplate').css("display", "inline-block");
+                                    $('#setTranscriptionObjectArea').hide();
+                                    $(".instructions").hide();
+                                    $(".hideme").hide();
+                                    //load Iframes after user check and project information data call    
+                                    loadIframes();
+                                    //getProjectTools(projectID);
+                                    createPreviewPages();
+                                }
+                                else{
+                                    $("#transTemplateLoading p").html("Something went wrong. We could not get the sequence from the manifest.  Refresh the page to try again.");
+                                    $('.transLoader img').attr('src',"images/missingImage.png");
+                                    console.warn("I could not find a manifest sequence.");
+                                    clearTimeout(longLoadingProject);
+                                    //$(".trexHead").show();
+                                    //$("#genericIssue").show(1000);
+                                    return false;               
+                                }
                                 clearTimeout(longLoadingProject);
-                                //$("#transTemplateLoading p").html("Something went wrong. We could not get the manifest data.  Refresh the page to try again.");
-                                //$('.transLoader img').attr('src',"images/missingImage.png");
-                                //alert("Something went wrong. Could not get the project. 1");
-                                //load Iframes after user check and project information data call    
-                                //loadIframes();
-                               //}
-                            //});
                         }
                         else{
                             clearTimeout(longLoadingProject);
                             $("#transTemplateLoading p").html("We could not get the manfiest assosiated with this project.  Refresh the page to try again.");
                             $('.transLoader img').attr('src',"images/missingImage.png");
+                            return false;
                         }
                         populateSpecialCharacters(activeProject.projectButtons);
                         populateXML(activeProject.xml);
@@ -657,10 +648,10 @@
                         userTranscription = JSON.parse(userTranscription);
                     }
                     catch(e){ //may not need to do this here
-                        $("#transTemplateLoading p").html("Something went wrong. The data for this object is not proper JSON.  Resubmit or refresh the page to try again.");
+                        $("#transTemplateLoading p").html("Something went wrong.  The user data was not in JSON format.  Resubmit or refresh the page to try again.");
                         $('.transLoader img').attr('src',"images/missingImage.png");
-                                    console.warn("I could not parse user json input.");
-
+                        console.warn("I could not parse user json input.");
+                        clearTimeout(longLoadingProject);
                         //$(".trexHead").show();
                         //$("#genericIssue").show(1000);
                         return false;                
@@ -688,7 +679,15 @@
                                     annoLists.push("noList");
                                 }
                             });
-                            loadTranscriptionCanvas(transcriptionFolios[0],"");
+                            if(!loadTranscriptionCanvas(transcriptionFolios[0],"")){
+                                // ERROR!
+                                $("#transTemplateLoading p").html("Something went wrong.  We could not get canvas data.  Refresh the page to try again.");
+                                $('.transLoader img').attr('src',"images/missingImage.png");
+                                console.warn("Had trouble with the canvas data");
+                                clearTimeout(longLoadingProject);
+                                return false;
+                            }
+                            
                             var projectTitle = userTranscription.label;
                             $("#trimTitle").html(projectTitle);
                             $("#trimTitle").attr("title", projectTitle);
@@ -741,11 +740,11 @@
                                 catch(e){ //may not need to do this here
                                     $("#transTemplateLoading p").html("Something went wrong. We could not get the information about the leader for this project.  Refresh the page to try again.");
                                     $('.transLoader img').attr('src',"images/missingImage.png");
-                                                console.warn("I could not parse leaders.");
-
+                                    console.warn("I could not parse leaders.");
+                                    clearTimeout(longLoadingProject);
                                     //$(".trexHead").show();
                                     //$("#genericIssue").show(1000);
-                                    //return false;                
+                                    return false;                
                                 }
                                 try{
                                     tpenFolios = JSON.parse(tpenFolios);
@@ -753,11 +752,11 @@
                                 catch(e){ //may not need to do this here
                                     $("#transTemplateLoading p").html("Something went wrong. We could not get the information about the folios for this project.  Refresh the page to try again.");
                                     $('.transLoader img').attr('src',"images/missingImage.png");
-                                                console.warn("I could not parse folios.");
-
+                                    console.warn("I could not parse folios.");
+                                    clearTimeout(longLoadingProject);
                                     //$(".trexHead").show();
                                     //$("#genericIssue").show(1000);
-                                    //return false;                
+                                    return false;                
                                 }
                                 $.each(leaders, function(){
                                     if(this.UID === parseInt(currentUser)){
@@ -784,114 +783,117 @@
 //                                        //$("#genericIssue").show(1000);
 //                                        return false;                
 //                                    }
-                                    
-                                    //url  = getURLfromThis[0].archive;
-                                    //$.ajax({
-                                        //url: url,
-                                        //success: function(projectData){
-                                        var projectData = ""
-                                        try{
-                                        projectData = JSON.parse(activeProject.manifest);;
-                                        }
-                                        catch(e){ //may not need to do this here
-                                            $("#transTemplateLoading p").html("Something went wrong. We could not get the manifest out of the TPEN data for this project.  Refresh the page to try again.");
-                                            $('.transLoader img').attr('src',"images/missingImage.png");
-                                                        console.warn("I could get parse a manifest object.");
-
-                                            //$(".trexHead").show();
-                                            //$("#genericIssue").show(1000);
-                                            return false;                
-                                        }
-                                        if(projectData.sequences[0] !== undefined && projectData.sequences[0].canvases !== undefined
-                                            && projectData.sequences[0].canvases.length > 0){
-                                                transcriptionFolios = projectData.sequences[0].canvases;
-                                                if(pageToLoad){
-                                                    $.each(tpenFolios, function(i){
-                                                        if(this.folioNumber === parseInt(pageToLoad)){
-                                                            currentFolio = i + 1;
-                                                            return true;
-                                                        }
-                                                    });
+                                    var projectData = ""
+                                    try{
+                                    projectData = JSON.parse(activeProject.manifest);;
+                                    }
+                                    catch(e){ //may not need to do this here
+                                        $("#transTemplateLoading p").html("Something went wrong. We could not get the manifest out of the TPEN data for this project.  Refresh the page to try again.");
+                                        $('.transLoader img').attr('src',"images/missingImage.png");
+                                        console.warn("I could get parse a manifest object.");
+                                        clearTimeout(longLoadingProject);
+                                        //$(".trexHead").show();
+                                        //$("#genericIssue").show(1000);
+                                        return false;                
+                                    }
+                                    if(projectData.sequences[0] !== undefined && projectData.sequences[0].canvases !== undefined
+                                        && projectData.sequences[0].canvases.length > 0){
+                                        transcriptionFolios = projectData.sequences[0].canvases;
+                                        if(pageToLoad){
+                                            $.each(tpenFolios, function(i){
+                                                if(this.folioNumber === parseInt(pageToLoad)){
+                                                    currentFolio = i + 1;
+                                                    return true;
                                                 }
-                                                scrubFolios();
-                                                var count = 1;
+                                            });
+                                        }
+                                        scrubFolios();
+                                        var count = 1;
 
-                                                $.each(transcriptionFolios, function(){
-                                                    $("#pageJump").append("<option folioNum='"+count+"' class='folioJump' val='"+this.label+"'>"+this.label+"</option>");
-                                                    $("#compareJump").append("<option class='compareJump' folioNum='"+count+"' val='"+this.label+"'>"+this.label+"</option>");
-                                                    count++;
-                                                    if(this.otherContent){
-                                                        if(this.otherContent.length > 0){
-                                                            annoLists.push(this.otherContent[0]);
-                                                        }
-                                                        else{
-                                                            //console.log("push empty 3");
-                                                            //otherContent was empty (IIIF says otherContent should have URI's to AnnotationLists).  We will check the store for these lists still.
-                                                            annoLists.push("empty");
-                                                        }
-                                                    }
-                                                    else{
-                                                        annoLists.push("noList");
-                                                    }
-                                                });
-                                                loadTranscriptionCanvas(transcriptionFolios[currentFolio - 1],"");
-                                                var projectTitle = projectData.label;
-                                                $("#trimTitle").html(projectTitle);
-                                                $("#trimTitle").attr("title", projectTitle);$('#transcriptionTemplate').css("display", "inline-block");
-                                                $('#setTranscriptionObjectArea').hide();
-                                                $(".instructions").hide();
-                                                $(".hideme").hide(); 
-                                                //getProjectTools(projectID);
-                                                //load Iframes after user check and project information data call    
-                                                loadIframes();
-                                                createPreviewPages();
+                                        $.each(transcriptionFolios, function(){
+                                            $("#pageJump").append("<option folioNum='"+count+"' class='folioJump' val='"+this.label+"'>"+this.label+"</option>");
+                                            $("#compareJump").append("<option class='compareJump' folioNum='"+count+"' val='"+this.label+"'>"+this.label+"</option>");
+                                            count++;
+                                            if(this.otherContent){
+                                                if(this.otherContent.length > 0){
+                                                    annoLists.push(this.otherContent[0]);
+                                                }
+                                                else{
+                                                    //console.log("push empty 3");
+                                                    //otherContent was empty (IIIF says otherContent should have URI's to AnnotationLists).  We will check the store for these lists still.
+                                                    annoLists.push("empty");
+                                                }
                                             }
                                             else{
-                                                //ERROR! It is a malformed transcription object.  There is no canvas sequence defined.  
-                                                //load Iframes after user check and project information data call    
-                                                loadIframes();
+                                                annoLists.push("noList");
                                             }
-                                        //},
-//                                        error: function(jqXHR,error, errorThrown) {  
-//                                            clearTimeout(longLoadingProject);
-//                                            $("#transTemplateLoading p").html("We could not get project data.  Refresh the page to try again.");
-//                                            $('.transLoader img').attr('src',"images/missingImage.png");
-//                                            //load Iframes after user check and project information data call    
-//                                            loadIframes();
-//                                       }
-                                //});
-                            }
-                            else{
-                                clearTimeout(longLoadingProject);
-                                $("#transTemplateLoading p").html("We could not get the manfiest assosiated with this project.  Refresh the page to try again.");
-                                $('.transLoader img').attr('src',"images/missingImage.png");
-                                //load Iframes after user check and project information data call    
-                                loadIframes();
-                            }
-                            populateSpecialCharacters(activeProject.projectButtons);
-                            populateXML(activeProject.xml);
-                            $.each(projectTools, function(){
-                                if(count < 4){ //allows 5 tools.  
-                                    var splitHeight = window.innerHeight + "px";
-                                    var toolLabel = this.name;
-                                    var toolSource = this.url;
-                                    var splitTool = $('<div toolName="'+toolLabel+'" class="split iTool"><button class="fullScreenTrans">Full Screen Transcription</button></div>');
-                                    var splitToolIframe = $('<iframe style="height:'+splitHeight+';" src="'+toolSource+'"></iframe>');
-                                    var splitToolSelector = $('<option splitter="'+toolLabel+'" class="splitTool">'+toolLabel+'</option>');
-                                    splitTool.append(splitToolIframe);
-                                    $("#splitScreenTools").append(splitToolSelector);
-                                    $(".iTool:last").after(splitTool);
+                                        });
+                                        if(!loadTranscriptionCanvas(transcriptionFolios[currentFolio - 1],"")){
+                                            // ERROR!
+                                            $("#transTemplateLoading p").html("Something went wrong.  We could not get canvas data.  Refresh the page to try again.");
+                                            $('.transLoader img').attr('src',"images/missingImage.png");
+                                            console.warn("Had trouble with the canvas data");
+                                            clearTimeout(longLoadingProject);
+                                            return false;
+                                        }
+                                        
+                                        var projectTitle = projectData.label;
+                                        $("#trimTitle").html(projectTitle);
+                                        $("#trimTitle").attr("title", projectTitle);$('#transcriptionTemplate').css("display", "inline-block");
+                                        $('#setTranscriptionObjectArea').hide();
+                                        $(".instructions").hide();
+                                        $(".hideme").hide(); 
+                                        //getProjectTools(projectID);
+                                        //load Iframes after user check and project information data call    
+                                        loadIframes();
+                                        createPreviewPages();
+                                    }
+                                    else{
+                                        //ERROR! It is a malformed transcription object.  There is no canvas sequence defined.  
+                                        $("#transTemplateLoading p").html("Something went wrong.  We could not get canvas data.  Refresh the page to try again.");
+                                        $('.transLoader img').attr('src',"images/missingImage.png");
+                                        console.warn("Had trouble with the canvas data");
+                                        clearTimeout(longLoadingProject);
+                                        //$(".trexHead").show();
+                                        //$("#genericIssue").show(1000);
+                                        return false;
+
+                                    }
+                                        
                                 }
-                                count++;
-                            });
-                            //createPreviewPages();
-                        },
-                        error: function(jqXHR,error, errorThrown) {  
+                                else{
                                     clearTimeout(longLoadingProject);
-                                    $("#transTemplateLoading p").html("We could not get project data.  Refresh the page to try again.  Contact the admin if you continue to see this message.");
+                                    $("#transTemplateLoading p").html("We could not get the manfiest assosiated with this project.  Refresh the page to try again.");
                                     $('.transLoader img').attr('src',"images/missingImage.png");
+                                    return false;
+                                    //load Iframes after user check and project information data call    
+                                    //loadIframes();
+                                }
+                                populateSpecialCharacters(activeProject.projectButtons);
+                                populateXML(activeProject.xml);
+                                $.each(projectTools, function(){
+                                    if(count < 4){ //allows 5 tools.  
+                                        var splitHeight = window.innerHeight + "px";
+                                        var toolLabel = this.name;
+                                        var toolSource = this.url;
+                                        var splitTool = $('<div toolName="'+toolLabel+'" class="split iTool"><button class="fullScreenTrans">Full Screen Transcription</button></div>');
+                                        var splitToolIframe = $('<iframe style="height:'+splitHeight+';" src="'+toolSource+'"></iframe>');
+                                        var splitToolSelector = $('<option splitter="'+toolLabel+'" class="splitTool">'+toolLabel+'</option>');
+                                        splitTool.append(splitToolIframe);
+                                        $("#splitScreenTools").append(splitToolSelector);
+                                        $(".iTool:last").after(splitTool);
+                                    }
+                                    count++;
+                                });
+                                //createPreviewPages();
+                            },
+                            error: function(jqXHR,error, errorThrown) {  
+                                clearTimeout(longLoadingProject);
+                                $("#transTemplateLoading p").html("We could not get project data.  Refresh the page to try again.  Contact the admin if you continue to see this message.");
+                                $('.transLoader img').attr('src',"images/missingImage.png");
+                                return false;
                             }
-                    });
+                        });
                     }
                     else{ //it is not a local project, so just grab the url that was input and request the manifst. 
                         var url  = userTranscription;
@@ -922,8 +924,14 @@
                                             annoLists.push("noList");
                                         }
                                     });
-                                    loadTranscriptionCanvas(transcriptionFolios[0],"");
-                                    
+                                    if(!loadTranscriptionCanvas(transcriptionFolios[0],"")){
+                                        // ERROR!
+                                        $("#transTemplateLoading p").html("Something went wrong.  We could not get canvas data.  Refresh the page to try again.");
+                                        $('.transLoader img').attr('src',"images/missingImage.png");
+                                        console.warn("Had trouble with the canvas data");
+                                        clearTimeout(longLoadingProject);
+                                        return false;
+                                    }
                                     var projectTitle = projectData.label;
                                     $("#trimTitle").html(projectTitle);
                                     $("#trimTitle").attr("title", projectTitle);$('#transcriptionTemplate').css("display", "inline-block");
@@ -934,6 +942,11 @@
                                     //getProjectTools(projectID);
                                 }
                                 else{
+                                    $("#transTemplateLoading p").html("Something went wrong.  We could not get canvas data.  Refresh the page to try again.");
+                                    $('.transLoader img').attr('src',"images/missingImage.png");
+                                    console.warn("Had trouble with the canvas data");
+                                    clearTimeout(longLoadingProject);
+                                    return false;
                                     //ERROR! It is a malformed transcription object.  There is no canvas sequence defined.  
                                 }
                                 //load Iframes after user check and project information data call    
@@ -944,6 +957,7 @@
                                 clearTimeout(longLoadingProject);
                                 $("#transTemplateLoading p").html("We could not load this JSON object.  Check it in a validator and try again.");
                                 $('.transLoader img').attr('src',"images/missingImage.png");
+                                clearTimeout(longLoadingProject);
                                 //load Iframes after user check and project information data call    
                                 loadIframes();
                            }
@@ -954,6 +968,7 @@
                     clearTimeout(longLoadingProject);
                     $("#transTemplateLoading p").html("The input was invalid.  Make sure you are asking for a Manifest a proper way.  Refresh to try again.");
                     $('.transLoader img').attr('src',"images/missingImage.png");
+                    return false;
                     //load Iframes after user check and project information data call.  Maybe only after valid page load parameters.  uncomment this line if necessary.    
                     //loadIframes();
                 }
@@ -1019,6 +1034,7 @@
                         $("#transcriptionCanvas").attr("annoList", canvasAnnoList);
                         $("#parseOptions").find(".tpenButton").removeAttr("disabled");
                         $("#parsingBtn").removeAttr("disabled");
+                        return true;
                     })
                     .on("error", function(){
                         var image2 = new Image();
@@ -1035,11 +1051,16 @@
                             $("#imgBottom img").css("top", "0px");
                             $("#imgBottom").css("height", "inherit"); 
                             $("#parsingButton").attr("disabled", "disabled");
-                            alert("No image for this canvas or it could not be resolved.  Not drawing lines.");
+                            //Error!  Could not load this canvas image.  Error out?
                             $("#transTemplateLoading").hide();
                             $("#parseOptions").find(".tpenButton").attr("disabled", "disabled");
                             $("#parsingBtn").attr("disabled", "disabled");
                             clearTimeout(longLoadingProject);
+                            //loadTranscription() will show the users the error message where the spinny was.  
+                            // The user could have changed pages and had this problem, in which case they need the alert.
+                            //Not sure how to differentiate between the two here, so i am throwing the alert no matter what. 
+                            alert("We had trouble getting the image for this canvas.  Refresh the page to try again.");
+                            return false;
                         })
                         .attr("src", "images/missingImage.png");
                     })
@@ -1050,7 +1071,7 @@
              alert("The canvas is malformed.  No 'images' field in canvas object or images:[0]['@id'] does not exist.  Cannot draw lines.");
              $("#transTemplateLoading").hide();
              clearTimeout(longLoadingProject);
-            //ERROR!  Malformed canvas object.  
+             return false;
         }
         $(".previewText").removeClass("currentPage");
         $.each($("#previewDiv").children(".previewPage:eq("+(parseInt(currentFolio)-1)+")").find(".previewLine"),function(){
