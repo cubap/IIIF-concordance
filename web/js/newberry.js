@@ -1037,6 +1037,7 @@
                         $('.transLoader img').attr('src',"images/missingImage.png");
                         console.warn("Had trouble with the canvas data");
                         $("#transWorkspace").hide();
+                        $(".centerInterface").hide();
                         alert("We had trouble getting the image for this canvas.  Refresh the page to try again.");
                     })
                     .attr("src", "images/missingImage.png");
