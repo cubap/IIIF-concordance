@@ -468,18 +468,19 @@
                         var currentUser = activeProject.cuser;
                         var leaders = activeProject.ls_leader;
                         tpenFolios = activeProject.ls_fs;
-                        try{
-                            projectTools = JSON.parse(projectTools);
-                        }
-                        catch(e){ //may not need to do this here
-                            console.warn("I could not get project tools...reload to try again");
-                            $("#transTemplateLoading p").html("Something went wrong. We could not get the project tools.  Refresh the page to try again.");
-                            $('.transLoader img').attr('src',"images/missingImage.png");
-                            clearTimeout(longLoadingProject);
-                            //$(".trexHead").show();
-                            //$("#genericIssue").show(1000);
-                            return false;                
-                        }
+                        //No project tools being generated for the French interface, they are hard coded onto the page.  Do not interact with whatever is here to avoid errors.
+//                        try{
+//                            projectTools = JSON.parse(projectTools);
+//                        }
+//                        catch(e){ //may not need to do this here
+//                            console.warn("I could not get project tools...reload to try again");
+//                            $("#transTemplateLoading p").html("Something went wrong. We could not get the project tools.  Refresh the page to try again.");
+//                            $('.transLoader img').attr('src',"images/missingImage.png");
+//                            clearTimeout(longLoadingProject);
+//                            //$(".trexHead").show();
+//                            //$("#genericIssue").show(1000);
+//                            return false;                
+//                        }
                         try{
                             leaders = JSON.parse(leaders);
                         }
@@ -612,22 +613,23 @@
                         }
                         populateSpecialCharacters(activeProject.projectButtons);
                         populateXML(activeProject.xml);
-                        if(projectTools.length && projectTools!=="[]"){
-                            $.each(projectTools, function(){
-                                if(count < 4){ //allows 5 tools.  
-                                    var splitHeight = window.innerHeight + "px";
-                                    var toolLabel = this.name;
-                                    var toolSource = this.url;
-                                    var splitTool = $('<div toolName="'+toolLabel+'" class="split iTool"><button class="fullScreenTrans">Full Screen Transcription</button></div>');
-                                    var splitToolIframe = $('<iframe style="height:'+splitHeight+';" src="'+toolSource+'"></iframe>');
-                                    var splitToolSelector = $('<option splitter="'+toolLabel+'" class="splitTool">'+toolLabel+'</option>');
-                                    splitTool.append(splitToolIframe);
-                                    $("#splitScreenTools").append(splitToolSelector);
-                                    $(".iTool:last").after(splitTool);
-                                }
-                                count++;
-                            });
-                        }
+                        //There are no additional tools for the French interface, they are already coded onto newberryTrans.html
+//                        if(projectTools.length && projectTools!=="[]"){
+//                            $.each(projectTools, function(){
+//                                if(count < 4){ //allows 5 tools.  
+//                                    var splitHeight = window.innerHeight + "px";
+//                                    var toolLabel = this.name;
+//                                    var toolSource = this.url;
+//                                    var splitTool = $('<div toolName="'+toolLabel+'" class="split iTool"><button class="fullScreenTrans">Full Screen Transcription</button></div>');
+//                                    var splitToolIframe = $('<iframe style="height:'+splitHeight+';" src="'+toolSource+'"></iframe>');
+//                                    var splitToolSelector = $('<option splitter="'+toolLabel+'" class="splitTool">'+toolLabel+'</option>');
+//                                    splitTool.append(splitToolIframe);
+//                                    $("#splitScreenTools").append(splitToolSelector);
+//                                    $(".iTool:last").after(splitTool);
+//                                }
+//                                count++;
+//                            });
+//                        }
                     },
                     error: function(jqXHR,error, errorThrown) {  
                         clearTimeout(longLoadingProject);
