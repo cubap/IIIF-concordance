@@ -184,7 +184,7 @@ textarea:focus{
 .demoteUser{
     font-weight: bold;
     font-size: 117%;
-    color: #b43d2e;
+    color: #b43d2e; //#A63321
     margin-right: 5px;
 }
 .removeUser{
@@ -210,7 +210,7 @@ textarea:focus{
 }
 
 /*.lookLikeButtons:hover{
-    background-color: #b43d2e;
+    background-color: #b43d2e; //#A63321
 }*/
 
 /*.character:hover{
@@ -1254,7 +1254,7 @@ button.imgTool{
     text-align: center;
 }
 .fullScreenTrans:hover{
-    background-color: #b43d2e; 
+    background-color: #b43d2e; //#A63321 
     color: #272727;
 }
 .fullScreenTrans::before {
@@ -1483,11 +1483,11 @@ button.imgTool{
 }
 #lineControls i:hover{
     cursor: pointer;
-    color: #b43d2e;
+    color: #b43d2e; //#A63321
 }
 #pageControls i:hover{
     cursor: pointer;
-    color: #b43d2e;
+    color: #b43d2e; //#A63321
 }
 #prevLine,#nextLine,#toggleNotes,#nextPage,#prevPage{
     position: relative;
@@ -1515,11 +1515,11 @@ button.imgTool{
 }
 #lineControls i:hover{
     cursor: pointer;
-    color: #b43d2e;
+    color: #b43d2e; //#A63321
 }
 #pageControls i:hover{
     cursor: pointer;
-    color: #b43d2e;
+    color: #b43d2e; //#A63321
 }
 #ruler1,#ruler2 {display: none;background: black;position: absolute;z-index: 6; pointer-events:none;}
 
@@ -1555,7 +1555,7 @@ button{
 }
 
 button:hover{
-    background-color: #b43d2e;
+    background-color: #b43d2e; //#A63321
 }
 p{
     /*font-family: 'Open Sans','Helvetica Neue',sans-serif;*/
@@ -1997,7 +1997,7 @@ a.editButtons {
     min-width: 4em;
     font-size: small;
     line-height: 1.2;
-    background-color: #272732;
+    background-color: #777747;
 }
 /* Center the images inside compare page and view full page */
 /*.compareImage, #fullPageImg{

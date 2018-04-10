@@ -355,7 +355,7 @@
         }
         var speCharactersInOrder = new Array(specialCharacters.length);
         if(!specialCharacters || specialCharacters.length === 0 || specialCharacters[0] === "[]"){
-            $("#toggleXML").hide();
+            $("#toggleChars").hide();
         }
         for (var char = 0; char < specialCharacters.length; char++){
             var thisChar = specialCharacters[char];
