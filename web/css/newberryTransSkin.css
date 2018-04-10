@@ -184,7 +184,7 @@ textarea:focus{
 .demoteUser{
     font-weight: bold;
     font-size: 117%;
-    color: #d14836;
+    color: #b43d2e;
     margin-right: 5px;
 }
 .removeUser{
@@ -210,7 +210,7 @@ textarea:focus{
 }
 
 /*.lookLikeButtons:hover{
-    background-color: #d14836;
+    background-color: #b43d2e;
 }*/
 
 /*.character:hover{
@@ -1254,7 +1254,7 @@ button.imgTool{
     text-align: center;
 }
 .fullScreenTrans:hover{
-    background-color: #D14836;
+    background-color: #b43d2e; 
     color: #272727;
 }
 .fullScreenTrans::before {
@@ -1483,11 +1483,11 @@ button.imgTool{
 }
 #lineControls i:hover{
     cursor: pointer;
-    color: #d14836;
+    color: #b43d2e;
 }
 #pageControls i:hover{
     cursor: pointer;
-    color: #d14836;
+    color: #b43d2e;
 }
 #prevLine,#nextLine,#toggleNotes,#nextPage,#prevPage{
     position: relative;
@@ -1515,11 +1515,11 @@ button.imgTool{
 }
 #lineControls i:hover{
     cursor: pointer;
-    color: #d14836;
+    color: #b43d2e;
 }
 #pageControls i:hover{
     cursor: pointer;
-    color: #d14836;
+    color: #b43d2e;
 }
 #ruler1,#ruler2 {display: none;background: black;position: absolute;z-index: 6; pointer-events:none;}
 
@@ -1555,7 +1555,7 @@ button{
 }
 
 button:hover{
-    background-color: #d14836;
+    background-color: #b43d2e;
 }
 p{
     /*font-family: 'Open Sans','Helvetica Neue',sans-serif;*/
