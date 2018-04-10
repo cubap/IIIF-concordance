@@ -76,10 +76,10 @@
 <!--            <span class="trimSection">Help</span> -->
             <div class="trimDividor" style="position:absolute;right:0;top:0;z-index: 1;">
                 <span class="trimSection">
-                    <span class="fa fa-home"></span><a id="homeBtn" title="Paleography Home" href="https://paleography.library.utoronto.ca/contact" target="_blank"></a>
+                    <span class="fa fa-home"></span><a id="homeBtn" title="Paleography Home" href="https://paleography.library.utoronto.ca/" ></a>
                 </span>
                 <span class="trimSection">
-                    <a id="projectsBtn" class="exitPage wBtn ui-state-default ui-button" title="My Paleography Projects" href="https://paleography.library.utoronto.ca/my-transcriptions"></a>
+                    <a id="projectsBtn" class="exitPage wBtn ui-state-default ui-button" target="_blank" title="My Paleography Projects" href="https://paleography.library.utoronto.ca/my-transcriptions"></a>
                     <span class="fa fa-book"></span>       
                 </span>
                 <span class="trimSection"><a id="helpContact" title="Contact the French Paleography team" href="https://paleography.library.utoronto.ca/contact" target="_blank"></a><span class="fa fa-comment"></span></span> 
@@ -435,7 +435,12 @@
             
             <div id="startSplit" class="split">
                 <div style="text-align: center;" class="fullScreenTrans"><i class="fa fa-share fa-flip-vertical"></i></div>
-                <iframe class="loadingIframe" data_src="https://paleography.library.utoronto.ca/content/get-started"></iframe>
+                <iframe class="loadingIframe" data_src="https://paleography.library.utoronto.ca/content/get-started?response_type=embed"></iframe>
+            </div>
+            
+            <div id="frenchdocsSplit" class="split">
+                <div style="text-align: center;" class="fullScreenTrans"><i class="fa fa-share fa-flip-vertical"></i></div>
+                <iframe class="loadingIframe" data_src="https://paleography.library.utoronto.ca/content/about-french-documents?response_type=embed"></iframe>
             </div>
         
             <div id="calligraphySplit" class="split">
@@ -475,13 +480,7 @@
         
             <div id="groupSplit" class="split">
                 <div style="text-align: center;" class="fullScreenTrans"><i class="fa fa-share fa-flip-vertical"></i></div>
-                <iframe class="loadingIframe" id="forum_embed"
-                 src="javascript:void(0)"
-                 scrolling="no"
-                 frameborder="0"
-                 width="900"
-                 height="700">
-                </iframe>
+                <iframe class="loadingIframe" data_src="https://paleography.library.utoronto.ca/content/group-work?response_type=embed" </iframe>
             </div>
         
             <div id="abbrevSplit" class="split" >

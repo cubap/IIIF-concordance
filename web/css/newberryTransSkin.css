@@ -783,7 +783,7 @@ div#transcriptletArea {
     background-clip: border-box;
     background-origin: padding-box;
     cursor: pointer;
-    background-color: #3a3a3a;
+    background-color: #272727;
     border: none;
     display: block;
 /*    line-height: 35px;*/
@@ -862,7 +862,7 @@ label {width:auto;padding: 0;float: none;}/*fixme should not have to overwrite*/
                 -webkit-box-shadow: 0 0 5px #A64129; 
                 box-shadow:0 0 5px #A64129;}
 #abbreviations select {width:100%;}      
-iframe {background: url('images/linen.png') white scroll repeat; position: relative;width: 100%;height:100%; margin-top:32px;}
+iframe {background: url('images/linen.png') white scroll repeat; position: relative;width: 100%;height:89%; margin-top:32px;}
 .xmlClosingTags {position: absolute; bottom:0;right:10px;z-index: 20;}
 .tags {font-size: 80%; padding: 1px;margin: 0px -1px 1px 0px;display: inline-block;z-index: 20;cursor: pointer;position: relative;}
 .destroyTag {position:absolute;top:-15px;right:0;}
@@ -1246,7 +1246,7 @@ button.imgTool{
 .fullScreenTrans {
     width: auto;
     color: #fff;
-    background-color: #3a3a3a;
+    background-color: #272727;
     cursor: pointer;
     margin: .5rem auto;
     padding: 0 .25rem;
@@ -1255,7 +1255,7 @@ button.imgTool{
 }
 .fullScreenTrans:hover{
     background-color: #b43d2e; //#A63321 
-    color: #3a3a3a;
+    color: #272727;
 }
 .fullScreenTrans::before {
     content: "Close ";
@@ -1523,7 +1523,7 @@ button.imgTool{
 }
 #ruler1,#ruler2 {display: none;background: black;position: absolute;z-index: 6; pointer-events:none;}
 
-button, #uploadText{
+#uploadText{
     color:white;
     border-radius: 2px;
     padding: 4px 6px;
@@ -1546,12 +1546,13 @@ button{
     border-radius: 2px;
     height: 26px;
     cursor: pointer;
-    background-color: #3a3a3a;
+    background-color: #272727;
     position: relative;
     margin: 0px 3px;
     padding: 4px 6px;
     margin: 3px 2px;
     border:none;
+    border-radius: 2px;
 }
 
 button:hover{
@@ -1997,7 +1998,7 @@ a.editButtons {
     min-width: 4em;
     font-size: small;
     line-height: 1.2;
-    background-color: #777747;
+    background-color: #3a3a3a;
 }
 /* Center the images inside compare page and view full page */
 /*.compareImage, #fullPageImg{
@@ -2020,13 +2021,12 @@ a.editButtons {
     background-clip: border-box;
     background-origin: padding-box;
     cursor: pointer;
-    background-color: #D14836;
+    background-color: #272727;
     position: relative;
     margin: 0px 3px;
     padding: 4px 6px;
     margin: 3px 2px;
     line-height: 26px;
-    background-color: #3a3a3a;
 }
 
 .xmlTag, .character {
