@@ -487,7 +487,7 @@
                         catch(e){ //may not need to do this here
                             $("#transTemplateLoading p").html("Something went wrong. We could not get the information about the leader for this project.  Refresh the page to try again.");
                             $('.transLoader img').attr('src',"images/missingImage.png");
-                            console.warn("I could not leaders of the project.");
+                            console.warn("I could not get leaders of the project.");
                             clearTimeout(longLoadingProject);
                             //$(".trexHead").show();
                             //$("#genericIssue").show(1000);
@@ -2077,9 +2077,7 @@ function updatePresentation(transcriptlet) {
         $(".magnifyHelp").show();
         hideWorkspaceToSeeImage(imgFlag);
         $(".lineColIndicatorArea").hide();
-        liveTool = "image";
         mouseZoom(img,container,event);
-
     };
     
     
@@ -2119,7 +2117,7 @@ function mouseZoom($img,container, event){
     });
     $(document).on({
         mousemove: function(event){
-            if (liveTool !== "image" && liveTool !== "compare") {
+            if (!isMagnifying) { //if (liveTool !== "image" && liveTool !== "compare") {
                 $(document).off("mousemove");
                 $("#zoomDiv").hide();
             }
