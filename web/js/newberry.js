@@ -1945,7 +1945,7 @@ function updatePresentation(transcriptlet) {
     function fullTopImage(){
         $("#imgTop").css("height","100vh");
         $(".hideMe").hide();
-        $(".showMe2").show();
+        $(".showMe").show();
     }
     
     /* Start event listening to move the image in the transcirption interface */
@@ -2024,7 +2024,7 @@ function updatePresentation(transcriptlet) {
         }
         
         $(".hideMe").show();
-        $(".showMe2").hide();
+        $(".showMe").hide();
     //    var pageJumpIcons = $("#pageJump").parent().find("i");
     //    pageJumpIcons[0].setAttribute('onclick', 'firstFolio();');
     //    pageJumpIcons[1].setAttribute('onclick', 'previousFolio();');
@@ -2035,6 +2035,35 @@ function updatePresentation(transcriptlet) {
         $("#pageJump").removeAttr("disabled");
     }
     
+    function hideWorkspaceToSeeImage(which){
+    if(which === "trans"){
+        $("#transWorkspace").hide();
+        var imgBtmTop = $("#imgBottom img").css("top");
+        imgBtmTop = parseFloat(imgBtmTop) - 53;
+        $("#imgBottom").css({
+            "height": "100%"
+        });
+        $("#imgBottom img").css("top", imgBtmTop+"px");
+//        $("#imgTop").hide();
+        $(".hideMe").hide();
+        $(".showMe").show();
+    }
+    else{
+        $("#transWorkspace").hide();
+        $("#imgTop").hide();
+        $("#imgBottom img").css({
+            "top" :"0%",
+            "left":"0%"
+        });
+        $("#imgBottom .lineColIndicatorArea").css({
+            "top": "0%"
+        });
+        $(".hideMe").hide();
+        $(".showMe").show();
+    }
+
+}
+    /*
     function hideWorkspaceToSeeImage(){
         $("#transWorkspace").hide();
         $("#imgTop").hide();
@@ -2048,25 +2077,32 @@ function updatePresentation(transcriptlet) {
         $(".hideMe").hide();
         $(".showMe").show();
     }
+    */
     
-    function magnify(img, event){
-//For separating out different imgs on which to zoom.  Right now it is just the transcription canvas.
-        if(img === "trans"){
+    
+    function magnify(imgFlag, event){
+        //For separating out different imgs on which to zoom.  Right now it is just the transcription canvas.
+        var container = ""; // #id of limit
+        var img;
+        if (imgFlag === "trans"){
             img = $("#transcriptionTemplate");
+            container = "transcriptionCanvas";
             $("#magnifyTools").fadeIn(800);
             $("button[magnifyimg='trans']").addClass("selected");
         }
-        else if(img === "compare"){
-            img= $("#compareSplit");
+        else if (imgFlag === "compare"){
+            img = $("#compareSplit");
+            container = "compareSplit";
             $("#magnifyTools").fadeIn(800).css({
                 "left":$("#compareSplit").css("left"),
                 "top" : "100px"
             });
             $("button[magnifyimg='compare']").addClass("selected");
         }
-        else if (img === "full"){
+        else if (imgFlag === "full"){
             img = $("#fullPageSplitCanvas");
-             $("#magnifyTools").fadeIn(800).css({
+            container = "fullPageSplitCanvas";
+            $("#magnifyTools").fadeIn(800).css({
                 "left":$("#fullPageSplit").css("left"),
                 "top" : "100px"
             });
@@ -2074,18 +2110,80 @@ function updatePresentation(transcriptlet) {
         }
         $("#zoomDiv").show();
         $(".magnifyHelp").show();
-        hideWorkspaceToSeeImage();
+        hideWorkspaceToSeeImage(imgFlag);
         $(".lineColIndicatorArea").hide();
         liveTool = "image";
-        mouseZoom(img,event);
-//        });
+        mouseZoom(img,container,event);
+
     };
+    
+    
+    /**
+* Creates a zoom on the image beneath the mouse.
+*
+* @param $img jQuery img element to zoom on
+* @param event Event
+*/
+function mouseZoom($img,container, event){
+    isMagnifying = true;
+    var contain = $("#"+container).offset();
+    var imgURL = $img.find("img:first").attr("src");
+    var page = $("#transcriptionTemplate");
+    //collect information about the img
+
+    var imgTop = $img.find("img").css("top");
+    var imgLeft = $img.find("img").css("left");
+    if(imgTop === "auto"){
+        imgTop= $img.find("img").offset().top;
+    }
+    if(imgLeft === "auto")imgLeft= $img.find("img").offset().left;
+    var imgDims = new Array(parseInt(imgLeft), parseInt(imgTop), $img.width(), $img.height());
+    //build the zoomed div
+    var zoomSize = (page.height() / 3 < 120) ? 120 : page.height() / 3;
+    if(zoomSize > 400) zoomSize = 400;
+    var zoomPos = new Array(event.pageX, event.pageY);
+    $("#zoomDiv").css({
+        "box-shadow"    : "2px 2px 5px black,15px 15px " + zoomSize / 3 + "px rgba(230,255,255,.8) inset,-15px -15px " + zoomSize / 3 + "px rgba(0,0,15,.4) inset",
+        "width"         : zoomSize,
+        "height"        : zoomSize,
+        "left"          : zoomPos[0] + 3,
+        "top"           : zoomPos[1] + 3 - $(document).scrollTop() - $(".magnifyBtn").offset().top , //+ imgOffset
+        "background-position" : imgLeft+""+imgTop,
+        "background-size"     : imgDims[2] * zoomMultiplier + "px",
+        "background-image"    : "url('" + imgURL + "')"
+    });
+    $(document).on({
+        mousemove: function(event){
+            if (liveTool !== "image" && liveTool !== "compare") {
+                $(document).off("mousemove");
+                $("#zoomDiv").hide();
+            }
+            var mouseAt = new Array(event.pageX, event.pageY);
+            if ( mouseAt[0] < contain.left
+                || mouseAt[0] > contain.left+$("#"+container).width()
+                || mouseAt[1] < contain.top
+                || mouseAt[1] > contain.top+$("#"+container).height()){
+                return false; // drop out, you've left containment
+            }
+            var zoomPos = new Array(mouseAt[0]-zoomSize/2,mouseAt[1]-zoomSize/2);
+            var imgPos = new Array((imgDims[0]-mouseAt[0])*zoomMultiplier+zoomSize/2-3,(imgDims[1]-mouseAt[1])*zoomMultiplier+zoomSize/2-3); //3px border adjustment
+            $("#zoomDiv").css({
+                "left"  : zoomPos[0],
+                "top"   : zoomPos[1] - $(document).scrollTop() , //+ imgOffset
+                "background-size"     : imgDims[2] * zoomMultiplier + "px",
+                "background-position" : imgPos[0] + "px " + imgPos[1] + "px"
+            });
+        }
+    }, $img);
+}
+    
+    
     /** 
      * Creates a zoom on the image beneath the mouse.
      *  
      * @param img jQuery img element to zoom on
-     */
-    function mouseZoom($img, event){
+     *
+    function mouseZoom($img, container, event){
         isMagnifying = true;
         var imgURL = $img.find("img:first").attr("src");
         var page = $("#transcriptionTemplate");
@@ -2125,7 +2223,7 @@ function updatePresentation(transcriptlet) {
           }, $img
         );
     };
-    
+    */
     function removeTransition(){
         $("#imgTop img").css("-webkit-transition", "");
         $("#imgTop img").css("-moz-transition", "");
@@ -4262,7 +4360,7 @@ function loadIframes(){
                 var splitWidth = window.innerWidth - (width + 35) + "px";
                 $(".split img").css("max-width", splitWidth);
                 $(".split:visible").css("width", splitWidth);
-                //var newHeight1 = parseFloat($("#fullPageImg").height()) + parseFloat($("#fullpageSplit .toolLinks").height()); //For resizing properly when transcription template is resized
+                //var newHeight1 = parseFloat($("#fullPageImg").height()) + parseFloat($("#fullPageSplit .toolLinks").height()); //For resizing properly when transcription template is resized
                 //var newHeight2 = parseFloat($(".compareImage").height()) + parseFloat($("#compareSplit .toolLinks").height()); //For resizing properly when transcription template is resized
                 var fullPageMaxHeight = window.innerHeight - 15; //100 comes from buttons above image and topTrim
                 $("#fullPageImg").css("max-height", fullPageMaxHeight); //If we want to keep the full image on page, it cant be taller than that.
