@@ -1216,118 +1216,6 @@
                 }
             });
 
-//        $(document).keydown(function(event){
-//            if(isMagnifying){
-//                //back out
-//                if ((event.which === 109) || (event.which === 189) || (event.which === 173) ){ //173  = - in firefox
-//                    zoomMultiplier -= .4;
-//                    $(document).mousemove();
-//                }
-//                //ease in
-//                else if ((event.which === 107) || (event.which === 187) || (event.which === 61)){ // 61 = + in firefox
-//                    zoomMultiplier += .4;
-//                    $(document).mousemove();
-//                }
-//                //esc
-//                else if(event.which === 27){
-//                    stopMagnify();
-//                }
-//                else {
-//
-//                }
-//            }
-//            else if (event.which == 18 || event.altKey){
-//              // console.log('ALT KEY');
-//               var lineForEditing = $(".activeLine");
-//               lineForEditing.resizable();
-//               //alt + arrows will bump active line left and right
-//               if(event.which == 37 && (event.altKey||event.which == 18)){
-//                   //left
-//                   event.preventDefault();
-//                   bumpLine("left", lineForEditing);
-//                   
-//               }
-//               else if (event.which == 39 && (event.altKey||event.which == 18)){
-//                   //right
-//                   event.preventDefault();
-//                   bumpLine("right", lineForEditing);
-//               }
-//            }
-//            else if (event.which === 27){
-//                //Esc during any active tool means stop the tool.  In this case, our only worry is moving the image around.  We may add others later.
-//                $("#imgTop, #imgBottom").unbind("mousemove");
-//                $("#imgTop, #imgBottom").unbind("mousedown");
-//                $("#imgTop, #imgBottom").unbind("mouseup");
-//                //still need hover event on imgTop
-//                $("#imgTop").css("cursor", "default");
-//                $("#imgBottom").css("cursor", "default");
-//                $(".magnifyBtn").removeClass("selected");
-//                $("#moveImage").removeClass("selected");
-//                $(".transcriptlet").children("textarea").removeClass("imageMove").removeAttr("disabled");
-//                
-//                
-//                if(liveTool && liveTool !== "none" && liveTool !== "parsing"){
-//                    fullPage();
-//                }
-//                else{ //this stuff needs to happen when tpen.screen.liveTool="parsing"
-//                    //Make sure all the parsing stuff is unselected.  The function that does this is toggleSelected(), but it doesn't work quite right here...
-//                    $("#addLines").click() //resets the lines UI to their default state
-//                    $(".splitBlock.selected").children(".tpenButton.selected").removeClass("selected");
-//                    $(".splitBlock.selected").children(".tpenButton.selected").removeClass("active"); //not 100% sure we need this
-//                    $(".splitBlock.selected").removeClass("selected");
-//                    $(".icon-panel").find(".selected").removeClass("selected");
-//                    //This is from fullPage() since it is conditional whether or not you fire it.
-//                    $(document).unbind("mousemove");
-//                    $(document).unbind("mousedown");
-//                    $(document).unbind("mouseup");
-//                    $(".parsing").unbind();
-//                }
-//                
-//            }
-////            else if (event.which === 27){
-////                //Esc during any active tool means stop the tool.  In this case, our only worry is moving the image around.  We may add others later. 
-////                ////console.log("ESC DOWN");
-////                $("#imgTop, #imgBottom").unbind("mousemove");
-////                $("#imgTop, #imgBottom").unbind("mousedown");
-////                $("#imgTop, #imgBottom").unbind("mouseup");
-////                //still need hover event on imgTop
-////                $("#imgTop").css("cursor", "default");
-////                $("#imgBottom").css("cursor", "default");
-////                $(".magnifyBtn").removeClass("selected");
-////                $("#moveImage").removeClass("selected");
-////                $(".transcriptlet").children("textarea").removeClass("imageMove").removeAttr("disabled");
-////            }
-//            else if (event.which === 13){ //entr
-//                var activeTranscriptlet = $(".transcriptlet:visible");
-//                if(activeTranscriptlet.find('textarea').is(":focus")){
-//                    nextTranscriptlet();
-//                }
-//            }
-//             else if (event.which == 112) { //F1 for help
-//                event.preventDefault();
-//                //DO NOT pull up the help if the user is using another tool that is taking up the screen.  It breaks the interface..  
-//                if(liveTool === "none"){
-//                    splitPage(event, "help");
-//                }
-//                //$("#helpMe").click();
-//            }
-//            else{
-//                ////console.log(event.which+" DOWN");
-//            }
-//            })
-//            .keyup(function(event){
-//                if(event.which == 18 || event.altKey){
-//                    $("#imgTop,#imgBottom").unbind("mousemove").css("cursor", "default");
-//                    $("#imgTop, #imgBottom").unbind("mousedown");
-//                    $("#imgTop, #imgBottom").unbind("mouseup");
-//                    //restoreTransition();
-//                    //unShiftInterface();
-//                }
-//                else{
-//                   // //console.log(event.which+' UP');
-//                }
-//            });
-            
             $("#parsingBtn").click(function(){
                 if(isFullscreen)isUnadjusted = true;
                 isFullscreen = false;
@@ -1403,12 +1291,7 @@
                                             return false;
                                         }
                                     }
-// Why this? It stops it from working when overlapping an existing column 3-9-17                                    
-//                                    if ((event.target.className.indexOf("transcriptionImage") === -1 )){
-//                                        isCreating = false;
-//                                        return true;
-//                                    }
-                                    //else{
+
                                     event.preventDefault();
                                     var newCol = "<div id='newCol' class='newColumn parsingColumn ui-resizable' style='z-index:1000;'></div>";
                                     point = {x:event.pageX - offset.left,y:event.pageY - offset.top};
@@ -1676,8 +1559,7 @@
             $(this).next("div").slideDown();
         }
         
-        
-        
+        //Cannot find this anymore.  Is it clearColumns now?
         if (thisID === "reparseColumns") {
                 //load the adjustment tool and then show the reparsing instructions
                 $(".parsingColumn").removeClass("parsingColumnSelected");
@@ -1986,47 +1868,7 @@
             });
     }
     
-//    //Turn the ruler on
-//    function applyRuler(line){
-//            //var sRCbkp = selectRulerColor; //select Ruler Color backup
-//            $("#imageTip").html("Add a Line");
-//            if(!isAddingLines){
-//                if (line.attr("lineleft") == line.next("div").attr("lineleft")) {
-//                    line.next("div").addClass('deletable');
-//                }
-//                line.addClass('deletable');
-//                if($(".deletable").size()>1){
-//                    $(".deletable").addClass("mergeable");
-//                    $("#imageTip").html("Merge Line");
-//                } else {
-//                    $("#imageTip").html("Delete Line");
-//                }
-//               //sRCbkp = 'transparent';
-//            }
-//            line.css('cursor','crosshair').bind('mousemove', function(e){
-//                var myLeft = line.position().left + $("#imgTop").offset().left;
-//                var myWidth = line.width();
-//                $('#imageTip').show().css({
-//                    left:e.pageX,
-//                    top:e.pageY+20
-//                });
-//                $('#ruler1').show().css({
-//                    left: myLeft,
-//                    top: e.pageY,
-//                    height:'1px',
-//                    width:e.pageX-myLeft-7,
-//                    //background:"red"
-//                });
-//                $('#ruler2').show().css({
-//                    left: e.pageX+7,
-//                    top: e.pageY,
-//                    width:myWidth+myLeft-e.pageX-7,
-//                    height:'1px',
-//                   // background:"red"
-//                });
-//            });
-//        
-//    }
+
     /**
      * Hides ruler within parsing tool. Called on mouseleave .parsing.
      */
@@ -2050,7 +1892,10 @@
         }
 
     }
-      
+    
+    /*
+     * The Ctrl + Shfit functionality to zoom in on a transcription box.
+     */
     function peekZoom(cancel){
         var topImg = $("#imgTop img");
         var btmImg = $("#imgBottom img");
@@ -2110,6 +1955,9 @@
         }
     };
     
+    /* 
+     * The ctrl+alt functionality so the user can drag an image around.  
+     * */
     function toggleMoveImage(event) {
         //if (event && event.altKey && (event.ctrlKey || event.metaKey)) {
         if(!toggleMove){

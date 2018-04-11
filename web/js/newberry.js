@@ -1630,40 +1630,6 @@ function updatePresentation(transcriptlet) {
         return positions;
     }
      
-    /* Helper for position focus onto a specific transcriptlet */
-//    function setPositions() {
-//    //Determine size of section above workspace
-//        var bottomImageHeight = $("#imgBottom img").height();
-//        if (focusItem[1].attr("lineHeight") !== null) {
-//          var pairForBookmarkCol = focusItem[1].attr('col');
-//          var pairForBookmarkLine = parseInt(focusItem[1].attr('collinenum'));
-//          pairForBookmarkLine += 1;
-//          var pairForBookmark = pairForBookmarkCol + pairForBookmarkLine;
-//          var currentLineHeight = parseFloat(focusItem[1].attr("lineHeight"));
-//          var currentLineTop = parseFloat(focusItem[1].attr("lineTop"));
-//          // top of column
-//          var previousLine = (focusItem[1].prev().is('.transcriptlet') && (currentLineTop > parseFloat(focusItem[1].prev().attr("lineTop")))) ? parseFloat(focusItem[1].prev().attr("lineHeight")) : parseFloat(focusItem[1].attr("lineTop"));
-//          // oversized for screen
-//          var imgTopHeight = (previousLine + currentLineHeight)+1.5; // obscure behind workspace.
-//          var topImgPositionPercent = ((previousLine - currentLineTop)*100)/imgTopHeight;
-//          var topImgPositionPx = (previousLine - currentLineTop)*bottomImageHeight/100;
-////          var bookmarkTop = (currentLineTop + ((imgTopHeight/100)*topImgPositionPercent));
-//          var bottomImgPositionPercent = -(currentLineTop + currentLineHeight);
-//          var bottomImgPositionPx = -(currentLineTop+currentLineHeight)*bottomImageHeight / 100;
-//        }
-//        var positions = {
-//          imgTopHeight: imgTopHeight,
-//          topImgPositionPercent: topImgPositionPercent,
-//          topImgPositionPx : topImgPositionPx,
-//          bottomImgPositionPercent: bottomImgPositionPercent,
-//          bottomImgPositionPx: bottomImgPositionPx,
-//          activeLine: pairForBookmark
-////          bookmarkTop: (parseFloat(locationForBookmark.css("top")) / $(".lineColIndicatorArea:first").height()) * 100 + "%",
-////          bookmarkHeight: currentLineHeight
-//        };
-//        return positions;
-//    };
-  
   /**
    * Removes previous textarea and slides in the new focus.
    *
@@ -1864,7 +1830,10 @@ function updatePresentation(transcriptlet) {
           }
     }
 
-    
+    /*
+     * 
+     *Scrub XML tag text for encoding issues and prepare it for injection into text inline.
+     */
     function scrub(thisText){
         var workingText = $("<div/>").text(thisText).html();
         var encodedText = [workingText];
@@ -1942,6 +1911,9 @@ function updatePresentation(transcriptlet) {
         });
     };
     
+    /*
+     * make the top image the only shown image at full screen.  
+     */
     function fullTopImage(){
         $("#imgTop").css("height","100vh");
         $(".hideMe").hide();
@@ -2008,6 +1980,9 @@ function updatePresentation(transcriptlet) {
         //These events are unregistered in keyup() on newberryTrans.html
     };
     
+    /*
+     * Bring a hidden workspace back to the interface.
+     */
     function restoreWorkspace(){
         $("#imgBottom").show();
         $("#imgTop").show();
@@ -2035,6 +2010,9 @@ function updatePresentation(transcriptlet) {
         $("#pageJump").removeAttr("disabled");
     }
     
+    /*
+     * Hide the workspace so the user can see the most of the image.
+     */
     function hideWorkspaceToSeeImage(which){
     if(which === "trans"){
         $("#transWorkspace").hide();
@@ -2063,23 +2041,10 @@ function updatePresentation(transcriptlet) {
     }
 
 }
+
     /*
-    function hideWorkspaceToSeeImage(){
-        $("#transWorkspace").hide();
-        $("#imgTop").hide();
-        $("#imgBottom img").css({
-            "top" :"0%",
-            "left":"0%"
-        });
-        $("#imgBottom .lineColIndicatorArea").css({
-            "top": "0%"
-        });
-        $(".hideMe").hide();
-        $(".showMe").show();
-    }
-    */
-    
-    
+     * Prepare the inspect UI
+     */
     function magnify(imgFlag, event){
         //For separating out different imgs on which to zoom.  Right now it is just the transcription canvas.
         var container = ""; // #id of limit
@@ -2119,7 +2084,7 @@ function updatePresentation(transcriptlet) {
     
     
     /**
-* Creates a zoom on the image beneath the mouse.
+* Creates a zoom on the image beneath the mouse for Inspect.
 *
 * @param $img jQuery img element to zoom on
 * @param event Event
@@ -2176,54 +2141,7 @@ function mouseZoom($img,container, event){
         }
     }, $img);
 }
-    
-    
-    /** 
-     * Creates a zoom on the image beneath the mouse.
-     *  
-     * @param img jQuery img element to zoom on
-     *
-    function mouseZoom($img, container, event){
-        isMagnifying = true;
-        var imgURL = $img.find("img:first").attr("src");
-        var page = $("#transcriptionTemplate");
-        //var page = $(document);
-        //collect information about the img
-        var imgDims = new Array($img.offset().left,$img.offset().top,$img.width(),$img.height());
-        //build the zoomed div
-        var zoomSize = (page.height()/3 < 120) ? 120 : page.height()/3;
-        if(zoomSize > 400) zoomSize = 400;
-        var zoomPos = new Array(event.pageX, event.pageY );
-        $("#zoomDiv").css({
-            "box-shadow"    : "2px 2px 5px black,15px 15px "+zoomSize/3+"px rgba(230,255,255,.8) inset,-15px -15px "+zoomSize/3+"px rgba(0,0,15,.4) inset",
-            "width"         : zoomSize,
-            "height"        : zoomSize,
-            "left"          : zoomPos[0] + 3,
-            "top"           : zoomPos[1] + 3 - $(document).scrollTop() - $(".magnifyBtn").offset().top,
-            "background-position" : "0px 0px",
-            "background-size"     : imgDims[2] * zoomMultiplier+"px",
-            "background-image"    : "url('"+imgURL+"')"
-        });
-        $(document).on({
-                mousemove: function(event){
-                  if (liveTool !== "image" && liveTool !== "compare") {
-                    $(document).off("mousemove");
-                    $("#zoomDiv").hide();
-                  }
-                var mouseAt = new Array(event.pageX,event.pageY);
-                var zoomPos = new Array(mouseAt[0]-zoomSize/2,mouseAt[1]-zoomSize/2);
-                var imgPos = new Array((imgDims[0]-mouseAt[0])*zoomMultiplier+zoomSize/2-3,(imgDims[1]-mouseAt[1])*zoomMultiplier+zoomSize/2-3); //3px border adjustment
-                $("#zoomDiv").css({
-                    "left"  : zoomPos[0],
-                    "top"   : zoomPos[1] - $(document).scrollTop(),
-                    "background-size"     : imgDims[2] * zoomMultiplier+"px",
-                    "background-position" : imgPos[0]+"px " + imgPos[1]+"px"
-                });
-            }
-          }, $img
-        );
-    };
-    */
+
     function removeTransition(){
         $("#imgTop img").css("-webkit-transition", "");
         $("#imgTop img").css("-moz-transition", "");
@@ -2267,8 +2185,11 @@ function mouseZoom($img,container, event){
         $("#imgBottom").css("-o-transition", "left .5s, top .5s, width .5s");
         $("#imgBottom").css("transition", "left .5s, top .5s, width .5s");
     };
-    
-    function toggleImgTools(event){
+
+    /**
+     * Show/Hide the available Page Tools
+     */
+function toggleImgTools(event){
     var locationX = event.pageX;
     var locationY = event.pageY;
     $("#imageTools").css({
@@ -2279,6 +2200,9 @@ function mouseZoom($img,container, event){
     $("#imageTools").draggable();
 }
 
+/*
+ * Not sure if this is used?
+ */
 function toggleLineControls(event){
     var locationX = event.pageX;
     var locationY = event.pageY;
@@ -2290,6 +2214,9 @@ function toggleLineControls(event){
     $("#lineColControls").draggable();
 }
 
+/*
+ * Show/hide the xml tag area in the transcription workspace
+ */
 function toggleXMLTags(event){
     if($("#xmlTagFloat").is(":visible")){
         $("#xmlTagFloat").fadeOut();
@@ -2299,6 +2226,9 @@ function toggleXMLTags(event){
     $("#toggleXML").toggleClass('xml-tagged');
 }
 
+/*
+ * Show/hide the special character area in the transcription workspace
+ */
 function toggleSpecialChars(event){
     if($("#specialCharsFloat").is(":visible")){
         $("#specialCharsFloat").fadeOut();
@@ -2308,13 +2238,12 @@ function toggleSpecialChars(event){
     $("#toggleChars").toggleClass('special-charactered');
 }
     
-        /** 
+/** 
      * Sets screen for parsing tool use.
      * Slides the workspace down and scales the top img
      * to full height. From here, we need to load to interface
      * for the selected tool. 
-     */
-    
+*/
     function hideWorkspaceForParsing(){
         if(liveTool === "parsing"){
             return false;
@@ -2430,6 +2359,9 @@ function toggleSpecialChars(event){
         imgToParse.parent().append($(setOfLines.join("")));
     }
     
+    /*
+     * The overlay for the lines in the parsing interface
+     */
     function makeOverlayDiv(thisLine, originalX, cnt){
         var Y = parseFloat(thisLine.attr("lineTop"));
         var X = parseFloat(thisLine.attr("lineLeft"));
@@ -2504,7 +2436,10 @@ function toggleSpecialChars(event){
               document.body.scrollTop = document.documentElement.scrollTop = 0;
           },1);
     }
-    
+
+    /*
+     * Split the interface to make room for avilable split tools.
+     */
 function splitPage(event, tool) {
     var resize = true;
     var newCanvasWidth = window.innerWidth * .55;
@@ -2639,7 +2574,9 @@ function splitPage(event, tool) {
     }, 1000);
     
 }
-    
+    /*
+     * Make the lines in the Text Preview split be in order.
+     */
     function forceOrderPreview(){
         var ordered = [];
         var length = $(".previewPage").length;
@@ -2660,12 +2597,16 @@ function splitPage(event, tool) {
             });
     }
 
+/*
+ * Prepare the UI for the Compare Page tool
+ */
     function populateCompareSplit(folioIndex){
         var canvasIndex = folioIndex - 1;
         var compareSrc = transcriptionFolios[canvasIndex].images[0].resource["@id"];
         var currentCompareSrc = $(".compareImage").attr("src");
         if(currentCompareSrc !== compareSrc) $(".compareImage").attr("src", compareSrc);
     }
+    
     /*
      * Go through all of the parsing lines and put them into columns;
      * @see linesToColumns()
@@ -2698,6 +2639,10 @@ function splitPage(event, tool) {
         
         
     }
+    
+    /*
+     * Delete a "column" (all the lines that make up a column) in the parsing interface.
+     */
     function removeColumn(column, destroy){
         ////console.log("Called removed column for this column");
         ////console.log(column);
@@ -2716,7 +2661,9 @@ function splitPage(event, tool) {
      
     }
     
-       
+    /*
+     * Delete all lines at once in the parsing interface.
+     */   
     function destroyPage(){
         nextColumnToRemove = $(".parsingColumn:first");
         var colX = nextColumnToRemove.attr("lineleft");
@@ -3049,21 +2996,28 @@ function splitPage(event, tool) {
             });
      }
     
-    function reparseColumns(){
-        $.each($('.parsingColumn'),function(){
-            var colX = $(this).attr("lineleft");
-            // collect lines from column
-            var lines = $(".parsing[lineleft='"+colX+"']");
-            lines.addClass("deletable");
-            var linesSize = lines.size();
-            // delete from the end, alerting for any deleted data
-            for (var i=linesSize; i>0;i--){
-                removeLine(lines[i], true);
-            }
-        });
-    }
+    /*
+     * Destroy all lines at once in the parsing interface.
+     * 
+     * @Deprecated
+     */
+//    function reparseColumns(){
+//        $.each($('.parsingColumn'),function(){
+//            var colX = $(this).attr("lineleft");
+//            // collect lines from column
+//            var lines = $(".parsing[lineleft='"+colX+"']");
+//            lines.addClass("deletable");
+//            var linesSize = lines.size();
+//            // delete from the end, alerting for any deleted data
+//            for (var i=linesSize; i>0;i--){
+//                removeLine(lines[i], true);
+//            }
+//        });
+//    }
      
-      
+   /*
+    * Manage inserting a self closing vs not-self closing XML tag.
+    */   
    function insertTag(tagName,fullTag){
         if (tagName.lastIndexOf("/") == (tagName.length-1)) {
             //transform self-closing tags
@@ -3077,6 +3031,9 @@ function splitPage(event, tool) {
         
     }
     
+    /*
+     * When a user clicks on the notification of an unclosed XML tag, close the tag inline with what text has been written.
+     */
     function closeTag(tagName,fullTag){
             // Do not create for self-closing tags
             if (tagName.lastIndexOf("/") == (tagName.length-1)) return false;
@@ -3103,6 +3060,10 @@ function splitPage(event, tool) {
         
     }
     
+    /*
+     * 
+     * Add a special character inline to the transcription text. 
+     */
     function addchar(theChar, closingTag)
     {
         //console.log("Add Char Called");
@@ -3115,6 +3076,10 @@ function splitPage(event, tool) {
         return false;
     }
     
+    /*
+     * 
+     * Move the cursor in the transcription text to the appropriate location baased on a character insertion action.
+     */
     function setCursorPosition(e, position)
     {
         //console.log("set cursor pos.");
@@ -3241,31 +3206,16 @@ function splitPage(event, tool) {
         }
 
     }
-function toggleCharacters(){
-    if($("#charactersPopin .character:first").is(":visible")){
-        $("#charactersPopin .character").fadeOut(400);
-    }
-    else{
-       $("#charactersPopin .character").fadeIn(400).css("display", "block"); 
-    }
-}
-function toggleTags(){
-    if($("#xmlTagPopin .lookLikeButtons:first").is(":visible")){
-        $("#xmlTagPopin .lookLikeButtons").fadeOut(400);
-    }
-    else{
-       $("#xmlTagPopin .lookLikeButtons").fadeIn(400).css("display", "block"); 
-    }
 
-}
-function togglePageJump(){
-    if($("#pageJump .folioJump:first").is(":visible")){
-        $("#pageJump .folioJump").fadeOut(400);
-    }
-    else{
-       $("#pageJump .folioJump").fadeIn(400).css("display", "block"); 
-    }
-}
+//Not sure we use this anymore
+//function togglePageJump(){
+//    if($("#pageJump .folioJump:first").is(":visible")){
+//        $("#pageJump .folioJump").fadeOut(400);
+//    }
+//    else{
+//       $("#pageJump .folioJump").fadeIn(400).css("display", "block"); 
+//    }
+//}
 
 /* Change the page to the specified page from the drop down selection. */
 function pageJump(page,parsing){
@@ -4241,17 +4191,16 @@ function toggleLineCol(){
     function cleanupTranscriptlets(draw) {
         console.log("cleanup.  draw:"+draw);
         var transcriptlets = $(".transcriptlet");
-          if(draw){
-              transcriptlets.remove();
-              $(".lineColIndicatorArea").children(".lineColIndicator").remove();
-              $("#parsingSplit").find('.fullScreenTrans').unbind();
-              $("#parsingSplit").find('.fullScreenTrans').bind("click", function(){
-                fullPage(); 
-                currentFolio = parseInt(currentFolio);
-                drawLinesToCanvas(transcriptionFolios[currentFolio-1], "");
-              });
-          }
-
+        if(draw){
+            transcriptlets.remove();
+            $(".lineColIndicatorArea").children(".lineColIndicator").remove();
+            $("#parsingSplit").find('.fullScreenTrans').unbind();
+            $("#parsingSplit").find('.fullScreenTrans').bind("click", function(){
+              fullPage(); 
+              currentFolio = parseInt(currentFolio);
+              drawLinesToCanvas(transcriptionFolios[currentFolio-1], "");
+            });
+        }
     }
  
  /* Make some invalid information inside of folios valid empties */
@@ -4282,20 +4231,7 @@ function scrubFolios(){
         });
 }
 
-/* Control the hiding and showing of the image tools in the transcription interface. */
-//function toggleImgTools(){
-//    if($("#imageTools").attr("class")!==undefined && $("#imageTools").attr("class").indexOf("activeTools") > -1){
-//        $('.toolWrap').hide();
-//        $("#imageTools").removeClass("activeTools");
-//        $("#activeImageTool").children("i").css("transform", "rotate(180deg)");
-//    }
-//    else{
-//        $("#imageTools").addClass("activeTools");
-//        $('.toolWrap').show();
-//        $("#activeImageTool").children("i").css("transform", "rotate(0deg)");
-//    }
-//}
-
+/* quit the magnifying UI */
 function stopMagnify(){
     isMagnifying = false;
     zoomMultiplier = 2;
@@ -4320,6 +4256,8 @@ function stopMagnify(){
  * See the Network console in the Browser deveoper tools for problems with wait times on embedded content.  
  * 
  * @see newberryTrans.html to find the iframe elements.
+ * 
+ * @Deprecated, too costly and causes extremely long load times and crashes. 
  */
 function loadIframes(){
 //    $.each($("iframe"), function(){
@@ -4335,6 +4273,7 @@ function loadIframes(){
         });
     }
     
+    /* Clear the resize function attached to the transcription template. */
     function detachTemplateResize(){
         if ($("#transcriptionTemplate").hasClass("ui-resizable")){
             $("#transcriptionTemplate").resizable("destroy");
@@ -4342,6 +4281,7 @@ function loadIframes(){
         //$("#transcriptionTemplate").resizable("destroy");
     }
     
+    /* Set the resize function for the transcription template. */
     function attachTemplateResize(){
         var originalRatio = originalCanvasWidth / originalCanvasHeight;
         $("#transcriptionTemplate").resizable({
@@ -4383,9 +4323,11 @@ function loadIframes(){
             e.stopPropagation();
         });
     }
-
-    //Must explicitly set new height and width for percentages values in the DOM to take effect.
-    //with resizing because the img top position puts it up off screen a little.
+    
+    /** Set the resize function for the window element. 
+     * Must explicitly set new height and width for percentages values in the DOM to take effect.
+     * with resizing because the img top position puts it up off screen a little.
+    */
     function attachWindowResize(){
         window.addEventListener('resize', function(event, ui) {
             detachTemplateResize();
@@ -4511,6 +4453,9 @@ function loadIframes(){
         });
     }
     
+    /**
+     * pull a variable by name from the URL
+     */
     function getURLVariable(variable)
     {
         var query = window.location.search.substring(1);
@@ -4521,7 +4466,10 @@ function loadIframes(){
         }
         return(false);
     }
-
+    
+    /**
+     * set a variable by name in the URL
+     */
     function replaceURLVariable(variable, value){
            var query = window.location.search.substring(1);
            var location = window.location.origin + window.location.pathname;
@@ -4540,6 +4488,9 @@ function loadIframes(){
            return(location + "?"+variables);
     }
     
+    /**
+     * Rewrite the URL in the address bar
+     */
     function updateURL(piece, classic){
         var toAddressBar = document.location.href;
         //If nothing is passed in, just ensure the projectID is there.
@@ -4575,6 +4526,9 @@ function loadIframes(){
         $(".theText,.notes,#previous span,#helpPanels ul").css("font-size",resize+"px");
     };
     
+    /*
+     * The responsive functionality for resizing the window
+     */
     function responsiveNavigation(severeCheck){
         if(!severeCheck && navMemory > 0 && $('.collapsed.navigation').size()){
             $('.collapsed.navigation').removeClass('collapsed severe');
