@@ -1671,6 +1671,7 @@ helpCon
     padding: 0 .5em;
     text-transform: uppercase;
     color: #999;
+    text-decoration: none;
 }
 #helpSplit dt{
     font-style: italic;
@@ -1712,6 +1713,16 @@ helpCon
 }
 #helpContact::before {
     content:"Contact ";
+}
+#helpSplit kbd {
+    font-size: 1rem;
+}
+kbd {
+    background: #CCC;
+    border-radius: 2px;
+    border: solid thin #333;
+    color: #666;
+    padding: 0 .5em;
 }
 
 

@@ -960,6 +960,8 @@
      */
     function loadTranscriptionCanvas(canvasObj, parsing){
         $("#minimalLines").removeClass("selected");
+        $("#zoomLock").removeClass("selected");
+        zoomLock = false;
         minimalLines = false;
         $("#showTheLines").addClass("selected");
         $("#showTheLabels").addClass("selected");
@@ -3258,8 +3260,8 @@ function resetImageTools(newPage){
     if($("button[which='invert']").hasClass("selected")){
         toggleFilter("invert");
     }
-    if($("#zoomLock").hasClass("selected")){
-        toggleLocking();
+    if(newPage && $("#zoomLock").hasClass("selected")){
+        $("#zoomLock").removeClass("selected");
     }
     if($("#zenLine").hasClass("selected")){
         toggleZenLine();
@@ -3286,9 +3288,11 @@ function toggleLocking(){
     zoomLock = !zoomLock;
     if(zoomLock){
         $("#zoomLock").addClass("selected");
+        peekZoom(false);
     }
     else{
         $("#zoomLock").removeClass("selected");
+        peekZoom(true);
     }
 }
 
