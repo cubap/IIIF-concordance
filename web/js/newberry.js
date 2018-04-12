@@ -2565,7 +2565,8 @@ function splitPage(event, tool) {
     
     if(resize){
         attachTemplateResize();
-    } else {
+    } 
+    else {
         detachTemplateResize();
         $("#templateResizeBar").hide();
     }
@@ -4399,7 +4400,7 @@ function loadIframes(){
                 $("#imgTop").css("height", newCanvasHeight + "px");
                 $("#imgTop").css("width", newCanvasWidth + "px");
                 $("#imgTop img").css({
-                    'height': newCanvasHeight + "px",
+                    'height': newCanvasHeight + "px"
                 });
             } 
             else if (liveTool === "preview"){
