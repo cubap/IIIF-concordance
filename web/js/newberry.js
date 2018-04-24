@@ -2424,7 +2424,7 @@ function toggleSpecialChars(event){
         $(".split").hide();
         $(".split").css("width", "43%");
 //        //console.log("RESTORE WORKSPACE");
-        $("#splitScreenTools").removeAttr("disabled")
+        $("#splitScreenTools").removeAttr("disabled");
         restoreWorkspace();
         $("#splitScreenTools").show();
         var screenWidth = $(window).width();
@@ -2470,7 +2470,6 @@ function splitPage(event, tool) {
         $("#canvasControls").addClass("selected");
         $("#transcriptionCanvas").css("width", Page.width()-200 + "px");
         $("#transcriptionTemplate").css("width", Page.width()-200 + "px");
-        $("#canvasControls").addClass("selected");
         newCanvasWidth = Page.width()-200;
         $("#controlsSplit").show();
         resize = false; //interupts parsing resizing funcitonaliy, dont need to resize for this anyway.
@@ -2504,8 +2503,7 @@ function splitPage(event, tool) {
         $("#fullPageSplitCanvas").width($("#fullPageImg").width());
         $(".fullP").each(function(i){
             this.title = $("#transcriptlet_"+i+" .theText").text();
-        })
-            .tooltip();
+        }).tooltip();
     }
     else if(tool === "compare"){
         $("#compareSplit img").css("max-height", fullPageMaxHeight); //If we want to keep the full image on page, it cant be taller than that.
@@ -4432,7 +4430,6 @@ function loadIframes(){
                 $("#imgBottom img").css("top", newImgBtmTop + "px");
                 $("#imgBottom .lineColIndicatorArea").css("top", newImgBtmTop + "px");
                 $(".lineColIndicatorArea").css("height",newCanvasHeight+"px");
-
             }
             else{
                 var newHeight = $("#imgTop img").height();
