@@ -1161,7 +1161,7 @@
                         //Maybe isPeeking should play into liveTool when zoomLock...
                         //There will be no oother liveTool if isPeeking and zoomLock...
                         toggleLocking();
-                        peekZoom(true);
+                        peekZoom(true, {});
                     }
                     else if(liveTool == "parsing"){//this stuff needs to happen when tpen.screen.liveTool="parsing"
                         //Make sure all the parsing stuff is unselected.  The function that does this is toggleSelected(), but it doesn't work quite right here...
@@ -1218,7 +1218,7 @@
                     } 
                     else if (event.shiftKey && !isPeeking && !isMagnifying) {
                         // Peek-Zoom
-                        peekZoom(false);
+                        peekZoom(false, {});
                     }
                 }
                 else {
@@ -1237,7 +1237,7 @@
                 }
                 else if(isPeeking && (!event.shiftKey || !(event.ctrlKey||event.metaKey)) && !zoomLock){
                     // cancel Peek-Zoom, only if user does not have zoom lock setting active.
-                    peekZoom(true);
+                    peekZoom(true, {});
                 }
                 else if(toggleMove && (!event.altKey || !event.ctrlKey || !event.metaKey)){
                     //cancel show and/or move image.  Must do this here because it is possible the user never moves the image and moveImg() won't handle the cancel case.
@@ -1922,69 +1922,7 @@
         }
 
     }
-    
-    /*
-     * The Ctrl + Shfit functionality to zoom in on a transcription box.
-     */
-    function peekZoom(cancel){
-        var topImg = $("#imgTop img");
-        var btmImg = $("#imgBottom img");
-        var availableRoom = new Array (Page.height()-$(".navigation").height(),$("#transcriptionCanvas").width());
-        var line = $(".activeLine:first");
-        var limitIndex = (line.width()/line.height()> availableRoom[1]/availableRoom[0]) ? 1 : 0;
-        var zoomRatio = (limitIndex === 1) ? availableRoom[1]/line.width() : availableRoom[0]/line.height();
-        var imgDims = new Array (topImg.height(),topImg.width(),parseInt(topImg.css("left")),-line.position().top);
-        
-        if (!cancel){
-            //zoom in
-            //$("#imgTop img,#imgBottom img,#imgTop .lineColIndicatorArea, #imgBottom .lineColIndicatorArea, #bookmark, #imgTop, #imgBottom").addClass('noTransition');
-            if($(".parsing").size()>0){
-                // Parsing tool is open
-                return false;
-            }
-            $(".lineColIndicatorArea").fadeOut();
-            peekMemory = [parseFloat(topImg.css("top")),parseFloat(btmImg.css("top")),$("#imgTop").css("height")];
-            //For some reason, doing $("#imgTop").height() and getting the integer value causes the interface to be broken when restored in the else below, even though it is the same value.
-            $("#imgTop").css({
-                "height"    : line.height() * zoomRatio + "px"
-            });
-            topImg.css({
-                "width"     : imgDims[1] * zoomRatio + "px",
-                "left"      : -line.position().left * zoomRatio,
-                "top"       : imgDims[3] * zoomRatio,
-                "max-width" : imgDims[1] * zoomRatio / availableRoom[1] * 100 + "%"
-            });
-            btmImg.css({
-                "left"      : -line.position().left * zoomRatio,
-                "top"       : (imgDims[3]-line.height()) * zoomRatio,
-                "width"     : imgDims[1] * zoomRatio + "px",
-                "max-width" : imgDims[1] * zoomRatio / availableRoom[1] * 100 + "%"
-            });
-            isPeeking = true;
-        } 
-        else {
-            //zoom out
-            //$("#imgTop img,#imgBottom img,#imgTop .lineColIndicatorArea, #imgBottom .lineColIndicatorArea, #bookmark, #imgTop, #imgBottom").removeClass('noTransition');
-            topImg.css({
-                "width"     : "100%",
-                "left"      : 0,
-                "top"       : peekMemory[0],
-                "max-width" : "100%"
-            });
-            btmImg.css({
-                "width"     : "100%",
-                "left"      : 0,
-                "top"       : peekMemory[1],
-                "max-width" : "100%"
-            });
-            $("#imgTop").css({
-                "height"    : peekMemory[2]
-            });
-            $(".lineColIndicatorArea").fadeIn();
-            isPeeking = false;
-        }
-    };
-    
+      
     /* 
      * The ctrl+alt functionality so the user can drag an image around.  
      * */

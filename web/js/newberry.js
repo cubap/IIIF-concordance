@@ -1559,7 +1559,13 @@ function updatePresentation(transcriptlet) {
 }
     /* Helper for position focus onto a specific transcriptlet.  Makes sure workspace stays on screen. */
     function setPositions() {
-        var bottomImageHeight = $("#imgBottom img").height();
+        var bottomImageHeight = $("#imgBottom img").height(); //in a normal situation, this is already the correct natural height
+        if(isPeeking){
+            peekZoom(true); //cancel peekZooming before gathering the positions for the next line
+            isPeeking = true; //However, we overwrite this so in adjustImgs() we know its this case. 
+            bottomImageHeight = peekMemory[3]; //We need the original image height to get all this math right, not the height it is now, we stored it. 
+        }
+        bottomImageHeight = parseInt(bottomImageHeight);
         if (focusItem[1].attr("lineHeight") !== null) {
             var pairForBookmarkCol = focusItem[1].attr('col');
             var pairForBookmarkLine = parseInt(focusItem[1].attr('collinenum'));
@@ -1567,11 +1573,12 @@ function updatePresentation(transcriptlet) {
             var currentLineHeight = parseFloat(focusItem[1].attr("lineHeight"));
             var currentLineTop = parseFloat(focusItem[1].attr("lineTop"));
             var percentageFixed = 0;
-            var imgTopHeight = 0.0; //value for the height of imgTop
+            var imgTopHeightPercentage = 0.0; //value for the height of imgTop
+            var imgTopHeightPx = 0;
             var bufferForImgTop = currentLineTop - 1.5;; // - 1.5 so there is a little space still shown between drawn line and workspace
-            imgTopHeight = (currentLineHeight) + 3.5; //Add in some extra height to account for padding around active line and workspace
+            imgTopHeightPercentage = (currentLineHeight) + 3.5; //Add in some extra height to account for padding around active line and workspace
 
-            var imgTopSize = (((imgTopHeight/100)*bottomImageHeight) / Page.height())*100;
+            var imgTopSize = (((imgTopHeightPercentage/100)*bottomImageHeight) / Page.height())*100;
             if(bufferForImgTop < 0){
                 //in case the line was at the very tippy top and -1.5 brought it under 0.
                 bufferForImgTop = 0;
@@ -1591,13 +1598,13 @@ function updatePresentation(transcriptlet) {
                 //We want to show as much of the big line we can from the bottom of the line towards the top. Workspace must stay on screen
                 var bottomOfTallLine = currentLineTop + currentLineHeight;
                 var workspaceHeight = 170; //$("#transWorkspace").height();
-                var origHeight = imgTopHeight;
+                var origHeight = imgTopHeightPercentage;
                 //As tall as image top can be to leave room for the workspace and a little bit of image bottom
-                imgTopHeight = ((Page.height() - workspaceHeight - 80) / bottomImageHeight) *  100; //this needs to be a percentage
+                imgTopHeightPercentage = ((Page.height() - workspaceHeight - 80) / bottomImageHeight) *  100; //this needs to be a percentage
                 //The height percentage the workspace was bumped up for the imgTopHeight adjustment
-                percentageFixed = (100-(origHeight - imgTopHeight))/100; //what percentage of the original amount is left
+                percentageFixed = (100-(origHeight - imgTopHeightPercentage))/100; //what percentage of the original amount is left
                 //We must also bump the topImgPositionPx and bottomImgPositionPx by the same amount we fixed the workspace
-                topImgPositionPx = -((bottomOfTallLine - imgTopHeight + percentageFixed)/100)*bottomImageHeight;
+                topImgPositionPx = -((bottomOfTallLine - imgTopHeightPercentage + percentageFixed)/100)*bottomImageHeight;
                 bottomImgPositionPx = -(((bottomOfTallLine-percentageFixed)/100)*bottomImageHeight + 15);
             }
 
@@ -1609,12 +1616,13 @@ function updatePresentation(transcriptlet) {
                 bottomImgPositionPx += 12;
             }
         }
+        imgTopHeightPx = (imgTopHeightPercentage/100) * bottomImageHeight;
         //Return all line positions including the necessary adjustments for desired padding and positioning.  
         var positions = {
-            imgTopHeight: imgTopHeight,
-            //topImgPositionPercent: topImgPositionPercent,
+            imgTopHeight: imgTopHeightPercentage,
+            imgTopHeightPx : imgTopHeightPx,
+            bottomImgHeightPx: bottomImageHeight,
             topImgPositionPx : topImgPositionPx,
-            //bottomImgPositionPercent: bottomImgPositionPercent,
             bottomImgPositionPx: bottomImgPositionPx,
             activeLine: pairForBookmark
         };
@@ -1622,82 +1630,7 @@ function updatePresentation(transcriptlet) {
         imgBottomPositionRatio = positions.bottomImgPositionPx / bottomImageHeight;
         return positions;
     }
-    /*
-    function setPositions() {
-        // Determine size of section above workspace
-        var bottomImageHeight = $("#imgBottom img").height();
-        if (focusItem[1].attr("lineHeight") !== null) {
-            var pairForBookmarkCol = focusItem[1].attr('col');
-            var pairForBookmarkLine = parseInt(focusItem[1].attr('collinenum'));
-            var pairForBookmark = pairForBookmarkCol + pairForBookmarkLine;
-            var currentLineHeight = parseFloat(focusItem[1].attr("lineHeight"));
-            var currentLineTop = parseFloat(focusItem[1].attr("lineTop"));
-            var previousLineTop = 0.0;
-            var previousLineHeight = 0.0;
-            var imgTopHeight = 0.0; //value for the height of imgTop
-            if(focusItem[1].prev().is('.transcriptlet') && currentLineTop > parseFloat(focusItem[1].prev().attr("lineTop"))){
-                previousLineTop = parseFloat(focusItem[1].prev().attr("lineTop"));
-                previousLineHeight = parseFloat(focusItem[1].prev().attr("lineHeight"));
-            }
-            var bufferForImgTop = previousLineTop - 1.5;
-            if(previousLineHeight > 0.0){
-                imgTopHeight = (previousLineHeight + currentLineHeight) + 3.5;
-            }
-            else{ //there may not be a prev line so use the value of the current line...
-                imgTopHeight = (currentLineHeight) + 3.5;
-                bufferForImgTop = currentLineTop - 1.5;
-            }
-            //var topImgPositionPercent = ((previousLineTop - currentLineTop) * 100) / imgTopHeight;
-            var imgTopSize = (((imgTopHeight/100)*bottomImageHeight) / Page.height())*100;
-            if(bufferForImgTop < 0){
-                bufferForImgTop = 0;
-            }
-            //We may not be able to show the last line + the next line if there were two tall lines, so account for that here
-            if (imgTopSize > 80){
-                bufferForImgTop = currentLineTop - 1.5; //No longer adjust to previous line, adjust to current line.
-                if(bufferForImgTop < 0){
-                    bufferForImgTop = 0;
-                }
-                imgTopHeight = (currentLineHeight) + 3.5; //There will be a new height because of it
-                imgTopSize = (((imgTopHeight/100)*bottomImageHeight) / Page.height())*100; //There will be a new size because of it to check later.
-            }
-            var topImgPositionPx = ((-(bufferForImgTop) * bottomImageHeight) / 100);
-            if(topImgPositionPx <= -12){
-                topImgPositionPx += 12;
-            }
-            //var bottomImgPositionPercent = -(currentLineTop + currentLineHeight);
-            var bottomImgPositionPx = -((currentLineTop + currentLineHeight) * bottomImageHeight / 100);
-            if(bottomImgPositionPx <= -12){
-                bottomImgPositionPx += 12;
-            }
-
-            var percentageFixed = 0;
-            //use this to make sure workspace stays on screen!
-            if (imgTopSize > 80){ //if #imgTop is 80% of the screen size then we need to fix that so the workspace stays.
-                var workspaceHeight = 170; //$("#transWorkspace").height();
-                var origHeight = imgTopHeight;
-                imgTopHeight = ((Page.height() - workspaceHeight - 80) / bottomImageHeight) *  100; //this needs to be a percentage
-                percentageFixed = (100-(origHeight - imgTopHeight))/100; //what percentage of the original amount is left
-                //bottomImgPositionPercent *= percentageFixed; //do the same percentage change to this value
-                bottomImgPositionPx *= percentageFixed; //and this one
-                topImgPositionPx *= percentageFixed; // and this one
-
-            }
-
-        }
-        var positions = {
-            imgTopHeight: imgTopHeight,
-            //topImgPositionPercent: topImgPositionPercent,
-            topImgPositionPx : topImgPositionPx,
-            //bottomImgPositionPercent: bottomImgPositionPercent,
-            bottomImgPositionPx: bottomImgPositionPx,
-            activeLine: pairForBookmark
-        };
-        imgTopPositionRatio = positions.topImgPositionPx / bottomImageHeight;
-        imgBottomPositionRatio = positions.bottomImgPositionPx / bottomImageHeight;
-        return positions;
-    }
-    */
+  
    
   /**
    * Removes previous textarea and slides in the new focus.
@@ -1734,7 +1667,6 @@ function updatePresentation(transcriptlet) {
     function adjustImgs(positions) {
       //move background images above and below the workspace
         var lineToMakeActive = $(".lineColIndicator[pair='"+positions.activeLine+"']"); //:first
-        var topImageHeight = $("#imgTop img").height();
         $("#imgTop img,#imgBottom img,#imgTop .lineColIndicatorArea, #imgBottom .lineColIndicatorArea, #bookmark, #imgTop, #imgBottom").addClass('noTransition');
         $("#imgTop").animate({
           "height": positions.imgTopHeight + "%"
@@ -1786,7 +1718,12 @@ function updatePresentation(transcriptlet) {
                     "opacity" : ".75"
                 });             
             }
-            setTimeout(function(){ $("#imgTop img,#imgBottom img,#imgTop .lineColIndicatorArea, #imgBottom .lineColIndicatorArea, #bookmark, #imgTop, #imgBottom").removeClass('noTransition'); }, 300);
+            setTimeout(function(){ 
+                $("#imgTop img,#imgBottom img,#imgTop .lineColIndicatorArea, #imgBottom .lineColIndicatorArea, #bookmark, #imgTop, #imgBottom").removeClass('noTransition');
+                if(isPeeking){
+                    peekZoom(false, positions); //restore peek zooming.  user fired a redraw while they were zooming (probably by changing lines)
+                }
+            }, 300);
     }  
     
     /**
@@ -3354,11 +3291,11 @@ function toggleLocking(){
     zoomLock = !zoomLock;
     if(zoomLock){
         $("#zoomLock").addClass("selected");
-        peekZoom(false);
+        peekZoom(false, {});
     }
     else{
         $("#zoomLock").removeClass("selected");
-        peekZoom(true);
+        peekZoom(true, {});
     }
 }
 
@@ -4317,6 +4254,97 @@ function stopMagnify(){
     $("button[magnifyimg='trans']").removeClass("selected");
     restoreWorkspace();
 }
+
+/*
+     * The Ctrl + Shfit functionality to zoom in on a transcription box.
+     */
+    function peekZoom(cancel, positions){
+        var topImg = $("#imgTop img");
+        var btmImg = $("#imgBottom img");
+        var availableRoom = new Array (Page.height()-$(".navigation").height(),$("#transcriptionCanvas").width());
+        var line = $(".activeLine:first");
+        var limitIndex = (line.width()/line.height()> availableRoom[1]/availableRoom[0]) ? 1 : 0;
+        var zoomRatio = (limitIndex === 1) ? availableRoom[1]/line.width() : availableRoom[0]/line.height();
+        var imgDims = new Array (topImg.height(),topImg.width(),parseInt(topImg.css("left")),-line.position().top);
+        
+        if (!cancel){
+            //zoom in
+            //$("#imgTop img,#imgBottom img,#imgTop .lineColIndicatorArea, #imgBottom .lineColIndicatorArea, #bookmark, #imgTop, #imgBottom").addClass('noTransition');
+            if($(".parsing").size()>0){
+                // Parsing tool is open
+                return false;
+            }
+            $(".lineColIndicatorArea").fadeOut();
+            if( Object.keys(positions).length > 0){
+                //special handling for changing lines while peek zoomed.  We passed in the proper values to the function
+                peekMemory = [positions.topImgPositionPx,positions.bottomImgPositionPx,positions.imgTopHeightPx, positions.bottomImgHeightPx];
+            }
+            else{
+                //This is a fresh zoom, calculate values as normal
+                peekMemory = [parseFloat(topImg.css("top")),parseFloat(btmImg.css("top")),$("#imgTop").css("height"), $("#imgBottom img").css("height")];
+            }
+            
+            //For some reason, doing $("#imgTop").height() and getting the integer value causes the interface to be broken when restored in the else below, even though it is the same value.
+            
+            $("#imgTop").css({
+                "height"    : line.height() * zoomRatio + 100 //add 40 to give some padding for ascenders and descenders.  
+            });
+            topImg.css({
+                "width"     : imgDims[1] * zoomRatio - 100, //make it so none of the area can sneak off the right of the page
+                "left"      : -(line.position().left * zoomRatio) + 50, //half of the width reduction so its an even correction for the left side of the page.
+                "top"       : (imgDims[3] * zoomRatio) + 68, //Half of the height extension above to make it equal padding top and bottom
+                "max-width" : imgDims[1] * zoomRatio / availableRoom[1] * 100 + "%"
+            });
+            //same adjustment as for the top image so things don't look skewed
+            btmImg.css({
+                "left"      : -(line.position().left * zoomRatio) + 50,
+                "top"       : ((imgDims[3]-line.height()) * zoomRatio) + 68, 
+                "width"     : imgDims[1] * zoomRatio - 100,
+                "max-width" : imgDims[1] * zoomRatio / availableRoom[1] * 100 + "%"
+            });
+            isPeeking = true;
+            //when we end up calling setPositions(), we need to take into account that we are peeking and not to use the natural positioning.  
+            //As we navigate lines, the new positioning will have to be written to these objects.  
+            $("#pageJump").attr("disabled", "disabled");
+            $("#nextCanvas").attr("disabled", "disabled");
+            $("#prevCanvasBtn").attr("disabled", "disabled");
+            $("#prevPage").attr("disabled", "disabled");
+            $("#nextPage").attr("disabled", "disabled");
+            $("#parsingBtn").attr("disabled", "disabled");
+            $("#magnify1").attr("disabled", "disabled");
+            $("#splitScreenTools").attr("disabled", "disabled");
+        } 
+        else {
+            //zoom out
+            //$("#imgTop img,#imgBottom img,#imgTop .lineColIndicatorArea, #imgBottom .lineColIndicatorArea, #bookmark, #imgTop, #imgBottom").removeClass('noTransition');
+            //If we have changed lines, we no longer have a good peekMemory.  Maybe just loadTranscriptlet(activeLine).
+            topImg.css({
+                "width"     : "100%",
+                "left"      : 0,
+                "top"       : peekMemory[0],
+                "max-width" : "100%"
+            });
+            btmImg.css({
+                "width"     : "100%",
+                "left"      : 0,
+                "top"       : peekMemory[1],
+                "max-width" : "100%"
+            });
+            $("#imgTop").css({
+                "height"    : peekMemory[2]
+            });
+            $(".lineColIndicatorArea").fadeIn();
+            isPeeking = false;
+            $("#pageJump").removeAttr("disabled");
+            $("#nextCanvas").removeAttr("disabled");
+            $("#prevCanvasBtn").removeAttr("disabled");
+            $("#prevPage").removeAttr("disabled");
+            $("#nextPage").removeAttr("disabled");
+            $("#parsingBtn").removeAttr("disabled");
+            $("#splitScreenTools").removeAttr("disabled");
+            $("#magnify1").removeAttr("disabled");
+        }
+    };
 
 /*
  * Load all included Iframes on the page.  This function should be strategically placed so that the Iframes load after user and project information
