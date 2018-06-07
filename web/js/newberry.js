@@ -1561,7 +1561,7 @@ function updatePresentation(transcriptlet) {
     function setPositions() {
         var bottomImageHeight = $("#imgBottom img").height(); //in a normal situation, this is already the correct natural height
         if(isPeeking){
-            peekZoom(true); //cancel peekZooming before gathering the positions for the next line
+            peekZoom(true, true); //cancel peekZooming before gathering the positions for the next line
             isPeeking = true; //However, we overwrite this so in adjustImgs() we know its this case. 
             bottomImageHeight = peekMemory[3]; //We need the original image height to get all this math right, not the height it is now, we stored it. 
         }
@@ -1667,29 +1667,57 @@ function updatePresentation(transcriptlet) {
     function adjustImgs(positions) {
       //move background images above and below the workspace
         var lineToMakeActive = $(".lineColIndicator[pair='"+positions.activeLine+"']"); //:first
-        $("#imgTop img,#imgBottom img,#imgTop .lineColIndicatorArea, #imgBottom .lineColIndicatorArea, #bookmark, #imgTop, #imgBottom").addClass('noTransition');
-        $("#imgTop").animate({
-          "height": positions.imgTopHeight + "%"
-        },250)
-        .find("img").animate({
-          top: positions.topImgPositionPx + "px",
-          left: "0px"
-        },250);
         
-       $("#imgTop .lineColIndicatorArea").animate({
-          top: positions.topImgPositionPx + "px",
-          left: "0px"
-        },250);
-        
-        $("#imgBottom").find("img").animate({
-          top: positions.bottomImgPositionPx  + "px",
-          left: "0px"
-        },250);
-        
-        $("#imgBottom .lineColIndicatorArea").animate({
-          top: positions.bottomImgPositionPx  + "px",
-          left: "0px"
-        },250);
+        //Use this to help control animations from changing a line while peek zoomed.  
+        if(isPeeking){
+            $("#imgTop").css({
+              "height": positions.imgTopHeight + "%"
+            })
+            .find("img").css({
+              top: positions.topImgPositionPx + "px",
+              left: "0px"
+            });
+
+           $("#imgTop .lineColIndicatorArea").css({
+              top: positions.topImgPositionPx + "px",
+              left: "0px"
+            });
+            $("#imgBottom img, #imgBottom .lineColIndicatorArea, #imgBottom").addClass('noTransition');
+            $("#imgBottom").find("img").animate({
+              top: positions.bottomImgPositionPx  + "px",
+              left: "0px"
+            }, 250);
+
+            $("#imgBottom .lineColIndicatorArea").animate({
+              top: positions.bottomImgPositionPx  + "px",
+              left: "0px"
+            }, 250);
+        }
+        else{
+            $("#imgTop img,#imgBottom img,#imgTop .lineColIndicatorArea, #imgBottom .lineColIndicatorArea, #bookmark, #imgTop, #imgBottom").addClass('noTransition');
+            $("#imgTop").animate({
+              "height": positions.imgTopHeight + "%"
+            },250)
+            .find("img").animate({
+              top: positions.topImgPositionPx + "px",
+              left: "0px"
+            },250);
+
+           $("#imgTop .lineColIndicatorArea").animate({
+              top: positions.topImgPositionPx + "px",
+              left: "0px"
+            },250);
+
+            $("#imgBottom").find("img").animate({
+              top: positions.bottomImgPositionPx  + "px",
+              left: "0px"
+            },250);
+
+            $("#imgBottom .lineColIndicatorArea").animate({
+              top: positions.bottomImgPositionPx  + "px",
+              left: "0px"
+            },250);
+        }
         
         if($('.activeLine').hasClass('linesHidden')){
             $('.activeLine').hide();
@@ -1722,6 +1750,9 @@ function updatePresentation(transcriptlet) {
                 $("#imgTop img,#imgBottom img,#imgTop .lineColIndicatorArea, #imgBottom .lineColIndicatorArea, #bookmark, #imgTop, #imgBottom").removeClass('noTransition');
                 if(isPeeking){
                     peekZoom(false, positions); //restore peek zooming.  user fired a redraw while they were zooming (probably by changing lines)
+                }
+                else{
+                    //$("#imgTop img,#imgBottom img,#imgTop .lineColIndicatorArea, #imgBottom .lineColIndicatorArea, #bookmark, #imgTop, #imgBottom").removeClass('noTransition');
                 }
             }, 300);
     }  
@@ -4262,11 +4293,10 @@ function stopMagnify(){
         var topImg = $("#imgTop img");
         var btmImg = $("#imgBottom img");
         var availableRoom = new Array (Page.height()-$(".navigation").height(),$("#transcriptionCanvas").width());
-        var line = $(".activeLine:first");
+        var line = $("#imgBottom .activeLine");
         var limitIndex = (line.width()/line.height()> availableRoom[1]/availableRoom[0]) ? 1 : 0;
         var zoomRatio = (limitIndex === 1) ? availableRoom[1]/line.width() : availableRoom[0]/line.height();
         var imgDims = new Array (topImg.height(),topImg.width(),parseInt(topImg.css("left")),-line.position().top);
-        
         if (!cancel){
             //zoom in
             //$("#imgTop img,#imgBottom img,#imgTop .lineColIndicatorArea, #imgBottom .lineColIndicatorArea, #bookmark, #imgTop, #imgBottom").addClass('noTransition');
@@ -4274,7 +4304,7 @@ function stopMagnify(){
                 // Parsing tool is open
                 return false;
             }
-            $(".lineColIndicatorArea").fadeOut();
+            
             if( Object.keys(positions).length > 0){
                 //special handling for changing lines while peek zoomed.  We passed in the proper values to the function
                 peekMemory = [positions.topImgPositionPx,positions.bottomImgPositionPx,positions.imgTopHeightPx, positions.bottomImgHeightPx];
@@ -4284,24 +4314,26 @@ function stopMagnify(){
                 peekMemory = [parseFloat(topImg.css("top")),parseFloat(btmImg.css("top")),$("#imgTop").css("height"), $("#imgBottom img").css("height")];
             }
             
-            //For some reason, doing $("#imgTop").height() and getting the integer value causes the interface to be broken when restored in the else below, even though it is the same value.
-            
+           //The animation for changing lines while peek zoomed is a bit out of control, this is part 2 where everything has to be manipulated to zoom in.
+            $("#imgTop .lineColIndicatorArea").fadeOut();
             $("#imgTop").css({
-                "height"    : line.height() * zoomRatio + 100 //add 40 to give some padding for ascenders and descenders.  
+                "height"    : line.height() * zoomRatio + 60 //add 40 to give some padding for ascenders and descenders.  
             });
             topImg.css({
-                "width"     : imgDims[1] * zoomRatio - 100, //make it so none of the area can sneak off the right of the page
-                "left"      : -(line.position().left * zoomRatio) + 50, //half of the width reduction so its an even correction for the left side of the page.
-                "top"       : (imgDims[3] * zoomRatio) + 68, //Half of the height extension above to make it equal padding top and bottom
+                "width"     : imgDims[1] * zoomRatio - 60, //make it so none of the area can sneak off the right of the page
+                "left"      : -(line.position().left * zoomRatio) + 30, //half of the width reduction so its an even correction for the left side of the page.
+                "top"       : (imgDims[3] * zoomRatio) + 28, //Half of the height extension above to make it equal padding top and bottom
                 "max-width" : imgDims[1] * zoomRatio / availableRoom[1] * 100 + "%"
             });
             //same adjustment as for the top image so things don't look skewed
+            /*
             btmImg.css({
                 "left"      : -(line.position().left * zoomRatio) + 50,
                 "top"       : ((imgDims[3]-line.height()) * zoomRatio) + 68, 
                 "width"     : imgDims[1] * zoomRatio - 100,
                 "max-width" : imgDims[1] * zoomRatio / availableRoom[1] * 100 + "%"
             });
+            */
             isPeeking = true;
             //when we end up calling setPositions(), we need to take into account that we are peeking and not to use the natural positioning.  
             //As we navigate lines, the new positioning will have to be written to these objects.  
@@ -4318,22 +4350,36 @@ function stopMagnify(){
             //zoom out
             //$("#imgTop img,#imgBottom img,#imgTop .lineColIndicatorArea, #imgBottom .lineColIndicatorArea, #bookmark, #imgTop, #imgBottom").removeClass('noTransition');
             //If we have changed lines, we no longer have a good peekMemory.  Maybe just loadTranscriptlet(activeLine).
+            
+            //The animation for changing lines while peek zoomed is a bit out of control, this is part 1 where everything has to be restored back to the original
             topImg.css({
                 "width"     : "100%",
                 "left"      : 0,
                 "top"       : peekMemory[0],
                 "max-width" : "100%"
             });
+            /*
             btmImg.css({
                 "width"     : "100%",
                 "left"      : 0,
                 "top"       : peekMemory[1],
                 "max-width" : "100%"
-            });
+            })*/
             $("#imgTop").css({
                 "height"    : peekMemory[2]
             });
-            $(".lineColIndicatorArea").fadeIn();
+            
+            /*
+             * ERROR here, I cannot stop the lines from flashing.  Here is why: https://stackoverflow.com/questions/31537222/jquery-width-is-returning-percentage-width-instead-of-pixel-width
+             * In short, they must be visible for the math or the code has to be rewritten not to use these objects in the math. 
+             * 
+             * */
+            if(positions === true){
+                
+            }
+            else{
+                $("#imgTop .lineColIndicatorArea").fadeIn();
+            }
             isPeeking = false;
             $("#pageJump").removeAttr("disabled");
             $("#nextCanvas").removeAttr("disabled");
