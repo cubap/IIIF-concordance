@@ -3497,8 +3497,12 @@ function toggleZenLine(){
     if($("#zenLine").hasClass("selected")){ //turn it off
         $("#zenLine").removeClass("selected");
         $("#zenLine").css("background-color", "#272727");
-        if($("#minimalLines").hasClass("selected")){
+        if(controlsMemory.minLines){ //it was selected at the time and is active now
             $("#minimalLines").css("background-color", "#8198AA");
+        }
+        else{ //It was not selected at the time and is active now
+            toggleMinimalLines();
+            $("#minimalLines").css("background-color", "#272727");
         }
         controlsMemory.zenLine = false;
         restoreImageToolsFromZen();
@@ -3509,6 +3513,7 @@ function toggleZenLine(){
         if(!$("#minimalLines").hasClass("selected")){
             toggleMinimalLines();
             $("#minimalLines").css("background-color", "#272727");
+            controlsMemory.minLines = false;
         }
         else{
             $("#minimalLines").css("background-color", "#272727");
