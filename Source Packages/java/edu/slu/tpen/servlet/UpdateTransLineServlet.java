@@ -41,7 +41,7 @@ public class UpdateTransLineServlet extends HttpServlet {
         Annotation anno = new Annotation();
         anno.setContent(req.getParameter("content"));
         try {
-            URL postUrl = new URL(Constant.ANNOTATION_SERVER_ADDR + "annotationstore/annotation/updateAnnotation");
+            URL postUrl = new URL(Constant.ANNOTATION_SERVER_ADDR + "/anno/updateAnnotation.action");
             HttpURLConnection connection = (HttpURLConnection) postUrl
                 .openConnection();  
             // Output to the connection. Default is  

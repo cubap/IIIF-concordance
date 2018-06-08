@@ -2089,6 +2089,7 @@ a.editButtons {
     border-top: none !important;
     border-left: none !important;
     border-right: none !important;
+    /*box-shadow: white 0px 6px 2px -4px !important;*/
 }
 
 .lineColonLine.minimal{
@@ -2099,4 +2100,8 @@ a.editButtons {
     background-image: url("/newberry/images/loading2.gif");
     background-repeat: no-repeat;
     background-size: contain;
+}
+
+.peekZoomLockout{
+    background-color: red !important;
 }

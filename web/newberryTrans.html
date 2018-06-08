@@ -813,7 +813,7 @@
             <div id='controlsSplit' class='split' style="width:200px;max-width:200px;overflow:auto;">
                 <div style="text-align: center;" class="fullScreenTrans"><i class="fa fa-share fa-flip-vertical"></i></div>
                 <div class="controlOrganizer">
-                    <button style="margin-bottom: 8px;" class="block" onclick="resetImageTools(false);" title="Reset Tools">
+                    <button style="margin-bottom: 8px;" class="block" onclick="resetImageTools();" title="Reset Tools">
                     Reset to Defaults
                     </button>
                     <header> Image Controls </header>
@@ -833,8 +833,8 @@
                         <div id="contrastSlider"></div>
                     </div>
                     <header> Column Controls</header>
-                    <button role="button" id="zenLine" class="block" onclick="toggleZenLine();">Zen Line *beta</button>
                     <button role="button" id="minimalLines" class="block" onclick="toggleMinimalLines();">Minimal Lines *beta</button>
+                    <button role="button" id="zenLine" class="block" onclick="toggleZenLine();">Zen Line *beta</button>
                     <button id="showTheLines" role="button" class="block selected" onclick="toggleLineMarkers();">
                         Lines
                     </button>
@@ -1057,14 +1057,14 @@
         });
         
         $("#imgTop, #imgBottom").hover(function(){
-            if(!minimalLines){
+            if(!controlsMemory.minLines){
                 //var color = colorThisTime.replace(".4", "1");
                 $('.activeLine').css('box-shadow', '0px 0px 15px 8px '+colorThisTime);
                 $('.activeLine').css('opacity', '1');
             }
         }
         , function(){
-            if(!minimalLines){
+            if(!controlsMemory.minLines){
                 var color2 = colorThisTime.replace(".4", "1");
                 $('.activeLine').css('box-shadow', '0px 0px 15px 8px '+color2);
                 $('.activeLine').css('opacity', '.75');

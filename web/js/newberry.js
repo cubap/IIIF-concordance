@@ -25,8 +25,17 @@
     var imgBottomPositionRatio = 0;
     var imgTopPositionRatio = 0;
     var navMemory = 0;
-    var minimalLines = false;
     var zoomLock = false;
+    var controlsMemory = {
+        minLines : false,
+        zenLine  : false,
+        showLines: true,
+        showLabels: true,
+        grayscale:  false,
+        invert   :  false,
+        bright   :  false,
+        contrast :  false
+    };
     //var basePath = window.location.protocol + "//" + window.location.host;
     
     /* Load the interface to the first page of the manifest. */
@@ -38,7 +47,8 @@
                 fullPage();
                 focusItem = [null,null];
                 currentFolio = 1;
-                loadTranscriptionCanvas(transcriptionFolios[0], parsing);
+                rememberControls();
+                loadTranscriptionCanvas(transcriptionFolios[0], parsing, true);
                 setTimeout(function(){
                 hideWorkspaceForParsing();
                     $(".pageTurnCover").fadeOut(1500);
@@ -47,7 +57,8 @@
             else{
                 focusItem = [null,null];
                 currentFolio = 1;
-                loadTranscriptionCanvas(transcriptionFolios[0], "");
+                rememberControls();
+                loadTranscriptionCanvas(transcriptionFolios[0], "", true);
             }
             
             
@@ -64,7 +75,8 @@
                 fullPage();
                 focusItem = [null,null];
                 currentFolio = lastFolio;
-                loadTranscriptionCanvas(transcriptionFolios[lastFolio-1], parsing);
+                rememberControls();
+                loadTranscriptionCanvas(transcriptionFolios[lastFolio-1], parsing, true);
                 setTimeout(function(){
                     hideWorkspaceForParsing();
                     $(".pageTurnCover").fadeOut(1500);
@@ -73,7 +85,8 @@
             else{
                 focusItem = [null,null];
                 currentFolio = lastFolio;
-                loadTranscriptionCanvas(transcriptionFolios[lastFolio-1], "");
+                rememberControls();
+                loadTranscriptionCanvas(transcriptionFolios[lastFolio-1], "", true);
             }
         }
     }
@@ -86,7 +99,8 @@
                 fullPage();
                 focusItem = [null, null];
                 currentFolio -= 1;
-                loadTranscriptionCanvas(transcriptionFolios[currentFolio - 1], parsing);
+                rememberControls();
+                loadTranscriptionCanvas(transcriptionFolios[currentFolio - 1], parsing, true);
                 setTimeout(function(){
                     hideWorkspaceForParsing();
                     $(".pageTurnCover").fadeOut(1500);
@@ -95,7 +109,8 @@
             else{
                 focusItem = [null, null];
                 currentFolio -= 1;
-                loadTranscriptionCanvas(transcriptionFolios[currentFolio - 1], "");
+                rememberControls();
+                loadTranscriptionCanvas(transcriptionFolios[currentFolio - 1], "", true);
             }
         }
         else{
@@ -112,7 +127,8 @@
                 fullPage();
                 focusItem = [null, null];  
                 currentFolio += 1;
-                loadTranscriptionCanvas(transcriptionFolios[currentFolio-1], parsing);
+                rememberControls();
+                loadTranscriptionCanvas(transcriptionFolios[currentFolio-1], parsing, true);
                 setTimeout(function(){
                     hideWorkspaceForParsing();
                     $(".pageTurnCover").fadeOut(1500);
@@ -121,13 +137,61 @@
             else{
                 focusItem = [null, null];  
                 currentFolio += 1;
-                loadTranscriptionCanvas(transcriptionFolios[currentFolio-1], "");
+                rememberControls();
+                loadTranscriptionCanvas(transcriptionFolios[currentFolio-1], "", true);
             }
             
         }
         else{
             //console.log("BOOGER");
         }
+    }
+    
+    /*
+     * Change the interface to restore the canvas controls set by the user
+     * @param {type} str
+     * @returns {Boolean}
+     */
+    function rememberControls(){
+        controlsMemory = {
+            minLines : $("#minimalLines").hasClass("selected"),
+            zenLine  : $("#zenLine").hasClass("selected"),
+            showLines: $("#showTheLines").hasClass("selected"),
+            showLabels: $("#showTheLabels").hasClass("selected"),
+            grayscale : $("button[which='grayscale']").hasClass("selected"),
+            invert    : $("button[which='invert']").hasClass("selected"),
+            bright    : $("#brightnessSlider").slider("option", "value"),
+            contrast  : $("#contrastSlider").slider("option", "value")
+        };
+        //turn all of these off so they can be reapplied after the new draw.
+        $("#minimalLines").removeClass("selected");
+        $("#zenLine").removeClass("selected");
+        $("#showTheLines").addClass("selected");
+        $("#showTheLabels").addClass("selected");
+        if($("button[which='grayscale']").hasClass("selected")){
+            toggleFilter("grayscale");
+        }
+        if($("button[which='invert']").hasClass("selected")){
+            toggleFilter("invert");
+        }
+    }
+    
+    /*
+     * Change the interface to restore the canvas controls set by the user
+     * @param {type} str
+     * @returns {Boolean}
+     */
+    function rememberControlsForZen(){
+        controlsMemory = {
+            minLines : $("#minimalLines").hasClass("selected"),
+            zenLine  : $("#zenLine").hasClass("selected"),
+            showLines: $("#showTheLines").hasClass("selected"),
+            showLabels: $("#showTheLabels").hasClass("selected"),
+            grayscale : $("button[which='grayscale']").hasClass("selected"),
+            invert    : $("button[which='invert']").hasClass("selected"),
+            bright    : $("#brightnessSlider").slider("option", "value"),
+            contrast  : $("#contrastSlider").slider("option", "value")
+        };
     }
     
     /* Test if a given string can be parsed into a valid JSON object.
@@ -958,13 +1022,8 @@
     /*
      * Load a canvas from the manifest to the transcription interface. 
      */
-    function loadTranscriptionCanvas(canvasObj, parsing){
-        $("#minimalLines").removeClass("selected");
-        $("#zoomLock").removeClass("selected");
-        zoomLock = false;
-        minimalLines = false;
-        $("#showTheLines").addClass("selected");
-        $("#showTheLabels").addClass("selected");
+    function loadTranscriptionCanvas(canvasObj, parsing, restore){
+        
         var noLines = true;
         var canvasAnnoList = "";
         $("#imgTop, #imgBottom").css("height", "0px");
@@ -1010,7 +1069,7 @@
                     originalCanvasWidth2 = $("#imgTop img").width();
                     originalCanvasHeight = $("#imgTop img").height();; //make sure these are set correctly
                     originalCanvasWidth = $("#imgTop img").width(); //make sure these are set correctly
-                    drawLinesToCanvas(canvasObj, parsing);
+                    drawLinesToCanvas(canvasObj, parsing, restore);
                     populateCompareSplit(currentFolio);
                     $("#transcriptionCanvas").attr("canvasid", canvasObj["@id"]);
                     $("#transcriptionCanvas").attr("annoList", canvasAnnoList);
@@ -1066,7 +1125,7 @@
       /*
      * @paran canvasObj  A canvas object to extrac transcription lines from and draw to the interface. Handles master project designation.
      */
-    function drawLinesToCanvas(canvasObj, parsing){
+    function drawLinesToCanvas(canvasObj, parsing, restore){
         var lines = [];
         currentFolio = parseInt(currentFolio);
         //Clear any existing stuff.  
@@ -1080,7 +1139,7 @@
                     lines.push(canvasObj.resources[i]);
                 }
             }
-            linesToScreen(lines);
+            linesToScreen(lines, restore);
             $("#transTemplateLoading").hide();
             $("#transcriptionTemplate").show();
         }
@@ -1122,7 +1181,7 @@
                     //console.log("Got lines to draw");
                     $("#transTemplateLoading").hide();
                     $("#transcriptionTemplate").show();
-                    linesToScreen(lines);
+                    linesToScreen(lines, restore);
                 }
                 else{ //list has no lines
                     //console.log("no lines in what we got");
@@ -1200,7 +1259,7 @@
                             //console.log("Got lines to draw");
                             $("#transTemplateLoading").hide();
                             $("#transcriptionTemplate").show();
-                            linesToScreen(lines);
+                            linesToScreen(lines, restore);
                         }
                         else{ //list has no lines
                             //console.log("no lines in what we got");
@@ -1216,6 +1275,7 @@
                             $("#imgTop img").css("top", "0px");
                             $("#imgBottom").css("height", "inherit");
                             $("#parsingBtn").css("box-shadow", "0px 0px 6px 5px yellow");
+                            resetImageTools();
                         }
                     }
                     else{ // couldnt get list.  one should always exist, even if empty.  We will say no list and changes will be stored locally to the canvas.
@@ -1241,7 +1301,7 @@
     }
     
     /* Take line data, turn it into HTML elements and put them to the DOM */
-    function linesToScreen(lines){
+    function linesToScreen(lines, restore){
         $("#noLineWarning").hide();
         var letterIndex = 0;
         var letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -1479,6 +1539,13 @@
         textSize();
         //With this, every time the lines are redrawn for a canvas, they are repopulated to the preview text split.
         populatePreview(transcriptionFolios[currentFolio-1].otherContent[0].resources, transcriptionFolios[currentFolio-1].label, "currentPage", currentFolio-1);
+        if(restore){
+            restoreImageTools();
+        }
+        else{
+            resetImageTools();
+        }
+        
         
         //With this, we call to the annotation store to gather the lines again then popluate the preview.  
         //gatherAndPopluate(transcriptionFolios[currentFolio-1]["@id"], transcriptionFolios[currentFolio-1]["@id"], "currentPage", currentFolio-1);
@@ -1733,9 +1800,9 @@ function updatePresentation(transcriptlet) {
         });
           lineToMakeActive.addClass("activeLine");
           //use the active line color to give the active line a little background color to make it stand out if the box shadow is not enough.
-            if(minimalLines){
+            if(controlsMemory.minLines){
                 lineToMakeActive.css({
-                    "box-shadow" : "0px 9px 5px -5px "+colorThisTime,
+                    "box-shadow" : "0px 6px 2px -4px "+colorThisTime,
                     "opacity" : "1"
                 });
             }
@@ -1761,7 +1828,7 @@ function updatePresentation(transcriptlet) {
      * Helper function to move the line+column marker when toggling minimal line page setting.
      */
     function adjustForMinimalLines(){
-        if(minimalLines){
+        if(controlsMemory.minLines){
             $.each($(".lineColOnLine"), function(){$(this).css("line-height", ($(this).height() * 2)-15 + "px"); });
         }
         else{
@@ -2283,6 +2350,7 @@ function toggleSpecialChars(event){
         if(liveTool === "parsing"){
             return false;
         }
+        rememberControls();
         liveTool = "parsing";
         $("#parsingBtn").css("box-shadow: none;");
         imgTopOriginalTop = $("#imgTop img").css("top");
@@ -2421,7 +2489,7 @@ function toggleSpecialChars(event){
 
 
     /* Reset the interface to the full screen transcription view. */
-    function fullPage(){
+    function fullPage(draw){
         if ($("#overlay").is(":visible")) {
             $("#overlay").click();
             return false;
@@ -2453,23 +2521,24 @@ function toggleSpecialChars(event){
         $(document).unbind("mousemove");
         $(document).unbind("mousedown");
         $(document).unbind("mouseup");
-
         isZoomed = false;
-        
         $(".split").hide();
         $(".split").css("width", "43%");
 //        //console.log("RESTORE WORKSPACE");
         $("#splitScreenTools").removeAttr("disabled");
-        restoreWorkspace();
         $("#splitScreenTools").show();
         var screenWidth = $(window).width();
         var adjustedHeightForFullscreen = (originalCanvasHeight2 / originalCanvasWidth2) * screenWidth;
         $("#transcriptionCanvas").css("height", adjustedHeightForFullscreen+"px");
         $(".lineColIndicatorArea").css("height", adjustedHeightForFullscreen+"px");
+        restoreWorkspace();
+        if(draw){
+            drawLinesToCanvas(transcriptionFolios[currentFolio-1], "", draw);
+        }
         adjustForMinimalLines();
         setTimeout(function(){
-              document.body.scrollTop = document.documentElement.scrollTop = 0;
-          },1);
+          document.body.scrollTop = document.documentElement.scrollTop = 0;
+        },1);
     }
 
     /*
@@ -3261,7 +3330,8 @@ function pageJump(page,parsing){
             $(".pageTurnCover").show();
             fullPage();
             focusItem = [null, null];  
-            loadTranscriptionCanvas(transcriptionFolios[canvasToJumpTo], parsing);
+            rememberControls();
+            loadTranscriptionCanvas(transcriptionFolios[canvasToJumpTo], parsing, true);
             setTimeout(function(){
                 hideWorkspaceForParsing();
                 $(".pageTurnCover").fadeOut(1500);
@@ -3270,7 +3340,8 @@ function pageJump(page,parsing){
         else{
             currentFolio = folioNum;
             focusItem = [null, null];  
-            loadTranscriptionCanvas(transcriptionFolios[canvasToJumpTo], "");
+            rememberControls();
+            loadTranscriptionCanvas(transcriptionFolios[canvasToJumpTo], "", true);
         } 
     }
     else{
@@ -3285,7 +3356,7 @@ function compareJump(folio){
 /**
  * Make sure all image tools reset to their default values.
 */
-function resetImageTools(newPage){
+function resetImageTools(){
     $("#brightnessSlider").slider("value", "100");
     $("#contrastSlider").slider("value", "100");
     if($("button[which='grayscale']").hasClass("selected")){
@@ -3294,31 +3365,94 @@ function resetImageTools(newPage){
     if($("button[which='invert']").hasClass("selected")){
         toggleFilter("invert");
     }
-    if(newPage && $("#zoomLock").hasClass("selected")){
-        $("#zoomLock").removeClass("selected");
-    }
     if($("#zenLine").hasClass("selected")){
+        $("#zenLine").remove("selected");
+    }
+    //We need to check the column controls
+    if(!$("#minimalLines").hasClass("selected")){
+        toggleMinimalLines();
+    }
+    if($("#showTheLines").hasClass("selected")){
+        toggleLineMarkers();
+    }
+    if(!$("#showTheLabels").hasClass("selected")){
+        toggleLineCol();
+    } 
+    /*
+    var controlsMemory = {
+        minLines : true,
+        zenLine  : false,
+        showLines: false,
+        showLabels: true,
+        grayscale:  false,
+        invert   :  false,
+        bright   :  false,
+        contrast :  false
+    };
+    */
+}
+
+/**
+ * Make sure all image tools reset to their previously selected values.
+*/
+function restoreImageTools(){
+    $("#brightnessSlider").slider("value", controlsMemory.bright);
+    $("#contrastSlider").slider("value", controlsMemory.contrast);
+    if(controlsMemory.grayscale && !$("button[which='grayscale']").hasClass("selected")){
+        toggleFilter("grayscale");
+    }
+    if(controlsMemory.invert && !$("button[which='invert']").hasClass("selected")){
+        toggleFilter("invert");
+    }
+    if(controlsMemory.zenLine){
         toggleZenLine();
-        //This will restore column controls to the default
     }
     else{
-        //We need to check the column controls
-        if($("#minimalLines").hasClass("selected")){
+        if(controlsMemory.minLines){
             toggleMinimalLines();
         }
-        if(!$("#showTheLines").hasClass("selected")){
+        if(!controlsMemory.showLines){
             toggleLineMarkers();
         }
-        if(!$("#showTheLabels").hasClass("selected")){
+        if(!controlsMemory.showLabels){
             toggleLineCol();
-        }
+        } 
     }
+
+}
+
+function restoreImageToolsFromZen(){
+    $("#brightnessSlider").slider("value", controlsMemory.bright);
+    $("#contrastSlider").slider("value", controlsMemory.contrast);
+    if(controlsMemory.grayscale && !$("button[which='grayscale']").hasClass("selected")){
+        toggleFilter("grayscale");
+    }
+    if(controlsMemory.invert && !$("button[which='invert']").hasClass("selected")){
+        toggleFilter("invert");
+    }
+    if(controlsMemory.minLines&& !$("#minimalLines").hasClass("selected")){
+        toggleMinimalLines();
+    }
+    if(controlsMemory.showLines){
+        toggleLineMarkers();
+    }
+    if(controlsMemory.showLabels){
+        toggleLineCol();
+    } 
 }
 
 /* 
  * Make peek zomm lock so user does not have to hold to buttons down.
  */
 function toggleLocking(){
+    if($("#canvasControls").hasClass("selected")){
+        $('#canvasControls')
+        .animate({'background-color':'red'}, 200, 'linear')
+        .animate({'background-color':'#8198AA'}, 200, 'easeOutCirc')
+        .animate({'background-color':'red'}, 200, 'linear')
+        .animate({'background-color':'#8198AA'}, 200, 'easeOutCirc');
+        return false;
+    }
     zoomLock = !zoomLock;
     if(zoomLock){
         $("#zoomLock").addClass("selected");
@@ -3345,10 +3479,10 @@ function markerColors(){
     var oneToChange = colorThisTime.lastIndexOf(")") - 2;
     var borderColor = colorThisTime.substr(0, oneToChange) + '.2' + colorThisTime.substr(oneToChange + 1);
     var lineColor = colorThisTime.replace(".4", "1"); //make this color opacity 100
-    if(minimalLines){
+    if(controlsMemory.minLines){
         $('.lineColIndicator').css('border', '2px solid '+lineColor);
         $('.lineColOnLine').css({'border-left':'1px solid '+borderColor, 'color':lineColor});
-        $('.activeLine').css('box-shadow', '0px 9px 5px -5px '+colorThisTime);
+        $('.activeLine').css('box-shadow', '0px 6px 2px -4px  '+colorThisTime);
     }
     else{
         $('.lineColIndicator').css('border', '2px solid '+lineColor);
@@ -3360,22 +3494,24 @@ function markerColors(){
 
 /* use available functionality to switch between Zen and page defaults for line display. */
 function toggleZenLine(){
-    if($("#zenLine").hasClass("selected")){
+    if($("#zenLine").hasClass("selected")){ //turn it off
         $("#zenLine").removeClass("selected");
         $("#zenLine").css("background-color", "#272727");
         if($("#minimalLines").hasClass("selected")){
-            toggleMinimalLines();
+            $("#minimalLines").css("background-color", "#8198AA");
         }
-        if(!$("#showTheLines").hasClass("selected")){
-            toggleLineMarkers();
-        }
-        if(!$("#showTheLabels").hasClass("selected")){
-            toggleLineCol();
-        } 
+        controlsMemory.zenLine = false;
+        restoreImageToolsFromZen();
     }
-    else{
+    else{ //turn it on
+        rememberControlsForZen();
+        //$("#zenLine").css("background-color", "#272727");
         if(!$("#minimalLines").hasClass("selected")){
             toggleMinimalLines();
+            $("#minimalLines").css("background-color", "#272727");
+        }
+        else{
+            $("#minimalLines").css("background-color", "#272727");
         }
         if($("#showTheLines").hasClass("selected")){
             toggleLineMarkers();
@@ -3383,10 +3519,10 @@ function toggleZenLine(){
         if($("#showTheLabels").hasClass("selected")){
             toggleLineCol();
         } 
-        $("#zenLine").addClass("selected"); //It is important this happen last here.
+        $("#zenLine").addClass("selected");
         $("#zenLine").css("background-color", "#8198AA");
+        controlsMemory.zenLine = true;
     }
-    
 }
 
 /* Toggle the minimalist line setting */
@@ -3399,26 +3535,27 @@ function toggleMinimalLines(){
         .animate({'background-color':'#8198AA'}, 200, 'easeOutCirc');
         return false;
     }
-    minimalLines = !minimalLines;
-    if (minimalLines){ //Apply minimal lines settings
-        $("#minimalLines").addClass("selected");
-        $('.lineColIndicator').addClass("minimal");
-        $('.lineColOnLine').addClass("minimal");
-        adjustForMinimalLines();
-        $('.activeLine').addClass("minimal");
-        $('.activeLine').css('box-shadow', '0px 9px 5px -5px '+colorThisTime);
-        $('.activeLine').css('opacity', '1');
-    }
-    else { //remove minimal lines settings
+    if ($("#minimalLines").hasClass("selected")){ //Remove
         $("#minimalLines").removeClass("selected");
+        $("#minimalLines").css("background-color", "#272727");
         $('.lineColIndicator').removeClass("minimal");
         $('.lineColOnLine').removeClass("minimal");
-        adjustForMinimalLines();
         $('.activeLine').removeClass("minimal");
         var color2 = colorThisTime.replace(".4", "1");
         $('.activeLine').css('box-shadow', '0px 0px 15px 8px '+color2);
-        $('.activeLine').css('opacity', '.75');
+        $('.activeLine').css('opacity', '.75');        
     }
+    else { //Add minimal lines settings
+        $("#minimalLines").addClass("selected");
+        $("#minimalLines").css("background-color", "#8198AA");
+        $('.lineColIndicator').addClass("minimal");
+        $('.lineColOnLine').addClass("minimal");
+        $('.activeLine').addClass("minimal");
+        $('.activeLine').css('box-shadow', '0px 6px 2px -4px '+colorThisTime);//0px 9px 5px -5px
+        $('.activeLine').css('opacity', '1');
+    }
+    controlsMemory.minLines = $("#minimalLines").hasClass("selected");
+    adjustForMinimalLines();
 }
 
 /* Toggle the line/column indicators in the transcription interface. (A1, A2...) */
@@ -3443,6 +3580,7 @@ function toggleLineMarkers(){
         $("#showTheLines").addClass("selected");
         adjustForMinimalLines();
     }
+    controlsMemory.showTheLines = $("#showTheLines").hasClass("selected");
 }
 
 /* Toggle the drawn lines in the transcription interface. */
@@ -3455,15 +3593,16 @@ function toggleLineCol(){
         .animate({'background-color':'#8198AA'}, 200, 'easeOutCirc');
         return false;
     }
-    if ($('.lineColOnLine:first').css("display") === "block"){
+    if ($("#showTheLabels").hasClass("selected")){
         $('.lineColOnLine').hide();
         $("#showTheLabels").removeClass("selected");
     }
     else {
         $('.lineColOnLine').show();
         $("#showTheLabels").addClass("selected");
-        adjustForMinimalLines();
     }
+    adjustForMinimalLines();
+    controlsMemory.showTheLabels = $("#showTheLabels").hasClass("selected");
 }
 
     //updates lines
@@ -4232,9 +4371,9 @@ function toggleLineCol(){
             $(".lineColIndicatorArea").children(".lineColIndicator").remove();
             $("#parsingSplit").find('.fullScreenTrans').unbind();
             $("#parsingSplit").find('.fullScreenTrans').bind("click", function(){
-              fullPage(); 
-              currentFolio = parseInt(currentFolio);
-              drawLinesToCanvas(transcriptionFolios[currentFolio-1], "");
+            currentFolio = parseInt(currentFolio);
+            fullPage(draw); 
+            
             });
         }
     }
@@ -4290,13 +4429,14 @@ function stopMagnify(){
      * The Ctrl + Shfit functionality to zoom in on a transcription box.
      */
     function peekZoom(cancel, positions){
+        
         var topImg = $("#imgTop img");
         var btmImg = $("#imgBottom img");
         var availableRoom = new Array (Page.height()-$(".navigation").height(),$("#transcriptionCanvas").width());
         var line = $("#imgBottom .activeLine");
         var limitIndex = (line.width()/line.height()> availableRoom[1]/availableRoom[0]) ? 1 : 0;
         var zoomRatio = (limitIndex === 1) ? availableRoom[1]/line.width() : availableRoom[0]/line.height();
-        var imgDims = new Array (topImg.height(),topImg.width(),parseInt(topImg.css("left")),-line.position().top);
+        var imgDims = new Array(topImg.height(),topImg.width(),parseInt(topImg.css("left")),-line.position().top);
         if (!cancel){
             //zoom in
             //$("#imgTop img,#imgBottom img,#imgTop .lineColIndicatorArea, #imgBottom .lineColIndicatorArea, #bookmark, #imgTop, #imgBottom").addClass('noTransition');
@@ -4316,14 +4456,28 @@ function stopMagnify(){
             
            //The animation for changing lines while peek zoomed is a bit out of control, this is part 2 where everything has to be manipulated to zoom in.
             $("#imgTop .lineColIndicatorArea").fadeOut();
+            var heightToUse = line.height() * zoomRatio + 60;
+            //We need to check if we are over the maximum here
+            if (heightToUse > (Page.height() * .8)){
+                //Then this is a tall line and peek zooming isn't the greatest idea.            
+               var workspaceHeight = 170; //$("#transWorkspace").height();
+               heightToUse = Page.height() - workspaceHeight - 80; 
+            }
+            var maxWidth = imgDims[1] * zoomRatio / availableRoom[1] * 100;
+            var mostLeft = Page.width() - (imgDims[1] * zoomRatio - 60);
+            var leftToUse = -(line.position().left * zoomRatio) + 30;
+            //Do not let left become as size that it will actually pull the image too far, there is a max so the right edge is the furtherst you can pull. 
+            if(leftToUse < mostLeft){
+                leftToUse = mostLeft;
+            }
             $("#imgTop").css({
-                "height"    : line.height() * zoomRatio + 60 //add 40 to give some padding for ascenders and descenders.  
+                "height"    : heightToUse //add 40 to give some padding for ascenders and descenders.  
             });
             topImg.css({
                 "width"     : imgDims[1] * zoomRatio - 60, //make it so none of the area can sneak off the right of the page
-                "left"      : -(line.position().left * zoomRatio) + 30, //half of the width reduction so its an even correction for the left side of the page.
+                "left"      : leftToUse, //half of the width reduction so its an even correction for the left side of the page.
                 "top"       : (imgDims[3] * zoomRatio) + 28, //Half of the height extension above to make it equal padding top and bottom
-                "max-width" : imgDims[1] * zoomRatio / availableRoom[1] * 100 + "%"
+                "max-width" : maxWidth + "%"
             });
             //same adjustment as for the top image so things don't look skewed
             /*
@@ -4337,14 +4491,15 @@ function stopMagnify(){
             isPeeking = true;
             //when we end up calling setPositions(), we need to take into account that we are peeking and not to use the natural positioning.  
             //As we navigate lines, the new positioning will have to be written to these objects.  
-            $("#pageJump").attr("disabled", "disabled");
-            $("#nextCanvas").attr("disabled", "disabled");
-            $("#prevCanvasBtn").attr("disabled", "disabled");
-            $("#prevPage").attr("disabled", "disabled");
-            $("#nextPage").attr("disabled", "disabled");
-            $("#parsingBtn").attr("disabled", "disabled");
-            $("#magnify1").attr("disabled", "disabled");
-            $("#splitScreenTools").attr("disabled", "disabled");
+            $("#canvasControls").attr("disabled", "disabled").addClass("peekZoomLockout");
+            $("#pageJump").attr("disabled", "disabled").addClass("peekZoomLockout");
+            $("#nextCanvas").attr("onclick", "").addClass("peekZoomLockout");
+            $("#prevCanvas").attr("onclick", "").addClass("peekZoomLockout");
+            $("#prevPage").attr("disabled", "disabled").addClass("peekZoomLockout");
+            $("#nextPage").attr("disabled", "disabled").addClass("peekZoomLockout");
+            $("#parsingBtn").attr("disabled", "disabled").addClass("peekZoomLockout");
+            $("#magnify1").attr("disabled", "disabled").addClass("peekZoomLockout");
+            $("#splitScreenTools").attr("disabled", "disabled").addClass("peekZoomLockout");
         } 
         else {
             //zoom out
@@ -4381,14 +4536,15 @@ function stopMagnify(){
                 $("#imgTop .lineColIndicatorArea").fadeIn();
             }
             isPeeking = false;
-            $("#pageJump").removeAttr("disabled");
-            $("#nextCanvas").removeAttr("disabled");
-            $("#prevCanvasBtn").removeAttr("disabled");
-            $("#prevPage").removeAttr("disabled");
-            $("#nextPage").removeAttr("disabled");
-            $("#parsingBtn").removeAttr("disabled");
-            $("#splitScreenTools").removeAttr("disabled");
-            $("#magnify1").removeAttr("disabled");
+            $("#canvasControls").removeAttr("disabled").removeClass("peekZoomLockout");
+            $("#pageJump").removeAttr("disabled").removeClass("peekZoomLockout");
+            $("#prevCanvas").attr("onclick", "previousFolio();").removeClass("peekZoomLockout");
+            $("#nextCanvas").attr("onclick", "nextFolio();").removeClass("peekZoomLockout");
+            $("#prevPage").removeAttr("disabled").removeClass("peekZoomLockout");
+            $("#nextPage").removeAttr("disabled").removeClass("peekZoomLockout");
+            $("#parsingBtn").removeAttr("disabled").removeClass("peekZoomLockout");
+            $("#splitScreenTools").removeAttr("disabled").removeClass("peekZoomLockout");
+            $("#magnify1").removeAttr("disabled").removeClass("peekZoomLockout");
         }
     };
 
