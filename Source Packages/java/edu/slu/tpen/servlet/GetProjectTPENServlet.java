@@ -167,6 +167,7 @@ public class GetProjectTPENServlet extends HttpServlet {
                             jsonMap.put("metadata", gson.toJson(metadata));
                             
                             String allProjectButtons = TagButton.getAllProjectButtons(projID);
+                            //
                             jsonMap.put("xml", allProjectButtons);
                             //get special characters
                             jsonMap.put("projectButtons", hk.javascriptToAddProjectButtonsRawData(projectID));
