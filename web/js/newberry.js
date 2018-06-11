@@ -1197,6 +1197,7 @@
                     $("#imgTop img").css("top", "0px");
                     $("#imgBottom").css("height", "inherit");
                     $("#parsingBtn").css("box-shadow", "0px 0px 6px 5px yellow");
+                    resetImageTools();
                 }
             }
             updateURL("p");
@@ -1280,7 +1281,7 @@
                     }
                     else{ // couldnt get list.  one should always exist, even if empty.  We will say no list and changes will be stored locally to the canvas.
                         annoLists[currentFolio -1 ] = "empty";
-                         transcriptionFolios[currentFolio-1].otherContent[0] = {};
+                        transcriptionFolios[currentFolio-1].otherContent[0] = {};
                         if(parsing !== "parsing"){
                             $("#noLineWarning").show();
                             $("#captions").text("There are no lines for this canavs.");
@@ -1293,6 +1294,7 @@
                         $("#imgBottom img").css("top", "0px");
                         $("#imgBottom").css("height", "inherit");
                         $("#parsingBtn").css("box-shadow", "0px 0px 6px 5px yellow");
+                        resetImageTools();
                     }
                     updateURL("p");
                 });
