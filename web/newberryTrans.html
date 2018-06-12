@@ -1013,7 +1013,7 @@
         $('#transcriptionFile').on("change", function(event){;
             var selectedFile = event.target.files[0];
             var reader = new FileReader();
-            var result = $('#transcriptionText')
+            var result = $('#transcriptionText');
             reader.onload = function(event){
               var fileContent = event.target.result;
               result.html(fileContent);

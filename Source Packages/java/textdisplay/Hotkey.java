@@ -384,16 +384,16 @@ public class Hotkey {
                 ja.add(jo);
             }
             if (ctr == 0) {
-
-                new Hotkey(222, projectID, 1, true);
-                new Hotkey(254, projectID, 2, true);
-                new Hotkey(208, projectID, 3, true);
-                new Hotkey(240, projectID, 4, true);
-                new Hotkey(503, projectID, 5, true);
-                new Hotkey(447, projectID, 6, true);
-                new Hotkey(198, projectID, 7, true);
-                new Hotkey(230, projectID, 8, true);
-                new Hotkey(540, projectID, 9, true);
+                  //default set
+//                new Hotkey(222, projectID, 1, true);
+//                new Hotkey(254, projectID, 2, true);
+//                new Hotkey(208, projectID, 3, true);
+//                new Hotkey(240, projectID, 4, true);
+//                new Hotkey(503, projectID, 5, true);
+//                new Hotkey(447, projectID, 6, true);
+//                new Hotkey(198, projectID, 7, true);
+//                new Hotkey(230, projectID, 8, true);
+//                new Hotkey(540, projectID, 9, true);
 //                return this.javascriptToAddButtons(uid);
             }
             return ja.toString();

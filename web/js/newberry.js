@@ -511,6 +511,9 @@
         //Object validation here.
             projectID = 4080;
             var userTranscription = $('#transcriptionText').val();
+            if(userTranscription === "false" || userTranscription === false){
+                userTranscription = "";
+            }
             var pageToLoad = getURLVariable("p");
             currentFolio = 1;
             longLoadingProject = window.setTimeout(function(){
@@ -1010,7 +1013,7 @@
                 }
                 else{
                     clearTimeout(longLoadingProject);
-                    $("#transTemplateLoading p").html("The input was invalid.  Make sure you are asking for a Manifest a proper way.  Refresh to try again.");
+                    $("#transTemplateLoading p").html("The input was invalid (check URL variables).  Make sure you are asking for a Manifest a proper way.  Refresh to try again.");
                     $('.transLoader img').attr('src',"images/missingImage.png");
                     return false;
                     //load Iframes after user check and project information data call.  Maybe only after valid page load parameters.  uncomment this line if necessary.    
