@@ -1225,7 +1225,7 @@
                             $("div[pair='A1']").click();
                         }
                     } 
-                    else if (event.shiftKey && !isPeeking && !isMagnifying) {
+                    else if (event.shiftKey && !isPeeking && !isMagnifying && !zoomLock) {
                         // Peek-Zoom
                         peekZoom(false, {});
                     }

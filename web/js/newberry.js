@@ -2516,9 +2516,8 @@ function toggleSpecialChars(event){
         $("#transcriptionTemplate").css("height", "auto");
         $("#transcriptionTemplate").css("display", "inline-block");
         $("#canvasControls").removeClass("selected");
-        $("#canvasControls").css("background-color", "#272727");
+        $("#canvasControls").removeClass("peekZoomLockout");
         $("#zoomLock").removeClass("selected").removeClass("peekZoomLockout");
-        $("#zoomLock").css("background-color", "#272727");
         $('.lineColIndicatorArea').css("max-height","none");
         $('.lineColIndicatorArea').show();
         $(".centerInterface").css("text-align", "left");
@@ -2575,13 +2574,12 @@ function splitPage(event, tool) {
     splitScreen.css("display", "block");
     if(tool==="controls"){
         if(liveTool === "controls"){
-            $("#canvasControls").removeClass("selected");
-            $("#zoomLock").removeClass("peekZoomLockout").removeAttr("disabled");
+           // $("#canvasControls").removeClass("selected");
+           //$ ("#zoomLock").removeClass("peekZoomLockout").removeAttr("disabled");
             return fullPage();
         }
         $("#canvasControls").addClass("selected");
-        $("#canvasControls").css("background-color", "#8198AA");
-        $("#zoomLock").addClass("peekZoomLockout");
+        $("#zoomLock").attr("disabled", "disabled").addClass("peekZoomLockout");
         $("#transcriptionCanvas").css("width", Page.width()-200 + "px");
         $("#transcriptionTemplate").css("width", Page.width()-200 + "px");
         newCanvasWidth = Page.width()-200;
@@ -3456,22 +3454,28 @@ function restoreImageToolsFromZen(){
  */
 function toggleLocking(){
     if($("#canvasControls").hasClass("selected")){
-        $("#canvasControls")
-        .animate({'background-color':'red'}, 200, 'linear')
-        .animate({'background-color':'#272727'}, 200, 'easeOutCirc')
-        .animate({'background-color':'#272727'}, 200, 'linear')
-        .animate({'background-color':'#8198AA'}, 200, 'easeOutCirc');
+        $("#canvasControls").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
         return false;
     }
-    zoomLock = !zoomLock;
-    if(zoomLock){
-        $("#zoomLock").addClass("selected");
-        peekZoom(false, {});
+    if(isPeeking){
+        if(!zoomLock){
+            zoomLock = true;
+            isPeeking = false;
+            $("#zoomLock").addClass("selected");
+        }
     }
     else{
-        $("#zoomLock").removeClass("selected");
-        peekZoom(true, {});
+        zoomLock = !zoomLock;
+        if(zoomLock){
+            $("#zoomLock").addClass("selected");
+            peekZoom(false, {});
+        }
+        else{
+            $("#zoomLock").removeClass("selected");
+            peekZoom(true, {});
+        }
     }
+    
 }
 
 /* Change color of lines on screen */
@@ -3543,11 +3547,7 @@ function toggleZenLine(){
 /* Toggle the minimalist line setting */
 function toggleMinimalLines(){
     if($("#zenLine").hasClass("selected")){
-        $('#zenLine')
-        .animate({'background-color':'red'}, 200, 'linear')
-        .animate({'background-color':'#8198AA'}, 200, 'easeOutCirc')
-        .animate({'background-color':'red'}, 200, 'linear')
-        .animate({'background-color':'#8198AA'}, 200, 'easeOutCirc');
+        $('#zenLine').fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
         return false;
     }
     if ($("#minimalLines").hasClass("selected")){ //Remove
@@ -3576,11 +3576,7 @@ function toggleMinimalLines(){
 /* Toggle the line/column indicators in the transcription interface. (A1, A2...) */
 function toggleLineMarkers(){
     if($("#zenLine").hasClass("selected")){
-        $('#zenLine')
-        .animate({'background-color':'red'}, 200, 'linear')
-        .animate({'background-color':'#8198AA'}, 200, 'easeOutCirc')
-        .animate({'background-color':'red'}, 200, 'linear')
-        .animate({'background-color':'#8198AA'}, 200, 'easeOutCirc');
+        $('#zenLine').fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
         return false;
     }
     if (($('.lineColIndicator:first').is(":visible")&& $('.lineColIndicator:eq(1)').is(":visible"))
@@ -3601,11 +3597,7 @@ function toggleLineMarkers(){
 /* Toggle the drawn lines in the transcription interface. */
 function toggleLineCol(){
     if($("#zenLine").hasClass("selected")){
-        $('#zenLine')
-        .animate({'background-color':'red'}, 200, 'linear')
-        .animate({'background-color':'#8198AA'}, 200, 'easeOutCirc')
-        .animate({'background-color':'red'}, 200, 'linear')
-        .animate({'background-color':'#8198AA'}, 200, 'easeOutCirc');
+        $("#zenLine").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
         return false;
     }
     if ($("#showTheLabels").hasClass("selected")){
@@ -4444,7 +4436,6 @@ function stopMagnify(){
      * The Ctrl + Shfit functionality to zoom in on a transcription box.
      */
     function peekZoom(cancel, positions){
-        
         var topImg = $("#imgTop img");
         var btmImg = $("#imgBottom img");
         var availableRoom = new Array (Page.height()-$(".navigation").height(),$("#transcriptionCanvas").width());
@@ -4515,7 +4506,6 @@ function stopMagnify(){
             $("#parsingBtn").attr("disabled", "disabled").addClass("peekZoomLockout");
             $("#magnify1").attr("disabled", "disabled").addClass("peekZoomLockout");
             $("#splitScreenTools").attr("disabled", "disabled").addClass("peekZoomLockout");
-            $("#zoomLock").css("background-color", "#8198AA");
         } 
         else {
             //zoom out
@@ -4561,7 +4551,6 @@ function stopMagnify(){
             $("#parsingBtn").removeAttr("disabled").removeClass("peekZoomLockout");
             $("#splitScreenTools").removeAttr("disabled").removeClass("peekZoomLockout");
             $("#magnify1").removeAttr("disabled").removeClass("peekZoomLockout");
-            $("#zoomLock").css("background-color", "#272727");
         }
     };
 
