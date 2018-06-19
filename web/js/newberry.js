@@ -2516,10 +2516,12 @@ function toggleSpecialChars(event){
         $("#transcriptionTemplate").css("height", "auto");
         $("#transcriptionTemplate").css("display", "inline-block");
         $("#canvasControls").removeClass("selected");
+        $("#canvasControls").css("background-color", "#272727");
+        $("#zoomLock").removeClass("selected").removeClass("peekZoomLockout");
+        $("#zoomLock").css("background-color", "#272727");
         $('.lineColIndicatorArea').css("max-height","none");
         $('.lineColIndicatorArea').show();
         $(".centerInterface").css("text-align", "left");
-        $("#canvasControls").removeClass("selected");
         $("#help").css({"left":"100%"}).fadeOut(1000);
         $("#fullScreenBtn").fadeOut(250);
         $("#parseOptions .tpenButton.selected").removeClass("selected");
@@ -2574,9 +2576,12 @@ function splitPage(event, tool) {
     if(tool==="controls"){
         if(liveTool === "controls"){
             $("#canvasControls").removeClass("selected");
+            $("#zoomLock").removeClass("peekZoomLockout").removeAttr("disabled");
             return fullPage();
         }
         $("#canvasControls").addClass("selected");
+        $("#canvasControls").css("background-color", "#8198AA");
+        $("#zoomLock").addClass("peekZoomLockout");
         $("#transcriptionCanvas").css("width", Page.width()-200 + "px");
         $("#transcriptionTemplate").css("width", Page.width()-200 + "px");
         newCanvasWidth = Page.width()-200;
@@ -3377,7 +3382,7 @@ function resetImageTools(){
     if(!$("#minimalLines").hasClass("selected")){
         toggleMinimalLines();
     }
-    if($("#showTheLines").hasClass("selected")){
+    if(!$("#showTheLines").hasClass("selected")){
         toggleLineMarkers();
     }
     if(!$("#showTheLabels").hasClass("selected")){
@@ -3451,10 +3456,10 @@ function restoreImageToolsFromZen(){
  */
 function toggleLocking(){
     if($("#canvasControls").hasClass("selected")){
-        $('#canvasControls')
+        $("#canvasControls")
         .animate({'background-color':'red'}, 200, 'linear')
-        .animate({'background-color':'#8198AA'}, 200, 'easeOutCirc')
-        .animate({'background-color':'red'}, 200, 'linear')
+        .animate({'background-color':'#272727'}, 200, 'easeOutCirc')
+        .animate({'background-color':'#272727'}, 200, 'linear')
         .animate({'background-color':'#8198AA'}, 200, 'easeOutCirc');
         return false;
     }
@@ -4466,7 +4471,7 @@ function stopMagnify(){
             
            //The animation for changing lines while peek zoomed is a bit out of control, this is part 2 where everything has to be manipulated to zoom in.
             $("#imgTop .lineColIndicatorArea").fadeOut();
-            var heightToUse = line.height() * zoomRatio + 60;
+            var heightToUse = line.height() * zoomRatio + 88;
             //We need to check if we are over the maximum here
             if (heightToUse > (Page.height() * .8)){
                 //Then this is a tall line and peek zooming isn't the greatest idea.            
@@ -4486,7 +4491,7 @@ function stopMagnify(){
             topImg.css({
                 "width"     : imgDims[1] * zoomRatio - 60, //make it so none of the area can sneak off the right of the page
                 "left"      : leftToUse, //half of the width reduction so its an even correction for the left side of the page.
-                "top"       : (imgDims[3] * zoomRatio) + 28, //Half of the height extension above to make it equal padding top and bottom
+                "top"       : (imgDims[3] * zoomRatio) + 46, //Half of the height extension above to make it equal padding top and bottom
                 "max-width" : maxWidth + "%"
             });
             //same adjustment as for the top image so things don't look skewed
@@ -4510,6 +4515,7 @@ function stopMagnify(){
             $("#parsingBtn").attr("disabled", "disabled").addClass("peekZoomLockout");
             $("#magnify1").attr("disabled", "disabled").addClass("peekZoomLockout");
             $("#splitScreenTools").attr("disabled", "disabled").addClass("peekZoomLockout");
+            $("#zoomLock").css("background-color", "#8198AA");
         } 
         else {
             //zoom out
@@ -4555,6 +4561,7 @@ function stopMagnify(){
             $("#parsingBtn").removeAttr("disabled").removeClass("peekZoomLockout");
             $("#splitScreenTools").removeAttr("disabled").removeClass("peekZoomLockout");
             $("#magnify1").removeAttr("disabled").removeClass("peekZoomLockout");
+            $("#zoomLock").css("background-color", "#272727");
         }
     };
 
@@ -4813,7 +4820,7 @@ function loadIframes(){
             else{
                 toAddressBar = replaceURLVariable("p", tpenFolios[currentFolio-1].folioNumber);
             }
-            var relocator = "project.html?"+"projectID="+projectID;
+            var relocator = "project.html?"+"projectID="+projectID+"&p="+tpenFolios[currentFolio-1].folioNumber;
             $(".editButtons").attr("href", relocator);
         }  
         

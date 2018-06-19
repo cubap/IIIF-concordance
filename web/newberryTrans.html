@@ -190,6 +190,14 @@
                     <div class="flex-container flex-stretch buttons let">
                         <select id="splitScreenTools" > 
                              <option id="activeSplitTool" disabled>Tools and Info</option> 
+                            <optgroup label="French Paleography Resources">
+                                <option splitter='partialTrans' class="splitTool" >Partial Transcriptions</option>
+                                <option splitter='essay' class="splitTool" >Background Essay</option>
+                                <option splitter='scripts' class="splitTool" >French Scripts and Hands</option>
+                                <option splitter='frenchdocs' class="splitTool" >About French Documents</option>
+                                <option splitter='fInstitutions' class="splitTool" >French Institutions</option>
+                                <option splitter='maps' class="splitTool" >Historical Maps</option>
+                             </optgroup>
                              <optgroup label="Paleography Information">
                                 <option splitter='start' class="splitTool" >Get Started</option>
                                 <option splitter='dictionary' class="splitTool" >Dictionaries</option>
@@ -201,21 +209,13 @@
                                 <option splitter='group' class="splitTool" >Group Work</option>
                                 <option splitter='conventions' class="splitTool" >Transcribing & Editing Conventions</option>
                              </optgroup>
-                             <optgroup label="French Paleography Resources">
-                                <option splitter='essay' class="splitTool" >Background Essay</option>
-                                <option splitter='partialTrans' class="splitTool" >Partial Transcriptions</option>
-                                <option splitter='scripts' class="splitTool" >French Scripts and Hands</option>
-                                <option splitter='frenchdocs' class="splitTool" >About French Documents</option>
-                                <option splitter='fInstitutions' class="splitTool" >French Institutions</option>
-                                <option splitter='maps' class="splitTool" >Historical Maps</option>
-                             </optgroup>
                              <optgroup label="Other Tools">
                                 <option splitter='preview' class="splitTool" >Text Preview</option>
                                 <option splitter='fullPage' class="splitTool"  >View Full Page</option>
                                 <option splitter='compare' class="splitTool" >Compare Page</option>
                              </optgroup>
                          </select>  
-                        <button id="canvasControls" title="Page Tools">
+                        <button id="canvasControls" class="let" title="Page Tools">
                             Page Tools
                             <i class="fa fa-file-image-o"></i>
                         </button>
@@ -424,6 +424,15 @@
                                         press the left and right arrows to 'bump' the line.</span></p>
                                     </div>
                                 </div>
+                        </div>
+                        <div id="editTransButtons" class="actions">
+                            <h4 id="editBtns" title="Edit available XML Tags and Special Characters" class="clear-left">Workspace Tags & Chars</h4>
+                            <a title="Edit Special Characters" class="lookLikeButtons editButtons exitPage" href="project.html">
+                                Edit Special Characters <i class="fa fa-edit"></i>
+                            </a>
+                            <a title="Edit XML Tags" class="lookLikeButtons editButtons exitPage" href="project.html">
+                                Edit XML Tags <i class="fa fa-edit"></i>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -833,7 +842,7 @@
                         <div id="contrastSlider"></div>
                     </div>
                     <header> Column Controls</header>
-                    <button role="button" id="minimalLines" class="block" onclick="toggleMinimalLines();">Minimal Lines *beta</button>
+                    <button role="button" id="minimalLines" class="block" onclick="toggleMinimalLines();">Minimal Lines</button>
                     <button role="button" id="zenLine" class="block" onclick="toggleZenLine();">Zen Line *beta</button>
                     <button id="showTheLines" role="button" class="block selected" onclick="toggleLineMarkers();">
                         Lines

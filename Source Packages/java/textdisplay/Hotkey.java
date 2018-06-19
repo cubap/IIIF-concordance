@@ -181,13 +181,14 @@ public class Hotkey {
                 hk.position = rs.getInt("position");
                 hk.key = rs.getInt("key");
                 ls_hk.add(hk);
-            } else {
-                Hotkey hk = new Hotkey();
-                hk.uid = uid;
-                hk.position = position;
-                hk.key = 0;
-                ls_hk.add(hk);
-            }
+            } 
+//            else {
+//                Hotkey hk = new Hotkey();
+//                hk.uid = uid;
+//                hk.position = position;
+//                hk.key = 0;
+//                ls_hk.add(hk);
+//            }
         } finally {
             DatabaseWrapper.closeDBConnection(j);
             DatabaseWrapper.closePreparedStatement(stmt);
@@ -384,7 +385,7 @@ public class Hotkey {
                 ja.add(jo);
             }
             if (ctr == 0) {
-                  //default set
+                  //default
 //                new Hotkey(222, projectID, 1, true);
 //                new Hotkey(254, projectID, 2, true);
 //                new Hotkey(208, projectID, 3, true);

@@ -324,6 +324,7 @@ Open the project management section for a given project ID.
 <script type="text/javascript">
     
 var currentProjectID = 4351; 
+var pageToReturnTo = -1;
 $("#activeProjectID").val(currentProjectID);
 var minWidth = 10;
 var selecTab = null;
@@ -341,21 +342,30 @@ function getPreloadInformation(){
     //currentProjectID = 4352; However we know this when we get to this page, it is crucial that it get recorded;
     var url = "geti";
     var pageurl = document.location.href;
-    var projectID = "";
+    var projectID = -1;
+    var returnPage = -1;
     if(pageurl.indexOf("projectID=") === -1 || parseInt(pageurl.indexOf("?projectID="))+11 === pageurl.length){
         alert("you must provide a project ID");
         return false;
     }
-    projectID = pageurl.substr(pageurl.indexOf("?projectID=")+11, pageurl.length -1);
-    if(+projectID === parseInt(projectID)){
+    projectID = getURLVariable("projectID");
+    returnPage = getURLVariable("p");
+    
+    if(projectID && +projectID === parseInt(projectID)){
         //It is an integer, we can continue
+        currentProjectID = parseInt(projectID);
     }
     else{
         alert("The id provided is not a number, so it is not a valid ID.  make sure there are no spaces, letters or punctuation marks in the ID.");
         return false;
     }
-    $(".returnToTrans").attr("href","newberryTrans.html?projectID="+projectID);
-    currentProjectID = parseInt(projectID);
+    if(returnPage){
+        pageToReturnTo = parseInt(returnPage);
+        $(".returnToTrans").attr("href","newberryTrans.html?projectID="+currentProjectID+"&p="+pageToReturnTo);
+    }
+    else{
+        $(".returnToTrans").attr("href","newberryTrans.html?projectID="+currentProjectID);
+    }
     $("#activeProjectID").val(currentProjectID);
     $("#backToTranscribe").attr("href", "newberryTrans.html?projectID="+currentProjectID);
     $.ajax({

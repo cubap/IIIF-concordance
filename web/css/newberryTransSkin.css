@@ -2105,3 +2105,11 @@ a.editButtons {
 .peekZoomLockout{
     background-color: red !important;
 }
+
+#zenLine{
+    display: none;
+}
+
+#markerColors{
+    margin-bottom: 8px;
+}
