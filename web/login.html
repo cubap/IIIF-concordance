@@ -871,6 +871,7 @@ and open the template in the editor.
                 //console.log("login success");
                 $("#loginfail").hide();  
                 $("#loginsuccess").show();
+                window.location.pathname = window.location.pathname.replace(/\/[^/]*$/, 'newberryTrans.html');
             })
             .fail(function(){
                 $("#loginfail").show();  
