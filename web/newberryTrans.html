@@ -928,6 +928,13 @@
         //check if logged in
         var user = "";
         var url = "geti";
+	
+	function redirectToLogin(text) {
+		if (confirm(text + " Do you wish to view the login page?")) {
+			location.href = "login.html";
+		}
+	}
+
         $.ajax({
             url: url,
             type: "GET",
@@ -975,7 +982,7 @@
                     var projID = theURL.substring(theURL.indexOf("projectID=")+10);
                     if (theURL.indexOf("projectID=") > -1){
                         theProjectID = parseInt(projID);
-                        alert("You must be logged in to view project "+projID);
+                        redirectToLogin("You must be logged in to view project "+projID);
                     }
                     $('#transcriptionTemplate').hide();
                     $('#setTranscriptionObjectArea').show();
@@ -984,7 +991,7 @@
                     $("#parsingBtn").unbind("click");
                     $("#parsingBtn").attr("onclick","");
                     $("#parsingBtn").click(function(){
-                        alert("You must be logged in to correct line parsing.  Log in and refresh the page to correct parsing.");
+                        redirectToLogin("You must be logged in to correct line parsing.  Log in and refresh the page to correct parsing.");
                     });
                 }
                 //only get iframes after confirmed user authentication
@@ -996,7 +1003,7 @@
                 var theURL = window.location.href;
                 var projID = theURL.substring(theURL.indexOf("projectID=")+10);
                 if (theURL.indexOf("projectID=") > -1){
-                    alert("You must be logged in to view project "+projID);
+                    redirectToLogin("You must be logged in to view project "+projID);
                 }
                 $('#transcriptionTemplate').hide();
                 $('#setTranscriptionObjectArea').show();
@@ -1005,7 +1012,7 @@
                 $("#parsingBtn").unbind("click");
                 $("#parsingBtn").attr("onclick","");
                 $("#parsingBtn").click(function(){
-                    alert("You must be logged in to correct line parsing.  Log in and refresh the page to correct parsing.");
+                    redirectToLogin("You must be logged in to correct line parsing.  Log in and refresh the page to correct parsing.");
                 });
             }
         });
