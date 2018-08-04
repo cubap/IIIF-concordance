@@ -27,7 +27,7 @@ function checkProjects() {
 function loadManifestFromInput() {
 	var manifest = $('#manifest-name').val();
 	var domain = 'http://image-store.tpen-demo.americanpaleography.org';
-	loadManifestFromUrl(domain + "/" + manifest + "/manifest.json");
+	loadManifestFromUrl(domain + "/api/getManifest/" + manifest);
 }
 
 function loadManifestFromUrl(url) {
