@@ -23,3 +23,23 @@ function checkProjects() {
         })
     })
 }
+
+function loadManifestFromInput() {
+	var manifest = $('#manifest-name').val();
+	var domain = 'http://image-store.tpen-demo.americanpaleography.org';
+	loadManifestFromUrl(domain + "/" + manifest + "/manifest.json");
+}
+
+function loadManifestFromUrl(url) {
+    $.get(url, function(data) {
+	    simpleCreate(data);
+    });
+}
+function simpleCreate(manifest){
+    var url = 'createProject';
+
+    var params = {"scmanifest": JSON.stringify(manifest)};
+    $.post(url, params, function(data){
+	//console.log(data);
+    });
+}
