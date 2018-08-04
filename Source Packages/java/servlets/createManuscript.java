@@ -61,7 +61,7 @@ public class createManuscript extends HttpServlet {
                 String [] seperatedNames=names.split(",");
                 for(int i=0;i<seperatedURLs.length;i++)
                 {
-                    int num = textdisplay.Folio.createFolioRecordFromVhmml(city, seperatedNames[i], seperatedURLs[i].replace('_', '&'), archive, m.getID());
+                    int num = textdisplay.Folio.createFolioRecordFromVhmml(city, seperatedNames[i], seperatedURLs[i], archive, m.getID());
                 }
                 PrintWriter writer = response.getWriter();
                 writer.print(m.getID());
