@@ -76,6 +76,8 @@ $(function() {
 		var words = line.split(/\s+/);
 		words.forEach(word => {
 			var dict = annotationData.words;
+			word = word.replace(/\W/g, ''); // strip punctuation
+			word = word.toLowerCase(); // normalize case (might want to do this as an optional thing)
 			if (!dict[word]) {
 				dict[word] = [];	
 			}
