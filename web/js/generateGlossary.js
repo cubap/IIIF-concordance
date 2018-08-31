@@ -34,20 +34,39 @@ $(function() {
 			item.append(keyword);
 
 			if (data.length == 1) {
-				var info = $('<span>');
-				info.text(": " + data[0].line);
-				item.append(info);
+				var separator = $('<span>');
+				separator.text(": ");
+				item.append(separator);
+				markupWordOccurrence(item, word, data[0]);
 			} else {
 				var sublist = $('<ul>');
 				data.forEach(line => {
 					var subitem = $('<li>');
-					subitem.text(line.line);
+					markupWordOccurrence(subitem, word, line);
 					sublist.append(subitem);
 				})
 				item.append(sublist);
 			}
 			mainList.append(item);
 		});
+
+		function markupWordOccurrence(container, word, data) {
+			var start = data.pos;
+			var end = data.pos + word.length;
+
+			var pre = $('<span>');
+			pre.text(data.line.substring(0, start));
+
+			var ul = $('<span style="text-decoration: underline;">');
+			ul.text(data.line.substring(start, end));
+
+			var post = $('<span>');
+			post.text(data.line.substring(end));
+
+			container.append(pre);
+			container.append(ul);
+			container.append(post);
+		}
 	}
 
 
@@ -74,17 +93,22 @@ $(function() {
 
 	function addWords(line, lookupIndex) {
 		var words = line.split(/\s+/);
+		var pos = 0;
 		words.forEach(word => {
+			var offset = word.length + 1;
 			var dict = annotationData.words;
 			word = word.replace(/\W/g, ''); // strip punctuation
 			word = word.toLowerCase(); // normalize case (might want to do this as an optional thing)
 			if (!dict[word]) {
-				dict[word] = [];	
+				dict[word] = [];
 			}
 			dict[word].push({
 				index: lookupIndex,
 				line: line,
+				pos: pos,
 			});
+
+			pos += offset;
 		});
 	}
 });
