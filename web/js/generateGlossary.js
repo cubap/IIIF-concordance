@@ -1,22 +1,19 @@
-$(function() {
-	
-	window.annotationData = {
+function reloadGlossaryData(activeProject) {
+	// data used by various parts of this closure
+	annotationData = {
 		lines: [],
 		pages: [],
 		words: {},
 	};
 
-	// WHY isn't this built-in. Anyway, strip off the '?', then get the right parameter
-	var projectId = location.search.substring(1).split("&").map(comp => comp.split("=")).filter(comp => comp[0] == 'projectID')[0][1];
-	$.get('/getProjectTPENServlet?projectID=' + projectId, function(payload) {
-		data = JSON.parse(payload.manifest);
 
-		window.manifest = data;
+	// kick off the actual work
+	manifest = JSON.parse(activeProject.manifest);
+	manifest.sequences.forEach(extractLines);
+	showGlossary();
 
-		manifest.sequences.forEach(extractLines);
 
-		showGlossary();
-	});
+	// various workhorse functions below 
 
 	function showGlossary() {
 		var dict = annotationData.words;
@@ -103,4 +100,13 @@ $(function() {
 			pos += offset;
 		});
 	}
+}
+
+$(function() {
+	// WHY isn't this built-in. Anyway, strip off the '?', then get the right parameter
+	var projectId = location.search.substring(1).split("&").map(comp => comp.split("=")).filter(comp => comp[0] == 'projectID')[0][1];
+	$.get('/getProjectTPENServlet?projectID=' + projectId, function(payload) {
+		reloadGlossaryData(payload);
+	});
+
 });
