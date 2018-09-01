@@ -10,10 +10,6 @@ $(function() {
 	var projectId = location.search.substring(1).split("&").map(comp => comp.split("=")).filter(comp => comp[0] == 'projectID')[0][1];
 	$.get('/getProjectTPENServlet?projectID=' + projectId, function(payload) {
 		data = JSON.parse(payload.manifest);
-		console.log("ran");
-		console.log(data.__proto__.constructor);
-		console.log(data.length);
-		console.log(Object.keys(data));
 
 		window.manifest = data;
 
@@ -25,7 +21,6 @@ $(function() {
 	function showGlossary() {
 		var dict = annotationData.words;
 		var mainList = $('#glossary');
-		console.log(Object.keys(dict));
 		Object.keys(dict).sort().filter(x => x).forEach(word => {
 			var data = dict[word];
 			var item = $('<li>');
@@ -76,14 +71,11 @@ $(function() {
 			canvas.otherContent.forEach(other => {
 				other.resources.forEach(wrapper => {
 					var resource = wrapper.resource;
-					console.log("res");
 					if (resource["@type"] == "cnt:ContentAsText") {
 						var line = resource['cnt:chars'] || '';
 						annotationData.lines.push(line);
 						pageText.push(line);
 						addWords(line, annotationData.lines.length-1);
-					} else {
-						console.log(resource["@type"]);
 					}
 				});
 			})
