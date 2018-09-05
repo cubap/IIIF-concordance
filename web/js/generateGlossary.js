@@ -15,6 +15,8 @@ function reloadGlossaryData(manifest) {
 	// various workhorse functions below 
 
 	function showGlossary() {
+		var splitHeight = window.innerHeight + "px";
+		$('.wordOccurrencesList').css('height', splitHeight);
 		var dict = annotationData.words;
 		var mainList = $('#glossaryDiv');
 		Object.keys(dict).sort().filter(x => x).forEach(word => {
