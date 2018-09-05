@@ -868,6 +868,11 @@ iframe {background: url('images/linen.png') white scroll repeat; position: relat
 .destroyTag {position:absolute;top:-15px;right:0;}
 .loadingStatus {position:absolute;color: white; top:25%;left:30%;font-family: 'Nova Cut',sans-serif;font-size: 24px;text-shadow:0px 1px 0 #69ACC9;}
 #loadingCompare {position:relative;}
+.wordOccurrencesList {border:thin solid black; margin-bottom: 5px;clear: both; padding: 10px;overflow: auto; background: white;
+                -moz-box-shadow: -1px -1px 3px rgba(0,0,0,.4);
+                -webkit-box-shadow: -1px -1px 3px rgba(0,0,0,.4); 
+                box-shadow:-1px -1px 3px rgba(0,0,0,.4);
+}
 .previewPage {border:thin solid black; margin-bottom: 5px;clear: both; padding: 10px;overflow: auto; background: white;
                 -moz-box-shadow: -1px -1px 3px rgba(0,0,0,.4);
                 -webkit-box-shadow: -1px -1px 3px rgba(0,0,0,.4); 

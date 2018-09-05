@@ -6,6 +6,7 @@
         <link type="text/css" href="css/custom-theme/jQuery.css" rel="Stylesheet" />
         <link type="text/css" href="css/newberryTransSkin.css" rel="Stylesheet" />
         <script type="text/javascript" src="js/newberry.js"></script>
+        <script type="text/javascript" src="js/generateGlossary.js"></script>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.js"></script>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.js"></script>
         <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
@@ -213,6 +214,7 @@
                                 <option splitter='conventions' class="splitTool" >Transcribing & Editing Conventions</option>
                              </optgroup>
                              <optgroup label="Other Tools">
+                                <option splitter='wordOccurrences' class="splitTool" >Word Occurrences</option>
                                 <option splitter='preview' class="splitTool" >Text Preview</option>
                                 <option splitter='fullPage' class="splitTool"  >View Full Page</option>
                                 <option splitter='compare' class="splitTool" >Compare Page</option>
@@ -538,6 +540,16 @@
 
                 <img class="compareImage" folioNum="1"></img>
             </div>
+	    <div id="wordOccurrencesSplit" class="split">
+                <div class="toolLinks">      
+                   <div style="text-align: center;" class="fullScreenTrans"><i class="fa fa-share fa-flip-vertical"></i></div>
+                    <button class="showMe" onclick="restoreWorkspace();">Show Workspace</button>    
+                    <button class="hideMe" style="position: relative;" onclick="hideWorkspaceToSeeImage();" >Hide Workspace</button>          
+                </div> 
+	        <div id="glossaryDiv" class="wordOccurrencesList">
+		
+		</div>
+	    </div>
             <div id="previewSplit" class="split">
                 <div class="toolLinks">      
                    <div style="text-align: center;" class="fullScreenTrans"><i class="fa fa-share fa-flip-vertical"></i></div>

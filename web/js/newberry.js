@@ -614,6 +614,9 @@
                                 //$("#genericIssue").show(1000);
                                 return false;                
                             }
+
+			    // load the glossary data based on this ajax request, but delay it until after the rest of the code gets to run
+			    setTimeout(function() { reloadGlossaryData(projectData) }, 1);
                                     
                             if(projectData.sequences[0] !== undefined && projectData.sequences[0].canvases !== undefined
                                 && projectData.sequences[0].canvases.length > 0){
@@ -857,7 +860,13 @@
                                         //$("#genericIssue").show(1000);
                                         return false;                
                                     }
-                                    if(projectData.sequences[0] !== undefined && projectData.sequences[0].canvases !== undefined
+
+
+				    // load the glossary data based on this ajax request, but delay it until after the rest of the code gets to run
+				    setTimeout(function() { reloadGlossaryData(projectData) }, 1);
+                                    
+
+				    if(projectData.sequences[0] !== undefined && projectData.sequences[0].canvases !== undefined
                                         && projectData.sequences[0].canvases.length > 0){
                                         transcriptionFolios = projectData.sequences[0].canvases;
                                         if(pageToLoad){
