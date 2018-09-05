@@ -1,4 +1,4 @@
-function reloadGlossaryData(activeProject) {
+function reloadGlossaryData(manifest) {
 	// data used by various parts of this closure
 	annotationData = {
 		lines: [],
@@ -8,7 +8,6 @@ function reloadGlossaryData(activeProject) {
 
 
 	// kick off the actual work
-	manifest = JSON.parse(activeProject.manifest);
 	manifest.sequences.forEach(extractLines);
 	showGlossary();
 
@@ -17,7 +16,7 @@ function reloadGlossaryData(activeProject) {
 
 	function showGlossary() {
 		var dict = annotationData.words;
-		var mainList = $('#glossary');
+		var mainList = $('#glossaryDiv');
 		Object.keys(dict).sort().filter(x => x).forEach(word => {
 			var data = dict[word];
 			var item = $('<li>');
@@ -102,11 +101,13 @@ function reloadGlossaryData(activeProject) {
 	}
 }
 
+/*
 $(function() {
 	// WHY isn't this built-in. Anyway, strip off the '?', then get the right parameter
 	var projectId = location.search.substring(1).split("&").map(comp => comp.split("=")).filter(comp => comp[0] == 'projectID')[0][1];
 	$.get('/getProjectTPENServlet?projectID=' + projectId, function(payload) {
-		reloadGlossaryData(payload);
+		reloadGlossaryData(JSON.parse(payload.manifest));
 	});
 
 });
+*/
