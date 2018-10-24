@@ -78,7 +78,7 @@ function reloadGlossaryData(manifest = {
 		}
 		for (let w of list) {
 			if(length>w.length || occurs>annotationData.words[w].length) {continue}
-			listUL += `<li><a onclick="document.querySelector('[name=\\'${w}\\']').scrollIntoView({behavior:'smooth'})">${w}</a> (${annotationData.words[w].length})</li>`
+			listUL += `<li><a onclick="document.querySelector('[name=\\'${w}\\']').scrollIntoView({behavior:'smooth'})">${w} <badge>(${annotationData.words[w].length})</badge></a></li>`
 		}
 		listUL += `
 		</ul>
