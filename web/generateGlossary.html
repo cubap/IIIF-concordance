@@ -9,11 +9,19 @@
     </head>    
     <style>
         #wordList {
-            position: fixed;
-            right:0;
             height: 98vh;
             display: flex;
             flex-direction: column;
+            background-color: #eee
+        }
+        #glossary {
+            overflow: auto;
+        }
+        body {
+            display: flex;
+            height: 100vh;
+            flex-direction: row-reverse;
+            position: fixed;
         }
         label {
             display: block;
