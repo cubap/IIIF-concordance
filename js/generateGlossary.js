@@ -99,6 +99,7 @@ function reloadGlossaryData(manifest = {
 		var promises = []
 		sequence.canvases.forEach(canvas => {
 			var texts = [];
+			if(!canvas.otherContent) { return true } // TODO: add P3 "annotations"
 			canvas.otherContent.forEach(other => {
 				if (!other.resources) {
 					promises.push(fetch(other["@id"]).then(response => response.json()).catch(() => []))
