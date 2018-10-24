@@ -8,45 +8,56 @@
     	<script src="js/generateGlossary.js"></script>
     </head>    
     <style>
-        p{
-            padding: 0px 10px;
+        #wordList {
+            position: fixed;
+            right:0;
+            height: 98vh;
+            display: flex;
+            flex-direction: column;
         }
-        .magnifyHelp{
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            margin: 0 auto;
-            background-color: rgb(255,252,227);
-            padding: 0;
-            color: #666;
-            text-align: center;
-            z-index: 3;
-            display: none;
-            box-shadow: 0 0 5px rgba(0,0,0,0.34);
-            opacity: .85;
+        label {
+            display: block;
         }
-        .magnifyHelp p {
-            white-space: nowrap;
-            margin: 0;
-            padding: .25em;
-        }
-        
-        .magifyHelp button{
-            width: 35px;
-        }
-        
-        .parsingHdr{
-            margin-left: 20px;
-        }
-        optgroup{
-            background-color: grey;
-            color: #002a5c;
-        }     
         dt {
             text-transform: capitalize;
+            font-size: 1.2rem;
+        }
+        badge {
+            font-size: .82rem;
+            opacity: .5;
+        }
+        ul {
+            overflow: auto;
+        }
+        a[onclick] {
+            cursor: pointer;
+        }
+        a[onclick]:hover {
+            background-color: #ccc;
         }
     </style>
     <body>
+<div id="wordList">
+<form name="listOptions">
+        <label> Minimum word length
+                <input type="range" step=1 min=1 max=10 value=1 name="wordLength" oninput="lengthDisplay.value=this.value">
+                <output name="lengthDisplay" value=1></output> 
+            </label>
+            <label> Minimum occurrences
+                    <input type="range" step=1 min=1 max=10 value=1 name="occurs" oninput="occursDisplay.value=this.value">
+                    <output name="occursDisplay" value=1></output> 
+                </label>
+       <label> List Sorting
+           <select name="sorting">
+    <option selected="true" value="">no sorting</option>
+    <option value="largest">most first</option>
+    <option value="smallest">fewest first</option>
+</select>
+       </label> 
+<input type="submit" value="⧩" title="Filter this list">
+</form>
+        <ul id="occurrences"></ul>
+        </div>
     	<dl id="glossary">
 	</dl>
     </body>
