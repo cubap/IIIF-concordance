@@ -1,4 +1,4 @@
-function reloadGlossaryData(manifest = {
+function reloadData(manifest = {
 	sequences: []
 }) {
 	// data used by various parts of this closure
@@ -10,12 +10,12 @@ function reloadGlossaryData(manifest = {
 	
 	// kick off the actual work
 	manifest.sequences.forEach(extractLines);
-	showGlossary();
+	showConcordance();
 	document.forms.listOptions.onsubmit = renderWordList
 	
 	// various workhorse functions below 
 	
-	function showGlossary() {
+	function showConcordance() {
 		var dict = annotationData.words;
 		let words = Object.keys(dict).filter(x => x).sort(wordSort)
 		let gloss = ``
@@ -25,7 +25,7 @@ function reloadGlossaryData(manifest = {
 			${ data.map(w=>`<dd data-source="${w.source}">${markupWordOccurrence(word,w)}</dd>`).join("") }`
 			gloss += item+`</a>`
 		});
-		glossary.innerHTML += gloss
+		concordance.innerHTML += gloss
 		renderWordList()
 		
 		
@@ -84,7 +84,7 @@ function reloadGlossaryData(manifest = {
 		</ul>
 		</div>`
 		occurrences.innerHTML = listUL
-		for (let node of glossary.getElementsByTagName("a")){
+		for (let node of concordance.getElementsByTagName("a")){
 			let wLength = parseInt(node.getAttribute("data-word-length"))
 			let wOccurs = parseInt(node.getAttribute("data-occurs"))
 			if(length>wLength || occurs>wOccurs) {
@@ -125,7 +125,7 @@ function reloadGlossaryData(manifest = {
 				canvases: [{
 					otherContent: contents
 				}]
-			})).then(showGlossary)
+			})).then(showConcordance)
 		}
 	}
 
@@ -162,5 +162,5 @@ window.onload = function () {
 	var manifest = params.get("manifest")
 	fetch(manifest)
 		.then(response => response.json()).catch() // ignore failure
-		.then(payload => reloadGlossaryData(payload))
+		.then(payload => reloadData(payload))
 }
