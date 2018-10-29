@@ -1,0 +1,47 @@
+#wordList {
+    height: 98vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #eee
+}
+#glossary {
+    overflow: auto;
+    flex-grow: 10;
+}
+body {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    flex-direction: row-reverse;
+    position: fixed;
+}
+label {
+    display: block;
+}
+dt {
+    text-transform: capitalize;
+    font-size: 1.2rem;
+}
+badge {
+    font-size: .82rem;
+    opacity: .5;
+}
+ul#occurrences {
+    overflow: auto;
+    list-style: none;
+    margin: 0;
+    padding: 0 1rem;
+}
+ul#occurrences badge {
+    opacity: 1;
+    float: right;
+}
+ul#occurrences a[onclick] {
+    display: block;
+    transition: background-color 250ms;
+    cursor: pointer;
+    background-color: initial;
+}
+ul#occurrences a:hover {
+    background-color: #ccc;
+}

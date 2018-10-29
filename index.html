@@ -4,81 +4,34 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <title>IIIF Concordance</title>
         <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
-        <script src="https://use.fontawesome.com/4ae676603d.js"></script>
-    	<script src="js/concordance.js"></script>
+        <link href="css/concordance.css" rel="stylesheet">
     </head>    
-    <style>
-        #wordList {
-            height: 98vh;
-            display: flex;
-            flex-direction: column;
-            background-color: #eee
-        }
-        #glossary {
-            overflow: auto;
-            flex-grow: 10;
-        }
-        body {
-            display: flex;
-            height: 100vh;
-            width: 100%;
-            flex-direction: row-reverse;
-            position: fixed;
-        }
-        label {
-            display: block;
-        }
-        dt {
-            text-transform: capitalize;
-            font-size: 1.2rem;
-        }
-        badge {
-            font-size: .82rem;
-            opacity: .5;
-        }
-        ul#occurrences {
-            overflow: auto;
-            list-style: none;
-            margin: 0;
-            padding: 0 1rem;
-        }
-        ul#occurrences badge {
-            opacity: 1;
-            float: right;
-        }
-        ul#occurrences a[onclick] {
-            display: block;
-            transition: background-color 250ms;
-            cursor: pointer;
-            background-color: initial;
-        }
-        ul#occurrences a:hover {
-            background-color: #ccc;
-        }
-    </style>
     <body>
-<div id="wordList">
-<form name="listOptions">
-        <label> Minimum word length
-                <input type="range" step=1 min=1 max=10 value=1 name="wordLength" oninput="lengthDisplay.value=this.value">
-                <output name="lengthDisplay" value=1>1</output> 
-            </label>
-            <label> Minimum occurrences
+        <div id="wordList">
+            <form name="listOptions">
+                <label> Minimum word length
+                    <input type="range" step=1 min=1 max=10 value=1 name="wordLength" oninput="lengthDisplay.value=this.value">
+                    <output name="lengthDisplay" value=1>1</output> 
+                </label>
+                <label> Minimum occurrences
                     <input type="range" step=1 min=1 max=10 value=1 name="occurs" oninput="occursDisplay.value=this.value">
                     <output name="occursDisplay" value=1>1</output> 
                 </label>
-       <label> List Sorting
-           <select name="sorting">
-    <option selected="true" value="">no sorting</option>
-    <option value="largest">most first</option>
-    <option value="smallest">fewest first</option>
-</select>
-       </label> 
-<input type="submit" value="⧩" title="Filter this list">
-</form>
-        <ul id="occurrences"></ul>
+                <label> List Sorting
+                    <select name="sorting">
+                        <option selected="true" value="">no sorting</option>
+                        <option value="largest">most first</option>
+                        <option value="smallest">fewest first</option>
+                    </select>
+                </label> 
+                <button type="submit" value="Apply filter" title="Filter this list">
+                    <i class="fa fa-filter"></i> Apply Filter</button>
+            </form>
+            <ul id="occurrences"></ul>
         </div>
     	<dl id="concordance">
-	</dl>
+        </dl>
+        <script src="https://use.fontawesome.com/4ae676603d.js"></script>
+        <script src="js/concordance.js"></script>
     </body>
 </html>
