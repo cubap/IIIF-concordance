@@ -6,11 +6,11 @@ function reloadData(manifest = { sequences: [] }) {
 	}
 	
 	manifest.sequences.forEach(extractLines)
-	buildConcordance()
+	renderConcordance()
 	document.forms.listOptions.onsubmit = renderWordList
 	
 	function renderConcordance(){
-		concordance.innerHTML = buildConcordance(tmpl)
+		concordance.innerHTML = buildConcordance()
 		renderWordList()
 	}
 
