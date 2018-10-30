@@ -7,26 +7,29 @@
         <link href="css/concordance.css" rel="stylesheet">
     </head>    
     <body>
+        <form name="listOptions">
+            <label> Minimum word length
+                <input type="range" step=1 min=1 max=10 value=1 name="wordLength" oninput="lengthDisplay.value=this.value">
+                <output name="lengthDisplay" value=1>1</output> 
+            </label>
+            <label> Minimum occurrences
+                <input type="range" step=1 min=1 max=10 value=1 name="occurs" oninput="occursDisplay.value=this.value">
+                <output name="occursDisplay" value=1>1</output> 
+            </label>
+            <label> List Sorting
+                <select name="sorting">
+                    <option selected="true" value="">no sorting</option>
+                    <option value="largest">most first</option>
+                    <option value="smallest">fewest first</option>
+                </select>
+            </label> 
+            <input type="checkbox" name="searchin" title="Check to search anywhere within the term">
+            <input name="filter" placeholder="Type to Filter" type="text">
+            <button type="submit" value="Apply filter" title="Filter this list">
+                <i class="fa fa-filter"></i> Apply Filter</button>
+                <div id="indices"></div>
+        </form>
         <div id="wordList">
-            <form name="listOptions">
-                <label> Minimum word length
-                    <input type="range" step=1 min=1 max=10 value=1 name="wordLength" oninput="lengthDisplay.value=this.value">
-                    <output name="lengthDisplay" value=1>1</output> 
-                </label>
-                <label> Minimum occurrences
-                    <input type="range" step=1 min=1 max=10 value=1 name="occurs" oninput="occursDisplay.value=this.value">
-                    <output name="occursDisplay" value=1>1</output> 
-                </label>
-                <label> List Sorting
-                    <select name="sorting">
-                        <option selected="true" value="">no sorting</option>
-                        <option value="largest">most first</option>
-                        <option value="smallest">fewest first</option>
-                    </select>
-                </label> 
-                <button type="submit" value="Apply filter" title="Filter this list">
-                    <i class="fa fa-filter"></i> Apply Filter</button>
-            </form>
             <ul id="occurrences"></ul>
         </div>
     	<dl id="concordance">

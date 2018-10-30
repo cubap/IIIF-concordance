@@ -1,17 +1,31 @@
-function reloadData(manifest = { sequences: [] }) {
+function reloadData(manifest = {
+	sequences: []
+}) {
 	// data used by various parts of this closure
 	annotationData = {
 		pages: [],
 		words: {},
+		index: {}
 	}
-	
+
 	manifest.sequences.forEach(extractLines)
 	renderConcordance()
+	renderIndex()
 	document.forms.listOptions.onsubmit = renderWordList
-	
-	function renderConcordance(){
+
+	function renderConcordance() {
 		concordance.innerHTML = buildConcordance()
 		renderWordList()
+	}
+
+	function renderIndex() {
+		let tmpl = Object.keys(annotationData.index).sort().map(char => `<a class="indices" data-index="${char}">${char}</a>`).join(``)
+		indices.innerHTML = tmpl
+		Array.from(indices.getElementsByClassName("indices")).forEach(elem => elem.onclick = (event) => {
+			document.forms.listOptions.filter.value = event.target.getAttribute("data-index")
+			document.forms.listOptions.filter.oninput()
+		})
+		document.forms.listOptions.filter.oninput = document.forms.listOptions.searchin.oninput = filterWordList
 	}
 
 	function buildConcordance() {
@@ -23,19 +37,42 @@ function reloadData(manifest = { sequences: [] }) {
 			var data = dict[word]
 			var item = `<a name="${word}" data-word-length="${word.length}" data-occurs="${data.length}"><dt>${word} <badge>(${data.length})</badge></dt>
 			${ data.map(w=>`<dd data-source="${w.source}">${markupWordOccurrence(word,w)}</dd>`).join("") }`
-			tmpl += item+`</a>`
+			tmpl += item + `</a>`
 		})
-		
+
 		function markupWordOccurrence(word, data) {
 			var start = data.pos
 			var end = data.pos + word.length
 			var line = `${data.line.substring(0, start)}<mark>${data.line.substring(start, end)}</mark>${data.line.substring(end)}`
 			return line
 		}
-		
+
 		return tmpl
 	}
-	
+
+	function filterWordList(event) {
+		let search = document.forms.listOptions.filter.value.toLowerCase()
+		let searchin = document.forms.listOptions.searchin.checked
+		for (let node of occurrences.getElementsByTagName("a")) {
+			if (test(node.firstChild.textContent.toLowerCase())) {
+				node.parentElement.style.display = "none"
+			} else {
+				node.parentElement.style.display = "block"
+			}
+		}
+		for (let node of concordance.getElementsByTagName("a")) {
+			if (test(node.getAttribute("name").toLowerCase())) {
+				node.style.display = "none"
+			} else {
+				node.style.display = "block"
+			}
+		}
+
+		function test(val) {
+			return searchin ? val.indexOf(search) === -1 : val.indexOf(search) !== 0
+		}
+	}
+
 	/**
 	 * Sorting function for word orders.
 	 * @param {String} a 
@@ -47,7 +84,9 @@ function reloadData(manifest = { sequences: [] }) {
 		try {
 			while (f === 0) {
 				let comp = a.match(/\w+/g)[0].toLowerCase().charCodeAt(i) - b.match(/\w+/g)[0].toLowerCase().charCodeAt(i)
-				if (isNaN(comp)) { return f }
+				if (isNaN(comp)) {
+					return f
+				}
 				f = comp
 				i++
 			}
@@ -58,38 +97,44 @@ function reloadData(manifest = { sequences: [] }) {
 	}
 
 	function renderWordList(event) {
-		if(event){event.preventDefault()}
+		if (event) {
+			event.preventDefault()
+		}
 		let sort = document.forms.listOptions.sorting.value
 		let length = parseInt(document.forms.listOptions.wordLength.value)
 		let occurs = parseInt(document.forms.listOptions.occurs.value)
 		let listUL = ``
 		let list = Object.keys(annotationData.words).filter(x => x).sort(wordSort)
-		if(list.length===0) { return }
-		document.forms.listOptions.wordLength.setAttribute("max",list.reduce((a,b)=>Math.max(a,b.length),10))
-		document.forms.listOptions.occurs.setAttribute("max",list.reduce((a,b)=>Math.max(a,annotationData.words[b].length),10))
+		if (list.length === 0) {
+			return
+		}
+		document.forms.listOptions.wordLength.setAttribute("max", list.reduce((a, b) => Math.max(a, b.length), 10))
+		document.forms.listOptions.occurs.setAttribute("max", list.reduce((a, b) => Math.max(a, annotationData.words[b].length), 10))
 
-		switch(sort){
-			case "smallest" :
-			list = list.sort((a,b)=>annotationData.words[a].length-annotationData.words[b].length)
-			break
-			case "largest" :
-			list = list.sort((a,b)=>annotationData.words[b].length-annotationData.words[a].length)
-			break
-			default :
-			break
+		switch (sort) {
+			case "smallest":
+				list = list.sort((a, b) => annotationData.words[a].length - annotationData.words[b].length)
+				break
+			case "largest":
+				list = list.sort((a, b) => annotationData.words[b].length - annotationData.words[a].length)
+				break
+			default:
+				break
 		}
 		for (let w of list) {
-			if(length>w.length || occurs>annotationData.words[w].length) {continue}
+			if (length > w.length || occurs > annotationData.words[w].length) {
+				continue
+			}
 			listUL += `<li><a onclick="document.querySelector('[name=\\'${w}\\']').scrollIntoView({behavior:'smooth'})">${w} <badge>(${annotationData.words[w].length})</badge></a></li>`
 		}
 		listUL += `
 		</ul>
 		</div>`
 		occurrences.innerHTML = listUL
-		for (let node of concordance.getElementsByTagName("a")){
+		for (let node of concordance.getElementsByTagName("a")) {
 			let wLength = parseInt(node.getAttribute("data-word-length"))
 			let wOccurs = parseInt(node.getAttribute("data-occurs"))
-			if(length>wLength || occurs>wOccurs) {
+			if (length > wLength || occurs > wOccurs) {
 				node.style.display = "none"
 			} else {
 				node.style.display = "block"
@@ -101,7 +146,9 @@ function reloadData(manifest = { sequences: [] }) {
 		var promises = []
 		sequence.canvases.forEach(canvas => {
 			var texts = []
-			if(!canvas.otherContent) { return true } // TODO: add P3 "annotations"
+			if (!canvas.otherContent) {
+				return true
+			} // TODO: add P3 "annotations"
 			canvas.otherContent.forEach(other => {
 				if (!other.resources) {
 					promises.push(fetch(other["@id"]).then(response => response.json()).catch(() => []))
@@ -153,6 +200,7 @@ function reloadData(manifest = { sequences: [] }) {
 				pos: offset,
 				source: source
 			})
+			annotationData.index[word.substr(0, 1).toUpperCase()] = true
 			pos = offset + word.length
 		})
 	}
