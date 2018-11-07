@@ -174,7 +174,7 @@ function reloadData(manifest = {
 				canvases: [{
 					otherContent: contents
 				}]
-			})).then(showConcordance)
+			})).then(renderConcordance)
 		}
 	}
 
