@@ -1,41 +1,42 @@
 function reloadData(manifest = {
-	sequences: []
+    sequences: []
 }) {
-	// data used by various parts of this closure
-	annotationData = {
-		pages: [],
-		words: {},
-		index: {}
-	}
+    // data used by various parts of this closure
+    annotationData = {
+        pages: [],
+        words: {},
+        index: {}
+    }
 
-	manifest.sequences.forEach(extractLines)
-	renderConcordance()
-	renderIndex()
-	document.forms.listOptions.onsubmit = renderWordList
+    manifest.sequences.forEach(extractLines)
+    renderConcordance()
+    renderIndex()
+    sorting.oninput = renderWordList
 
-	function renderConcordance() {
-		concordance.innerHTML = buildConcordance()
-		renderWordList()
-	}
+    function renderConcordance() {
+        concordance.innerHTML = buildConcordance()
+        renderWordList()
+    }
 
-	function renderIndex() {
-		let tmpl = Object.keys(annotationData.index).sort().map(char => `<a class="indices" data-index="${char}">${char}</a>`).join(``)
-		indices.innerHTML = tmpl
-		Array.from(indices.getElementsByClassName("indices")).forEach(elem => elem.onclick = (event) => {
-			document.forms.listOptions.filter.value = event.target.getAttribute("data-index")
-			document.forms.listOptions.filter.oninput()
-		})
+    function renderIndex() {
+        let tmpl = Object.keys(annotationData.index).sort().map(char => `<a class="indices" data-index="${char}">${char}</a>`).join(``)
+        indices.innerHTML = tmpl
+        Array.from(indices.getElementsByClassName("indices")).forEach(elem => elem.onclick = (event) => {
+            document.forms.listOptions.filter.value = event.target.getAttribute("data-index")
+            document.forms.listOptions.filter.oninput()
+        })
 		document.forms.listOptions.filter.oninput = document.forms.listOptions.searchin.oninput = filterWordList
-	}
+		document.forms.listOptions.wordLength.oninput = document.forms.listOptions.occurs.oninput = renderWordList
+    }
 
-	function buildConcordance() {
-		var dict = annotationData.words
-		let words = Object.keys(dict).filter(x => x).sort(wordSort)
-		let tmpl = ``
+    function buildConcordance() {
+        var dict = annotationData.words
+        let words = Object.keys(dict).filter(x => x).sort(wordSort)
+        let tmpl = ``
 
-		words.forEach(word => {
-			var data = dict[word]
-			var item = `<a name="${word}" data-word-length="${word.length}" data-occurs="${data.length}"><dt>${word} <badge>(${data.length})</badge></dt>
+        words.forEach(word => {
+                    var data = dict[word]
+                    var item = `<a name="${word}" data-word-length="${word.length}" data-occurs="${data.length}"><dt>${word} <badge>(${data.length})</badge></dt>
 			${ data.map(w=>`<dd data-source="${w.source}">${markupWordOccurrence(word,w)}</dd>`).join("") }`
 			tmpl += item + `</a>`
 		})
@@ -53,11 +54,19 @@ function reloadData(manifest = {
 	function filterWordList(event) {
 		let search = document.forms.listOptions.filter.value.toLowerCase()
 		let searchin = document.forms.listOptions.searchin.checked
+		document.querySelector("[for='searchin']").textContent = searchin ? "Contains:" : "Starts with:"
+		let odd=true
 		for (let node of occurrences.getElementsByTagName("a")) {
 			if (test(node.firstChild.textContent.toLowerCase())) {
 				node.parentElement.style.display = "none"
 			} else {
 				node.parentElement.style.display = "block"
+				if(odd) {
+					node.parentElement.classList.add("odd")
+				} else {
+					node.parentElement.classList.remove("odd")
+				}
+				odd = !odd
 			}
 		}
 		for (let node of concordance.getElementsByTagName("a")) {
@@ -67,12 +76,12 @@ function reloadData(manifest = {
 				node.style.display = "block"
 			}
 		}
-
+		
 		function test(val) {
 			return searchin ? val.indexOf(search) === -1 : val.indexOf(search) !== 0
 		}
 	}
-
+	
 	/**
 	 * Sorting function for word orders.
 	 * @param {String} a 
@@ -95,12 +104,14 @@ function reloadData(manifest = {
 		}
 		return f
 	}
-
+	
 	function renderWordList(event) {
 		if (event) {
 			event.preventDefault()
 		}
-		let sort = document.forms.listOptions.sorting.value
+		lengthDisplay.value=document.forms.listOptions.wordLength.value
+		occursDisplay.value=document.forms.listOptions.occurs.value
+		let sort = sorting.value
 		let length = parseInt(document.forms.listOptions.wordLength.value)
 		let occurs = parseInt(document.forms.listOptions.occurs.value)
 		let listUL = ``
@@ -110,7 +121,7 @@ function reloadData(manifest = {
 		}
 		document.forms.listOptions.wordLength.setAttribute("max", list.reduce((a, b) => Math.max(a, b.length), 10))
 		document.forms.listOptions.occurs.setAttribute("max", list.reduce((a, b) => Math.max(a, annotationData.words[b].length), 10))
-
+		
 		switch (sort) {
 			case "smallest":
 				list = list.sort((a, b) => annotationData.words[a].length - annotationData.words[b].length)
@@ -121,11 +132,12 @@ function reloadData(manifest = {
 			default:
 				break
 		}
+		let odd=true
 		for (let w of list) {
 			if (length > w.length || occurs > annotationData.words[w].length) {
 				continue
 			}
-			listUL += `<li><a onclick="document.querySelector('[name=\\'${w}\\']').scrollIntoView({behavior:'smooth'})">${w} <badge>(${annotationData.words[w].length})</badge></a></li>`
+			listUL += `<li ${!(odd=!odd)&&`class="odd"` ||``}><a onclick="document.querySelector('[name=\\'${w}\\']').scrollIntoView({behavior:'smooth'})">${w} <badge>(${annotationData.words[w].length})</badge></a></li>`
 		}
 		listUL += `
 		</ul>
@@ -140,6 +152,7 @@ function reloadData(manifest = {
 				node.style.display = "block"
 			}
 		}
+		fireResize()
 	}
 
 	function extractLines(sequence) {
@@ -189,7 +202,7 @@ function reloadData(manifest = {
 		} // only found punctuation, <tags> or blank
 		var pos = 0
 		words.forEach(word => {
-			let offset = line.substr(pos).search(new RegExp(word), "i") + pos
+			let offset = line.substr(pos).search(new RegExp(word, "i")) + pos
 			// TODO: punctuation throws off pos
 			var dict = annotationData.words;
 			if (!dict[word]) {
@@ -206,10 +219,19 @@ function reloadData(manifest = {
 	}
 }
 
+function fireResize() {
+	// var event = document.createEvent('HTMLEvents');
+	// event.initEvent('resize', true, false);
+	// dispatchEvent(event);
+}
+
 window.onload = function () {
 	let params = (new URL(document.location)).searchParams
 	var manifest = params.get("manifest")
 	fetch(manifest)
 		.then(response => response.json()).catch() // ignore failure
 		.then(payload => reloadData(payload))
+	fireResize()
 }
+
+// window.addEventListener('resize', ()=> entries.style.height = innerHeight-entries.offsetTop+"px" )
