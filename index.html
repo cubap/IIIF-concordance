@@ -11,38 +11,44 @@
 <body>
     <form name="listOptions">
         <header>filters</header>
-        <label> minimum word length
-            <input type="range" step=1 min=1 max=10 value=1 name="wordLength">
-            <output id="lengthDisplay" name="lengthDisplay" value=1>1</output>
-        </label>
-        <label> minimum word occurrence
-            <input type="range" step=1 min=1 max=10 value=1 name="occurs">
-            <output id="occursDisplay" name="occursDisplay" value=1>1</output>
-        </label>
-        <label for="searchin" class="button" title="Click to search anywhere within the term">
-            Starts with:
-        </label>
-        <input id="searchin" type="checkbox" name="searchin" style="display:none;">
-        <input name="filter" placeholder="Type to Filter" type="text">
-        <div id="indices"></div>
+        <row>
+        <div class="form-group">
+            <label> minimum word length
+                <input type="range" step=1 min=1 max=10 value=1 name="wordLength">
+                <output id="lengthDisplay" name="lengthDisplay" value=1>1</output>
+            </label>
+            <label> minimum word occurrence
+                <input type="range" step=1 min=1 max=10 value=1 name="occurs">
+                <output id="occursDisplay" name="occursDisplay" value=1>1</output>
+            </label>
+        </div>
+        <div class="form-group">
+            <label for="searchin" class="button" title="Click to search anywhere within the term">
+                Starts with:
+            </label>
+            <input id="searchin" type="checkbox" name="searchin" style="display:none;">
+            <input name="filter" placeholder="Type to Filter" type="text">
+        </div>
+    </row>
+    <div id="indices"></div>
     </form>
     <row id="entries">
-    <div id="wordList">
-        <header>terms list</header>
-        <label> sort list
-            <select id="sorting" name="sorting">
-                <option selected="true" value="">no sorting</option>
-                <option value="largest">most first</option>
-                <option value="smallest">fewest first</option>
-            </select>
-        </label>
-        <ul id="occurrences"></ul>
-    </div>
-    <div id="lines">
-        <header>lines</header>
-        <dl id="concordance">
-        </dl>
-    </div>
+        <div id="wordList">
+            <header>terms list</header>
+            <label> sort list
+                <select id="sorting" name="sorting">
+                    <option selected="true" value="">no sorting</option>
+                    <option value="largest">most first</option>
+                    <option value="smallest">fewest first</option>
+                </select>
+            </label>
+            <ul id="occurrences"></ul>
+        </div>
+        <div id="lines">
+            <header>lines</header>
+            <dl id="concordance">
+            </dl>
+        </div>
     </row>
     <script src="https://use.fontawesome.com/4ae676603d.js"></script>
     <script src="js/concordance.js"></script>

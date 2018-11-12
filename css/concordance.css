@@ -55,7 +55,7 @@ dd:nth-child(2n),
     background: #ddd;
 }
 
-#entries {
+row {
     display: flex;
     width: 100vw;
 }
