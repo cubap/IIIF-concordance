@@ -14,7 +14,20 @@ function reloadData(manifest = {
     sorting.oninput = renderWordList
 
     function renderConcordance() {
-        concordance.innerHTML = buildConcordance()
+		concordance.innerHTML = buildConcordance()
+		let dds = concordance.getElementsByTagName("dd")
+		Array(...dds).map(dd=>{
+			dd.onclick = e=>{
+				let source = e.target.getAttribute("data-source")
+				let ev = new CustomEvent("line:selected",{ 
+					detail: {
+						target:source,
+						text: e.target.textContent
+					}
+				})
+				window.top.dispatchEvent(ev)
+			}
+		})
         renderWordList()
     }
 
@@ -152,7 +165,6 @@ function reloadData(manifest = {
 				node.style.display = "block"
 			}
 		}
-		fireResize()
 	}
 
 	function extractLines(sequence) {
@@ -219,19 +231,12 @@ function reloadData(manifest = {
 	}
 }
 
-function fireResize() {
-	// var event = document.createEvent('HTMLEvents');
-	// event.initEvent('resize', true, false);
-	// dispatchEvent(event);
-}
-
 window.onload = function () {
 	let params = (new URL(document.location)).searchParams
 	var manifest = params.get("manifest")
 	fetch(manifest)
 		.then(response => response.json()).catch() // ignore failure
 		.then(payload => reloadData(payload))
-	fireResize()
 }
 
-// window.addEventListener('resize', ()=> entries.style.height = innerHeight-entries.offsetTop+"px" )
+// window.addEventListener("line:selected",ev=>alert(ev.detail.text))

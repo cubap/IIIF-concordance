@@ -98,6 +98,10 @@ ul#occurrences badge {
     float: right;
 }
 
+[data-source] {
+    cursor: pointer;
+}
+
 ul#occurrences a[onclick] {
     display: block;
     transition: background-color 250ms;
