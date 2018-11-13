@@ -14,7 +14,39 @@ form[name="listOptions"] {
     width: 100vw;
     background-color: #eee
 }
-
+input[type="range"] {
+    width: calc(100% - 3em);
+}
+#options {
+    margin: .5rem 0;
+    border-radius: .5em;
+    border: none;
+    padding: .5em;
+    font-family: serif;
+    text-align: left;
+    font-size: 100%;
+}
+#options i {
+    line-height: 1.2;
+}
+.form-group {
+    flex-grow: 1;
+}
+.form-group label:not(.button) {
+    width:100%;
+    text-align: center;
+}
+.input-button {
+    display: flex;
+}
+.input-button input {
+    flex-grow: 3;
+}
+input[type="range"]+output {
+    font-size: 1.2em;
+    top: -.25em;
+    position: relative;
+}
 body {
     display: flex;
     height: 100vh;
@@ -24,6 +56,18 @@ body {
     margin: 0;
     padding: 0;
     align-items: stretch;
+}
+
+mark {
+    color: #488AC7;
+    background: initial;
+}
+[active] {
+    background-color: #488ac7aa;
+}
+
+a[data-word] {
+    display: block;
 }
 
 label,
@@ -98,7 +142,7 @@ ul#occurrences badge {
     float: right;
 }
 
-[data-source] {
+[data-source], [data-word] {
     cursor: pointer;
 }
 

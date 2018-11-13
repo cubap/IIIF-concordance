@@ -150,12 +150,22 @@ function reloadData(manifest = {
 			if (length > w.length || occurs > annotationData.words[w].length) {
 				continue
 			}
-			listUL += `<li ${!(odd=!odd)&&`class="odd"` ||``}><a onclick="document.querySelector('[name=\\'${w}\\']').scrollIntoView({behavior:'smooth'})">${w} <badge>(${annotationData.words[w].length})</badge></a></li>`
+			listUL += `<li ${!(odd=!odd)&&`class="odd"` ||``}><a data-word="${w}">${w} <badge>(${annotationData.words[w].length})</badge></a></li>`
 		}
 		listUL += `
 		</ul>
 		</div>`
 		occurrences.innerHTML = listUL
+		for (let node of occurrences.getElementsByTagName("a")) {
+			let word = node.getAttribute("data-word")
+			node.onclick = function() {
+				[...document.querySelectorAll("[active]")].map(elem=>elem.removeAttribute("active"))
+				node.setAttribute("active",true)
+				let term = document.querySelector('[name="'+word+'"]')
+				term.scrollIntoView({behavior:'smooth'})
+				term.children[0].setAttribute("active",true)
+			}
+		}
 		for (let node of concordance.getElementsByTagName("a")) {
 			let wLength = parseInt(node.getAttribute("data-word-length"))
 			let wOccurs = parseInt(node.getAttribute("data-occurs"))
