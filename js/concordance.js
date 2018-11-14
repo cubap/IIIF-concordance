@@ -1,58 +1,58 @@
 function reloadData(manifest = {
-    sequences: []
+	sequences: []
 }) {
-    // data used by various parts of this closure
-    annotationData = {
-        pages: [],
-        words: {},
-        index: {}
-    }
+	// data used by various parts of this closure
+	annotationData = {
+		pages: [],
+		words: {},
+		index: {}
+	}
 
-    manifest.sequences.forEach(extractLines)
-    renderConcordance()
-    renderIndex()
-    sorting.oninput = renderWordList
+	manifest.sequences.forEach(extractLines)
+	renderConcordance()
+	renderIndex()
+	sorting.oninput = renderWordList
 
-    function renderConcordance() {
+	function renderConcordance() {
 		concordance.innerHTML = buildConcordance()
 		let dds = concordance.getElementsByTagName("dd")
-		Array(...dds).map(dd=>{
-			dd.onclick = e=>{
+		Array(...dds).map(dd => {
+			dd.onclick = e => {
 				let source = e.target.getAttribute("data-source")
-				let ev = new CustomEvent("line:selected",{ 
+				let ev = new CustomEvent("line:selected", {
 					detail: {
-						target:e.target,
-						source:source,
+						target: e.target,
+						source: source,
 						text: e.target.textContent,
-						mouse: {x:e.clientX,y:e.clientY}
+						mouse: { x: e.clientX, y: e.clientY }
 					}
 				})
 				window.top.dispatchEvent(ev)
 			}
 		})
-        renderWordList()
-    }
+		renderWordList()
+	}
 
-    function renderIndex() {
-        let tmpl = Object.keys(annotationData.index).sort().map(char => `<a class="indices" data-index="${char}">${char}</a>`).join(``)
-        indices.innerHTML = tmpl
-        Array.from(indices.getElementsByClassName("indices")).forEach(elem => elem.onclick = (event) => {
-            document.forms.listOptions.filter.value = event.target.getAttribute("data-index")
-            document.forms.listOptions.filter.oninput()
-        })
+	function renderIndex() {
+		let tmpl = Object.keys(annotationData.index).sort().map(char => `<a class="indices" data-index="${char}">${char}</a>`).join(``)
+		indices.innerHTML = tmpl
+		Array.from(indices.getElementsByClassName("indices")).forEach(elem => elem.onclick = (event) => {
+			document.forms.listOptions.filter.value = event.target.getAttribute("data-index")
+			document.forms.listOptions.filter.oninput()
+		})
 		document.forms.listOptions.filter.oninput = document.forms.listOptions.searchin.oninput = filterWordList
 		document.forms.listOptions.wordLength.oninput = document.forms.listOptions.occurs.oninput = renderWordList
-    }
+	}
 
-    function buildConcordance() {
-        var dict = annotationData.words
-        let words = Object.keys(dict).filter(x => x).sort(wordSort)
-        let tmpl = ``
+	function buildConcordance() {
+		var dict = annotationData.words
+		let words = Object.keys(dict).filter(x => x).sort(wordSort)
+		let tmpl = ``
 
-        words.forEach(word => {
-                    var data = dict[word]
-                    var item = `<a name="${word}" data-word-length="${word.length}" data-occurs="${data.length}"><dt>${word} <badge>(${data.length})</badge></dt>
-			${ data.map(w=>`<dd data-source="${w.source}">${markupWordOccurrence(word,w)}</dd>`).join("") }`
+		words.forEach(word => {
+			var data = dict[word]
+			var item = `<a name="${word}" data-word-length="${word.length}" data-occurs="${data.length}"><dt>${word} <badge>(${data.length})</badge></dt>
+			${ data.map(w => `<dd data-source="${w.source}">${markupWordOccurrence(word, w)}</dd>`).join("")}`
 			tmpl += item + `</a>`
 		})
 
@@ -70,13 +70,13 @@ function reloadData(manifest = {
 		let search = document.forms.listOptions.filter.value.toLowerCase()
 		let searchin = document.forms.listOptions.searchin.checked
 		document.querySelector("[for='searchin']").textContent = searchin ? "Contains:" : "Starts with:"
-		let odd=true
+		let odd = true
 		for (let node of occurrences.getElementsByTagName("a")) {
 			if (test(node.firstChild.textContent.toLowerCase())) {
 				node.parentElement.style.display = "none"
 			} else {
 				node.parentElement.style.display = "block"
-				if(odd) {
+				if (odd) {
 					node.parentElement.classList.add("odd")
 				} else {
 					node.parentElement.classList.remove("odd")
@@ -91,12 +91,12 @@ function reloadData(manifest = {
 				node.style.display = "block"
 			}
 		}
-		
+
 		function test(val) {
 			return searchin ? val.indexOf(search) === -1 : val.indexOf(search) !== 0
 		}
 	}
-	
+
 	/**
 	 * Sorting function for word orders.
 	 * @param {String} a 
@@ -119,13 +119,13 @@ function reloadData(manifest = {
 		}
 		return f
 	}
-	
+
 	function renderWordList(event) {
 		if (event) {
 			event.preventDefault()
 		}
-		lengthDisplay.value=document.forms.listOptions.wordLength.value
-		occursDisplay.value=document.forms.listOptions.occurs.value
+		lengthDisplay.value = document.forms.listOptions.wordLength.value
+		occursDisplay.value = document.forms.listOptions.occurs.value
 		let sort = sorting.value
 		let length = parseInt(document.forms.listOptions.wordLength.value)
 		let occurs = parseInt(document.forms.listOptions.occurs.value)
@@ -136,7 +136,7 @@ function reloadData(manifest = {
 		}
 		document.forms.listOptions.wordLength.setAttribute("max", list.reduce((a, b) => Math.max(a, b.length), 10))
 		document.forms.listOptions.occurs.setAttribute("max", list.reduce((a, b) => Math.max(a, annotationData.words[b].length), 10))
-		
+
 		switch (sort) {
 			case "smallest":
 				list = list.sort((a, b) => annotationData.words[a].length - annotationData.words[b].length)
@@ -147,12 +147,12 @@ function reloadData(manifest = {
 			default:
 				break
 		}
-		let odd=true
+		let odd = true
 		for (let w of list) {
 			if (length > w.length || occurs > annotationData.words[w].length) {
 				continue
 			}
-			listUL += `<li ${!(odd=!odd)&&`class="odd"` ||``}><a data-word="${w}">${w} <badge>(${annotationData.words[w].length})</badge></a></li>`
+			listUL += `<li ${!(odd = !odd) && `class="odd"` || ``}><a data-word="${w}">${w} <badge>(${annotationData.words[w].length})</badge></a></li>`
 		}
 		listUL += `
 		</ul>
@@ -160,12 +160,12 @@ function reloadData(manifest = {
 		occurrences.innerHTML = listUL
 		for (let node of occurrences.getElementsByTagName("a")) {
 			let word = node.getAttribute("data-word")
-			node.onclick = function() {
-				[...document.querySelectorAll("[active]")].map(elem=>elem.removeAttribute("active"))
-				node.setAttribute("active",true)
-				let term = document.querySelector('[name="'+word+'"]')
-				term.scrollIntoView({behavior:'smooth'})
-				term.children[0].setAttribute("active",true)
+			node.onclick = function () {
+				[...document.querySelectorAll("[active]")].map(elem => elem.removeAttribute("active"))
+				node.setAttribute("active", true)
+				let term = document.querySelector('[name="' + word + '"]')
+				term.scrollIntoView({ behavior: 'smooth' })
+				term.children[0].setAttribute("active", true)
 			}
 		}
 		for (let node of concordance.getElementsByTagName("a")) {
@@ -241,32 +241,22 @@ function reloadData(manifest = {
 			pos = offset + word.length
 		})
 	}
-	function peek(event){
+	function peek(event) {
 		modal.innerHTML = peekWindow(event.detail.target)
-		modal.style.top = event.detail.mouse.y+"px"
-		modal.style.left = event.detail.mouse.x+"px"
+		modal.style.top = event.detail.mouse.y + "px"
+		modal.style.left = event.detail.mouse.x + "px"
 		modal.style.display = "block";
 	}
-	
+
 	function peekWindow(element) {
 		let modal = `${element.textContent}
 		<img selector="${element.getAttribute('data-source')}">
 		</div>`
 		return modal
 	}
-	window.addEventListener("line:selected",peek)
-}
+	window.addEventListener("line:selected", peek)
 
-window.onload = function () {
-	let params = (new URL(document.location)).searchParams
-	var manifest = params.get("manifest")
-	fetch(manifest)
-		.then(response => response.json()).catch() // ignore failure
-		.then(payload => reloadData(payload))
-}
-
-
-function imgFromSelector(img,selector){
+	function imgFromSelector(img, selector) {
 		var note = `<div class="no-image">no image</div>`
 		if (!selector) {
 			img.nextElementSibling.remove(); // delete any backup <canvas> that has been added
@@ -274,9 +264,9 @@ function imgFromSelector(img,selector){
 			img.style.display = "none";
 			return false;
 		}
-		let canvas = manifest.reduce((a,b)=>{
-			if(a && a["resource"]){}
-		},{}).getResource($scope.selector);
+		let canvas = manifest.reduce((a, b) => {
+			if (a && a["resource"]) { }
+		}, {}).getResource($scope.selector);
 		if (angular.isObject($scope.selector) && $scope.canvas['@type'] && $scope.canvas['@type'] === 'sc:Canvas') {
 			$scope.selector = $scope.canvas['@id'];
 		}
@@ -284,9 +274,9 @@ function imgFromSelector(img,selector){
 			throw "No sc:Canvas loaded with id:" + $scope.canvas;
 		}
 		var pos = ($scope.selector && ($scope.selector.indexOf("xywh") > 1)) ?
-			$scope.selector.substr($scope.selector.indexOf("xywh=") + 5).split(",").map(function(a) {
+			$scope.selector.substr($scope.selector.indexOf("xywh=") + 5).split(",").map(function (a) {
 				return parseInt(a);
-			}) : [0, 0, $scope.canvas.width, $scope.canvas.height].map(function(a) {
+			}) : [0, 0, $scope.canvas.width, $scope.canvas.height].map(function (a) {
 				return parseInt(a);
 			});
 		var hiddenCanvas = document.createElement('canvas');
@@ -302,7 +292,7 @@ function imgFromSelector(img,selector){
 			$scope.canvas.images[0].resource['@id'].substring(imgSelectorIndex + 6).split(",") // #xywh=
 			:
 			false;
-		var loaded = function(e) {
+		var loaded = function (e) {
 			var targ = e.target;
 			cache.put("img" + $scope.canvas['@id'], targ);
 			$element.next().remove(); // delete any backup <canvas> that has been added
@@ -336,11 +326,20 @@ function imgFromSelector(img,selector){
 			}
 		};
 		angular.element(img).one('load', loaded);
-		angular.element(img).one('error', function(event) {
+		angular.element(img).one('error', function (event) {
 			// CORS H8, probably, load tainted canvas
 			$element.one('load', loaded);
 			$element.attr('src', $scope.canvas.images[0].resource['@id']);
 		});
 		img.crossOrigin = "anonymous";
 		img.src = src;
+	}
+}
+
+window.onload = function () {
+	let params = (new URL(document.location)).searchParams
+	var manifest = params.get("manifest")
+	fetch(manifest)
+		.then(response => response.json()).catch() // ignore failure
+		.then(payload => reloadData(payload))
 }
