@@ -19,11 +19,12 @@ function reloadData(manifest = {
 		Array(...dds).map(dd => {
 			dd.onclick = e => {
 				let source = e.target.getAttribute("data-source")
+				let target = (e.target.tagName === "DD") ? e.target : e.target.parentElement
 				let ev = new CustomEvent("line:selected", {
 					detail: {
-						target: e.target,
+						target: target,
 						source: source,
-						text: e.target.textContent,
+						text: target.textContent,
 						mouse: { x: e.clientX, y: e.clientY }
 					}
 				})
@@ -120,10 +121,15 @@ function reloadData(manifest = {
 		return f
 	}
 
+	function suppressModal() {
+		modal.style.display = "none"
+	}
+
 	function renderWordList(event) {
 		if (event) {
 			event.preventDefault()
 		}
+		suppressModal()
 		lengthDisplay.value = document.forms.listOptions.wordLength.value
 		occursDisplay.value = document.forms.listOptions.occurs.value
 		let sort = sorting.value
@@ -243,9 +249,23 @@ function reloadData(manifest = {
 	}
 	function peek(event) {
 		modal.innerHTML = peekWindow(event.detail.target)
+		let imgElement = modal.getElementsByTagName("img")[0]
+		imgFromSelector(imgElement, imgElement.getAttribute("selector"))
 		modal.style.top = event.detail.mouse.y + "px"
 		modal.style.left = event.detail.mouse.x + "px"
 		modal.style.display = "block";
+		let page = {
+			w: Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
+			h: Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+		}
+		if((event.detail.mouse.y+modal.clientHeight)>page.h){
+			event.detail.mouse.y-=modal.clientHeight
+			modal.style.top = event.detail.mouse.y + "px"
+		}
+		if((event.detail.mouse.x+modal.clientWidth)>page.w){
+			event.detail.mouse.x-=modal.clientWidth
+			modal.style.left = event.detail.mouse.x + "px"
+		}
 	}
 
 	function peekWindow(element) {
@@ -254,84 +274,78 @@ function reloadData(manifest = {
 		</div>`
 		return modal
 	}
+
 	window.addEventListener("line:selected", peek)
 
-	function imgFromSelector(img, selector) {
+	function imgFromSelector(imgElement, selector) {
 		var note = `<div class="no-image">no image</div>`
 		if (!selector) {
-			img.nextElementSibling.remove(); // delete any backup <canvas> that has been added
-			img.insertAdjacentHTML(note); // add "no image" note
-			img.style.display = "none";
+			if(imgElement.nextElementSibling) {imgElement.nextElementSibling.remove()} // delete any backup <canvas> that has been added
+			imgElement.insertAdjacentHTML("afterend",note) // add "no image" note
+			imgElement.style.display = "none"
 			return false;
 		}
-		let canvas = manifest.reduce((a, b) => {
-			if (a && a["resource"]) { }
-		}, {}).getResource($scope.selector);
-		if (angular.isObject($scope.selector) && $scope.canvas['@type'] && $scope.canvas['@type'] === 'sc:Canvas') {
-			$scope.selector = $scope.canvas['@id'];
-		}
-		if (!$scope.canvas.height) {
-			throw "No sc:Canvas loaded with id:" + $scope.canvas;
-		}
-		var pos = ($scope.selector && ($scope.selector.indexOf("xywh") > 1)) ?
-			$scope.selector.substr($scope.selector.indexOf("xywh=") + 5).split(",").map(function (a) {
-				return parseInt(a);
-			}) : [0, 0, $scope.canvas.width, $scope.canvas.height].map(function (a) {
-				return parseInt(a);
-			});
-		var hiddenCanvas = document.createElement('canvas');
-		hiddenCanvas.width = pos[2];
-		hiddenCanvas.height = pos[3];
-		var ctx = hiddenCanvas.getContext("2d");
-		var img = cache.get("img" + $scope.canvas['@id']) || new Image();
-		var imgSelectorIndex = $scope.canvas.images[0].resource['@id'].indexOf("#");
-		var src = (imgSelectorIndex > -1) ?
-			$scope.canvas.images[0].resource['@id'].substring(0, imgSelectorIndex) :
-			$scope.canvas.images[0].resource['@id'];
-		var imgTrim = (imgSelectorIndex > -1) ?
-			$scope.canvas.images[0].resource['@id'].substring(imgSelectorIndex + 6).split(",") // #xywh=
-			:
-			false;
-		var loaded = function (e) {
-			var targ = e.target;
-			cache.put("img" + $scope.canvas['@id'], targ);
-			$element.next().remove(); // delete any backup <canvas> that has been added
-			$element.removeClass('ng-hide');
-			var scale = targ.naturalWidth / $scope.canvas.width;
-			if (imgTrim) {
-				scale = imgTrim[2] / $scope.canvas.width;
-				for (var i = 0; i < 2; i++) {
-					if (imgTrim[i]) { // divide by zero protection
-						pos[i] += parseInt(imgTrim[i] / scale);
-					}
-				}
-				for (i = 2; i < 4; i++) {
-					pos[i] = pos[i] * scale;
-				}
+		let canvas = {}
+		for(let c of manifest.sequences[0].canvases) {
+			if (c.images && (selector.indexOf(c["@id"]) === 0) ) {
+				canvas = c
+				continue
 			}
-			ctx.drawImage(targ, pos[0] * scale, pos[1] * scale, pos[2] * scale, pos[3] * scale, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
+		}
+		let selectURL = new URL(selector)
+		let xywh = selectURL.hash.substr(1)
+		xywh = new URLSearchParams(xywh).get("xywh")
+		let pos = (xywh.length) ? xywh.split(",").map(a=>parseInt(a)) : [0, 0, canvas.width, canvas.height].map(a=>parseInt(a))
+		if (!canvas.height) {
+			throw "No sc:Canvas loaded with id:" + canvas["@id"]
+		}
+		let hiddenCanvas = document.createElement('canvas')
+		hiddenCanvas.width = pos[2]
+		hiddenCanvas.height = pos[3]
+		let ctx = hiddenCanvas.getContext("2d")
+		let img = new Image()
+		let src = canvas.images[0].resource["@id"]
+		let loaded = function (e) {
+			let targ = e.target
+			if(imgElement.nextElementSibling) {imgElement.nextElementSibling.remove()} // delete any backup <canvas> that has been added
+			imgElement.style.display = "block"
+			let scale = targ.naturalWidth / canvas.width
+			let sliceScale = 1
+			if (pos) {
+				sliceScale = pos[2] / canvas.width;
+				// for (var i = 0; i < 2; i++) {
+				// 	if (pos[i]) { // divide by zero protection
+				// 		pos[i] += parseInt(pos[i] / scale)
+				// 	}
+				// }
+				// for (i = 2; i < 4; i++) {
+				// 	pos[i] = pos[i] * scale
+				// }
+			}
+			ctx.drawImage(targ, pos[0] * scale, pos[1] * scale, pos[2] * scale, pos[3] * scale, 0, 0, hiddenCanvas.width, hiddenCanvas.height)
 			try {
-				dataURL = cache.put("image" + $scope.selector, hiddenCanvas.toDataURL());
-				$element.attr('src', dataURL);
+				imgElement.attr('src', hiddenCanvas.toDataURL());
 			} catch (err) {
 				// Doesn't serve CORS images, so this doesn't work.
 				// load the canvas itself into the DOM since it is 'tainted'
-				$element.after(hiddenCanvas);
-				$element.addClass('ng-hide');
+				imgElement.insertAdjacentElement("afterend",hiddenCanvas)
+				imgElement.style.display = "none"
 				hiddenCanvas.style.width = "100%";
 				hiddenCanvas.style.maxWidth = "100%";
 				hiddenCanvas.style.maxHeight = "100%";
 				// redraw, after width change
 				ctx.drawImage(targ, pos[0] * scale, pos[1] * scale, pos[2] * scale, pos[3] * scale, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
+			} finally {
+				targ.removeEventListener(e.type, arguments.callee) // one-time use
 			}
-		};
-		angular.element(img).one('load', loaded);
-		angular.element(img).one('error', function (event) {
+		}
+		img.onload = loaded
+		img.onerror = (event) => {
 			// CORS H8, probably, load tainted canvas
-			$element.one('load', loaded);
-			$element.attr('src', $scope.canvas.images[0].resource['@id']);
-		});
-		img.crossOrigin = "anonymous";
+			imgElement.onload = loaded
+			imgElement.src = src
+		}
+		img.crossOrigin = "anonymous"
 		img.src = src;
 	}
 }

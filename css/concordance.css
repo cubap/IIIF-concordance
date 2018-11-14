@@ -195,3 +195,8 @@ label.button {
     background-color: #fff;
     padding: 1em;
 }
+
+#modal img {
+    max-height: 10em;
+    max-width: 40vw;
+}
