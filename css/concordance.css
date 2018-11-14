@@ -187,3 +187,11 @@ label.button {
     -moz-appearance: button;
     appearance: button;
 }
+
+#modal {
+    position: absolute;
+    display: none;
+    box-shadow: #000000bb 0 0 1em;
+    background-color: #fff;
+    padding: 1em;
+}

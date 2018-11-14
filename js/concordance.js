@@ -21,8 +21,10 @@ function reloadData(manifest = {
 				let source = e.target.getAttribute("data-source")
 				let ev = new CustomEvent("line:selected",{ 
 					detail: {
-						target:source,
-						text: e.target.textContent
+						target:e.target,
+						source:source,
+						text: e.target.textContent,
+						mouse: {x:e.clientX,y:e.clientY}
 					}
 				})
 				window.top.dispatchEvent(ev)
@@ -239,6 +241,20 @@ function reloadData(manifest = {
 			pos = offset + word.length
 		})
 	}
+	function peek(event){
+		modal.innerHTML = peekWindow(event.detail.target)
+		modal.style.top = event.detail.mouse.y+"px"
+		modal.style.left = event.detail.mouse.x+"px"
+		modal.style.display = "block";
+	}
+	
+	function peekWindow(element) {
+		let modal = `${element.textContent}
+		<img selector="${element.getAttribute('data-source')}">
+		</div>`
+		return modal
+	}
+	window.addEventListener("line:selected",peek)
 }
 
 window.onload = function () {
@@ -249,4 +265,82 @@ window.onload = function () {
 		.then(payload => reloadData(payload))
 }
 
-// window.addEventListener("line:selected",ev=>alert(ev.detail.text))
+
+function imgFromSelector(img,selector){
+		var note = `<div class="no-image">no image</div>`
+		if (!selector) {
+			img.nextElementSibling.remove(); // delete any backup <canvas> that has been added
+			img.insertAdjacentHTML(note); // add "no image" note
+			img.style.display = "none";
+			return false;
+		}
+		let canvas = manifest.reduce((a,b)=>{
+			if(a && a["resource"]){}
+		},{}).getResource($scope.selector);
+		if (angular.isObject($scope.selector) && $scope.canvas['@type'] && $scope.canvas['@type'] === 'sc:Canvas') {
+			$scope.selector = $scope.canvas['@id'];
+		}
+		if (!$scope.canvas.height) {
+			throw "No sc:Canvas loaded with id:" + $scope.canvas;
+		}
+		var pos = ($scope.selector && ($scope.selector.indexOf("xywh") > 1)) ?
+			$scope.selector.substr($scope.selector.indexOf("xywh=") + 5).split(",").map(function(a) {
+				return parseInt(a);
+			}) : [0, 0, $scope.canvas.width, $scope.canvas.height].map(function(a) {
+				return parseInt(a);
+			});
+		var hiddenCanvas = document.createElement('canvas');
+		hiddenCanvas.width = pos[2];
+		hiddenCanvas.height = pos[3];
+		var ctx = hiddenCanvas.getContext("2d");
+		var img = cache.get("img" + $scope.canvas['@id']) || new Image();
+		var imgSelectorIndex = $scope.canvas.images[0].resource['@id'].indexOf("#");
+		var src = (imgSelectorIndex > -1) ?
+			$scope.canvas.images[0].resource['@id'].substring(0, imgSelectorIndex) :
+			$scope.canvas.images[0].resource['@id'];
+		var imgTrim = (imgSelectorIndex > -1) ?
+			$scope.canvas.images[0].resource['@id'].substring(imgSelectorIndex + 6).split(",") // #xywh=
+			:
+			false;
+		var loaded = function(e) {
+			var targ = e.target;
+			cache.put("img" + $scope.canvas['@id'], targ);
+			$element.next().remove(); // delete any backup <canvas> that has been added
+			$element.removeClass('ng-hide');
+			var scale = targ.naturalWidth / $scope.canvas.width;
+			if (imgTrim) {
+				scale = imgTrim[2] / $scope.canvas.width;
+				for (var i = 0; i < 2; i++) {
+					if (imgTrim[i]) { // divide by zero protection
+						pos[i] += parseInt(imgTrim[i] / scale);
+					}
+				}
+				for (i = 2; i < 4; i++) {
+					pos[i] = pos[i] * scale;
+				}
+			}
+			ctx.drawImage(targ, pos[0] * scale, pos[1] * scale, pos[2] * scale, pos[3] * scale, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
+			try {
+				dataURL = cache.put("image" + $scope.selector, hiddenCanvas.toDataURL());
+				$element.attr('src', dataURL);
+			} catch (err) {
+				// Doesn't serve CORS images, so this doesn't work.
+				// load the canvas itself into the DOM since it is 'tainted'
+				$element.after(hiddenCanvas);
+				$element.addClass('ng-hide');
+				hiddenCanvas.style.width = "100%";
+				hiddenCanvas.style.maxWidth = "100%";
+				hiddenCanvas.style.maxHeight = "100%";
+				// redraw, after width change
+				ctx.drawImage(targ, pos[0] * scale, pos[1] * scale, pos[2] * scale, pos[3] * scale, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
+			}
+		};
+		angular.element(img).one('load', loaded);
+		angular.element(img).one('error', function(event) {
+			// CORS H8, probably, load tainted canvas
+			$element.one('load', loaded);
+			$element.attr('src', $scope.canvas.images[0].resource['@id']);
+		});
+		img.crossOrigin = "anonymous";
+		img.src = src;
+}
