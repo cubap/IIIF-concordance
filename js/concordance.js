@@ -326,6 +326,7 @@ function reloadData(manifest = {
 			ctx.drawImage(targ, pos[0] * scale, pos[1] * scale, pos[2] * scale, pos[3] * scale, 0, 0, hiddenCanvas.width, hiddenCanvas.height)
 			try {
 				imgElement.attr('src', hiddenCanvas.toDataURL());
+				imgElement.onclick = ev => window.open(src, '_blank')
 			} catch (err) {
 				// Doesn't serve CORS images, so this doesn't work.
 				// load the canvas itself into the DOM since it is 'tainted'
@@ -336,6 +337,7 @@ function reloadData(manifest = {
 				hiddenCanvas.style.maxHeight = "100%";
 				// redraw, after width change
 				ctx.drawImage(targ, pos[0] * scale, pos[1] * scale, pos[2] * scale, pos[3] * scale, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
+				hiddenCanvas.onclick = ev => window.open(src, '_blank')
 			} finally {
 				targ.removeEventListener(e.type, arguments.callee) // one-time use
 			}

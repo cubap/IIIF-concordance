@@ -169,10 +169,13 @@ ul#occurrences badge {
     cursor: pointer;
 }
 
+[onclick] {
+    cursor: pointer;
+}
+
 ul#occurrences a[onclick] {
     display: block;
     transition: background-color 250ms;
-    cursor: pointer;
     background-color: initial;
 }
 
