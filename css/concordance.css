@@ -1,40 +1,82 @@
-#wordList {
+body {
+    align-items: stretch;
     display: flex;
     flex-direction: column;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    position: fixed;
+    width: 100vw;
 }
 
 #concordance {
-    overflow: auto;
     flex-grow: 10;
     height: 100%;
+    overflow: auto;
     padding-left: 1rem;
 }
 
 #lines {
+    border-left: medium solid #fff;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 2;
     position: relative;
 }
 
-form[name="listOptions"] {
-    width: 100vw;
-    background-color: #eee
+#modal {
+    background: #fff;
+    box-shadow: #000000bb 0 0 1em;
+    display: none;
+    left: 0;
+    margin: 1em;
+    max-height: calc(100% - 4em);
+    overflow: auto;
+    padding: 1em;
+    position: absolute;
+    top: 0;
 }
 
-input[type="range"] {
-    width: calc(100% - 3em);
+#modal header {
+    background-color: transparent;
+    text-align: left;
+    text-shadow: 1px 1px 1px #00000033;
+}
+
+#modal header h4 {
+    color: #999;
+    font-size: 1.67em;
+    line-height: 1;
+    margin: 0;
+}
+
+#modal img {
+    max-height: 10em;
+    max-width: 40vw;
 }
 
 #options {
-    margin: .5rem 0;
-    border-radius: .5em;
     border: none;
-    padding: .5em;
+    border-radius: .5em;
     font-family: serif;
-    text-align: left;
     font-size: 100%;
+    margin: .5rem 0;
+    padding: .5em;
+    text-align: left;
 }
 
 #options i {
     line-height: 1.2;
+}
+
+#wordlist {
+    display: flex;
+    flex-direction: column;
+}
+
+#wordlist label {
+    padding: .5em 0;
+    text-align: center;
 }
 
 .form-group {
@@ -42,8 +84,8 @@ input[type="range"] {
 }
 
 .form-group label:not(.button) {
-    width: 100%;
     text-align: center;
+    width: 100%;
 }
 
 .input-button {
@@ -54,56 +96,50 @@ input[type="range"] {
     flex-grow: 3;
 }
 
-input[type="range"]+output {
-    font-size: 1.2em;
-    top: -.25em;
-    position: relative;
-}
-
-body {
-    display: flex;
-    height: 100vh;
-    width: 100vw;
-    flex-direction: column;
-    position: fixed;
-    margin: 0;
-    padding: 0;
-    align-items: stretch;
-}
-
-mark {
-    color: #488AC7;
-    background: initial;
-}
-
 [active] {
-    background-color: #488ac7aa;
+    background: #488ac7aa;
+}
+
+[data-source],
+[data-word],
+[onclick] {
+    cursor: pointer;
+}
+
+a.indices {
+    background: #eee;
+    cursor: pointer;
+    flex-grow: 1;
+    padding: .125rem 0;
+    text-align: center;
+    text-shadow: #eee 0 1px 0;
+    transition: all 250ms;
+}
+
+a.indices:hover,
+ul#occurrences a:hover {
+    background: #ccc;
 }
 
 a[data-word] {
     display: block;
 }
 
-label,
-header {
+badge {
+    font-size: .82rem;
+    opacity: .5;
+}
+
+card {
+    border-radius: .25em;
+    box-shadow: #00000066 0 1px 2px;
     display: block;
-    text-transform: capitalize;
+    margin: 1em 0;
+    padding: .5em;
 }
 
-header {
-    background-color: #ccc;
-    text-align: center;
-    line-height: 1.67;
-    text-shadow: #eee 0 1px 0;
-}
-
-dl {
-    margin: 0;
-}
-
-dt {
-    text-transform: capitalize;
-    font-size: 1.2rem;
+card div {
+    margin: 0 -.5em;
 }
 
 dd {
@@ -115,139 +151,99 @@ dd:nth-child(2n),
     background: #ddd;
 }
 
+div#indices {
+    align-content: space-around;
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+dl {
+    margin: 0;
+}
+
+dt {
+    font-size: 1.2rem;
+    text-transform: capitalize;
+}
+
+form[name="listoptions"] {
+    background: #eee;
+    width: 100vw;
+}
+
+header {
+    background: #ccc;
+    line-height: 1.67;
+    text-align: center;
+    text-shadow: #eee 0 1px 0;
+}
+
+input[type="range"] {
+    width: calc(100% - 3em);
+}
+
+input[type="range"]+output {
+    font-size: 1.2em;
+    position: relative;
+    top: -.25em;
+}
+
+label,
+header {
+    display: block;
+    text-transform: capitalize;
+}
+
+label.button {
+    -moz-appearance: button;
+    -webkit-appearance: button;
+    align-items: flex-start;
+    appearance: button;
+    background: buttonface;
+    border-color: buttonface;
+    border-image: initial;
+    border-style: outset;
+    border-width: 2px;
+    box-sizing: border-box;
+    color: buttontext;
+    cursor: default;
+    display: inline-block;
+    font: 400 13.3333px Arial;
+    letter-spacing: normal;
+    margin: 0;
+    padding: 1px 6px;
+    text-align: center;
+    text-indent: 0;
+    text-rendering: auto;
+    text-shadow: none;
+    text-transform: none;
+    word-spacing: normal;
+}
+
+mark {
+    background: initial;
+    color: #488AC7;
+}
+
 row {
     display: flex;
     width: 100vw;
 }
 
-#lines {
-    flex-grow: 2;
-    display: flex;
-    flex-direction: column;
-    border-left: medium solid #fff;
-}
-
-badge {
-    font-size: .82rem;
-    opacity: .5;
-}
-
-a.indices {
-    flex-grow: 1;
-    cursor: pointer;
-    text-align: center;
-    transition: all 250ms;
-    padding: .125rem 0;
-    background-color: #eee;
-    text-shadow: #eee 0 1px 0;
-}
-
-a.indices:hover {
-    background-color: #ccc;
-}
-
-div#indices {
-    display: flex;
-    flex-wrap: nowrap;
-    align-content: space-around;
-}
-
 ul#occurrences {
-    overflow: auto;
     list-style: none;
     margin: 0;
+    overflow: auto;
     padding: 0;
 }
 
-ul#occurrences badge {
-    opacity: 1;
-    float: right;
-}
-
-[data-source],
-[data-word] {
-    cursor: pointer;
-}
-
-[onclick] {
-    cursor: pointer;
-}
-
 ul#occurrences a[onclick] {
+    background: initial;
     display: block;
     transition: background-color 250ms;
-    background-color: initial;
 }
 
-ul#occurrences a:hover {
-    background-color: #ccc;
-}
-card {
-    box-shadow: #00000066 0 1px 2px;
-    display: block;
-    margin: 1em 0;
-    padding: .5em;
-    border-radius: .25em;
-}
-card div {
-    margin: 0 -.5em;
-}
-#wordList label {
-    padding: .5em 0;
-    text-align: center;
-}
-#modal header {
-    text-align: left;
-    text-shadow: 1px 1px 1px #00000033;
-    background-color: transparent;
-}
-#modal header h4 {
-    color: #999;
-    font-size: 1.67em;
-    line-height: 1;
-    margin:0;
-}
-
-label.button {
-    padding: 1px 6px;
-    align-items: flex-start;
-    text-align: center;
-    cursor: default;
-    color: buttontext;
-    background-color: buttonface;
-    box-sizing: border-box;
-    border-width: 2px;
-    border-style: outset;
-    border-color: buttonface;
-    border-image: initial;
-    text-rendering: auto;
-    letter-spacing: normal;
-    word-spacing: normal;
-    text-transform: none;
-    text-indent: 0px;
-    text-shadow: none;
-    display: inline-block;
-    margin: 0em;
-    font: 400 13.3333px Arial;
-    -webkit-appearance: button;
-    -moz-appearance: button;
-    appearance: button;
-}
-
-#modal {
-    position: absolute;
-    display: none;
-    box-shadow: #000000bb 0 0 1em;
-    background-color: #fff;
-    padding: 1em;
-    margin: 1em;
-    top: 0;
-    left: 0;
-    overflow: auto;
-    max-height: calc(100% - 4em);
-}
-
-#modal img {
-    max-height: 10em;
-    max-width: 40vw;
+ul#occurrences badge {
+    float: right;
+    opacity: 1;
 }
