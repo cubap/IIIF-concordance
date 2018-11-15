@@ -14,9 +14,11 @@ form[name="listOptions"] {
     width: 100vw;
     background-color: #eee
 }
+
 input[type="range"] {
     width: calc(100% - 3em);
 }
+
 #options {
     margin: .5rem 0;
     border-radius: .5em;
@@ -26,27 +28,34 @@ input[type="range"] {
     text-align: left;
     font-size: 100%;
 }
+
 #options i {
     line-height: 1.2;
 }
+
 .form-group {
     flex-grow: 1;
 }
+
 .form-group label:not(.button) {
-    width:100%;
+    width: 100%;
     text-align: center;
 }
+
 .input-button {
     display: flex;
 }
+
 .input-button input {
     flex-grow: 3;
 }
+
 input[type="range"]+output {
     font-size: 1.2em;
     top: -.25em;
     position: relative;
 }
+
 body {
     display: flex;
     height: 100vh;
@@ -62,6 +71,7 @@ mark {
     color: #488AC7;
     background: initial;
 }
+
 [active] {
     background-color: #488ac7aa;
 }
@@ -82,9 +92,11 @@ header {
     line-height: 1.67;
     text-shadow: #eee 0 1px 0;
 }
+
 dl {
     margin: 0;
 }
+
 dt {
     text-transform: capitalize;
     font-size: 1.2rem;
@@ -103,16 +115,19 @@ row {
     display: flex;
     width: 100vw;
 }
+
 #lines {
     flex-grow: 2;
     display: flex;
     flex-direction: column;
     border-left: medium solid #fff;
 }
+
 badge {
     font-size: .82rem;
     opacity: .5;
 }
+
 a.indices {
     flex-grow: 1;
     cursor: pointer;
@@ -122,14 +137,17 @@ a.indices {
     background-color: #eee;
     text-shadow: #eee 0 1px 0;
 }
+
 a.indices:hover {
     background-color: #ccc;
 }
+
 div#indices {
     display: flex;
     flex-wrap: nowrap;
     align-content: space-around;
 }
+
 ul#occurrences {
     overflow: auto;
     list-style: none;
@@ -142,7 +160,8 @@ ul#occurrences badge {
     float: right;
 }
 
-[data-source], [data-word] {
+[data-source],
+[data-word] {
     cursor: pointer;
 }
 
@@ -194,6 +213,9 @@ label.button {
     box-shadow: #000000bb 0 0 1em;
     background-color: #fff;
     padding: 1em;
+    margin: 1em;
+    top: 0;
+    left: 0;
 }
 
 #modal img {
