@@ -247,6 +247,7 @@ function reloadData(manifest = {
 				lineNumber: lineNumber,
 				label:label
 			})
+			// NB: this just takes the first letter, not any letter in, which is ultimately what we might want...
 			annotationData.index[word.substr(0, 1).toUpperCase()] = true
 			pos = offset + word.length
 		})
