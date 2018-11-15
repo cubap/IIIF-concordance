@@ -10,7 +10,6 @@ function reloadData(manifest = {
 
     manifest.sequences.forEach(extractLines)
     renderConcordance()
-    renderIndex()
     sorting.oninput = renderWordList
 
     function renderConcordance() {
@@ -31,6 +30,7 @@ function reloadData(manifest = {
                 window.top.dispatchEvent(ev)
             }
         })
+        renderIndex()
         renderWordList()
     }
 
