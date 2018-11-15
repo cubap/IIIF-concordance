@@ -15,16 +15,34 @@ function reloadData(manifest = {
     function renderConcordance() {
         concordance.innerHTML = buildConcordance()
         let dds = concordance.getElementsByTagName("dd")
+        let as = concordance.getElementsByTagName("a")
         Array(...dds).map(dd => {
             dd.onclick = e => {
                 let source = e.target.getAttribute("data-source")
-                let target = (e.target.tagName === "DD") ? e.target : e.target.parentElement
+                let target = (e.target.tagName === "DD") ? e.target : e.target.closest("DD")
                 let ev = new CustomEvent("line:selected", {
                     detail: {
                         target: target,
                         source: source,
                         text: target.textContent,
                         // mouse: { x: e.clientX, y: e.clientY }
+                    }
+                })
+                window.top.dispatchEvent(ev)
+            }
+        })
+        Array(...as).map(a => {
+            a.onclick = e => {
+				if(["DD","MARK"].includes(e.target.tagName)) {
+					e.preventDefault()
+					return false
+				}
+                let source = e.target.getAttribute("data-source")
+                let target = (e.target.tagName === "A") ? e.target : e.target.closest("A")
+                let ev = new CustomEvent("word:selected", {
+                    detail: {
+                        target: target,
+                        source: source
                     }
                 })
                 window.top.dispatchEvent(ev)
@@ -253,6 +271,7 @@ function reloadData(manifest = {
 		})
 	}
 	function peek(event) {
+		event.preventDefault()
 		modal.innerHTML = peekWindow(event.detail.target)
 		let imgElement = modal.getElementsByTagName("img")[0]
 		imgFromSelector(imgElement, imgElement.getAttribute("selector"))
@@ -273,20 +292,55 @@ function reloadData(manifest = {
 		// }
 	}
 
+	function peekLines(event){
+		event.preventDefault()
+		modal.innerHTML = peekLinesWindow(event.detail.target)
+		let imgs = modal.getElementsByTagName("img")
+		Array(...imgs).map(el=>imgFromSelector(el,el.getAttribute("selector")))
+		modal.style.display = "block"
+	}
+
 	function peekWindow(element) {
 		let lineNumber = element.getAttribute('data-index')
 		lineNumber = (lineNumber != "false") ? `line ${lineNumber}` : ``
-		let modal = `<a onclick="modal.style.display='none';"><i class="fa-close fa pull-right"></i></button>
-		<h4>${element.getAttribute('title')}
-		<br><small>${lineNumber}</small>
-		</h4>
-		${element.textContent}
-		<img selector="${element.getAttribute('data-source')}">
+		let modal = `<a onclick="modal.style.display='none';"><i class="fa-close fa pull-right"></i></a>
+		<header>
+		<h4>${element.getAttribute('title')}</h4>
+		<small>${lineNumber}</small>
+		</header>
+		<div>
+			<img selector="${element.getAttribute('data-source')}">
+		</div>
+		<span class="line-quote">&ldquo;${element.textContent}&rdquo;</span>
 		</div>`
 		return modal
 	}
 
+	function peekLinesWindow(element) {
+		let dd = element.getElementsByTagName("dd")
+		let lines = Array(...dd).reduce((a,el)=>{
+			let lineNumber = el.getAttribute('data-index')
+			lineNumber = (lineNumber != "false") ? `line ${lineNumber}` : ``
+			let label = el.getAttribute('title')
+			let src = el.getAttribute('data-source')
+			let quote = el.textContent
+			return a+=`<card> ${label} (${lineNumber})
+				<div>
+					<img selector="${src}">
+				</div>
+				<span class="line-quote">&ldquo;${quote}&rdquo;</span>
+			</card>`
+		},``)
+		let modal = `<a onclick="modal.style.display='none';"><i class="fa-close fa pull-right"></i></a>
+		<header>
+			<h4>${element.getAttribute('name')}</h4>
+		</header>
+		${lines}`
+		return modal
+	}
+
 	window.addEventListener("line:selected", peek)
+	window.addEventListener("word:selected", peekLines)
 
 	function imgFromSelector(imgElement, selector) {
 		var note = `<div class="no-image">no image</div>`

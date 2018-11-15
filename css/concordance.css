@@ -182,10 +182,30 @@ ul#occurrences a[onclick] {
 ul#occurrences a:hover {
     background-color: #ccc;
 }
-
+card {
+    box-shadow: #00000066 0 1px 2px;
+    display: block;
+    margin: 1em 0;
+    padding: .5em;
+    border-radius: .25em;
+}
+card div {
+    margin: 0 -.5em;
+}
 #wordList label {
     padding: .5em 0;
     text-align: center;
+}
+#modal header {
+    text-align: left;
+    text-shadow: 1px 1px 1px #00000033;
+    background-color: transparent;
+}
+#modal header h4 {
+    color: #999;
+    font-size: 1.67em;
+    line-height: 1;
+    margin:0;
 }
 
 label.button {
@@ -223,6 +243,8 @@ label.button {
     margin: 1em;
     top: 0;
     left: 0;
+    overflow: auto;
+    max-height: calc(100% - 4em);
 }
 
 #modal img {
