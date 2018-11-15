@@ -207,6 +207,7 @@ function reloadData(manifest = {
 						texts.push(line)
 						let target = container.on || container.target
 						addWords(line, target, index+1, canvas.label || "[unlabeled "+i+"]")
+						// TODO: the canvas.label is unknown within the promises below.
 					}
 				})
 			})
@@ -214,6 +215,7 @@ function reloadData(manifest = {
 		})
 		if (promises.length) {
 			Promise.all(promises).then(contents => extractLines({
+				// TODO: maybe make an id map for canvases and then attach these to them before rerunning...
 				canvases: [{
 					otherContent: contents
 				}]
@@ -273,9 +275,10 @@ function reloadData(manifest = {
 	function peekWindow(element) {
 		let lineNumber = element.getAttribute('data-index')
 		lineNumber = (lineNumber != "false") ? `line ${lineNumber}` : ``
-		let modal = `<button role="button" onclick="this.parent.style.display='none';"><i class="fa-close fa pull-right"></i></button>
-		<h4>${element.getAttribute('title')}</h4>
-		<small>${lineNumber}</small>
+		let modal = `<a onclick="modal.style.display='none';"><i class="fa-close fa pull-right"></i></button>
+		<h4>${element.getAttribute('title')}
+		<br><small>${lineNumber}</small>
+		</h4>
 		${element.textContent}
 		<img selector="${element.getAttribute('data-source')}">
 		</div>`
