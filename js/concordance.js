@@ -1,58 +1,58 @@
 function reloadData(manifest = {
-	sequences: []
+    sequences: []
 }) {
-	// data used by various parts of this closure
-	annotationData = {
-		pages: [],
-		words: {},
-		index: {}
-	}
+    // data used by various parts of this closure
+    annotationData = {
+        pages: [],
+        words: {},
+        index: {}
+    }
 
-	manifest.sequences.forEach(extractLines)
-	renderConcordance()
-	renderIndex()
-	sorting.oninput = renderWordList
+    manifest.sequences.forEach(extractLines)
+    renderConcordance()
+    renderIndex()
+    sorting.oninput = renderWordList
 
-	function renderConcordance() {
-		concordance.innerHTML = buildConcordance()
-		let dds = concordance.getElementsByTagName("dd")
-		Array(...dds).map(dd => {
-			dd.onclick = e => {
-				let source = e.target.getAttribute("data-source")
-				let target = (e.target.tagName === "DD") ? e.target : e.target.parentElement
-				let ev = new CustomEvent("line:selected", {
-					detail: {
-						target: target,
-						source: source,
-						text: target.textContent,
-						mouse: { x: e.clientX, y: e.clientY }
-					}
-				})
-				window.top.dispatchEvent(ev)
-			}
-		})
-		renderWordList()
-	}
+    function renderConcordance() {
+        concordance.innerHTML = buildConcordance()
+        let dds = concordance.getElementsByTagName("dd")
+        Array(...dds).map(dd => {
+            dd.onclick = e => {
+                let source = e.target.getAttribute("data-source")
+                let target = (e.target.tagName === "DD") ? e.target : e.target.parentElement
+                let ev = new CustomEvent("line:selected", {
+                    detail: {
+                        target: target,
+                        source: source,
+                        text: target.textContent,
+                        mouse: { x: e.clientX, y: e.clientY }
+                    }
+                })
+                window.top.dispatchEvent(ev)
+            }
+        })
+        renderWordList()
+    }
 
-	function renderIndex() {
-		let tmpl = Object.keys(annotationData.index).sort().map(char => `<a class="indices" data-index="${char}">${char}</a>`).join(``)
-		indices.innerHTML = tmpl
-		Array.from(indices.getElementsByClassName("indices")).forEach(elem => elem.onclick = (event) => {
-			document.forms.listOptions.filter.value = event.target.getAttribute("data-index")
-			document.forms.listOptions.filter.oninput()
-		})
-		document.forms.listOptions.filter.oninput = document.forms.listOptions.searchin.oninput = filterWordList
-		document.forms.listOptions.wordLength.oninput = document.forms.listOptions.occurs.oninput = renderWordList
-	}
+    function renderIndex() {
+        let tmpl = Object.keys(annotationData.index).sort().map(char => `<a class="indices" data-index="${char}">${char}</a>`).join(``)
+        indices.innerHTML = tmpl
+        Array.from(indices.getElementsByClassName("indices")).forEach(elem => elem.onclick = (event) => {
+            document.forms.listOptions.filter.value = event.target.getAttribute("data-index")
+            document.forms.listOptions.filter.oninput()
+        })
+        document.forms.listOptions.filter.oninput = document.forms.listOptions.searchin.oninput = filterWordList
+        document.forms.listOptions.wordLength.oninput = document.forms.listOptions.occurs.oninput = renderWordList
+    }
 
-	function buildConcordance() {
-		var dict = annotationData.words
-		let words = Object.keys(dict).filter(x => x).sort(wordSort)
-		let tmpl = ``
+    function buildConcordance() {
+        var dict = annotationData.words
+        let words = Object.keys(dict).filter(x => x).sort(wordSort)
+        let tmpl = ``
 
-		words.forEach(word => {
-			var data = dict[word]
-			var item = `<a name="${word}" data-word-length="${word.length}" data-occurs="${data.length}"><dt>${word} <badge>(${data.length})</badge></dt>
+        words.forEach(word => {
+                    var data = dict[word]
+                    var item = `<a name="${word}" data-word-length="${word.length}" data-occurs="${data.length}"><dt>${word} <badge>(${data.length})</badge></dt>
 			${ data.map(w => `<dd data-source="${w.source}">${markupWordOccurrence(word, w)}</dd>`).join("")}`
 			tmpl += item + `</a>`
 		})
@@ -287,7 +287,9 @@ function reloadData(manifest = {
 		}
 		let canvas = {}
 		for(let c of manifest.sequences[0].canvases) {
-			if (c.images && (selector.indexOf(c["@id"]) === 0) ) {
+			let cheapHack = c["@id"].substr(5) // http(s) mismatch, for one
+			// TODO: more expensive or elegant cleanup for comparison
+			if (c.images && (selector.indexOf(cheapHack) > -1) ) {
 				canvas = c
 				continue
 			}
