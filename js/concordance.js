@@ -345,6 +345,7 @@ function reloadData(manifest = {
 		img.onload = loaded
 		img.onerror = (event) => {
 			// CORS H8, probably, load tainted canvas
+			// TODO: check for auth service on Manifest and present issue.
 			imgElement.onload = loaded
 			imgElement.src = src
 		}
