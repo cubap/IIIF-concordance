@@ -10,6 +10,10 @@
     padding-left: 1rem;
 }
 
+#lines {
+    position: relative;
+}
+
 form[name="listOptions"] {
     width: 100vw;
     background-color: #eee
