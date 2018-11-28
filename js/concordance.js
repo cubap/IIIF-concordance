@@ -416,14 +416,14 @@ function reloadData(manifest = {
      */
     function getCanvas(query) {
         querying:
-        for(let seq in manifest.sequences) {
-            for(let c in seq.canvases) {
+        for(let seq of manifest.sequences) {
+            for(let c of seq.canvases) {
                 if (query.indexOf(c["@id"]) > -1) {
                     return c
                 }
             }
         }
-        return null
+        return {}
     }
 }
 
