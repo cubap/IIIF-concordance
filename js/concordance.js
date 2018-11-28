@@ -357,7 +357,7 @@ function reloadData(manifest = {
             // TODO: more expensive or elegant cleanup for comparison
             if (c.images && (selector.indexOf(cheapHack) > -1)) {
                 canvas = c
-                continue
+                break
             }
         }
         let selectURL = new URL(selector)
@@ -418,7 +418,8 @@ function reloadData(manifest = {
         querying:
         for(let seq of manifest.sequences) {
             for(let c of seq.canvases) {
-                if (query.indexOf(c["@id"]) > -1) {
+                let cheapHack = c["@id"].substr(5) // http(s) mismatch, for one
+                if (query.indexOf(cheapHack) > -1) {
                     return c
                 }
             }
