@@ -233,6 +233,9 @@ function reloadData(manifest = {
                         }
                         texts.push(line)
                         let target = container.on || container.target
+                        if(!canvas.label) {
+                            canvas = getCanvas(target)
+                        }
                         addWords(line, target, index + 1, canvas.label || "[unlabeled " + i + "]")
                         // TODO: the canvas.label is unknown within the promises below.
                     }
@@ -405,6 +408,22 @@ function reloadData(manifest = {
         }
         img.crossOrigin = "anonymous"
         img.src = src;
+    }
+
+    /**
+     * 
+     * @param {expensive cheat until ID map is in place} query 
+     */
+    function getCanvas(query) {
+        querying:
+        for(let seq in manifest.sequences) {
+            for(let c in seq.canvases) {
+                if (query.indexOf(c["@id"]) > -1) {
+                    return c
+                }
+            }
+        }
+        return null
     }
 }
 
