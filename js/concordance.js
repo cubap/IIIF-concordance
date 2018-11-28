@@ -13,54 +13,59 @@ function reloadData(manifest = {
     sorting.oninput = renderWordList
 
     function renderConcordance() {
-        concordance.innerHTML = buildConcordance()
-        let dds = concordance.getElementsByTagName("dd")
-        let as = concordance.getElementsByTagName("a")
-        Array(...dds).map(dd => {
-            dd.onclick = e => {
-                let source = e.target.getAttribute("data-source")
-                let target = (e.target.tagName === "DD") ? e.target : e.target.closest("DD")
-                let ev = new CustomEvent("line:selected", {
-                    detail: {
-                        target: target,
-                        source: source,
-                        text: target.textContent,
-                        // mouse: { x: e.clientX, y: e.clientY }
-                    }
-                })
-                window.top.dispatchEvent(ev)
-            }
-        })
-        Array(...as).map(a => {
-            a.onclick = e => {
-                if (["DD", "MARK"].includes(e.target.tagName)) {
-                    e.preventDefault()
-                    return false
+        let concordanceHTML = buildConcordance()
+        if(concordanceHTML.length > 0) {
+            concordance.innerHTML = concordanceHTML
+            let dds = concordance.getElementsByTagName("dd")
+            let as = concordance.getElementsByTagName("a")
+            Array(...dds).map(dd => {
+                dd.onclick = e => {
+                    let source = e.target.getAttribute("data-source")
+                    let target = (e.target.tagName === "DD") ? e.target : e.target.closest("DD")
+                    let ev = new CustomEvent("line:selected", {
+                        detail: {
+                            target: target,
+                            source: source,
+                            text: target.textContent,
+                            // mouse: { x: e.clientX, y: e.clientY }
+                        }
+                    })
+                    window.top.dispatchEvent(ev)
                 }
-                let source = e.target.getAttribute("data-source")
-                let target = (e.target.tagName === "A") ? e.target : e.target.closest("A")
-                let ev = new CustomEvent("word:selected", {
-                    detail: {
-                        target: target,
-                        source: source
+            })
+            Array(...as).map(a => {
+                a.onclick = e => {
+                    if (["DD", "MARK"].includes(e.target.tagName)) {
+                        e.preventDefault()
+                        return false
                     }
-                })
-                window.top.dispatchEvent(ev)
-            }
-        })
-        renderIndex()
-        renderWordList()
+                    let source = e.target.getAttribute("data-source")
+                    let target = (e.target.tagName === "A") ? e.target : e.target.closest("A")
+                    let ev = new CustomEvent("word:selected", {
+                        detail: {
+                            target: target,
+                            source: source
+                        }
+                    })
+                    window.top.dispatchEvent(ev)
+                }
+            })
+            renderIndex()
+            renderWordList()
+        }
     }
 
     function renderIndex() {
         let tmpl = Object.keys(annotationData.index).sort().map(char => `<a class="indices" data-index="${char}">${char}</a>`).join(``)
-        indices.innerHTML = tmpl
-        Array.from(indices.getElementsByClassName("indices")).forEach(elem => elem.onclick = (event) => {
-            document.forms.listOptions.filter.value = event.target.getAttribute("data-index")
-            document.forms.listOptions.filter.oninput()
-        })
-        document.forms.listOptions.filter.oninput = document.forms.listOptions.searchin.oninput = filterWordList
-        document.forms.listOptions.wordLength.oninput = document.forms.listOptions.occurs.oninput = renderWordList
+        if(tmpl.length > 0) {
+            indices.innerHTML = tmpl
+            Array.from(indices.getElementsByClassName("indices")).forEach(elem => elem.onclick = (event) => {
+                document.forms.listOptions.filter.value = event.target.getAttribute("data-index")
+                document.forms.listOptions.filter.oninput()
+            })
+            document.forms.listOptions.filter.oninput = document.forms.listOptions.searchin.oninput = filterWordList
+            document.forms.listOptions.wordLength.oninput = document.forms.listOptions.occurs.oninput = renderWordList
+        }
     }
 
     function buildConcordance() {
@@ -180,27 +185,29 @@ function reloadData(manifest = {
         }
         listUL += `
 		</ul>
-		</div>`
-        occurrences.innerHTML = listUL
-        for (let node of occurrences.getElementsByTagName("a")) {
-            let word = node.getAttribute("data-word")
-            node.onclick = function() {
-                [...document.querySelectorAll("[active]")].map(elem => elem.removeAttribute("active"))
-                node.setAttribute("active", true)
-                let term = document.querySelector('[name="' + word + '"]')
-                term.scrollIntoView({
-                    behavior: 'smooth'
-                })
-                term.children[0].setAttribute("active", true)
+        </div>`
+        if(listUL.indexOf("<li") > -1) {
+            occurrences.innerHTML = listUL
+            for (let node of occurrences.getElementsByTagName("a")) {
+                let word = node.getAttribute("data-word")
+                node.onclick = function() {
+                    [...document.querySelectorAll("[active]")].map(elem => elem.removeAttribute("active"))
+                    node.setAttribute("active", true)
+                    let term = document.querySelector('[name="' + word + '"]')
+                    term.scrollIntoView({
+                        behavior: 'smooth'
+                    })
+                    term.children[0].setAttribute("active", true)
+                }
             }
-        }
-        for (let node of concordance.getElementsByTagName("a")) {
-            let wLength = parseInt(node.getAttribute("data-word-length"))
-            let wOccurs = parseInt(node.getAttribute("data-occurs"))
-            if (length > wLength || occurs > wOccurs) {
-                node.style.display = "none"
-            } else {
-                node.style.display = "block"
+            for (let node of concordance.getElementsByTagName("a")) {
+                let wLength = parseInt(node.getAttribute("data-word-length"))
+                let wOccurs = parseInt(node.getAttribute("data-occurs"))
+                if (length > wLength || occurs > wOccurs) {
+                    node.style.display = "none"
+                } else {
+                    node.style.display = "block"
+                }
             }
         }
     }
