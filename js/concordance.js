@@ -235,7 +235,6 @@ function reloadData(manifest = {
                         let target = container.on || container.target
                         let thisCanvas = canvas.label ? canvas : getCanvas(target)
                         addWords(line, target, index + 1, thisCanvas.label || "[unlabeled " + i + "]")
-                        // TODO: the canvas.label is unknown within the promises below.
                     }
                 })
             })
