@@ -72,6 +72,8 @@ body {
 #wordlist {
     display: flex;
     flex-direction: column;
+    height: 100%;
+    overflow: auto;
 }
 
 #wordlist label {
@@ -151,6 +153,10 @@ dd:nth-child(2n),
     background: #ddd;
 }
 
+row#entries {
+    height: calc(100% - 140px);
+}
+
 div#indices {
     align-content: space-around;
     display: flex;
@@ -169,6 +175,7 @@ dt {
 form[name="listoptions"] {
     background: #eee;
     width: 100vw;
+    height: 140px;
 }
 
 header {
