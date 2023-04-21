@@ -415,7 +415,7 @@ function reloadData(manifest = {
         querying:
         for(let seq of manifest.sequences) {
             for(let c of seq.canvases) {
-                let cheapHack = c["@id"].substr(5) // http(s) mismatch, for one
+                let cheapHack = c["@id"].replace(/^https?:/,'') // http(s) mismatch, for one
                 if (query.indexOf(cheapHack) > -1) {
                     return c
                 }
