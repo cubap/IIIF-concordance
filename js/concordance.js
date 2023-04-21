@@ -221,7 +221,7 @@ function reloadData(manifest = {
             } // TODO: add P3 "annotations"
             canvas.otherContent.forEach((other, i) => {
                 if (!other.resources) {
-                    promises.push(fetch(other["@id"]).then(response => response.json()).catch(() => []))
+                    promises.push(fetch(other["@id"] ?? other).then(response => response.json()).catch(() => []))
                     return true
                 }
                 other.resources.forEach((container, index) => {
