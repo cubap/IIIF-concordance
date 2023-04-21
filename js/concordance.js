@@ -226,13 +226,13 @@ function reloadData(manifest = {
                 }
                 other.resources.forEach((container, index) => {
                     var resource = container.resource
-                    if (resource["@type"] == "cnt:ContentAsText") {
-                        var line = resource['cnt:chars'] || resource.chars
+                    if (resource["@type"].includes("cnt:ContentAsText")) {
+                        var line = resource['cnt:chars'] ?? resource.chars
                         if (!line) {
                             return true
                         }
                         texts.push(line)
-                        let target = container.on || container.target
+                        let target = container.on ?? container.target
                         let thisCanvas = canvas.label ? canvas : getCanvas(target)
                         addWords(line, target, index + 1, thisCanvas.label || "[unlabeled " + i + "]")
                     }
