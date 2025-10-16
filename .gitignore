@@ -8,3 +8,4 @@ WebContent/WEB-INF/classes/
 /dist/
 nbproject/
 *.properties
+/_site
