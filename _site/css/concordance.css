@@ -1,0 +1,256 @@
+body {
+    align-items: stretch;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    position: fixed;
+    width: 100vw;
+}
+
+#concordance {
+    flex-grow: 10;
+    height: 100%;
+    overflow: auto;
+    padding-left: 1rem;
+}
+
+#lines {
+    border-left: medium solid #fff;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 2;
+    position: relative;
+}
+
+#modal {
+    background: #fff;
+    box-shadow: #000000bb 0 0 1em;
+    display: none;
+    left: 0;
+    margin: 1em;
+    max-height: calc(100% - 4em);
+    overflow: auto;
+    padding: 1em;
+    position: absolute;
+    top: 0;
+}
+
+#modal header {
+    background-color: transparent;
+    text-align: left;
+    text-shadow: 1px 1px 1px #00000033;
+}
+
+#modal header h4 {
+    color: #999;
+    font-size: 1.67em;
+    line-height: 1;
+    margin: 0;
+}
+
+#modal img {
+    max-height: 10em;
+    max-width: 40vw;
+}
+
+#options {
+    border: none;
+    border-radius: .5em;
+    font-family: serif;
+    font-size: 100%;
+    margin: .5rem 0;
+    padding: .5em;
+    text-align: left;
+}
+
+#options i {
+    line-height: 1.2;
+}
+
+#wordlist {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: auto;
+}
+
+#wordlist label {
+    padding: .5em 0;
+    text-align: center;
+}
+
+.form-group {
+    flex-grow: 1;
+}
+
+.form-group label:not(.button) {
+    text-align: center;
+    width: 100%;
+}
+
+.input-button {
+    display: flex;
+}
+
+.input-button input {
+    flex-grow: 3;
+}
+
+[active] {
+    background: #488ac7aa;
+}
+
+[data-source],
+[data-word],
+[onclick] {
+    cursor: pointer;
+}
+
+a.indices {
+    background: #eee;
+    cursor: pointer;
+    flex-grow: 1;
+    padding: .125rem 0;
+    text-align: center;
+    text-shadow: #eee 0 1px 0;
+    transition: all 250ms;
+}
+
+a.indices:hover,
+ul#occurrences a:hover {
+    background: #ccc;
+}
+
+a[data-word] {
+    display: block;
+}
+
+badge {
+    font-size: .82rem;
+    opacity: .5;
+}
+
+card {
+    border-radius: .25em;
+    box-shadow: #00000066 0 1px 2px;
+    display: block;
+    margin: 1em 0;
+    padding: .5em;
+}
+
+card div {
+    margin: 0 -.5em;
+}
+
+dd {
+    margin-inline-start: 1.2rem;
+}
+
+dd:nth-child(2n),
+.odd {
+    background: #ddd;
+}
+
+row#entries {
+    height: calc(100% - 140px);
+}
+
+div#indices {
+    align-content: space-around;
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+dl {
+    margin: 0;
+}
+
+dt {
+    font-size: 1.2rem;
+    text-transform: capitalize;
+}
+
+form[name="listoptions"] {
+    background: #eee;
+    width: 100vw;
+    height: 140px;
+}
+
+header {
+    background: #ccc;
+    line-height: 1.67;
+    text-align: center;
+    text-shadow: #eee 0 1px 0;
+}
+
+input[type="range"] {
+    width: calc(100% - 3em);
+}
+
+input[type="range"]+output {
+    font-size: 1.2em;
+    position: relative;
+    top: -.25em;
+}
+
+label,
+header {
+    display: block;
+    text-transform: capitalize;
+}
+
+label.button {
+    -moz-appearance: button;
+    -webkit-appearance: button;
+    align-items: flex-start;
+    appearance: button;
+    background: buttonface;
+    border-color: buttonface;
+    border-image: initial;
+    border-style: outset;
+    border-width: 2px;
+    box-sizing: border-box;
+    color: buttontext;
+    cursor: default;
+    display: inline-block;
+    font: 400 13.3333px Arial;
+    letter-spacing: normal;
+    margin: 0;
+    padding: 1px 6px;
+    text-align: center;
+    text-indent: 0;
+    text-rendering: auto;
+    text-shadow: none;
+    text-transform: none;
+    word-spacing: normal;
+}
+
+mark {
+    background: initial;
+    color: #488AC7;
+}
+
+row {
+    display: flex;
+    width: 100vw;
+}
+
+ul#occurrences {
+    list-style: none;
+    margin: 0;
+    overflow: auto;
+    padding: 0;
+}
+
+ul#occurrences a[onclick] {
+    background: initial;
+    display: block;
+    transition: background-color 250ms;
+}
+
+ul#occurrences badge {
+    float: right;
+    opacity: 1;
+}
