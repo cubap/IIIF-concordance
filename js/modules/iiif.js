@@ -8,45 +8,107 @@ import { addWordsToData } from '../utils/wordUtils.js'
  * @returns {Promise} Promise that resolves when all annotations are processed
  */
 export const extractLines = (sequence, annotationData, manifest) => {
+  // Manifesto sequence/canvas API
+  const canvases = sequence.getCanvases ? sequence.getCanvases() : []
   const promises = []
-  
-  sequence.canvases.forEach(canvas => {
+  canvases.forEach((canvas) => {
     const texts = []
-    if (!canvas.otherContent) {
-      return true
-    } // TODO: add P3 "annotations"
-    
-    canvas.otherContent.forEach((other, i) => {
-      if (!other.resources) {
-        promises.push(fetch(other["@id"] ?? other).then(response => response.json()).catch(() => []))
-        return true
-      }
-      
-      other.resources.forEach((container, index) => {
-        const resource = container.resource
-        if (resource["@type"].includes("cnt:ContentAsText")) {
-          const line = resource['cnt:chars'] ?? resource.chars
-          if (!line) {
-            return true
-          }
-          texts.push(line)
-          const target = container.on ?? container.target
-          const thisCanvas = canvas.label ? canvas : getCanvas(target, manifest)
-          addWordsToData(
-            line, 
-            target, 
-            index + 1, 
-            thisCanvas?.label || "[unlabeled " + i + "]",
-            annotationData.words,
-            annotationData.index
-          )
+    // IIIF Pres 2: otherContent (AnnotationList), Pres 3: annotations (AnnotationPage)
+    let annotationLists = []
+    if (canvas.getAnnotationLists && canvas.getAnnotationLists().length) {
+      annotationLists = canvas.getAnnotationLists()
+    } else if (canvas.getAnnotations && canvas.getAnnotations().length) {
+      annotationLists = canvas.getAnnotations()
+    }
+    annotationLists.forEach((annoList, i) => {
+      // For P2: annoList.getAnnotations(); for P3: annoList.getItems()
+      const annotations = annoList.getAnnotations
+        ? annoList.getAnnotations() // P2: AnnotationList
+        : annoList.getItems
+          ? annoList.getItems() // P3: AnnotationPage
+          : []
+      annotations.forEach((annotation, index) => {
+        // P2 via Manifesto: annotation is a Manifesto.Annotation with getBody()
+        // P3 via AnnotationPage: annotation is a plain object with .body
+        let bodies
+        if (typeof annotation.getBody === 'function') {
+          bodies = annotation.getBody()
+        } else {
+          const b = annotation.body ?? annotation.resource ?? null
+          bodies = Array.isArray(b) ? b : b ? [b] : []
         }
+        const body = Array.isArray(bodies)
+          ? bodies.find((b) => typeof b.getValue === 'function' || b.value || b.chars) || bodies[0]
+          : bodies
+        if (!body) return
+        // Text extraction: Manifesto handles cnt:chars, chars, value, etc.
+        const line =
+          typeof body.getValue === 'function' ? body.getValue() : (body.value ?? body.chars ?? '')
+        if (!line) return
+        texts.push(line)
+        // Target: Manifesto provides getTarget(); normalize to a selector URL string
+        const rawTarget =
+          typeof annotation.getTarget === 'function'
+            ? annotation.getTarget()
+            : (annotation.target ?? annotation.on)
+        const selectorUrl = normalizeTargetToSelector(rawTarget, canvas)
+        const thisCanvas = canvas.label ? canvas : getCanvas(selectorUrl, manifest)
+        addWordsToData(
+          line,
+          selectorUrl,
+          index + 1,
+          thisCanvas?.label ?? thisCanvas.getDefaultLabel?.() ?? `[unlabeled ${i}]`,
+          annotationData.words,
+          annotationData.index
+        )
       })
     })
-    annotationData.pages.push(texts.join("\n"))
+    annotationData.pages.push(texts.join('\n'))
   })
-  
   return Promise.all(promises)
+}
+
+// Normalize IIIF target (string or SpecificResource) to a selector URL string suitable for new URL()
+const normalizeTargetToSelector = (target, canvas) => {
+  try {
+    if (!target) return ''
+    if (typeof target === 'string') return target
+    // P3 SpecificResource structure
+    const src = target.source || target.id || ''
+    const sel = target.selector || {}
+    const value = sel.value || ''
+    if (!src) return ''
+    if (value.startsWith('xywh=')) {
+      let xy = value.split('=')[1]
+      if (xy.startsWith('pixel:')) {
+        xy = xy.replace(/^pixel:/, '')
+        return `${src}#xywh=${xy}`
+      }
+      if (xy.startsWith('percent:')) {
+        const [px, py, pw, ph] = xy
+          .replace(/^percent:/, '')
+          .split(',')
+          .map(parseFloat)
+        const cw = canvas?.getWidth ? canvas.getWidth() : canvas?.width
+        const ch = canvas?.getHeight ? canvas.getHeight() : canvas?.height
+        if (cw && ch) {
+          const x = Math.round((px / 100) * cw)
+          const y = Math.round((py / 100) * ch)
+          const w = Math.round((pw / 100) * cw)
+          const h = Math.round((ph / 100) * ch)
+          return `${src}#xywh=${x},${y},${w},${h}`
+        }
+        // Fallback: return percent values as-is (imageViewer will likely fail)
+        return `${src}#xywh=${px},${py},${pw},${ph}`
+      }
+      // Already numeric values
+      return `${src}#xywh=${xy}`
+    }
+    // If no value/xywh, return source
+    return String(src)
+  } catch {
+    return typeof target === 'string' ? target : ''
+  }
 }
 
 /**
@@ -56,14 +118,18 @@ export const extractLines = (sequence, annotationData, manifest) => {
  * @returns {Object} Canvas object or empty object
  */
 export const getCanvas = (query, manifest) => {
-  for (const seq of manifest.sequences) {
-    for (const c of seq.canvases) {
-      const cheapHack = c["@id"].replace(/^https?:/, '') // http(s) mismatch fix
+  // Use Manifesto API to get sequences and canvases
+  const sequences = manifest.getSequences ? manifest.getSequences() : []
+  for (const seq of sequences) {
+    const canvases = seq.getCanvases ? seq.getCanvases() : []
+    for (const c of canvases) {
+      const canvasId = c.id || c['@id'] || ''
+      const cheapHack = canvasId.replace(/^https?:/, '') // http(s) mismatch fix
       try {
         if (query.indexOf(cheapHack) > -1) {
           return c
         }
-      } catch (err) {
+      } catch {
         continue
       }
     }
@@ -82,9 +148,18 @@ export const loadManifest = async (url) => {
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
-    return await response.json()
+    const manifestJson = await response.json()
+    // Use Manifesto.js to parse and normalize (loaded globally via CDN)
+    const mf =
+      (typeof window !== 'undefined' ? window.manifesto : undefined) ?? globalThis.manifesto
+    if (!mf || typeof mf.parseManifest !== 'function') {
+      console.error('Manifesto library is not available on window. Did the CDN script load?')
+      return null
+    }
+    const manifest = mf.parseManifest(manifestJson)
+    return manifest
   } catch (error) {
     console.error('Failed to load manifest:', error)
-    return { sequences: [] }
+    return null
   }
 }

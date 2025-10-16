@@ -9,3 +9,7 @@ WebContent/WEB-INF/classes/
 nbproject/
 *.properties
 /_site
+/.vscode
+/node_modules
+package-lock.json
+package.json

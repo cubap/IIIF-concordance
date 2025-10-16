@@ -1,0 +1,3648 @@
+!(function (e, t) {
+  'object' === typeof exports && 'object' === typeof module
+    ? (module.exports = t())
+    : 'function' === typeof define && define.amd
+      ? define('manifesto', [], t)
+      : 'object' === typeof exports
+        ? (exports.manifesto = t())
+        : (e.manifesto = t())
+})('undefined' !== typeof self ? self : this, () =>
+  (() => {
+    const e = {
+        41(e, t, r) {
+          'use strict';
+          let n =
+              (this && this.__awaiter) ||
+              function (e, t, r, n) {
+                return new (r || (r = Promise))(function (o, i) {
+                  function a(e) {
+                    try {
+                      u(n.next(e))
+                    } catch (e) {
+                      i(e)
+                    }
+                  }
+                  function s(e) {
+                    try {
+                      u(n.throw(e))
+                    } catch (e) {
+                      i(e)
+                    }
+                  }
+                  function u(e) {
+                    let t
+                    e.done
+                      ? o(e.value)
+                      : ((t = e.value),
+                        t instanceof r
+                          ? t
+                          : new r(function (e) {
+                              e(t)
+                            })).then(a, s)
+                  }
+                  u((n = n.apply(e, t || [])).next())
+                })
+              },
+            o =
+              (this && this.__generator) ||
+              function (e, t) {
+                let r,
+                  n,
+                  o,
+                  i = {
+                    label: 0,
+                    sent () {
+                      if (1 & o[0]) throw o[1];
+                      return o[1];
+                    },
+                    trys: [],
+                    ops: [],
+                  },
+                  a = Object.create(('function' == typeof Iterator ? Iterator : Object).prototype)
+                return (
+                  (a.next = s(0)),
+                  (a.throw = s(1)),
+                  (a.return = s(2)),
+                  'function' === typeof Symbol &&
+                    (a[Symbol.iterator] = function () {
+                      return this
+                    }),
+                  a
+                )
+                function s(s) {
+                  return function (u) {
+                    return (function (s) {
+                      if (r) throw new TypeError('Generator is already executing.')
+                      for (; a && ((a = 0), s[0] && (i = 0)), i; )
+                        try {
+                          if (
+                            ((r = 1),
+                            n &&
+                              (o =
+                                2 & s[0]
+                                  ? n.return
+                                  : s[0]
+                                    ? n.throw || ((o = n.return) && o.call(n), 0)
+                                    : n.next) &&
+                              !(o = o.call(n, s[1])).done)
+                          )
+                            return o
+                          switch (((n = 0), o && (s = [2 & s[0], o.value]), s[0])) {
+                            case 0:
+                            case 1:
+                              o = s
+                              break;
+                            case 4:
+                              return (i.label++, { value: s[1], done: !1 })
+                            case 5:
+                              ;(i.label++, (n = s[1]), (s = [0]))
+                              continue
+                            case 7:
+                              ;((s = i.ops.pop()), i.trys.pop())
+                              continue
+                            default:
+                              if (
+                                !(
+                                  (o = (o = i.trys).length > 0 && o[o.length - 1]) ||
+                                  (6 !== s[0] && 2 !== s[0])
+                                )
+                              ) {
+                                i = 0
+                                continue;
+                              }
+                              if (3 === s[0] && (!o || (s[1] > o[0] && s[1] < o[3]))) {
+                                i.label = s[1]
+                                break;
+                              }
+                              if (6 === s[0] && i.label < o[1]) {
+                                ;((i.label = o[1]), (o = s))
+                                break
+                              }
+                              if (o && i.label < o[2]) {
+                                ;((i.label = o[2]), i.ops.push(s))
+                                break
+                              }
+                              ;(o[2] && i.ops.pop(), i.trys.pop())
+                              continue
+                          }
+                          s = t.call(e, i)
+                        } catch (e) {
+                          ;((s = [6, e]), (n = 0))
+                        } finally {
+                          r = o = 0
+                        }
+                      if (5 & s[0]) throw s[1]
+                      return { value: s[0] ? s[1] : void 0, done: !0 }
+                    })([s, u])
+                  };
+                }
+              }
+          ;(Object.defineProperty(t, '__esModule', { value: !0 }), (t.Utils = void 0))
+          let i = r(4799),
+            a = r(3957),
+            s = r(7019)
+          r(916)
+          var u = (function () {
+            function e() {}
+            return (
+              (e.getMediaType = function (e) {
+                return (e = (e = e.toLowerCase()).split(';')[0]).trim()
+              }),
+              (e.getImageQuality = function (e) {
+                return e === a.ServiceProfile.IMAGE_0_COMPLIANCE_LEVEL_1 ||
+                  e === a.ServiceProfile.IMAGE_0_COMPLIANCE_LEVEL_2 ||
+                  e === a.ServiceProfile.IMAGE_1_COMPLIANCE_LEVEL_1 ||
+                  e === a.ServiceProfile.IMAGE_1_COMPLIANCE_LEVEL_2 ||
+                  e === a.ServiceProfile.IMAGE_0_CONFORMANCE_LEVEL_1 ||
+                  e === a.ServiceProfile.IMAGE_0_CONFORMANCE_LEVEL_2 ||
+                  e === a.ServiceProfile.IMAGE_1_CONFORMANCE_LEVEL_1 ||
+                  e === a.ServiceProfile.IMAGE_1_CONFORMANCE_LEVEL_2 ||
+                  e === a.ServiceProfile.IMAGE_1_LEVEL_1 ||
+                  e === a.ServiceProfile.IMAGE_1_PROFILE_LEVEL_1 ||
+                  e === a.ServiceProfile.IMAGE_1_LEVEL_2 ||
+                  e === a.ServiceProfile.IMAGE_1_PROFILE_LEVEL_2
+                  ? 'native'
+                  : 'default';
+              }),
+              (e.getInexactLocale = function (e) {
+                return -1 !== e.indexOf('-') ? e.substr(0, e.indexOf('-')) : e
+              }),
+              (e.getLocalisedValue = function (e, t) {
+                if (!Array.isArray(e)) return e
+                for (var r = 0; r < e.length; r++) {
+                  let n = e[r]
+                  if (t === n['@language']) return n['@value'];
+                }
+                let o = t.substr(0, t.indexOf('-'))
+                for (r = 0; r < e.length; r++) {
+                  let i = e[r]
+                  if (i['@language'] === o) return i['@value'];
+                }
+                return null
+              }),
+              (e.generateTreeNodeIds = function (t, r) {
+                let n
+                ;(void 0 === r && (r = 0),
+                  (n = t.parentNode ? t.parentNode.id + '-' + r : '0'),
+                  (t.id = n))
+                for (let o = 0; o < t.nodes.length; o++) {
+                  let i = t.nodes[o]
+                  e.generateTreeNodeIds(i, o)
+                }
+              }),
+              (e.normaliseType = function (e) {
+                return -1 !== (e = (e || '').toLowerCase()).indexOf(':')
+                  ? e.split(':')[1]
+                  : e
+              }),
+              (e.normaliseUrl = function (e) {
+                return (
+                  -1 !== (e = e.substr(e.indexOf('://'))).indexOf('#') &&
+                    (e = e.split('#')[0]),
+                  e
+                )
+              }),
+              (e.normalisedUrlsMatch = function (t, r) {
+                return e.normaliseUrl(t) === e.normaliseUrl(r)
+              }),
+              (e.isImageProfile = function (t) {
+                return !!(
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_0_COMPLIANCE_LEVEL_0) ||
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_0_COMPLIANCE_LEVEL_1) ||
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_0_COMPLIANCE_LEVEL_2) ||
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_1_COMPLIANCE_LEVEL_0) ||
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_1_COMPLIANCE_LEVEL_2) ||
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_0_CONFORMANCE_LEVEL_0) ||
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_0_CONFORMANCE_LEVEL_1) ||
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_0_CONFORMANCE_LEVEL_2) ||
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_1_CONFORMANCE_LEVEL_1) ||
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_1_CONFORMANCE_LEVEL_2) ||
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_1_LEVEL_0) ||
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_1_PROFILE_LEVEL_0) ||
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_1_LEVEL_1) ||
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_1_PROFILE_LEVEL_1) ||
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_1_LEVEL_2) ||
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_1_PROFILE_LEVEL_2) ||
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_2_LEVEL_0) ||
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_2_PROFILE_LEVEL_0) ||
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_2_LEVEL_1) ||
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_2_PROFILE_LEVEL_1) ||
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_2_LEVEL_2) ||
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_2_PROFILE_LEVEL_2)
+                )
+              }),
+              (e.isImageServiceType = function (e) {
+                return (
+                  (null !== e && e.toLowerCase() === a.ServiceType.IMAGE_SERVICE_2.toLowerCase()) ||
+                  e === a.ServiceType.IMAGE_SERVICE_3.toLowerCase()
+                )
+              }),
+              (e.isLevel0ImageProfile = function (t) {
+                return !!(
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_0_COMPLIANCE_LEVEL_0) ||
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_1_COMPLIANCE_LEVEL_0) ||
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_0_CONFORMANCE_LEVEL_0) ||
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_1_CONFORMANCE_LEVEL_0) ||
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_1_LEVEL_0) ||
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_1_PROFILE_LEVEL_0) ||
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_2_LEVEL_0) ||
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_2_PROFILE_LEVEL_0)
+                )
+              }),
+              (e.isLevel1ImageProfile = function (t) {
+                return !!(
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_0_COMPLIANCE_LEVEL_1) ||
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_1_COMPLIANCE_LEVEL_1) ||
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_0_CONFORMANCE_LEVEL_1) ||
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_1_CONFORMANCE_LEVEL_1) ||
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_1_LEVEL_1) ||
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_1_PROFILE_LEVEL_1) ||
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_2_LEVEL_1) ||
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_2_PROFILE_LEVEL_1)
+                )
+              }),
+              (e.isLevel2ImageProfile = function (t) {
+                return !!(
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_0_COMPLIANCE_LEVEL_2) ||
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_1_COMPLIANCE_LEVEL_2) ||
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_0_CONFORMANCE_LEVEL_2) ||
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_1_CONFORMANCE_LEVEL_2) ||
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_1_LEVEL_2) ||
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_1_PROFILE_LEVEL_2) ||
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_2_LEVEL_2) ||
+                  e.normalisedUrlsMatch(t, a.ServiceProfile.IMAGE_2_PROFILE_LEVEL_2)
+                )
+              }),
+              (e.parseManifest = function (e, t) {
+                return i.Deserialiser.parse(e, t)
+              }),
+              (e.checkStatus = function (e) {
+                if (e.ok) return e
+                var t = new Error(e.statusText)
+                return ((t.response = e), Promise.reject(t))
+              }),
+              (e.loadManifest = function (t) {
+                return new Promise(function (r, n) {
+                  fetch(t)
+                    .then(e.checkStatus)
+                    .then(function (e) {
+                      return e.json()
+                    })
+                    .then(function (e) {
+                      r(e)
+                    })
+                    .catch(function (e) {
+                      n()
+                    })
+                })
+              }),
+              (e.loadExternalResourcesAuth1 = function (t, r, n, o, i, a, s, u) {
+                return new Promise(function (l, c) {
+                  let p = t.map(function (t) {
+                    return e.loadExternalResourceAuth1(t, r, n, o, i, a, s, u)
+                  })
+                  Promise.all(p)
+                    .then(function () {
+                      l(t)
+                    })
+                    .catch(function (e) {
+                      c(e)
+                    })
+                })
+              }),
+              (e.loadExternalResourceAuth1 = function (t, r, i, a, u, l, c, p) {
+                return n(this, void 0, void 0, function () {
+                  let n
+                  return o(this, function (o) {
+                    switch (o.label) {
+                      case 0:
+                        return [4, a(t)]
+                      case 1:
+                        return (n = o.sent()) ? [4, t.getData(n)] : [3, 6]
+                      case 2:
+                        return (o.sent(), t.status !== s.OK ? [3, 3] : [2, t])
+                      case 3:
+                        return [4, e.doAuthChain(t, r, i, u, l, c, p)]
+                      case 4:
+                        ;(o.sent(), (o.label = 5))
+                      case 5:
+                        if (t.status === s.OK || t.status === s.MOVED_TEMPORARILY) return [2, t]
+                        throw e.createAuthorizationFailedError()
+                      case 6:
+                        return [4, t.getData()]
+                      case 7:
+                        return (
+                          o.sent(),
+                          t.status !== s.MOVED_TEMPORARILY && t.status !== s.UNAUTHORIZED
+                            ? [3, 9]
+                            : [4, e.doAuthChain(t, r, i, u, l, c, p)]
+                        )
+                      case 8:
+                        ;(o.sent(), (o.label = 9))
+                      case 9:
+                        if (t.status === s.OK || t.status === s.MOVED_TEMPORARILY) return [2, t]
+                        throw e.createAuthorizationFailedError()
+                    }
+                  })
+                })
+              }),
+              (e.doAuthChain = function (t, r, i, a, u, l, c) {
+                return n(this, void 0, void 0, function () {
+                  let n, p, f, h, _, g, d, v
+                  return o(this, function (o) {
+                    switch (o.label) {
+                      case 0:
+                        return t.isAccessControlled()
+                          ? ((n = t.externalService) && (n.options = t.options),
+                            (p = t.kioskService) && (p.options = t.options),
+                            (f = t.clickThroughService) && (f.options = t.options),
+                            (h = t.loginService) && (h.options = t.options),
+                            t.isResponseHandled || t.status !== s.MOVED_TEMPORARILY
+                              ? [3, 2]
+                              : [4, l(t)])
+                          : [2, t]
+                      case 1:
+                      case 3:
+                      case 6:
+                      case 10:
+                      case 14:
+                        return (o.sent(), [2, t])
+                      case 2:
+                        return (
+                          (_ = null),
+                          (g = null),
+                          (_ = n) ? ((g = _), [4, e.attemptResourceWithToken(t, i, _)]) : [3, 4]
+                        )
+                      case 4:
+                        return (_ = p) ? ((g = _), (d = r(_)) ? [4, a(d)] : [3, 7]) : [3, 7]
+                      case 5:
+                      case 9:
+                      case 13:
+                        return (o.sent(), [4, e.attemptResourceWithToken(t, i, _)])
+                      case 7:
+                        return (_ = f) ? ((g = _), [4, u(t, _)]) : [3, 11]
+                      case 8:
+                        return (v = o.sent()) ? [4, a(v)] : [3, 11]
+                      case 11:
+                        return (_ = h) ? ((g = _), [4, u(t, _)]) : [3, 15]
+                      case 12:
+                        return (v = o.sent()) ? [4, a(v)] : [3, 15]
+                      case 15:
+                        return (g && c(t, g), [2])
+                    }
+                  })
+                })
+              }),
+              (e.attemptResourceWithToken = function (e, t, r) {
+                return n(this, void 0, void 0, function () {
+                  let n, i
+                  return o(this, function (o) {
+                    switch (o.label) {
+                      case 0:
+                        return (n = r.getService(a.ServiceProfile.AUTH_1_TOKEN))
+                          ? [4, t(e, n)]
+                          : [3, 3]
+                      case 1:
+                        return (i = o.sent()) && i.accessToken ? [4, e.getData(i)] : [3, 3]
+                      case 2:
+                        return (o.sent(), [2, e])
+                      case 3:
+                        return [2]
+                    }
+                  })
+                })
+              }),
+              (e.loadExternalResourcesAuth09 = function (t, r, n, o, i, a, s, u, l, c) {
+                return new Promise(function (p, f) {
+                  let h = t.map(function (t) {
+                    return e.loadExternalResourceAuth09(t, r, n, o, i, a, s, u, l, c)
+                  })
+                  Promise.all(h)
+                    .then(function () {
+                      p(t)
+                    })
+                    .catch(function (e) {
+                      f(e)
+                    })
+                })
+              }),
+              (e.loadExternalResourceAuth09 = function (t, r, n, o, i, a, u, l, c, p) {
+                return new Promise(function (f, h) {
+                  p && p.pessimisticAccessControl
+                    ? t
+                        .getData()
+                        .then(function () {
+                          t.isAccessControlled()
+                            ? t.clickThroughService
+                              ? (f(n(t)), f(o(t)))
+                              : i(t)
+                                  .then(function () {
+                                    a(t, !0)
+                                      .then(function (r) {
+                                        t.getData(r)
+                                          .then(function () {
+                                            f(c(t))
+                                          })
+                                          .catch(function (t) {
+                                            h(e.createInternalServerError(t))
+                                          })
+                                      })
+                                      .catch(function (t) {
+                                        h(e.createInternalServerError(t))
+                                      })
+                                  })
+                                  .catch(function (t) {
+                                    h(e.createInternalServerError(t))
+                                  })
+                            : f(t)
+                        })
+                        .catch(function (t) {
+                          h(e.createInternalServerError(t))
+                        })
+                    : l(t, r)
+                        .then(function (p) {
+                          p
+                            ? t
+                                .getData(p)
+                                .then(function () {
+                                  t.status === s.OK
+                                    ? f(c(t))
+                                    : e
+                                        .authorize(t, r, n, o, i, a, u, l)
+                                        .then(function () {
+                                          f(c(t))
+                                        })
+                                        .catch(function (t) {
+                                          h(e.createAuthorizationFailedError())
+                                        })
+                                })
+                                .catch(function (t) {
+                                  h(e.createAuthorizationFailedError())
+                                })
+                            : e
+                                .authorize(t, r, n, o, i, a, u, l)
+                                .then(function () {
+                                  f(c(t))
+                                })
+                                .catch(function (t) {
+                                  h(e.createAuthorizationFailedError())
+                                })
+                        })
+                        .catch(function (t) {
+                          h(e.createAuthorizationFailedError())
+                        })
+                })
+              }),
+              (e.createError = function (e, t) {
+                let r = new Error()
+                return ((r.message = t), (r.name = String(e)), r)
+              }),
+              (e.createAuthorizationFailedError = function () {
+                return e.createError(i.StatusCode.AUTHORIZATION_FAILED, 'Authorization failed')
+              }),
+              (e.createRestrictedError = function () {
+                return e.createError(i.StatusCode.RESTRICTED, 'Restricted');
+              }),
+              (e.createInternalServerError = function (t) {
+                return e.createError(i.StatusCode.INTERNAL_SERVER_ERROR, t)
+              }),
+              (e.authorize = function (t, r, n, o, i, a, u, l) {
+                return new Promise(function (c, p) {
+                  t.getData().then(function () {
+                    t.isAccessControlled()
+                      ? l(t, r)
+                          .then(function (l) {
+                            l
+                              ? t
+                                  .getData(l)
+                                  .then(function () {
+                                    t.status === s.OK
+                                      ? c(t)
+                                      : e.showAuthInteraction(t, r, n, o, i, a, u, c, p)
+                                  })
+                                  .catch(function (t) {
+                                    p(e.createInternalServerError(t))
+                                  })
+                              : a(t, !1).then(function (l) {
+                                  l
+                                    ? u(t, l, r)
+                                        .then(function () {
+                                          t.getData(l)
+                                            .then(function () {
+                                              t.status === s.OK
+                                                ? c(t)
+                                                : e.showAuthInteraction(t, r, n, o, i, a, u, c, p)
+                                            })
+                                            .catch(function (t) {
+                                              p(e.createInternalServerError(t))
+                                            })
+                                        })
+                                        .catch(function (t) {
+                                          p(e.createInternalServerError(t))
+                                        })
+                                    : e.showAuthInteraction(t, r, n, o, i, a, u, c, p)
+                                })
+                          })
+                          .catch(function (t) {
+                            p(e.createInternalServerError(t))
+                          })
+                      : c(t)
+                  })
+                })
+              }),
+              (e.showAuthInteraction = function (t, r, n, o, i, a, u, l, c) {
+                t.status !== s.MOVED_TEMPORARILY || t.isResponseHandled
+                  ? t.clickThroughService && !t.isResponseHandled
+                    ? n(t).then(function () {
+                        a(t, !0)
+                          .then(function (n) {
+                            u(t, n, r)
+                              .then(function () {
+                                t.getData(n)
+                                  .then(function () {
+                                    l(t)
+                                  })
+                                  .catch(function (t) {
+                                    c(e.createInternalServerError(t))
+                                  })
+                              })
+                              .catch(function (t) {
+                                c(e.createInternalServerError(t))
+                              })
+                          })
+                          .catch(function (t) {
+                            c(e.createInternalServerError(t))
+                          })
+                      })
+                    : i(t).then(function () {
+                        a(t, !0)
+                          .then(function (n) {
+                            u(t, n, r)
+                              .then(function () {
+                                t.getData(n)
+                                  .then(function () {
+                                    l(t)
+                                  })
+                                  .catch(function (t) {
+                                    c(e.createInternalServerError(t))
+                                  })
+                              })
+                              .catch(function (t) {
+                                c(e.createInternalServerError(t))
+                              })
+                          })
+                          .catch(function (t) {
+                            c(e.createInternalServerError(t))
+                          })
+                      })
+                  : l(t)
+              }),
+              (e.getService = function (e, t) {
+                for (let r = this.getServices(e), n = 0; n < r.length; n++) {
+                  let o = r[n]
+                  if (o.getProfile() === t) return o
+                }
+                return null
+              }),
+              (e.getResourceById = function (t, r) {
+                return e.traverseAndFind(t.__jsonld, '@id', r)
+              }),
+              (e.traverseAndFind = function (t, r, n) {
+                if (t.hasOwnProperty(r) && t[r] === n) return t
+                for (let o = 0; o < Object.keys(t).length; o++)
+                  if ('object' === typeof t[Object.keys(t)[o]]) {
+                    let i = e.traverseAndFind(t[Object.keys(t)[o]], r, n)
+                    if (null != i) return i
+                  }
+              }),
+              (e.getServices = function (t, r) {
+                let n = void 0 === r ? {} : r,
+                  o = n.onlyService,
+                  a = void 0 !== o && o,
+                  s = n.onlyServices,
+                  u = void 0 !== s && s,
+                  l = n.skipParentResources,
+                  c = []
+                ;(void 0 === l || !l) &&
+                  t &&
+                  t.options &&
+                  t.options.resource &&
+                  t.options.resource !== t &&
+                  c.push.apply(c, e.getServices(t.options.resource, { onlyServices: !0 }))
+                let p = u ? [] : (t.__jsonld || t).service || []
+                if (
+                  (Array.isArray(p) || (p = [p]),
+                  a || p.push.apply(p, (t.__jsonld || t).services || []),
+                  0 === p.length)
+                )
+                  return c
+                for (let f = 0; f < p.length; f++) {
+                  let h = p[f]
+                  if ('string' === typeof h) {
+                    let _ = this.getResourceById(t.options.resource, h)
+                    _ && c.push(new i.Service(_.__jsonld || _, t.options))
+                  } else c.push(new i.Service(h, t.options))
+                }
+                return c
+              }),
+              (e.getTemporalComponent = function (e) {
+                let t = /t=([^&]+)/g.exec(e),
+                  r = null
+                return (t && t[1] && (r = t[1].split(',')), r)
+              }),
+              e
+            )
+          })()
+          t.Utils = u
+        },
+        72: (e, t) => {
+          'use strict'
+          Object.defineProperty(t, '__esModule', { value: !0 })
+        },
+        107(e, t, r) {
+          'use strict';
+          let n,
+            o =
+              (this && this.__extends) ||
+              ((n = function (e, t) {
+                return (
+                  (n =
+                    Object.setPrototypeOf ||
+                    ({ __proto__: [] } instanceof Array &&
+                      function (e, t) {
+                        e.__proto__ = t
+                      }) ||
+                    function (e, t) {
+                      for (let r in t) Object.prototype.hasOwnProperty.call(t, r) && (e[r] = t[r])
+                    }),
+                  n(e, t)
+                )
+              }),
+              function (e, t) {
+                if ('function' !== typeof t && null !== t)
+                  throw new TypeError(
+                    'Class extends value ' +
+                      String(t) +
+                      ' is not a constructor or null',
+                  )
+                function r() {
+                  this.constructor = e
+                }
+                ;(n(e, t),
+                  (e.prototype =
+                    null === t ? Object.create(t) : ((r.prototype = t.prototype), new r())))
+              })
+          ;(Object.defineProperty(t, '__esModule', { value: !0 }), (t.IIIFResource = void 0))
+          let i = r(4799),
+            a = r(3957),
+            s = (function (e) {
+              function t(t, r) {
+                let n = e.call(this, t, r) || this
+                ;((n.index = -1), (n.isLoaded = !1))
+                let o = {
+                  defaultLabel: '-',
+                  locale: 'en-GB',
+                  resource: n,
+                  pessimisticAccessControl: !1,
+                }
+                return ((n.options = Object.assign(o, r)), n)
+              }
+              return (
+                o(t, e),
+                (t.prototype.getAttribution = function () {
+                  let e = this.getProperty('attribution');
+                  return e
+                    ? i.PropertyValue.parse(e, this.options.locale)
+                    : new i.PropertyValue([], this.options.locale)
+                }),
+                (t.prototype.getDescription = function () {
+                  let e = this.getProperty('description');
+                  return e
+                    ? i.PropertyValue.parse(e, this.options.locale)
+                    : new i.PropertyValue([], this.options.locale)
+                }),
+                (t.prototype.getHomepage = function () {
+                  let e = this.getProperty('homepage');
+                  return e
+                    ? 'string' === typeof e
+                      ? e
+                      : (Array.isArray(e) && e.length && (e = e[0]), e['@id'] || e.id)
+                    : null
+                }),
+                (t.prototype.getIIIFResourceType = function () {
+                  return i.Utils.normaliseType(this.getProperty('type'))
+                }),
+                (t.prototype.getLogo = function () {
+                  let e = this.getProperty('logo');
+                  if (!e) {
+                    let t = this.getProperty('provider');
+                    if (!t) return null
+                    var r = t.find(function (e) {
+                      return void 0 !== e.logo
+                    })
+                    e = r && void 0 !== r.logo ? r.logo : null
+                  }
+                  return e
+                    ? 'string' === typeof e
+                      ? e
+                      : (Array.isArray(e) && e.length && (e = e[0]),
+                        e['@id'] || (null == e ? void 0 : e.id))
+                    : null
+                }),
+                (t.prototype.getLicense = function () {
+                  return i.Utils.getLocalisedValue(this.getProperty('license'), this.options.locale)
+                }),
+                (t.prototype.getRights = function () {
+                  let e = this.getProperty('rights');
+                  return e
+                    ? 'string' === typeof e
+                      ? e
+                      : (Array.isArray(e) && e.length && (e = e[0]), e['@id'] || e.id)
+                    : null
+                }),
+                (t.prototype.getNavDate = function () {
+                  return new Date(this.getProperty('navDate'))
+                }),
+                (t.prototype.getRelated = function () {
+                  return this.getProperty('related');
+                }),
+                (t.prototype.getSeeAlso = function () {
+                  return this.getProperty('seeAlso');
+                }),
+                (t.prototype.getTrackingLabel = function () {
+                  let e = this.getService(a.ServiceProfile.TRACKING_EXTENSIONS)
+                  return e ? e.getProperty('trackingLabel') : '';
+                }),
+                (t.prototype.getDefaultTree = function () {
+                  return (
+                    (this.defaultTree = new i.TreeNode('root')),
+                    (this.defaultTree.data = this),
+                    this.defaultTree
+                  )
+                }),
+                (t.prototype.getRequiredStatement = function () {
+                  let e = null,
+                    t = this.getProperty('requiredStatement');
+                  if (t) (e = new i.LabelValuePair(this.options.locale)).parse(t)
+                  else {
+                    let r = this.getAttribution()
+                    r && r.length && ((e = new i.LabelValuePair(this.options.locale)).value = r)
+                  }
+                  return e
+                }),
+                (t.prototype.isCollection = function () {
+                  return this.getIIIFResourceType() === a.IIIFResourceType.COLLECTION
+                }),
+                (t.prototype.isManifest = function () {
+                  return this.getIIIFResourceType() === a.IIIFResourceType.MANIFEST
+                }),
+                (t.prototype.load = function () {
+                  let e = this
+                  return new Promise(function (t) {
+                    if (e.isLoaded) t(e)
+                    else {
+                      let r = e.options
+                      r.navDate = e.getNavDate()
+                      var n = e.__jsonld.id
+                      ;(n || (n = e.__jsonld['@id']),
+                        i.Utils.loadManifest(n).then(function (n) {
+                          e.parentLabel = e.getLabel().getValue(r.locale)
+                          var o = i.Deserialiser.parse(n, r)
+                          ;(((e = Object.assign(e, o)).index = r.index), t(e))
+                        }))
+                    }
+                  })
+                }),
+                t
+              )
+            })(i.ManifestResource)
+          t.IIIFResource = s
+        },
+        212(e, t) {
+          'use strict';
+          let r,
+            n =
+              (this && this.__extends) ||
+              ((r = function (e, t) {
+                return (
+                  (r =
+                    Object.setPrototypeOf ||
+                    ({ __proto__: [] } instanceof Array &&
+                      function (e, t) {
+                        e.__proto__ = t
+                      }) ||
+                    function (e, t) {
+                      for (let r in t) Object.prototype.hasOwnProperty.call(t, r) && (e[r] = t[r])
+                    }),
+                  r(e, t)
+                )
+              }),
+              function (e, t) {
+                if ('function' !== typeof t && null !== t)
+                  throw new TypeError(
+                    'Class extends value ' +
+                      String(t) +
+                      ' is not a constructor or null',
+                  )
+                function n() {
+                  this.constructor = e
+                }
+                ;(r(e, t),
+                  (e.prototype =
+                    null === t ? Object.create(t) : ((n.prototype = t.prototype), new n())))
+              })
+          ;(Object.defineProperty(t, '__esModule', { value: !0 }), (t.LanguageMap = void 0))
+          let o = (function (e) {
+            function t() {
+              return (null !== e && e.apply(this, arguments)) || this
+            }
+            return (
+              n(t, e),
+              (t.getValue = function (e, t) {
+                return e.getValue(t, '<br/>');
+              }),
+              (t.getValues = function (e, t) {
+                return e.getValues(t)
+              }),
+              t
+            )
+          })(Array)
+          t.LanguageMap = o
+        },
+        258(e, t, r) {
+          'use strict';
+          let n,
+            o =
+              (this && this.__extends) ||
+              ((n = function (e, t) {
+                return (
+                  (n =
+                    Object.setPrototypeOf ||
+                    ({ __proto__: [] } instanceof Array &&
+                      function (e, t) {
+                        e.__proto__ = t
+                      }) ||
+                    function (e, t) {
+                      for (let r in t) Object.prototype.hasOwnProperty.call(t, r) && (e[r] = t[r])
+                    }),
+                  n(e, t)
+                )
+              }),
+              function (e, t) {
+                if ('function' !== typeof t && null !== t)
+                  throw new TypeError(
+                    'Class extends value ' +
+                      String(t) +
+                      ' is not a constructor or null',
+                  )
+                function r() {
+                  this.constructor = e
+                }
+                ;(n(e, t),
+                  (e.prototype =
+                    null === t ? Object.create(t) : ((r.prototype = t.prototype), new r())))
+              })
+          ;(Object.defineProperty(t, '__esModule', { value: !0 }), (t.Resource = void 0))
+          let i = r(4799),
+            a = (function (e) {
+              function t(t, r) {
+                return e.call(this, t, r) || this
+              }
+              return (
+                o(t, e),
+                (t.prototype.getFormat = function () {
+                  let e = this.getProperty('format');
+                  return e ? e.toLowerCase() : null
+                }),
+                (t.prototype.getResources = function () {
+                  let e = []
+                  if (!this.__jsonld.resources) return e
+                  for (let t = 0; t < this.__jsonld.resources.length; t++) {
+                    let r = this.__jsonld.resources[t],
+                      n = new i.Annotation(r, this.options)
+                    e.push(n)
+                  }
+                  return e
+                }),
+                (t.prototype.getType = function () {
+                  let e = this.getProperty('type');
+                  return e ? i.Utils.normaliseType(e) : null
+                }),
+                (t.prototype.getWidth = function () {
+                  return this.getProperty('width');
+                }),
+                (t.prototype.getHeight = function () {
+                  return this.getProperty('height');
+                }),
+                (t.prototype.getMaxWidth = function () {
+                  return this.getProperty('maxWidth');
+                }),
+                (t.prototype.getMaxHeight = function () {
+                  return this.getProperty('maxHeight')
+                    ? null
+                    : this.getMaxWidth()
+                }),
+                t
+              )
+            })(i.ManifestResource)
+          t.Resource = a
+        },
+        346: (e) => {
+          e.exports = function (e) {
+            return null != e && 'object' === typeof e
+          }
+        },
+        659: (e, t, r) => {
+          const n = r(1873),
+            o = Object.prototype,
+            i = o.hasOwnProperty,
+            a = o.toString,
+            s = n ? n.toStringTag : void 0
+          e.exports = function (e) {
+            const t = i.call(e, s),
+              r = e[s]
+            try {
+              e[s] = void 0
+              var n = !0
+            } catch (e) {}
+            const o = a.call(e)
+            return (n && (t ? (e[s] = r) : delete e[s]), o)
+          }
+        },
+        672: (e, t) => {
+          'use strict'
+          Object.defineProperty(t, '__esModule', { value: !0 })
+        },
+        916: (e, t, r) => {
+          e.exports = self.fetch || (self.fetch = r(6782).default || r(6782))
+        },
+        1858: (e, t) => {
+          'use strict'
+          ;(Object.defineProperty(t, '__esModule', { value: !0 }), (t.Duration = void 0))
+          const r = (function () {
+            function e(e, t) {
+              ;((this.start = e), (this.end = t))
+            }
+            return (
+              (e.prototype.getLength = function () {
+                return this.end - this.start
+              }),
+              e
+            )
+          })()
+          t.Duration = r
+        },
+        1873: (e, t, r) => {
+          const n = r(9325).Symbol
+          e.exports = n
+        },
+        2006(e, t, r) {
+          'use strict';
+          let n,
+            o =
+              (this && this.__extends) ||
+              ((n = function (e, t) {
+                return (
+                  (n =
+                    Object.setPrototypeOf ||
+                    ({ __proto__: [] } instanceof Array &&
+                      function (e, t) {
+                        e.__proto__ = t
+                      }) ||
+                    function (e, t) {
+                      for (let r in t) Object.prototype.hasOwnProperty.call(t, r) && (e[r] = t[r])
+                    }),
+                  n(e, t)
+                )
+              }),
+              function (e, t) {
+                if ('function' !== typeof t && null !== t)
+                  throw new TypeError(
+                    'Class extends value ' +
+                      String(t) +
+                      ' is not a constructor or null',
+                  )
+                function r() {
+                  this.constructor = e
+                }
+                ;(n(e, t),
+                  (e.prototype =
+                    null === t ? Object.create(t) : ((r.prototype = t.prototype), new r())))
+              })
+          ;(Object.defineProperty(t, '__esModule', { value: !0 }),
+            (t.PropertyValue = t.LocalizedValue = void 0))
+          var i = r(41),
+            a = (function () {
+              function e(e, t, r) {
+                ;(void 0 === r && (r = 'none'),
+                  Array.isArray(e) && 1 === e.length ? (this._value = e[0]) : (this._value = e),
+                  ('none' !== t && '@none' !== t) || (t = void 0),
+                  (this._locale = t),
+                  (this._defaultLocale = r))
+              }
+              return (
+                (e.parseV2Value = function (t, r) {
+                  return 'string' === typeof t
+                    ? new e(t, void 0, r)
+                    : t['@value']
+                      ? new e(t['@value'], t['@language'], r)
+                      : null
+                }),
+                Object.defineProperty(e.prototype, 'value', {
+                  get () {
+                    return Array.isArray(this._value)
+                      ? this._value.join("<br/>")
+                      : this._value;
+                  },
+                  enumerable: !1,
+                  configurable: !0,
+                }),
+                Object.defineProperty(e.prototype, 'locale', {
+                  get () {
+                    return void 0 === this._locale
+                      ? this._defaultLocale
+                      : this._locale;
+                  },
+                  enumerable: !1,
+                  configurable: !0,
+                }),
+                (e.prototype.addValue = function (e) {
+                  ;(Array.isArray(this._value) || (this._value = [this._value]),
+                    Array.isArray(e) ? (this._value = this._value.concat(e)) : this._value.push(e))
+                }),
+                e
+              )
+            })()
+          t.LocalizedValue = a
+          var s = (function (e) {
+            function t(r, n) {
+              void 0 === r && (r = [])
+              var o = e.apply(this, r) || this
+              return ((o.__proto__ = t.prototype), (o._defaultLocale = n), o)
+            }
+            return (
+              o(t, e),
+              (t.parse = function (e, r) {
+                if (!e) return new t([], r)
+                if (Array.isArray(e)) {
+                  let n = (o = e
+                    .map(function (e) {
+                      return a.parseV2Value(e, r)
+                    })
+                    .filter(function (e) {
+                      return null !== e
+                    })).reduce(function (e, t) {
+                    let r = t._locale
+                    return (r || (r = 'none'), e[r] ? e[r].addValue(t._value) : (e[r] = t), e)
+                  }, {})
+                  return new t(Object.values(n), r)
+                }
+                return 'string' === typeof e
+                  ? new t([new a(e, void 0, r)], r)
+                  : e['@language'] || e['@value']
+                    ? new t(null !== (o = a.parseV2Value(e)) ? [o] : [], r)
+                    : new t(
+                        Object.keys(e).map(function (t) {
+                          let n = e[t]
+                          if (!Array.isArray(n))
+                            throw new Error(
+                              'A IIIF v3 localized property value must have an array as the value for a given language.',
+                            )
+                          return new a(n, t, r)
+                        }),
+                        r
+                      )
+                var o
+              }),
+              (t.prototype.getSuitableLocale = function (e) {
+                for (
+                  var t = Array.from(this.values())
+                      .map(function (e) {
+                        return e._locale
+                      })
+                      .filter(function (e) {
+                        return void 0 !== e
+                      }),
+                    r = function (e) {
+                      let r = t.find(function (t) {
+                        return t === e
+                      })
+                      if (r) return { value: r }
+                    },
+                    n = 0,
+                    o = e;
+                  n < o.length;
+                  n++
+                ) {
+                  let a = r(o[n])
+                  if ('object' === typeof a) return a.value
+                }
+                for (
+                  let s = function (e) {
+                      let r = t.find(function (t) {
+                        return i.Utils.getInexactLocale(t) === i.Utils.getInexactLocale(e)
+                      })
+                      if (r) return { value: r }
+                    },
+                    u = 0,
+                    l = e;
+                  u < l.length;
+                  u++
+                ) {
+                  let c = s(l[u])
+                  if ('object' === typeof c) return c.value
+                }
+              }),
+              (t.prototype.setValue = function (e, t) {
+                let r = void 0
+                if (t) {
+                  let n = this.getSuitableLocale([t])
+                  n &&
+                    (r = this.find(function (e) {
+                      return e._locale === n
+                    }))
+                } else
+                  r = this.find(function (e) {
+                    return void 0 === e._locale
+                  })
+                r ? (r._value = e) : this.push(new a(e, t, this._defaultLocale))
+              }),
+              (t.prototype.getValue = function (e, t) {
+                let r = this.getValues(e)
+                return 0 === r.length ? null : t ? r.join(t) : r[0]
+              }),
+              (t.prototype.getValues = function (e) {
+                if (!this.length) return []
+                var t
+                if (
+                  ((t = e ? (Array.isArray(e) ? e : [e]) : []),
+                  1 === this.length && void 0 === this[0]._locale)
+                ) {
+                  var r = this[0]._value
+                  return Array.isArray(r) ? r : [r]
+                }
+                let n = this.getSuitableLocale(t)
+                if (n)
+                  return (
+                    (r = this.find(function (e) {
+                      return e._locale === n
+                    })._value),
+                    Array.isArray(r) ? r : [r]
+                  )
+                var o = !this.find(function (e) {
+                  return void 0 === e._locale
+                })
+                if (o) return ((r = this[0]._value), Array.isArray(r) ? r : [r])
+                let i = this.find(function (e) {
+                  return void 0 === e._locale
+                })
+                return i ? (Array.isArray(i._value) ? i._value : [i._value]) : []
+              }),
+              t
+            )
+          })(Array)
+          t.PropertyValue = s
+        },
+        2184: (e, t) => {
+          'use strict'
+          Object.defineProperty(t, '__esModule', { value: !0 })
+        },
+        2315(e, t, r) {
+          'use strict';
+          let n,
+            o =
+              (this && this.__extends) ||
+              ((n = function (e, t) {
+                return (
+                  (n =
+                    Object.setPrototypeOf ||
+                    ({ __proto__: [] } instanceof Array &&
+                      function (e, t) {
+                        e.__proto__ = t
+                      }) ||
+                    function (e, t) {
+                      for (let r in t) Object.prototype.hasOwnProperty.call(t, r) && (e[r] = t[r])
+                    }),
+                  n(e, t)
+                )
+              }),
+              function (e, t) {
+                if ('function' !== typeof t && null !== t)
+                  throw new TypeError(
+                    'Class extends value ' +
+                      String(t) +
+                      ' is not a constructor or null',
+                  )
+                function r() {
+                  this.constructor = e
+                }
+                ;(n(e, t),
+                  (e.prototype =
+                    null === t ? Object.create(t) : ((r.prototype = t.prototype), new r())))
+              })
+          ;(Object.defineProperty(t, '__esModule', { value: !0 }), (t.ManifestResource = void 0))
+          let i = r(4799),
+            a = r(3957),
+            s = (function (e) {
+              function t(t, r) {
+                let n = e.call(this, t) || this
+                return ((n.options = r), n)
+              }
+              return (
+                o(t, e),
+                (t.prototype.getIIIFResourceType = function () {
+                  return i.Utils.normaliseType(this.getProperty('type'))
+                }),
+                (t.prototype.getLabel = function () {
+                  let e = this.getProperty('label');
+                  return e
+                    ? i.PropertyValue.parse(e, this.options.locale)
+                    : new i.PropertyValue([], this.options.locale)
+                }),
+                (t.prototype.getDefaultLabel = function () {
+                  return this.getLabel().getValue(this.options.locale)
+                }),
+                (t.prototype.getMetadata = function () {
+                  let e = this.getProperty('metadata'),
+                    t = []
+                  if (!e) return t
+                  for (let r = 0; r < e.length; r++) {
+                    let n = e[r],
+                      o = new i.LabelValuePair(this.options.locale)
+                    ;(o.parse(n), t.push(o))
+                  }
+                  return t
+                }),
+                (t.prototype.getRendering = function (e) {
+                  for (let t = this.getRenderings(), r = 0; r < t.length; r++) {
+                    let n = t[r]
+                    if (n.getFormat() === e) return n
+                  }
+                  return null
+                }),
+                (t.prototype.getRenderings = function () {
+                  let e,
+                    t = []
+                  if (!(e = this.__jsonld ? this.__jsonld.rendering : this.rendering)) return t
+                  Array.isArray(e) || (e = [e])
+                  for (let r = 0; r < e.length; r++) {
+                    let n = e[r]
+                    t.push(new i.Rendering(n, this.options))
+                  }
+                  return t
+                }),
+                (t.prototype.getRequiredStatement = function () {
+                  let e = null,
+                    t = this.getProperty('requiredStatement');
+                  return (t && (e = new i.LabelValuePair(this.options.locale)).parse(t), e)
+                }),
+                (t.prototype.getService = function (e) {
+                  return i.Utils.getService(this, e)
+                }),
+                (t.prototype.getServices = function () {
+                  return i.Utils.getServices(this)
+                }),
+                (t.prototype.getThumbnail = function () {
+                  let e = this.getProperty('thumbnail');
+                  return (
+                    Array.isArray(e) && (e = e[0]),
+                    e ? new i.Thumbnail(e, this.options) : null
+                  )
+                }),
+                (t.prototype.isAnnotation = function () {
+                  return this.getIIIFResourceType() === a.IIIFResourceType.ANNOTATION
+                }),
+                (t.prototype.isCanvas = function () {
+                  return this.getIIIFResourceType() === a.IIIFResourceType.CANVAS
+                }),
+                (t.prototype.isCollection = function () {
+                  return this.getIIIFResourceType() === a.IIIFResourceType.COLLECTION
+                }),
+                (t.prototype.isManifest = function () {
+                  return this.getIIIFResourceType() === a.IIIFResourceType.MANIFEST
+                }),
+                (t.prototype.isRange = function () {
+                  return this.getIIIFResourceType() === a.IIIFResourceType.RANGE
+                }),
+                (t.prototype.isSequence = function () {
+                  return this.getIIIFResourceType() === a.IIIFResourceType.SEQUENCE
+                }),
+                t
+              )
+            })(i.JSONLDResource)
+          t.ManifestResource = s
+        },
+        2339(e, t, r) {
+          'use strict';
+          let n,
+            o =
+              (this && this.__extends) ||
+              ((n = function (e, t) {
+                return (
+                  (n =
+                    Object.setPrototypeOf ||
+                    ({ __proto__: [] } instanceof Array &&
+                      function (e, t) {
+                        e.__proto__ = t
+                      }) ||
+                    function (e, t) {
+                      for (let r in t) Object.prototype.hasOwnProperty.call(t, r) && (e[r] = t[r])
+                    }),
+                  n(e, t)
+                )
+              }),
+              function (e, t) {
+                if ('function' !== typeof t && null !== t)
+                  throw new TypeError(
+                    'Class extends value ' +
+                      String(t) +
+                      ' is not a constructor or null',
+                  )
+                function r() {
+                  this.constructor = e
+                }
+                ;(n(e, t),
+                  (e.prototype =
+                    null === t ? Object.create(t) : ((r.prototype = t.prototype), new r())))
+              })
+          ;(Object.defineProperty(t, '__esModule', { value: !0 }), (t.AnnotationBody = void 0))
+          let i = r(4799),
+            a = (function (e) {
+              function t(t, r) {
+                return e.call(this, t, r) || this
+              }
+              return (
+                o(t, e),
+                (t.prototype.getFormat = function () {
+                  let e = this.getProperty('format');
+                  return e ? i.Utils.getMediaType(e) : null
+                }),
+                (t.prototype.getType = function () {
+                  return this.getProperty('type')
+                    ? i.Utils.normaliseType(this.getProperty('type'))
+                    : null
+                }),
+                (t.prototype.getValue = function () {
+                  return this.getProperty('value');
+                }),
+                (t.prototype.getLanguage = function () {
+                  return this.getProperty('language');
+                }),
+                (t.prototype.getWidth = function () {
+                  return this.getProperty('width');
+                }),
+                (t.prototype.getHeight = function () {
+                  return this.getProperty('height');
+                }),
+                t
+              )
+            })(i.ManifestResource)
+          t.AnnotationBody = a
+        },
+        2428: (e, t, r) => {
+          const n = r(7534),
+            o = r(346),
+            i = Object.prototype,
+            a = i.hasOwnProperty,
+            s = i.propertyIsEnumerable,
+            u = n(
+              (function () {
+                return arguments
+              })()
+            )
+              ? n
+              : function (e) {
+                  return o(e) && a.call(e, 'callee') && !s.call(e, 'callee');
+                }
+          e.exports = u
+        },
+        2552: (e, t, r) => {
+          const n = r(1873),
+            o = r(659),
+            i = r(9350),
+            a = n ? n.toStringTag : void 0
+          e.exports = function (e) {
+            return null == e
+              ? void 0 === e
+                ? '[object Undefined]'
+                : '[object Null]'
+              : a && a in Object(e)
+                ? o(e)
+                : i(e)
+          }
+        },
+        2639: (e, t) => {
+          'use strict'
+          ;(Object.defineProperty(t, '__esModule', { value: !0 }), (t.Size = void 0))
+          t.Size = function (e, t) {
+            ;((this.width = e), (this.height = t))
+          }
+        },
+        2712: (e, t) => {
+          'use strict'
+          Object.defineProperty(t, '__esModule', { value: !0 })
+        },
+        2817: (e, t, r) => {
+          'use strict'
+          ;(Object.defineProperty(t, '__esModule', { value: !0 }), (t.LabelValuePair = void 0))
+          const n = r(4799),
+            o = (function () {
+              function e(e) {
+                this.defaultLocale = e
+              }
+              return (
+                (e.prototype.parse = function (e) {
+                  ;((this.resource = e),
+                    (this.label = n.PropertyValue.parse(this.resource.label, this.defaultLocale)),
+                    (this.value = n.PropertyValue.parse(this.resource.value, this.defaultLocale)))
+                }),
+                (e.prototype.getLabel = function (e) {
+                  return null === this.label
+                    ? null
+                    : (Array.isArray(e) && !e.length && (e = void 0),
+                      this.label.getValue(e || this.defaultLocale))
+                }),
+                (e.prototype.setLabel = function (e) {
+                  ;(null === this.label && (this.label = new n.PropertyValue([])),
+                    this.label.setValue(e, this.defaultLocale))
+                }),
+                (e.prototype.getValue = function (e, t) {
+                  return (
+                    void 0 === t && (t = '<br/>'),
+                    null === this.value
+                      ? null
+                      : (Array.isArray(e) && !e.length && (e = void 0),
+                        this.value.getValue(e || this.defaultLocale, t))
+                  )
+                }),
+                (e.prototype.getValues = function (e) {
+                  return null === this.value
+                    ? []
+                    : (Array.isArray(e) && !e.length && (e = void 0),
+                      this.value.getValues(e || this.defaultLocale))
+                }),
+                (e.prototype.setValue = function (e) {
+                  ;(null === this.value && (this.value = new n.PropertyValue([])),
+                    this.value.setValue(e, this.defaultLocale))
+                }),
+                e
+              )
+            })()
+          t.LabelValuePair = o
+        },
+        3039(e, t, r) {
+          'use strict';
+          let n,
+            o =
+              (this && this.__extends) ||
+              ((n = function (e, t) {
+                return (
+                  (n =
+                    Object.setPrototypeOf ||
+                    ({ __proto__: [] } instanceof Array &&
+                      function (e, t) {
+                        e.__proto__ = t
+                      }) ||
+                    function (e, t) {
+                      for (let r in t) Object.prototype.hasOwnProperty.call(t, r) && (e[r] = t[r])
+                    }),
+                  n(e, t)
+                )
+              }),
+              function (e, t) {
+                if ('function' !== typeof t && null !== t)
+                  throw new TypeError(
+                    'Class extends value ' +
+                      String(t) +
+                      ' is not a constructor or null',
+                  )
+                function r() {
+                  this.constructor = e
+                }
+                ;(n(e, t),
+                  (e.prototype =
+                    null === t ? Object.create(t) : ((r.prototype = t.prototype), new r())))
+              })
+          ;(Object.defineProperty(t, '__esModule', { value: !0 }), (t.Annotation = void 0))
+          let i = r(4799),
+            a = (function (e) {
+              function t(t, r) {
+                return e.call(this, t, r) || this
+              }
+              return (
+                o(t, e),
+                (t.prototype.getBody = function () {
+                  let e = [],
+                    t = this.getProperty('body');
+                  if (t)
+                    if (Array.isArray(t))
+                      for (var r = 0; r < t.length; r++)
+                        if ((a = t[r]).items)
+                          for (let n = 0; n < a.items.length; n++) {
+                            let o = a.items[n]
+                            e.push(new i.AnnotationBody(o, this.options))
+                          }
+                        else e.push(new i.AnnotationBody(a, this.options))
+                    else if (t.items)
+                      for (r = 0; r < t.items.length; r++) {
+                        var a = t.items[r]
+                        e.push(new i.AnnotationBody(a, this.options))
+                      }
+                    else e.push(new i.AnnotationBody(t, this.options))
+                  return e
+                }),
+                (t.prototype.getMotivation = function () {
+                  return this.getProperty('motivation') || null
+                }),
+                (t.prototype.getOn = function () {
+                  return this.getProperty('on');
+                }),
+                (t.prototype.getTarget = function () {
+                  return this.getProperty('target');
+                }),
+                (t.prototype.getResource = function () {
+                  return new i.Resource(this.getProperty('resource'), this.options)
+                }),
+                t
+              )
+            })(i.ManifestResource)
+          t.Annotation = a
+        },
+        3043: (e, t) => {
+          'use strict'
+          let r
+          ;(Object.defineProperty(t, '__esModule', { value: !0 }),
+            (t.ManifestType = void 0),
+            (function (e) {
+              ;((e.EMPTY = ''), (e.MANUSCRIPT = 'manuscript'), (e.MONOGRAPH = 'monograph'))
+            })(r || (t.ManifestType = r = {})))
+        },
+        3120: (e, t, r) => {
+          const n = r(4528),
+            o = r(5891)
+          e.exports = function e(t, r, i, a, s) {
+            let u = -1,
+              l = t.length
+            for (i || (i = o), s || (s = []); ++u < l; ) {
+              const c = t[u]
+              r > 0 && i(c) ? (r > 1 ? e(c, r - 1, i, a, s) : n(s, c)) : a || (s[s.length] = c)
+            }
+            return s
+          }
+        },
+        3167: (e, t) => {
+          'use strict'
+          Object.defineProperty(t, '__esModule', { value: !0 })
+        },
+        3176: (e, t, r) => {
+          const n = r(3120),
+            o = 1 / 0
+          e.exports = function (e) {
+            return null != e && e.length ? n(e, o) : []
+          }
+        },
+        3435(e, t, r) {
+          'use strict';
+          let n,
+            o =
+              (this && this.__extends) ||
+              ((n = function (e, t) {
+                return (
+                  (n =
+                    Object.setPrototypeOf ||
+                    ({ __proto__: [] } instanceof Array &&
+                      function (e, t) {
+                        e.__proto__ = t
+                      }) ||
+                    function (e, t) {
+                      for (let r in t) Object.prototype.hasOwnProperty.call(t, r) && (e[r] = t[r])
+                    }),
+                  n(e, t)
+                )
+              }),
+              function (e, t) {
+                if ('function' !== typeof t && null !== t)
+                  throw new TypeError(
+                    'Class extends value ' +
+                      String(t) +
+                      ' is not a constructor or null',
+                  )
+                function r() {
+                  this.constructor = e
+                }
+                ;(n(e, t),
+                  (e.prototype =
+                    null === t ? Object.create(t) : ((r.prototype = t.prototype), new r())))
+              })
+          ;(Object.defineProperty(t, '__esModule', { value: !0 }), (t.AnnotationList = void 0))
+          let i = r(4799),
+            a = (function (e) {
+              function t(t, r, n) {
+                let o = e.call(this, r) || this
+                return ((o.label = t), (o.options = n), o)
+              }
+              return (
+                o(t, e),
+                (t.prototype.getIIIFResourceType = function () {
+                  return i.Utils.normaliseType(this.getProperty('type'))
+                }),
+                (t.prototype.getLabel = function () {
+                  return this.label
+                }),
+                (t.prototype.getResources = function () {
+                  let e = this
+                  return this.getProperty('resources').map(function (t) {
+                    return new i.Annotation(t, e.options)
+                  })
+                }),
+                (t.prototype.load = function () {
+                  let e = this
+                  return new Promise(function (t, r) {
+                    if (e.isLoaded) t(e)
+                    else {
+                      let n = e.__jsonld.id
+                      ;(n || (n = e.__jsonld['@id']),
+                        i.Utils.loadManifest(n)
+                          .then(function (r) {
+                            ;((e.__jsonld = r),
+                              (e.context = e.getProperty('context')),
+                              (e.id = e.getProperty('id')),
+                              (e.isLoaded = !0),
+                              t(e))
+                          })
+                          .catch(r))
+                    }
+                  })
+                }),
+                t
+              )
+            })(i.JSONLDResource)
+          t.AnnotationList = a
+        },
+        3556(e, t, r) {
+          'use strict';
+          let n,
+            o =
+              (this && this.__extends) ||
+              ((n = function (e, t) {
+                return (
+                  (n =
+                    Object.setPrototypeOf ||
+                    ({ __proto__: [] } instanceof Array &&
+                      function (e, t) {
+                        e.__proto__ = t
+                      }) ||
+                    function (e, t) {
+                      for (let r in t) Object.prototype.hasOwnProperty.call(t, r) && (e[r] = t[r])
+                    }),
+                  n(e, t)
+                )
+              }),
+              function (e, t) {
+                if ('function' !== typeof t && null !== t)
+                  throw new TypeError(
+                    'Class extends value ' +
+                      String(t) +
+                      ' is not a constructor or null',
+                  )
+                function r() {
+                  this.constructor = e
+                }
+                ;(n(e, t),
+                  (e.prototype =
+                    null === t ? Object.create(t) : ((r.prototype = t.prototype), new r())))
+              })
+          ;(Object.defineProperty(t, '__esModule', { value: !0 }), (t.AnnotationPage = void 0))
+          let i = (function (e) {
+            function t(t, r) {
+              return e.call(this, t, r) || this
+            }
+            return (
+              o(t, e),
+              (t.prototype.getItems = function () {
+                return this.getProperty('items');
+              }),
+              t
+            )
+          })(r(4799).ManifestResource)
+          t.AnnotationPage = i
+        },
+        3845(e, t, r) {
+          'use strict';
+          let n,
+            o =
+              (this && this.__extends) ||
+              ((n = function (e, t) {
+                return (
+                  (n =
+                    Object.setPrototypeOf ||
+                    ({ __proto__: [] } instanceof Array &&
+                      function (e, t) {
+                        e.__proto__ = t
+                      }) ||
+                    function (e, t) {
+                      for (let r in t) Object.prototype.hasOwnProperty.call(t, r) && (e[r] = t[r])
+                    }),
+                  n(e, t)
+                )
+              }),
+              function (e, t) {
+                if ('function' !== typeof t && null !== t)
+                  throw new TypeError(
+                    'Class extends value ' +
+                      String(t) +
+                      ' is not a constructor or null',
+                  )
+                function r() {
+                  this.constructor = e
+                }
+                ;(n(e, t),
+                  (e.prototype =
+                    null === t ? Object.create(t) : ((r.prototype = t.prototype), new r())))
+              })
+          ;(Object.defineProperty(t, '__esModule', { value: !0 }), (t.Range = void 0))
+          let i = r(4799),
+            a = r(3957),
+            s = (function (e) {
+              function t(t, r) {
+                let n = e.call(this, t, r) || this
+                return ((n._ranges = null), (n.canvases = null), (n.items = []), n)
+              }
+              return (
+                o(t, e),
+                (t.prototype.getCanvasIds = function () {
+                  return this.__jsonld.canvases
+                    ? this.__jsonld.canvases
+                    : this.canvases
+                      ? this.canvases
+                      : []
+                }),
+                (t.prototype.getDuration = function () {
+                  if (this.canvases && this.canvases.length) {
+                    for (var e = [], t = [], r = 0, n = this.canvases; r < n.length; r++)
+                      if ((_ = n[r])) {
+                        let o = _.match(/(.*)#t=([0-9.]+),?([0-9.]+)?/) || [void 0, _],
+                          a = o[1],
+                          s = o[2],
+                          u = o[3]
+                        a && (e.push(parseFloat(s)), t.push(parseFloat(u)))
+                      }
+                    if (e.length && t.length)
+                      return new i.Duration(Math.min.apply(Math, e), Math.max.apply(Math, t))
+                  } else {
+                    ;((e = []), (t = []))
+                    for (var l = 0, c = (d = this.getRanges()); l < c.length; l++)
+                      (v = c[l].getDuration()) && (e.push(v.start), t.push(v.end))
+                    if (e.length && t.length)
+                      return new i.Duration(Math.min.apply(Math, e), Math.max.apply(Math, t))
+                  }
+                  let p, f
+                  if (this.canvases && this.canvases.length)
+                    for (var h = 0; h < this.canvases.length; h++) {
+                      var _ = this.canvases[h],
+                        g = i.Utils.getTemporalComponent(_)
+                      g &&
+                        g.length > 1 &&
+                        (0 === h && (p = Number(g[0])),
+                        h === this.canvases.length - 1 && (f = Number(g[1])))
+                    }
+                  else {
+                    var d = this.getRanges()
+                    for (h = 0; h < d.length; h++) {
+                      var v
+                      ;(v = d[h].getDuration()) &&
+                        (0 === h && (p = v.start), h === d.length - 1 && (f = v.end))
+                    }
+                  }
+                  if (void 0 !== p && void 0 !== f) return new i.Duration(p, f)
+                }),
+                (t.prototype.getRanges = function () {
+                  return this._ranges
+                    ? this._ranges
+                    : (this._ranges = this.items.filter(function (e) {
+                        return e.isRange()
+                      }))
+                }),
+                (t.prototype.getBehavior = function () {
+                  let e = this.getProperty('behavior');
+                  return (Array.isArray(e) && (e = e[0]), e || null)
+                }),
+                (t.prototype.getViewingDirection = function () {
+                  return this.getProperty('viewingDirection');
+                }),
+                (t.prototype.getViewingHint = function () {
+                  let e = this.getProperty('viewingHint');
+                  return (Array.isArray(e) && (e = e[0]), e || null)
+                }),
+                (t.prototype.getTree = function (e) {
+                  ;((e.data = this), (this.treeNode = e))
+                  let t = this.getRanges()
+                  if (t && t.length)
+                    for (let r = 0; r < t.length; r++) {
+                      let n = t[r],
+                        o = new i.TreeNode()
+                      ;(e.addNode(o), this._parseTreeNode(o, n))
+                    }
+                  return (i.Utils.generateTreeNodeIds(e), e)
+                }),
+                (t.prototype.spansTime = function (e) {
+                  let t = this.getDuration()
+                  return !!(t && e >= t.start && e <= t.end)
+                }),
+                (t.prototype._parseTreeNode = function (e, t) {
+                  ;((e.label = t.getLabel().getValue(this.options.locale)),
+                    (e.data = t),
+                    (e.data.type = i.Utils.normaliseType(i.TreeNodeType.RANGE)),
+                    (t.treeNode = e))
+                  var r = t.getRanges()
+                  if (r && r.length)
+                    for (let n = 0; n < r.length; n++) {
+                      let o = r[n]
+                      if (o.getBehavior() !== a.Behavior.NO_NAV) {
+                        let s = new i.TreeNode()
+                        ;(e.addNode(s), this._parseTreeNode(s, o))
+                      }
+                    }
+                }),
+                t
+              )
+            })(i.ManifestResource)
+          t.Range = s
+        },
+        3957: (e, t) => {
+          'use strict'
+          let r, n, o, i, a, s, u, l, c, p
+          ;(Object.defineProperty(t, '__esModule', { value: !0 }),
+            (t.ViewingHint =
+              t.ViewingDirection =
+              t.ServiceType =
+              t.ServiceProfile =
+              t.RenderingFormat =
+              t.MediaType =
+              t.IIIFResourceType =
+              t.ExternalResourceType =
+              t.Behavior =
+              t.AnnotationMotivation =
+                void 0),
+            (function (e) {
+              ;((e.BOOKMARKING = 'oa:bookmarking'),
+                (e.CLASSIFYING = 'oa:classifying'),
+                (e.COMMENTING = 'oa:commenting'),
+                (e.DESCRIBING = 'oa:describing'),
+                (e.EDITING = 'oa:editing'),
+                (e.HIGHLIGHTING = 'oa:highlighting'),
+                (e.IDENTIFYING = 'oa:identifying'),
+                (e.LINKING = 'oa:linking'),
+                (e.MODERATING = 'oa:moderating'),
+                (e.PAINTING = 'sc:painting'),
+                (e.QUESTIONING = 'oa:questioning'),
+                (e.REPLYING = 'oa:replying'),
+                (e.TAGGING = 'oa:tagging'),
+                (e.TRANSCRIBING = 'oad:transcribing'))
+            })(r || (t.AnnotationMotivation = r = {})),
+            (function (e) {
+              ;((e.AUTO_ADVANCE = 'auto-advance'),
+                (e.CONTINUOUS = 'continuous'),
+                (e.FACING_PAGES = 'facing-pages'),
+                (e.HIDDEN = 'hidden'),
+                (e.INDIVIDUALS = 'individuals'),
+                (e.MULTI_PART = 'multi-part'),
+                (e.NO_NAV = 'no-nav'),
+                (e.NON_PAGED = 'non-paged'),
+                (e.PAGED = 'paged'),
+                (e.REPEAT = 'repeat'),
+                (e.SEQUENCE = 'sequence'),
+                (e.THUMBNAIL_NAV = 'thumbnail-nav'),
+                (e.TOGETHER = 'together'),
+                (e.UNORDERED = 'unordered'))
+            })(n || (t.Behavior = n = {})),
+            (function (e) {
+              ;((e.CANVAS = 'canvas'),
+                (e.CHOICE = 'choice'),
+                (e.OA_CHOICE = 'oa:choice'),
+                (e.CONTENT_AS_TEXT = 'contentastext'),
+                (e.DATASET = 'dataset'),
+                (e.DOCUMENT = 'document'),
+                (e.IMAGE = 'image'),
+                (e.MODEL = 'model'),
+                (e.MOVING_IMAGE = 'movingimage'),
+                (e.PDF = 'pdf'),
+                (e.PHYSICAL_OBJECT = 'physicalobject'),
+                (e.SOUND = 'sound'),
+                (e.TEXT = 'text'),
+                (e.TEXTUALBODY = 'textualbody'),
+                (e.VIDEO = 'video'))
+            })(o || (t.ExternalResourceType = o = {})),
+            (function (e) {
+              ;((e.ANNOTATION = 'annotation'),
+                (e.CANVAS = 'canvas'),
+                (e.COLLECTION = 'collection'),
+                (e.MANIFEST = 'manifest'),
+                (e.RANGE = 'range'),
+                (e.SEQUENCE = 'sequence'))
+            })(i || (t.IIIFResourceType = i = {})),
+            (function (e) {
+              ;((e.AUDIO_MP4 = 'audio/mp4'),
+                (e.CORTO = 'application/corto'),
+                (e.DICOM = 'application/dicom'),
+                (e.DRACO = 'application/draco'),
+                (e.EPUB = 'application/epub+zip'),
+                (e.GIRDER = 'image/vnd.kitware.girder'),
+                (e.GLB = 'model/gltf-binary'),
+                (e.GLTF = 'model/gltf+json'),
+                (e.IIIF_PRESENTATION_2 =
+                  'application/ld+json;profile="http://iiif.io/api/presentation/2/context.json"'),
+                (e.IIIF_PRESENTATION_3 =
+                  'application/ld+json;profile="http://iiif.io/api/presentation/3/context.json"'),
+                (e.JPG = 'image/jpeg'),
+                (e.M3U8 = 'application/vnd.apple.mpegurl'),
+                (e.MP3 = 'audio/mp3'),
+                (e.MPEG = 'audio/mpeg'),
+                (e.MPEG_DASH = 'application/dash+xml'),
+                (e.OBJ = 'model/obj'),
+                (e.OPF = 'application/oebps-package+xml'),
+                (e.PDF = 'application/pdf'),
+                (e.PLY = 'application/ply'),
+                (e.THREEJS = 'application/vnd.threejs+json'),
+                (e.USDZ = 'model/vnd.usd+zip'),
+                (e.VIDEO_MP4 = 'video/mp4'),
+                (e.WAV = 'audio/wav'),
+                (e.WEBM = 'video/webm'))
+            })(a || (t.MediaType = a = {})),
+            (function (e) {
+              ;((e.DOC = 'application/msword'),
+                (e.DOCX =
+                  'application/vnd.openxmlformats-officedocument.wordprocessingml.document'),
+                (e.ODT = 'application/vnd.oasis.opendocument.text'),
+                (e.PDF = 'application/pdf'))
+            })(s || (t.RenderingFormat = s = {})),
+            (function (e) {
+              ;((e.IMAGE_0_COMPLIANCE_LEVEL_0 =
+                'http://library.stanford.edu/iiif/image-api/compliance.html#level0'),
+                (e.IMAGE_0_COMPLIANCE_LEVEL_1 =
+                  'http://library.stanford.edu/iiif/image-api/compliance.html#level1'),
+                (e.IMAGE_0_COMPLIANCE_LEVEL_2 =
+                  'http://library.stanford.edu/iiif/image-api/compliance.html#level2'),
+                (e.IMAGE_0_CONFORMANCE_LEVEL_0 =
+                  'http://library.stanford.edu/iiif/image-api/conformance.html#level0'),
+                (e.IMAGE_0_CONFORMANCE_LEVEL_1 =
+                  'http://library.stanford.edu/iiif/image-api/conformance.html#level1'),
+                (e.IMAGE_0_CONFORMANCE_LEVEL_2 =
+                  'http://library.stanford.edu/iiif/image-api/conformance.html#level2'),
+                (e.IMAGE_1_COMPLIANCE_LEVEL_0 =
+                  'http://library.stanford.edu/iiif/image-api/1.1/compliance.html#level0'),
+                (e.IMAGE_1_COMPLIANCE_LEVEL_1 =
+                  'http://library.stanford.edu/iiif/image-api/1.1/compliance.html#level1'),
+                (e.IMAGE_1_COMPLIANCE_LEVEL_2 =
+                  'http://library.stanford.edu/iiif/image-api/1.1/compliance.html#level2'),
+                (e.IMAGE_1_CONFORMANCE_LEVEL_0 =
+                  'http://library.stanford.edu/iiif/image-api/1.1/conformance.html#level0'),
+                (e.IMAGE_1_CONFORMANCE_LEVEL_1 =
+                  'http://library.stanford.edu/iiif/image-api/1.1/conformance.html#level1'),
+                (e.IMAGE_1_CONFORMANCE_LEVEL_2 =
+                  'http://library.stanford.edu/iiif/image-api/1.1/conformance.html#level2'),
+                (e.IMAGE_1_LEVEL_0 = 'http://iiif.io/api/image/1/level0.json'),
+                (e.IMAGE_1_PROFILE_LEVEL_0 = 'http://iiif.io/api/image/1/profiles/level0.json'),
+                (e.IMAGE_1_LEVEL_1 = 'http://iiif.io/api/image/1/level1.json'),
+                (e.IMAGE_1_PROFILE_LEVEL_1 = 'http://iiif.io/api/image/1/profiles/level1.json'),
+                (e.IMAGE_1_LEVEL_2 = 'http://iiif.io/api/image/1/level2.json'),
+                (e.IMAGE_1_PROFILE_LEVEL_2 = 'http://iiif.io/api/image/1/profiles/level2.json'),
+                (e.IMAGE_2_LEVEL_0 = 'http://iiif.io/api/image/2/level0.json'),
+                (e.IMAGE_2_PROFILE_LEVEL_0 = 'http://iiif.io/api/image/2/profiles/level0.json'),
+                (e.IMAGE_2_LEVEL_1 = 'http://iiif.io/api/image/2/level1.json'),
+                (e.IMAGE_2_PROFILE_LEVEL_1 = 'http://iiif.io/api/image/2/profiles/level1.json'),
+                (e.IMAGE_2_LEVEL_2 = 'http://iiif.io/api/image/2/level2.json'),
+                (e.IMAGE_2_PROFILE_LEVEL_2 = 'http://iiif.io/api/image/2/profiles/level2.json'),
+                (e.AUTH_0_CLICK_THROUGH = 'http://iiif.io/api/auth/0/login/clickthrough'),
+                (e.AUTH_0_LOGIN = 'http://iiif.io/api/auth/0/login'),
+                (e.AUTH_0_LOGOUT = 'http://iiif.io/api/auth/0/logout'),
+                (e.AUTH_0_RESTRICTED = 'http://iiif.io/api/auth/0/login/restricted'),
+                (e.AUTH_0_TOKEN = 'http://iiif.io/api/auth/0/token'),
+                (e.AUTH_1_CLICK_THROUGH = 'http://iiif.io/api/auth/1/clickthrough'),
+                (e.AUTH_1_EXTERNAL = 'http://iiif.io/api/auth/1/external'),
+                (e.AUTH_1_KIOSK = 'http://iiif.io/api/auth/1/kiosk'),
+                (e.AUTH_1_LOGIN = 'http://iiif.io/api/auth/1/login'),
+                (e.AUTH_1_LOGOUT = 'http://iiif.io/api/auth/1/logout'),
+                (e.AUTH_1_PROBE = 'http://iiif.io/api/auth/1/probe'),
+                (e.AUTH_1_TOKEN = 'http://iiif.io/api/auth/1/token'),
+                (e.SEARCH_0 = 'http://iiif.io/api/search/0/search'),
+                (e.SEARCH_0_AUTO_COMPLETE = 'http://iiif.io/api/search/0/autocomplete'),
+                (e.SEARCH_1 = 'http://iiif.io/api/search/1/search'),
+                (e.SEARCH_1_AUTO_COMPLETE = 'http://iiif.io/api/search/1/autocomplete'),
+                (e.TRACKING_EXTENSIONS = 'http://universalviewer.io/tracking-extensions-profile'),
+                (e.UI_EXTENSIONS = 'http://universalviewer.io/ui-extensions-profile'),
+                (e.PRINT_EXTENSIONS = 'http://universalviewer.io/print-extensions-profile'),
+                (e.SHARE_EXTENSIONS = 'http://universalviewer.io/share-extensions-profile'),
+                (e.DOWNLOAD_EXTENSIONS = 'http://universalviewer.io/download-extensions-profile'),
+                (e.OTHER_MANIFESTATIONS = 'http://iiif.io/api/otherManifestations.json'),
+                (e.IXIF = 'http://wellcomelibrary.org/ld/ixif/0/alpha.json'))
+            })(u || (t.ServiceProfile = u = {})),
+            (function (e) {
+              ;((e.IMAGE_SERVICE_2 = 'ImageService2'), (e.IMAGE_SERVICE_3 = 'ImageService3'))
+            })(l || (t.ServiceType = l = {})),
+            (function (e) {
+              ;((e.BOTTOM_TO_TOP = 'bottom-to-top'),
+                (e.LEFT_TO_RIGHT = 'left-to-right'),
+                (e.RIGHT_TO_LEFT = 'right-to-left'),
+                (e.TOP_TO_BOTTOM = 'top-to-bottom'))
+            })(c || (t.ViewingDirection = c = {})),
+            (function (e) {
+              ;((e.CONTINUOUS = 'continuous'),
+                (e.INDIVIDUALS = 'individuals'),
+                (e.NON_PAGED = 'non-paged'),
+                (e.PAGED = 'paged'),
+                (e.TOP = 'top'))
+            })(p || (t.ViewingHint = p = {})))
+        },
+        4029: (e, t, r) => {
+          'use strict'
+          ;(Object.defineProperty(t, '__esModule', { value: !0 }), (t.Deserialiser = void 0))
+          const n = r(4799),
+            o = (function () {
+              function e() {}
+              return (
+                (e.parse = function (e, t) {
+                  return ('string' == typeof e && (e = JSON.parse(e)), this.parseJson(e, t))
+                }),
+                (e.parseJson = function (e, t) {
+                  let r
+                  if (
+                    (t &&
+                      t.navDate &&
+                      !isNaN(t.navDate.getTime()) &&
+                      (e.navDate = t.navDate.toString()),
+                    e['@type'])
+                  )
+                    switch (e['@type']) {
+                      case 'sc:Collection':
+                        r = this.parseCollection(e, t)
+                        break;
+                      case 'sc:Manifest':
+                        r = this.parseManifest(e, t)
+                        break;
+                      default:
+                        return null
+                    }
+                  else
+                    switch (e.type) {
+                      case 'Collection':
+                        r = this.parseCollection(e, t)
+                        break;
+                      case 'Manifest':
+                        r = this.parseManifest(e, t)
+                        break;
+                      default:
+                        return null
+                    }
+                  return ((r.isLoaded = !0), r)
+                }),
+                (e.parseCollection = function (e, t) {
+                  let r = new n.Collection(e, t)
+                  return (
+                    t
+                      ? ((r.index = t.index || 0),
+                        t.resource && (r.parentCollection = t.resource.parentCollection))
+                      : (r.index = 0),
+                    this.parseCollections(r, t),
+                    this.parseManifests(r, t),
+                    this.parseItems(r, t),
+                    r
+                  )
+                }),
+                (e.parseCollections = function (e, t) {
+                  let r
+                  if (
+                    (e.__jsonld.collections
+                      ? (r = e.__jsonld.collections)
+                      : e.__jsonld.items &&
+                        (r = e.__jsonld.items.filter(function (e) {
+                          return 'collection' === e.type.toLowerCase()
+                        })),
+                    r)
+                  )
+                    for (let n = 0; n < r.length; n++) {
+                      t && (t.index = n)
+                      var o = this.parseCollection(r[n], t)
+                      ;((o.index = n), (o.parentCollection = e), e.items.push(o))
+                    }
+                }),
+                (e.parseManifest = function (e, t) {
+                  return new n.Manifest(e, t)
+                }),
+                (e.parseManifests = function (e, t) {
+                  let r
+                  if (
+                    (e.__jsonld.manifests
+                      ? (r = e.__jsonld.manifests)
+                      : e.__jsonld.items &&
+                        (r = e.__jsonld.items.filter(function (e) {
+                          return 'manifest' === e.type.toLowerCase()
+                        })),
+                    r)
+                  )
+                    for (let n = 0; n < r.length; n++) {
+                      let o = this.parseManifest(r[n], t)
+                      ;((o.index = n), (o.parentCollection = e), e.items.push(o))
+                    }
+                }),
+                (e.parseItem = function (e, t) {
+                  if (e['@type']) {
+                    if ('sc:manifest' === e['@type'].toLowerCase())
+                      return this.parseManifest(e, t)
+                    if ('sc:collection' === e['@type'].toLowerCase())
+                      return this.parseCollection(e, t)
+                  } else if (e.type) {
+                    if ('manifest' === e.type.toLowerCase())
+                      return this.parseManifest(e, t)
+                    if ('collection' === e.type.toLowerCase())
+                      return this.parseCollection(e, t)
+                  }
+                  return null
+                }),
+                (e.parseItems = function (e, t) {
+                  let r = e.__jsonld.members || e.__jsonld.items
+                  if (r)
+                    for (
+                      var n = function (n) {
+                          t && (t.index = n)
+                          var i = o.parseItem(r[n], t)
+                          return i
+                            ? e.items.filter(function (e) {
+                                return e.id === i.id
+                              })[0]
+                              ? 'continue'
+                              : ((i.index = n), (i.parentCollection = e), void e.items.push(i))
+                            : { value: void 0 }
+                        },
+                        o = this,
+                        i = 0;
+                      i < r.length;
+                      i++
+                    ) {
+                      let a = n(i)
+                      if ('object' === typeof a) return a.value
+                    }
+                }),
+                e
+              )
+            })()
+          t.Deserialiser = o
+        },
+        4204(e, t, r) {
+          'use strict';
+          let n,
+            o =
+              (this && this.__extends) ||
+              ((n = function (e, t) {
+                return (
+                  (n =
+                    Object.setPrototypeOf ||
+                    ({ __proto__: [] } instanceof Array &&
+                      function (e, t) {
+                        e.__proto__ = t
+                      }) ||
+                    function (e, t) {
+                      for (let r in t) Object.prototype.hasOwnProperty.call(t, r) && (e[r] = t[r])
+                    }),
+                  n(e, t)
+                )
+              }),
+              function (e, t) {
+                if ('function' !== typeof t && null !== t)
+                  throw new TypeError(
+                    'Class extends value ' +
+                      String(t) +
+                      ' is not a constructor or null',
+                  )
+                function r() {
+                  this.constructor = e
+                }
+                ;(n(e, t),
+                  (e.prototype =
+                    null === t ? Object.create(t) : ((r.prototype = t.prototype), new r())))
+              })
+          ;(Object.defineProperty(t, '__esModule', { value: !0 }), (t.Thumbnail = void 0))
+          let i = (function (e) {
+            function t(t, r) {
+              return e.call(this, t, r) || this
+            }
+            return (o(t, e), t)
+          })(r(4799).Resource)
+          t.Thumbnail = i
+        },
+        4528: (e) => {
+          e.exports = function (e, t) {
+            for (let r = -1, n = t.length, o = e.length; ++r < n; ) e[o + r] = t[r]
+            return e
+          }
+        },
+        4531(e, t, r) {
+          'use strict';
+          let n,
+            o =
+              (this && this.__extends) ||
+              ((n = function (e, t) {
+                return (
+                  (n =
+                    Object.setPrototypeOf ||
+                    ({ __proto__: [] } instanceof Array &&
+                      function (e, t) {
+                        e.__proto__ = t
+                      }) ||
+                    function (e, t) {
+                      for (let r in t) Object.prototype.hasOwnProperty.call(t, r) && (e[r] = t[r])
+                    }),
+                  n(e, t)
+                )
+              }),
+              function (e, t) {
+                if ('function' !== typeof t && null !== t)
+                  throw new TypeError(
+                    'Class extends value ' +
+                      String(t) +
+                      ' is not a constructor or null',
+                  )
+                function r() {
+                  this.constructor = e
+                }
+                ;(n(e, t),
+                  (e.prototype =
+                    null === t ? Object.create(t) : ((r.prototype = t.prototype), new r())))
+              })
+          ;(Object.defineProperty(t, '__esModule', { value: !0 }), (t.Manifest = void 0))
+          let i = r(3957),
+            a = r(4799),
+            s = (function (e) {
+              function t(t, r) {
+                let n = e.call(this, t, r) || this
+                if (
+                  ((n.index = 0),
+                  (n._allRanges = null),
+                  (n.items = []),
+                  (n._topRanges = []),
+                  n.__jsonld.structures && n.__jsonld.structures.length)
+                )
+                  for (let o = n._getTopRanges(), i = 0; i < o.length; i++) {
+                    let a = o[i]
+                    n._parseRanges(a, String(i))
+                  }
+                return n
+              }
+              return (
+                o(t, e),
+                (t.prototype.getPosterCanvas = function () {
+                  let e = this.getProperty('posterCanvas');
+                  return (e && (e = new a.Canvas(e, this.options)), e)
+                }),
+                (t.prototype.getAccompanyingCanvas = function () {
+                  let e = this.getProperty('accompanyingCanvas');
+                  return (e && (e = new a.Canvas(e, this.options)), e)
+                }),
+                (t.prototype.getBehavior = function () {
+                  let e = this.getProperty('behavior');
+                  return (Array.isArray(e) && (e = e[0]), e || null)
+                }),
+                (t.prototype.getDefaultTree = function () {
+                  if (
+                    (e.prototype.getDefaultTree.call(this),
+                    (this.defaultTree.data.type = a.Utils.normaliseType(a.TreeNodeType.MANIFEST)),
+                    !this.isLoaded)
+                  )
+                    return this.defaultTree
+                  var t = this.getTopRanges()
+                  return (
+                    t.length && t[0].getTree(this.defaultTree),
+                    a.Utils.generateTreeNodeIds(this.defaultTree),
+                    this.defaultTree
+                  )
+                }),
+                (t.prototype._getTopRanges = function () {
+                  let e = []
+                  if (this.__jsonld.structures && this.__jsonld.structures.length) {
+                    for (let t = 0; t < this.__jsonld.structures.length; t++) {
+                      let r = this.__jsonld.structures[t]
+                      r.viewingHint === i.ViewingHint.TOP && e.push(r)
+                    }
+                    if (!e.length) {
+                      let n = {}
+                      ;((n.ranges = this.__jsonld.structures), e.push(n))
+                    }
+                  }
+                  return e
+                }),
+                (t.prototype.getTopRanges = function () {
+                  return this._topRanges
+                }),
+                (t.prototype._getRangeById = function (e) {
+                  if (this.__jsonld.structures && this.__jsonld.structures.length)
+                    for (let t = 0; t < this.__jsonld.structures.length; t++) {
+                      let r = this.__jsonld.structures[t]
+                      if (r['@id'] === e || r.id === e) return r
+                    }
+                  return null
+                }),
+                (t.prototype._parseRanges = function (e, t, r) {
+                  let n = null
+                  if (('string' == typeof e && ((n = e), (e = this._getRangeById(n))), e)) {
+                    let o = new a.Range(e, this.options)
+                    ;((o.parentRange = r),
+                      (o.path = t),
+                      r ? r.items.push(o) : this._topRanges.push(o))
+                    var i = e.items || e.members
+                    if (i)
+                      for (var s = 0; s < i.length; s++) {
+                        let u = i[s]
+                        if (
+                          (u['@type'] &&
+                            'sc:range' === u['@type'].toLowerCase()) ||
+                          (u.type && 'range' === u.type.toLowerCase())
+                        )
+                          this._parseRanges(u, t + '/' + s, o)
+                        else if (
+                          (u['@type'] &&
+                            'sc:canvas' === u['@type'].toLowerCase()) ||
+                          (u.type && 'canvas' === u.type.toLowerCase())
+                        ) {
+                          o.canvases || (o.canvases = [])
+                          var l = u.id || u['@id'];
+                          o.canvases.push(l)
+                        }
+                      }
+                    else if (e.ranges)
+                      for (s = 0; s < e.ranges.length; s++)
+                        this._parseRanges(e.ranges[s], t + '/' + s, o)
+                  } else console.warn('Range:', n, 'does not exist');
+                }),
+                (t.prototype.getAllRanges = function () {
+                  if (null != this._allRanges) return this._allRanges
+                  this._allRanges = []
+                  for (
+                    var e = this.getTopRanges(),
+                      t = function (t) {
+                        let n = e[t]
+                        n.id && r._allRanges.push(n)
+                        var o = function (e, t) {
+                            e.add(t)
+                            var r = t.getRanges()
+                            return r.length ? r.reduce(o, e) : e
+                          },
+                          i = Array.from(n.getRanges().reduce(o, new Set()))
+                        r._allRanges = r._allRanges.concat(i)
+                      },
+                      r = this,
+                      n = 0;
+                    n < e.length;
+                    n++
+                  )
+                    t(n)
+                  return this._allRanges
+                }),
+                (t.prototype.getRangeById = function (e) {
+                  for (let t = this.getAllRanges(), r = 0; r < t.length; r++) {
+                    let n = t[r]
+                    if (n.id === e) return n
+                  }
+                  return null
+                }),
+                (t.prototype.getRangeByPath = function (e) {
+                  for (let t = this.getAllRanges(), r = 0; r < t.length; r++) {
+                    let n = t[r]
+                    if (n.path === e) return n
+                  }
+                  return null
+                }),
+                (t.prototype.getSequences = function () {
+                  if (this.items.length) return this.items
+                  var e = this.__jsonld.mediaSequences || this.__jsonld.sequences
+                  if (e)
+                    for (let t = 0; t < e.length; t++) {
+                      var r = e[t],
+                        n = new a.Sequence(r, this.options)
+                      this.items.push(n)
+                    }
+                  else
+                    this.__jsonld.items &&
+                      ((n = new a.Sequence(this.__jsonld.items, this.options)), this.items.push(n))
+                  return this.items
+                }),
+                (t.prototype.getSequenceByIndex = function (e) {
+                  return this.getSequences()[e]
+                }),
+                (t.prototype.getTotalSequences = function () {
+                  return this.getSequences().length
+                }),
+                (t.prototype.getManifestType = function () {
+                  let e = this.getService(i.ServiceProfile.UI_EXTENSIONS)
+                  return e ? e.getProperty('manifestType') : a.ManifestType.EMPTY
+                }),
+                (t.prototype.isMultiSequence = function () {
+                  return this.getTotalSequences() > 1
+                }),
+                (t.prototype.isPagingEnabled = function () {
+                  let e = this.getViewingHint()
+                  if (e) return e === i.ViewingHint.PAGED
+                  var t = this.getBehavior()
+                  return !!t && t === i.Behavior.PAGED
+                }),
+                (t.prototype.getViewingDirection = function () {
+                  return this.getProperty('viewingDirection');
+                }),
+                (t.prototype.getViewingHint = function () {
+                  let e = this.getProperty('viewingHint');
+                  return (Array.isArray(e) && (e = e[0]), e || null)
+                }),
+                t
+              )
+            })(a.IIIFResource)
+          t.Manifest = s
+        },
+        4591(e, t, r) {
+          'use strict';
+          let n,
+            o =
+              (this && this.__extends) ||
+              ((n = function (e, t) {
+                return (
+                  (n =
+                    Object.setPrototypeOf ||
+                    ({ __proto__: [] } instanceof Array &&
+                      function (e, t) {
+                        e.__proto__ = t
+                      }) ||
+                    function (e, t) {
+                      for (let r in t) Object.prototype.hasOwnProperty.call(t, r) && (e[r] = t[r])
+                    }),
+                  n(e, t)
+                )
+              }),
+              function (e, t) {
+                if ('function' !== typeof t && null !== t)
+                  throw new TypeError(
+                    'Class extends value ' +
+                      String(t) +
+                      ' is not a constructor or null',
+                  )
+                function r() {
+                  this.constructor = e
+                }
+                ;(n(e, t),
+                  (e.prototype =
+                    null === t ? Object.create(t) : ((r.prototype = t.prototype), new r())))
+              })
+          ;(Object.defineProperty(t, '__esModule', { value: !0 }), (t.Sequence = void 0))
+          let i = r(3957),
+            a = r(4799),
+            s = (function (e) {
+              function t(t, r) {
+                let n = e.call(this, t, r) || this
+                return ((n.items = []), (n._thumbnails = null), n)
+              }
+              return (
+                o(t, e),
+                (t.prototype.getCanvases = function () {
+                  if (this.items.length) return this.items
+                  var e = this.__jsonld.canvases || this.__jsonld.elements
+                  if (e)
+                    for (var t = 0; t < e.length; t++) {
+                      var r = e[t]
+                      ;(((n = new a.Canvas(r, this.options)).index = t), this.items.push(n))
+                    }
+                  else if (this.__jsonld)
+                    for (t = 0; t < this.__jsonld.length; t++) {
+                      var n
+                      ;((r = this.__jsonld[t]),
+                        ((n = new a.Canvas(r, this.options)).index = t),
+                        this.items.push(n))
+                    }
+                  return this.items
+                }),
+                (t.prototype.getCanvasById = function (e) {
+                  for (let t = 0; t < this.getTotalCanvases(); t++) {
+                    let r = this.getCanvasByIndex(t),
+                      n = a.Utils.normaliseUrl(r.id)
+                    if (a.Utils.normaliseUrl(e) === n) return r
+                  }
+                  return null
+                }),
+                (t.prototype.getCanvasByIndex = function (e) {
+                  return this.getCanvases()[e]
+                }),
+                (t.prototype.getCanvasIndexById = function (e) {
+                  for (let t = 0; t < this.getTotalCanvases(); t++)
+                    if (this.getCanvasByIndex(t).id === e) return t
+                  return null
+                }),
+                (t.prototype.getCanvasIndexByLabel = function (e, t) {
+                  ;((e = e.trim()), isNaN(e) || ((e = parseInt(e, 10).toString()), t && (e += 'r')))
+                  for (var r, n, o, i = /(\d*)\D+(\d*)/, a = 0; a < this.getTotalCanvases(); a++) {
+                    let s = this.getCanvasByIndex(a)
+                    if (s.getLabel().getValue(this.options.locale) === e) return a
+                    if (
+                      (r = i.exec(e)) &&
+                      ((n = r[1]),
+                      (o = r[2]) &&
+                        new RegExp('^' + n + '\\D+' + o + '$').test(
+                          s.getLabel().toString(),
+                        ))
+                    )
+                      return a
+                  }
+                  return -1
+                }),
+                (t.prototype.getLastCanvasLabel = function (e) {
+                  for (let t = this.getTotalCanvases() - 1; t >= 0; t--) {
+                    let r = this.getCanvasByIndex(t).getLabel().getValue(this.options.locale)
+                    if (e) {
+                      if (/^[a-zA-Z0-9]*$/.test(r)) return r
+                    } else if (r) return r
+                  }
+                  return this.options.defaultLabel
+                }),
+                (t.prototype.getLastPageIndex = function () {
+                  return this.getTotalCanvases() - 1
+                }),
+                (t.prototype.getNextPageIndex = function (e, t) {
+                  let r
+                  if (t) {
+                    let n = this.getPagedIndices(e),
+                      o = this.getViewingDirection()
+                    r = o && o === i.ViewingDirection.RIGHT_TO_LEFT ? n[0] + 1 : n[n.length - 1] + 1
+                  } else r = e + 1
+                  return r > this.getLastPageIndex() ? -1 : r
+                }),
+                (t.prototype.getPagedIndices = function (e, t) {
+                  let r = []
+                  if (t) {
+                    r =
+                      this.isFirstCanvas(e) || this.isLastCanvas(e)
+                        ? [e]
+                        : e % 2
+                          ? [e, e + 1]
+                          : [e - 1, e]
+                    var n = this.getViewingDirection()
+                    n && n === i.ViewingDirection.RIGHT_TO_LEFT && (r = r.reverse())
+                  } else r.push(e)
+                  return r
+                }),
+                (t.prototype.getPrevPageIndex = function (e, t) {
+                  let r
+                  if (t) {
+                    let n = this.getPagedIndices(e),
+                      o = this.getViewingDirection()
+                    r = o && o === i.ViewingDirection.RIGHT_TO_LEFT ? n[n.length - 1] - 1 : n[0] - 1
+                  } else r = e - 1
+                  return r
+                }),
+                (t.prototype.getStartCanvasIndex = function () {
+                  let e = this.getStartCanvas()
+                  if (e)
+                    for (let t = 0; t < this.getTotalCanvases(); t++)
+                      if (this.getCanvasByIndex(t).id === e) return t
+                  return 0
+                }),
+                (t.prototype.getThumbs = function (e, t) {
+                  for (var r = [], n = this.getTotalCanvases(), o = 0; o < n; o++) {
+                    let i = this.getCanvasByIndex(o),
+                      s = new a.Thumb(e, i)
+                    r.push(s)
+                  }
+                  return r
+                }),
+                (t.prototype.getThumbnails = function () {
+                  if (null != this._thumbnails) return this._thumbnails
+                  this._thumbnails = []
+                  for (let e = this.getCanvases(), t = 0; t < e.length; t++) {
+                    let r = e[t].getThumbnail()
+                    r && this._thumbnails.push(r)
+                  }
+                  return this._thumbnails
+                }),
+                (t.prototype.getStartCanvas = function () {
+                  return this.getProperty('startCanvas');
+                }),
+                (t.prototype.getTotalCanvases = function () {
+                  return this.getCanvases().length
+                }),
+                (t.prototype.getViewingDirection = function () {
+                  return this.getProperty('viewingDirection')
+                    ? this.getProperty('viewingDirection')
+                    : this.options.resource.getViewingDirection
+                      ? this.options.resource.getViewingDirection()
+                      : null
+                }),
+                (t.prototype.getViewingHint = function () {
+                  let e = this.getProperty('viewingHint');
+                  return (Array.isArray(e) && (e = e[0]), e || null)
+                }),
+                (t.prototype.isCanvasIndexOutOfRange = function (e) {
+                  return e > this.getTotalCanvases() - 1
+                }),
+                (t.prototype.isFirstCanvas = function (e) {
+                  return 0 === e
+                }),
+                (t.prototype.isLastCanvas = function (e) {
+                  return e === this.getTotalCanvases() - 1
+                }),
+                (t.prototype.isMultiCanvas = function () {
+                  return this.getTotalCanvases() > 1
+                }),
+                (t.prototype.isPagingEnabled = function () {
+                  let e = this.getViewingHint()
+                  return !!e && e === i.ViewingHint.PAGED
+                }),
+                (t.prototype.isTotalCanvasesEven = function () {
+                  return this.getTotalCanvases() % 2 == 0
+                }),
+                t
+              )
+            })(a.ManifestResource)
+          t.Sequence = s
+        },
+        4799(e, t, r) {
+          'use strict';
+          let n =
+              (this && this.__createBinding) ||
+              (Object.create
+                ? function (e, t, r, n) {
+                    void 0 === n && (n = r)
+                    var o = Object.getOwnPropertyDescriptor(t, r)
+                    ;((o && !('get' in o ? !t.__esModule : o.writable || o.configurable)) ||
+                      (o = {
+                        enumerable: !0,
+                        get () {
+                          return t[r];
+                        },
+                      }),
+                      Object.defineProperty(e, n, o))
+                  }
+                : function (e, t, r, n) {
+                    ;(void 0 === n && (n = r), (e[n] = t[r]))
+                  }),
+            o =
+              (this && this.__exportStar) ||
+              function (e, t) {
+                for (let r in e)
+                  'default' === r ||
+                    Object.prototype.hasOwnProperty.call(t, r) ||
+                    n(t, e, r)
+              };
+          ;(Object.defineProperty(t, '__esModule', { value: !0 }),
+            o(r(7436), t),
+            o(r(2315), t),
+            o(r(258), t),
+            o(r(107), t),
+            o(r(3039), t),
+            o(r(2339), t),
+            o(r(3435), t),
+            o(r(3556), t),
+            o(r(8098), t),
+            o(r(8214), t),
+            o(r(1858), t),
+            o(r(2712), t),
+            o(r(3167), t),
+            o(r(672), t),
+            o(r(7376), t),
+            o(r(2184), t),
+            o(r(6739), t),
+            o(r(2817), t),
+            o(r(72), t),
+            o(r(212), t),
+            o(r(2006), t),
+            o(r(4531), t),
+            o(r(3043), t),
+            o(r(3845), t),
+            o(r(6940), t),
+            o(r(4591), t),
+            o(r(4029), t),
+            o(r(9579), t),
+            o(r(2639), t),
+            o(r(5633), t),
+            o(r(9692), t),
+            o(r(4204), t),
+            o(r(8570), t),
+            o(r(6386), t),
+            o(r(41), t))
+        },
+        4840: (e, t, r) => {
+          const n = 'object' === typeof r.g && r.g && r.g.Object === Object && r.g
+          e.exports = n
+        },
+        5633: (e, t) => {
+          'use strict'
+          let r
+          ;(Object.defineProperty(t, '__esModule', { value: !0 }),
+            (t.StatusCode = void 0),
+            (function (e) {
+              ;((e[(e.AUTHORIZATION_FAILED = 1)] = 'AUTHORIZATION_FAILED'),
+                (e[(e.FORBIDDEN = 2)] = 'FORBIDDEN'),
+                (e[(e.INTERNAL_SERVER_ERROR = 3)] = 'INTERNAL_SERVER_ERROR'),
+                (e[(e.RESTRICTED = 4)] = 'RESTRICTED'))
+            })(r || (t.StatusCode = r = {})))
+        },
+        5891: (e, t, r) => {
+          const n = r(1873),
+            o = r(2428),
+            i = r(6449),
+            a = n ? n.isConcatSpreadable : void 0
+          e.exports = function (e) {
+            return i(e) || o(e) || !!(a && e && e[a])
+          }
+        },
+        5970: (e, t, r) => {
+          const n = r(3120)
+          e.exports = function (e) {
+            return null != e && e.length ? n(e, 1) : []
+          }
+        },
+        6386: (e, t) => {
+          'use strict'
+          let r
+          ;(Object.defineProperty(t, '__esModule', { value: !0 }),
+            (t.TreeNodeType = void 0),
+            (function (e) {
+              ;((e.COLLECTION = 'collection'), (e.MANIFEST = 'manifest'), (e.RANGE = 'range'))
+            })(r || (t.TreeNodeType = r = {})))
+        },
+        6449: (e) => {
+          const t = Array.isArray
+          e.exports = t
+        },
+        6739: (e, t) => {
+          'use strict'
+          Object.defineProperty(t, '__esModule', { value: !0 })
+        },
+        6782: (e, t, r) => {
+          'use strict'
+          function n(e, t) {
+            return (
+              (t = t || {}),
+              new Promise(function (r, n) {
+                const o = new XMLHttpRequest(),
+                  i = [],
+                  a = [],
+                  s = {},
+                  u = function () {
+                    return {
+                      ok: 2 == ((o.status / 100) | 0),
+                      statusText: o.statusText,
+                      status: o.status,
+                      url: o.responseURL,
+                      text () {
+                        return Promise.resolve(o.responseText);
+                      },
+                      json () {
+                        return Promise.resolve(o.responseText).then(JSON.parse);
+                      },
+                      blob () {
+                        return Promise.resolve(new Blob([o.response]));
+                      },
+                      clone: u,
+                      headers: {
+                        keys () {
+                          return i;
+                        },
+                        entries () {
+                          return a;
+                        },
+                        get (e) {
+                          return s[e.toLowerCase()];
+                        },
+                        has (e) {
+                          return e.toLowerCase() in s;
+                        },
+                      },
+                    }
+                  };
+                for (const l in (o.open(t.method || 'get', e, !0),
+                (o.onload = function () {
+                  ;(o
+                    .getAllResponseHeaders()
+                    .replace(/^(.*?):[^\S\n]*([\s\S]*?)$/gm, function (e, t, r) {
+                      ;(i.push((t = t.toLowerCase())),
+                        a.push([t, r]),
+                        (s[t] = s[t] ? s[t] + ',' + r : r))
+                    }),
+                    r(u()))
+                }),
+                (o.onerror = n),
+                (o.withCredentials = 'include' == t.credentials),
+                t.headers))
+                  o.setRequestHeader(l, t.headers[l])
+                o.send(t.body || null)
+              })
+            )
+          }
+          ;(r.r(t), r.d(t, { default: () => n }))
+        },
+        6940(e, t, r) {
+          'use strict';
+          let n,
+            o =
+              (this && this.__extends) ||
+              ((n = function (e, t) {
+                return (
+                  (n =
+                    Object.setPrototypeOf ||
+                    ({ __proto__: [] } instanceof Array &&
+                      function (e, t) {
+                        e.__proto__ = t
+                      }) ||
+                    function (e, t) {
+                      for (let r in t) Object.prototype.hasOwnProperty.call(t, r) && (e[r] = t[r])
+                    }),
+                  n(e, t)
+                )
+              }),
+              function (e, t) {
+                if ('function' !== typeof t && null !== t)
+                  throw new TypeError(
+                    'Class extends value ' +
+                      String(t) +
+                      ' is not a constructor or null',
+                  )
+                function r() {
+                  this.constructor = e
+                }
+                ;(n(e, t),
+                  (e.prototype =
+                    null === t ? Object.create(t) : ((r.prototype = t.prototype), new r())))
+              })
+          ;(Object.defineProperty(t, '__esModule', { value: !0 }), (t.Rendering = void 0))
+          let i = (function (e) {
+            function t(t, r) {
+              return e.call(this, t, r) || this
+            }
+            return (
+              o(t, e),
+              (t.prototype.getFormat = function () {
+                return this.getProperty('format');
+              }),
+              t
+            )
+          })(r(4799).ManifestResource)
+          t.Rendering = i
+        },
+        7019: (e, t) => {
+          'use strict'
+          ;(Object.defineProperty(t, '__esModule', { value: !0 }),
+            (t.CONTINUE = 100),
+            (t.SWITCHING_PROTOCOLS = 101),
+            (t.PROCESSING = 102),
+            (t.OK = 200),
+            (t.CREATED = 201),
+            (t.ACCEPTED = 202),
+            (t.NON_AUTHORITATIVE_INFORMATION = 203),
+            (t.NO_CONTENT = 204),
+            (t.RESET_CONTENT = 205),
+            (t.PARTIAL_CONTENT = 206),
+            (t.MULTI_STATUS = 207),
+            (t.MULTIPLE_CHOICES = 300),
+            (t.MOVED_PERMANENTLY = 301),
+            (t.MOVED_TEMPORARILY = 302),
+            (t.SEE_OTHER = 303),
+            (t.NOT_MODIFIED = 304),
+            (t.USE_PROXY = 305),
+            (t.TEMPORARY_REDIRECT = 307),
+            (t.BAD_REQUEST = 400),
+            (t.UNAUTHORIZED = 401),
+            (t.PAYMENT_REQUIRED = 402),
+            (t.FORBIDDEN = 403),
+            (t.NOT_FOUND = 404),
+            (t.METHOD_NOT_ALLOWED = 405),
+            (t.NOT_ACCEPTABLE = 406),
+            (t.PROXY_AUTHENTICATION_REQUIRED = 407),
+            (t.REQUEST_TIME_OUT = 408),
+            (t.CONFLICT = 409),
+            (t.GONE = 410),
+            (t.LENGTH_REQUIRED = 411),
+            (t.PRECONDITION_FAILED = 412),
+            (t.REQUEST_ENTITY_TOO_LARGE = 413),
+            (t.REQUEST_URI_TOO_LARGE = 414),
+            (t.UNSUPPORTED_MEDIA_TYPE = 415),
+            (t.REQUESTED_RANGE_NOT_SATISFIABLE = 416),
+            (t.EXPECTATION_FAILED = 417),
+            (t.IM_A_TEAPOT = 418),
+            (t.UNPROCESSABLE_ENTITY = 422),
+            (t.LOCKED = 423),
+            (t.FAILED_DEPENDENCY = 424),
+            (t.UNORDERED_COLLECTION = 425),
+            (t.UPGRADE_REQUIRED = 426),
+            (t.PRECONDITION_REQUIRED = 428),
+            (t.TOO_MANY_REQUESTS = 429),
+            (t.REQUEST_HEADER_FIELDS_TOO_LARGE = 431),
+            (t.INTERNAL_SERVER_ERROR = 500),
+            (t.NOT_IMPLEMENTED = 501),
+            (t.BAD_GATEWAY = 502),
+            (t.SERVICE_UNAVAILABLE = 503),
+            (t.GATEWAY_TIME_OUT = 504),
+            (t.HTTP_VERSION_NOT_SUPPORTED = 505),
+            (t.VARIANT_ALSO_NEGOTIATES = 506),
+            (t.INSUFFICIENT_STORAGE = 507),
+            (t.BANDWIDTH_LIMIT_EXCEEDED = 509),
+            (t.NOT_EXTENDED = 510),
+            (t.NETWORK_AUTHENTICATION_REQUIRED = 511))
+        },
+        7376: (e, t) => {
+          'use strict'
+          Object.defineProperty(t, '__esModule', { value: !0 })
+        },
+        7436: (e, t) => {
+          'use strict'
+          ;(Object.defineProperty(t, '__esModule', { value: !0 }), (t.JSONLDResource = void 0))
+          const r = (function () {
+            function e(e) {
+              ;((this.__jsonld = e),
+                (this.context = this.getProperty('context')),
+                (this.id = this.getProperty('id')))
+            }
+            return (
+              (e.prototype.getProperty = function (e) {
+                let t = null
+                return (
+                  this.__jsonld && ((t = this.__jsonld[e]) || (t = this.__jsonld['@' + e])),
+                  t
+                )
+              }),
+              e
+            )
+          })()
+          t.JSONLDResource = r
+        },
+        7534: (e, t, r) => {
+          const n = r(2552),
+            o = r(346)
+          e.exports = function (e) {
+            return o(e) && '[object Arguments]' == n(e)
+          }
+        },
+        8098(e, t, r) {
+          'use strict';
+          let n,
+            o =
+              (this && this.__extends) ||
+              ((n = function (e, t) {
+                return (
+                  (n =
+                    Object.setPrototypeOf ||
+                    ({ __proto__: [] } instanceof Array &&
+                      function (e, t) {
+                        e.__proto__ = t
+                      }) ||
+                    function (e, t) {
+                      for (let r in t) Object.prototype.hasOwnProperty.call(t, r) && (e[r] = t[r])
+                    }),
+                  n(e, t)
+                )
+              }),
+              function (e, t) {
+                if ('function' !== typeof t && null !== t)
+                  throw new TypeError(
+                    'Class extends value ' +
+                      String(t) +
+                      ' is not a constructor or null',
+                  )
+                function r() {
+                  this.constructor = e
+                }
+                ;(n(e, t),
+                  (e.prototype =
+                    null === t ? Object.create(t) : ((r.prototype = t.prototype), new r())))
+              }),
+            i =
+              (this && this.__importDefault) ||
+              function (e) {
+                return e && e.__esModule ? e : { default: e }
+              };
+          ;(Object.defineProperty(t, '__esModule', { value: !0 }), (t.Canvas = void 0))
+          let a = r(3957),
+            s = r(4799),
+            u = i(r(5970)),
+            l = i(r(3176)),
+            c = (function (e) {
+              function t(t, r) {
+                return e.call(this, t, r) || this
+              }
+              return (
+                o(t, e),
+                (t.prototype.getCanonicalImageUri = function (e) {
+                  let t = null,
+                    r = 'default',
+                    n = e,
+                    o = n + ',';
+                  if (
+                    this.externalResource &&
+                    this.externalResource.data &&
+                    this.externalResource.data['@id']
+                  )
+                    ((t = this.externalResource.data['@id']),
+                      n || (n = this.externalResource.data.width),
+                      this.externalResource.data['@context'] &&
+                        (this.externalResource.data['@context'].indexOf(
+                          '/1.0/context.json',
+                        ) > -1 ||
+                          this.externalResource.data['@context'].indexOf(
+                            '/1.1/context.json',
+                            -1 ||
+                          this.externalResource.data['@context'].indexOf(
+                            '/1/context.json',
+                          ) > -1) &&
+                        (r = 'native'))
+                  else {
+                    let i = void 0
+                    if ((i = this.getImages()) && i.length) {
+                      var a = i[0].getResource(),
+                        u = a.getServices()
+                      if (
+                        (n || (n = a.getWidth()),
+                        (l = u
+                          ? u.find(function (e) {
+                              return (
+                                s.Utils.isImageProfile(e.getProfile()) ||
+                                s.Utils.isImageServiceType(e.getIIIFResourceType())
+                              )
+                            })
+                          : null))
+                      )
+                        ((t = l.id), (r = s.Utils.getImageQuality(l.getProfile())))
+                      else if (n === a.getWidth()) return a.id
+                    }
+                    if ((i = this.getContent()) && i.length) {
+                      var l,
+                        c = i[0].getBody()[0]
+                      if (
+                        ((u = c.getServices()),
+                        n || (n = c.getWidth()),
+                        (l = u
+                          ? u.find(function (e) {
+                              return s.Utils.isImageServiceType(e.getIIIFResourceType())
+                            })
+                          : null))
+                      )
+                        ((t = l.id), (r = s.Utils.getImageQuality(l.getProfile())))
+                      else if (n === c.getWidth()) return c.id
+                    }
+                    if (!t) {
+                      let p = this.getProperty('thumbnail');
+                      if (p) {
+                        if ('string' === typeof p) return p
+                        if (p['@id']) return p['@id'];
+                        if (p.length) return p[0].id
+                      }
+                    }
+                  }
+                  return (
+                    t && t.endsWith('/') && (t = t.substr(0, t.length - 1)),
+                    [t, 'full', o, 0, r + '.jpg'].join('/')
+                  )
+                }),
+                (t.prototype.getMaxDimensions = function () {
+                  let e,
+                    t = null
+                  return (
+                    this.externalResource &&
+                      this.externalResource.data &&
+                      this.externalResource.data.profile &&
+                      ((e = this.externalResource.data.profile),
+                      Array.isArray(e) &&
+                        (e = e.filter(function (e) {
+                          let t
+                          return null !== (t = e.maxWidth) && void 0 !== t ? t : e.maxwidth
+                        })[0]) &&
+                        (t = new s.Size(e.maxWidth, e.maxHeight ? e.maxHeight : e.maxWidth))),
+                    t
+                  )
+                }),
+                (t.prototype.getContent = function () {
+                  let e = [],
+                    t = this.__jsonld.items || this.__jsonld.content
+                  if (!t) return e
+                  var r = null
+                  if ((t.length && (r = new s.AnnotationPage(t[0], this.options)), !r)) return e
+                  for (let n = r.getItems(), o = 0; o < n.length; o++) {
+                    let i = n[o],
+                      a = new s.Annotation(i, this.options)
+                    e.push(a)
+                  }
+                  return e
+                }),
+                (t.prototype.getAnnotations = function () {
+                  let e = [],
+                    t = this.__jsonld.annotations
+                  if (!t || !Array.isArray(t)) return e
+                  for (let r = 0; r < t.length; r++) {
+                    let n = new s.AnnotationPage(t[r], this.options)
+                    e.push(n)
+                  }
+                  return e
+                }),
+                (t.prototype.getDuration = function () {
+                  return this.getProperty('duration');
+                }),
+                (t.prototype.getImages = function () {
+                  let e = []
+                  if (!this.__jsonld.images) return e
+                  for (let t = 0; t < this.__jsonld.images.length; t++) {
+                    let r = this.__jsonld.images[t],
+                      n = new s.Annotation(r, this.options)
+                    e.push(n)
+                  }
+                  return e
+                }),
+                (t.prototype.getIndex = function () {
+                  return this.getProperty('index');
+                }),
+                (t.prototype.getOtherContent = function () {
+                  let e = this,
+                    t = (
+                      Array.isArray(this.getProperty('otherContent'))
+                        ? this.getProperty('otherContent')
+                        : [this.getProperty('otherContent')]
+                    )
+                      .filter(function (e) {
+                        return (
+                          e &&
+                          'string' === typeof (t = e['@type']) &&
+                          t.toLowerCase() == t.toLowerCase()
+                        )
+                        var t
+                      })
+                      .map(function (t, r) {
+                        return new s.AnnotationList(
+                          t.label || 'Annotation list '.concat(r),
+                          t,
+                          e.options
+                        )
+                      })
+                      .map(function (e) {
+                        return e.load()
+                      })
+                  return Promise.all(t)
+                }),
+                (t.prototype.getWidth = function () {
+                  return this.getProperty('width');
+                }),
+                (t.prototype.getHeight = function () {
+                  return this.getProperty('height');
+                }),
+                (t.prototype.getViewingHint = function () {
+                  let e = this.getProperty('viewingHint');
+                  return (Array.isArray(e) && (e = e[0]), e || null)
+                }),
+                Object.defineProperty(t.prototype, 'imageResources', {
+                  get () {
+                    var e = this,
+                      r = (0, l.default)([
+                        this.getImages().map(function (e) {
+                          return e.getResource();
+                        }),
+                        this.getContent().map(function (e) {
+                          return e.getBody();
+                        }),
+                      ]);
+                    return (0, u.default)(
+                      r.map(function (r) {
+                        switch (r.getProperty("type").toLowerCase()) {
+                          case a.ExternalResourceType.CHOICE:
+                          case a.ExternalResourceType.OA_CHOICE:
+                            return new t(
+                              {
+                                images: (0, u.default)([
+                                  r.getProperty("default"),
+                                  r.getProperty("item"),
+                                ]).map(function (e) {
+                                  return { resource: e };
+                                }),
+                              },
+                              e.options,
+                            )
+                              .getImages()
+                              .map(function (e) {
+                                return e.getResource();
+                              });
+                          default:
+                            return r;
+                        }
+                      }),
+                    );
+                  },
+                  enumerable: !1,
+                  configurable: !0,
+                }),
+                Object.defineProperty(t.prototype, 'resourceAnnotations', {
+                  get () {
+                    return (0, l.default)([
+                      this.getImages(),
+                      this.getContent(),
+                    ]);
+                  },
+                  enumerable: !1,
+                  configurable: !0,
+                }),
+                (t.prototype.resourceAnnotation = function (e) {
+                  return this.resourceAnnotations.find(function (t) {
+                    return (
+                      t.getResource().id === e ||
+                      (0, u.default)(new Array(t.getBody())).some(function (t) {
+                        return t.id === e
+                      })
+                    )
+                  })
+                }),
+                (t.prototype.onFragment = function (e) {
+                  let t = this.resourceAnnotation(e)
+                  if (t) {
+                    let r = t.getProperty('on'),
+                      n = t.getProperty('target');
+                    if (r && n) {
+                      let o = (r || n).match(/xywh=(.*)$/)
+                      if (o)
+                        return o[1].split(',').map(function (e) {
+                          return parseInt(e, 10)
+                        })
+                    }
+                  }
+                }),
+                Object.defineProperty(t.prototype, 'iiifImageResources', {
+                  get () {
+                    return this.imageResources.filter(function (e) {
+                      return e && e.getServices()[0] && e.getServices()[0].id;
+                    });
+                  },
+                  enumerable: !1,
+                  configurable: !0,
+                }),
+                Object.defineProperty(t.prototype, 'imageServiceIds', {
+                  get () {
+                    return this.iiifImageResources.map(function (e) {
+                      return e.getServices()[0].id;
+                    });
+                  },
+                  enumerable: !1,
+                  configurable: !0,
+                }),
+                Object.defineProperty(t.prototype, 'aspectRatio', {
+                  get () {
+                    return this.getWidth() / this.getHeight();
+                  },
+                  enumerable: !1,
+                  configurable: !0,
+                }),
+                t
+              )
+            })(s.Resource)
+          t.Canvas = c
+        },
+        8156(e, t, r) {
+          'use strict';
+          let n =
+              (this && this.__createBinding) ||
+              (Object.create
+                ? function (e, t, r, n) {
+                    void 0 === n && (n = r)
+                    var o = Object.getOwnPropertyDescriptor(t, r)
+                    ;((o && !('get' in o ? !t.__esModule : o.writable || o.configurable)) ||
+                      (o = {
+                        enumerable: !0,
+                        get () {
+                          return t[r];
+                        },
+                      }),
+                      Object.defineProperty(e, n, o))
+                  }
+                : function (e, t, r, n) {
+                    ;(void 0 === n && (n = r), (e[n] = t[r]))
+                  }),
+            o =
+              (this && this.__exportStar) ||
+              function (e, t) {
+                for (let r in e)
+                  'default' === r ||
+                    Object.prototype.hasOwnProperty.call(t, r) ||
+                    n(t, e, r)
+              };
+          ;(Object.defineProperty(t, '__esModule', { value: !0 }),
+            (t.parseManifest = t.loadManifest = void 0),
+            o(r(4799), t))
+          var i = r(41)
+          ;((t.loadManifest = function (e) {
+            return i.Utils.loadManifest(e)
+          }),
+            (t.parseManifest = function (e, t) {
+              return i.Utils.parseManifest(e, t)
+            }))
+        },
+        8214(e, t, r) {
+          'use strict';
+          let n,
+            o =
+              (this && this.__extends) ||
+              ((n = function (e, t) {
+                return (
+                  (n =
+                    Object.setPrototypeOf ||
+                    ({ __proto__: [] } instanceof Array &&
+                      function (e, t) {
+                        e.__proto__ = t
+                      }) ||
+                    function (e, t) {
+                      for (let r in t) Object.prototype.hasOwnProperty.call(t, r) && (e[r] = t[r])
+                    }),
+                  n(e, t)
+                )
+              }),
+              function (e, t) {
+                if ('function' !== typeof t && null !== t)
+                  throw new TypeError(
+                    'Class extends value ' +
+                      String(t) +
+                      ' is not a constructor or null',
+                  )
+                function r() {
+                  this.constructor = e
+                }
+                ;(n(e, t),
+                  (e.prototype =
+                    null === t ? Object.create(t) : ((r.prototype = t.prototype), new r())))
+              })
+          ;(Object.defineProperty(t, '__esModule', { value: !0 }), (t.Collection = void 0))
+          let i = r(3957),
+            a = r(4799),
+            s = (function (e) {
+              function t(t, r) {
+                let n = e.call(this, t, r) || this
+                return (
+                  (n.items = []),
+                  (n._collections = null),
+                  (n._manifests = null),
+                  (t.__collection = n),
+                  n
+                )
+              }
+              return (
+                o(t, e),
+                (t.prototype.getCollections = function () {
+                  return this._collections
+                    ? this._collections
+                    : (this._collections = this.items.filter(function (e) {
+                        return e.isCollection()
+                      }))
+                }),
+                (t.prototype.getManifests = function () {
+                  return this._manifests
+                    ? this._manifests
+                    : (this._manifests = this.items.filter(function (e) {
+                        return e.isManifest()
+                      }))
+                }),
+                (t.prototype.getCollectionByIndex = function (e) {
+                  for (var t, r = this.getCollections(), n = 0; n < r.length; n++) {
+                    let o = r[n]
+                    o.index === e && (t = o)
+                  }
+                  if (t) return ((t.options.index = e), t.load())
+                  throw new Error('Collection index not found');
+                }),
+                (t.prototype.getManifestByIndex = function (e) {
+                  for (var t, r = this.getManifests(), n = 0; n < r.length; n++) {
+                    let o = r[n]
+                    o.index === e && (t = o)
+                  }
+                  if (t) return ((t.options.index = e), t.load())
+                  throw new Error('Manifest index not found');
+                }),
+                (t.prototype.getTotalCollections = function () {
+                  return this.getCollections().length
+                }),
+                (t.prototype.getTotalManifests = function () {
+                  return this.getManifests().length
+                }),
+                (t.prototype.getTotalItems = function () {
+                  return this.items.length
+                }),
+                (t.prototype.getViewingDirection = function () {
+                  return this.getProperty('viewingDirection')
+                    ? this.getProperty('viewingDirection')
+                    : i.ViewingDirection.LEFT_TO_RIGHT
+                }),
+                (t.prototype.getBehavior = function () {
+                  let e = this.getProperty('behavior');
+                  return (Array.isArray(e) && (e = e[0]), e || null)
+                }),
+                (t.prototype.getViewingHint = function () {
+                  let e = this.getProperty('viewingHint');
+                  return (Array.isArray(e) && (e = e[0]), e || null)
+                }),
+                (t.prototype.getDefaultTree = function () {
+                  return (
+                    e.prototype.getDefaultTree.call(this),
+                    (this.defaultTree.data.type = a.Utils.normaliseType(a.TreeNodeType.COLLECTION)),
+                    this._parseManifests(this),
+                    this._parseCollections(this),
+                    a.Utils.generateTreeNodeIds(this.defaultTree),
+                    this.defaultTree
+                  )
+                }),
+                (t.prototype._parseManifests = function (e) {
+                  if (e.getManifests() && e.getManifests().length)
+                    for (let t = 0; t < e.getManifests().length; t++) {
+                      let r = e.getManifests()[t],
+                        n = r.getDefaultTree()
+                      ;((n.label =
+                        r.parentLabel ||
+                        r.getLabel().getValue(this.options.locale) ||
+                        'manifest ' + (t + 1)),
+                        (n.navDate = r.getNavDate()),
+                        (n.data.id = r.id),
+                        (n.data.type = a.Utils.normaliseType(a.TreeNodeType.MANIFEST)),
+                        e.defaultTree.addNode(n))
+                    }
+                }),
+                (t.prototype._parseCollections = function (e) {
+                  if (e.getCollections() && e.getCollections().length)
+                    for (let t = 0; t < e.getCollections().length; t++) {
+                      let r = e.getCollections()[t],
+                        n = r.getDefaultTree()
+                      ;((n.label =
+                        r.parentLabel ||
+                        r.getLabel().getValue(this.options.locale) ||
+                        'collection ' + (t + 1)),
+                        (n.navDate = r.getNavDate()),
+                        (n.data.id = r.id),
+                        (n.data.type = a.Utils.normaliseType(a.TreeNodeType.COLLECTION)),
+                        e.defaultTree.addNode(n))
+                    }
+                }),
+                t
+              )
+            })(a.IIIFResource)
+          t.Collection = s
+        },
+        8570: (e, t, r) => {
+          'use strict'
+          ;(Object.defineProperty(t, '__esModule', { value: !0 }), (t.TreeNode = void 0))
+          const n = r(4799),
+            o = (function () {
+              function e(e, t) {
+                ;((this.label = e), (this.data = t || {}), (this.nodes = []))
+              }
+              return (
+                (e.prototype.addNode = function (e) {
+                  ;(this.nodes.push(e), (e.parentNode = this))
+                }),
+                (e.prototype.isCollection = function () {
+                  return this.data.type === n.Utils.normaliseType(n.TreeNodeType.COLLECTION)
+                }),
+                (e.prototype.isManifest = function () {
+                  return this.data.type === n.Utils.normaliseType(n.TreeNodeType.MANIFEST)
+                }),
+                (e.prototype.isRange = function () {
+                  return this.data.type === n.Utils.normaliseType(n.TreeNodeType.RANGE)
+                }),
+                e
+              )
+            })()
+          t.TreeNode = o
+        },
+        9325: (e, t, r) => {
+          const n = r(4840),
+            o = 'object' === typeof self && self && self.Object === Object && self,
+            i = n || o || Function('return this')()
+          e.exports = i
+        },
+        9350: (e) => {
+          const t = Object.prototype.toString
+          e.exports = function (e) {
+            return t.call(e)
+          }
+        },
+        9579(e, t, r) {
+          'use strict';
+          let n,
+            o =
+              (this && this.__extends) ||
+              ((n = function (e, t) {
+                return (
+                  (n =
+                    Object.setPrototypeOf ||
+                    ({ __proto__: [] } instanceof Array &&
+                      function (e, t) {
+                        e.__proto__ = t
+                      }) ||
+                    function (e, t) {
+                      for (let r in t) Object.prototype.hasOwnProperty.call(t, r) && (e[r] = t[r])
+                    }),
+                  n(e, t)
+                )
+              }),
+              function (e, t) {
+                if ('function' !== typeof t && null !== t)
+                  throw new TypeError(
+                    'Class extends value ' +
+                      String(t) +
+                      ' is not a constructor or null',
+                  )
+                function r() {
+                  this.constructor = e
+                }
+                ;(n(e, t),
+                  (e.prototype =
+                    null === t ? Object.create(t) : ((r.prototype = t.prototype), new r())))
+              })
+          ;(Object.defineProperty(t, '__esModule', { value: !0 }), (t.Service = void 0))
+          let i = r(4799),
+            a = (function (e) {
+              function t(t, r) {
+                return e.call(this, t, r) || this
+              }
+              return (
+                o(t, e),
+                (t.prototype.getProfile = function () {
+                  let e = this.getProperty('profile');
+                  return (
+                    e || (e = this.getProperty('dcterms:conformsTo')),
+                    Array.isArray(e) ? e[0] : e
+                  )
+                }),
+                (t.prototype.getConfirmLabel = function () {
+                  return i.Utils.getLocalisedValue(
+                    this.getProperty('confirmLabel'),
+                    this.options.locale
+                  )
+                }),
+                (t.prototype.getDescription = function () {
+                  return i.Utils.getLocalisedValue(
+                    this.getProperty('description'),
+                    this.options.locale
+                  )
+                }),
+                (t.prototype.getFailureDescription = function () {
+                  return i.Utils.getLocalisedValue(
+                    this.getProperty('failureDescription'),
+                    this.options.locale
+                  )
+                }),
+                (t.prototype.getFailureHeader = function () {
+                  return i.Utils.getLocalisedValue(
+                    this.getProperty('failureHeader'),
+                    this.options.locale
+                  )
+                }),
+                (t.prototype.getHeader = function () {
+                  return i.Utils.getLocalisedValue(this.getProperty('header'), this.options.locale)
+                }),
+                (t.prototype.getServiceLabel = function () {
+                  return i.Utils.getLocalisedValue(this.getProperty('label'), this.options.locale)
+                }),
+                (t.prototype.getInfoUri = function () {
+                  let e = this.id
+                  return (e.endsWith('/') || (e += '/'), e + 'info.json');
+                }),
+                t
+              )
+            })(i.ManifestResource)
+          t.Service = a
+        },
+        9692: (e, t) => {
+          'use strict'
+          ;(Object.defineProperty(t, '__esModule', { value: !0 }), (t.Thumb = void 0))
+          t.Thumb = function (e, t) {
+            ;((this.data = t), (this.index = t.index), (this.width = e))
+            const r = t.getHeight() / t.getWidth()
+            ;((this.height = r ? Math.floor(this.width * r) : e),
+              (this.uri = t.getCanonicalImageUri(e)),
+              (this.label = t.getLabel().getValue()),
+              (this.viewingHint = t.getViewingHint()))
+          }
+        },
+      },
+      t = {}
+    function r(n) {
+      const o = t[n]
+      if (void 0 !== o) return o.exports
+      const i = (t[n] = { exports: {} })
+      return (e[n].call(i.exports, i, i.exports, r), i.exports)
+    }
+    return (
+      (r.d = (e, t) => {
+        for (const n in t)
+          r.o(t, n) && !r.o(e, n) && Object.defineProperty(e, n, { enumerable: !0, get: t[n] })
+      }),
+      (r.g = (function () {
+        if ('object' === typeof globalThis) return globalThis
+        try {
+          return this || new Function('return this')()
+        } catch (e) {
+          if ('object' === typeof window) return window
+        }
+      })()),
+      (r.o = (e, t) => Object.prototype.hasOwnProperty.call(e, t)),
+      (r.r = (e) => {
+        ;('undefined' !== typeof Symbol &&
+          Symbol.toStringTag &&
+          Object.defineProperty(e, Symbol.toStringTag, { value: 'Module' }),
+          Object.defineProperty(e, '__esModule', { value: !0 }))
+      }),
+      r(8156)
+    )
+  })()
+)
