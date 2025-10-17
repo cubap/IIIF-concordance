@@ -14,7 +14,7 @@ export const extractLines = (sequence, annotationData, manifest) => {
   canvases.forEach((canvas) => {
     const texts = []
     // IIIF Pres 2: otherContent (AnnotationList), Pres 3: annotations (AnnotationPage)
-    let annotationLists = []
+    let annotationLists = canvas.__jsonld?.otherContent ?? []
     if (canvas.getAnnotationLists && canvas.getAnnotationLists().length) {
       annotationLists = canvas.getAnnotationLists()
     } else if (canvas.getAnnotations && canvas.getAnnotations().length) {
@@ -26,7 +26,7 @@ export const extractLines = (sequence, annotationData, manifest) => {
         ? annoList.getAnnotations() // P2: AnnotationList
         : annoList.getItems
           ? annoList.getItems() // P3: AnnotationPage
-          : []
+          : annoList.resources ?? annoList.annotations ?? []
       annotations.forEach((annotation, index) => {
         // P2 via Manifesto: annotation is a Manifesto.Annotation with getBody()
         // P3 via AnnotationPage: annotation is a plain object with .body
@@ -43,7 +43,7 @@ export const extractLines = (sequence, annotationData, manifest) => {
         if (!body) return
         // Text extraction: Manifesto handles cnt:chars, chars, value, etc.
         const line =
-          typeof body.getValue === 'function' ? body.getValue() : (body.value ?? body.chars ?? '')
+          typeof body.getValue === 'function' ? body.getValue() : (body.value ?? body.chars ?? body['cnt:chars'] ?? '')
         if (!line) return
         texts.push(line)
         // Target: Manifesto provides getTarget(); normalize to a selector URL string
