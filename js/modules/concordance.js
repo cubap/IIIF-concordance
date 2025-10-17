@@ -116,8 +116,9 @@ const renderConcordance = (annotationData, form) => {
 /**
  * Initializes the concordance with data from a IIIF manifest.
  * @param {Object} manifest - IIIF manifest object
+ * @param {Object|Array} injectedCanvases - Optional canvas(es) with injected annotations from postMessage
  */
-export const initializeConcordance = async (manifest) => {
+export const initializeConcordance = async (manifest, injectedCanvases = null) => {
   const form = document.forms.listOptions
   const sorting = document.getElementById('sorting')
 
@@ -139,16 +140,32 @@ export const initializeConcordance = async (manifest) => {
   }
 
   const promises = []
-  sequences.forEach((sequence) => {
-    const promise = extractLines(sequence, annotationData, manifest)
+  
+  // If we have injected canvases, process only those
+  if (injectedCanvases) {
+    const canvasArray = Array.isArray(injectedCanvases) ? injectedCanvases : [injectedCanvases]
+    console.log(`Processing ${canvasArray.length} canvases with injected annotations`)
+    
+    // Create a temporary sequence with only the injected canvases
+    const tempSequence = {
+      getCanvases: () => canvasArray
+    }
+    
+    const promise = extractLines(tempSequence, annotationData, manifest)
     promises.push(promise)
-  })
+  } else {
+    // Normal processing: all sequences
+    sequences.forEach((sequence) => {
+      const promise = extractLines(sequence, annotationData, manifest)
+      promises.push(promise)
+    })
+  }
 
   // Wait for all async annotations to load
   await Promise.all(promises)
 
   // Render the concordance
-  renderConcordance(annotationData, form, manifest)
+  renderConcordance(annotationData, form)
 
   // Attach event handlers with debouncing
   sorting.oninput = () => renderWordList(annotationData, form)

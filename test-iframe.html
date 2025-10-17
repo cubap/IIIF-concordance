@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Concordance iframe Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      display: flex;
+      gap: 20px;
+    }
+    
+    .controls {
+      width: 400px;
+      padding: 20px;
+      background: #f5f5f5;
+      border-radius: 8px;
+    }
+    
+    .controls h2 {
+      margin-top: 0;
+    }
+    
+    .form-group {
+      margin-bottom: 15px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    
+    input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    
+    button {
+      background: #488ac7;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    
+    button:hover {
+      background: #3a6fa0;
+    }
+    
+    .iframe-container {
+      flex: 1;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    iframe {
+      width: 100%;
+      height: 800px;
+      border: none;
+    }
+    
+    .example-links {
+      margin-top: 15px;
+      padding: 10px;
+      background: white;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+    
+    .example-links a {
+      color: #488ac7;
+      text-decoration: none;
+      display: block;
+      margin: 5px 0;
+    }
+    
+    .example-links a:hover {
+      text-decoration: underline;
+    }
+    
+    .status {
+      margin-top: 15px;
+      padding: 10px;
+      background: white;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="controls">
+    <h2>Concordance Test</h2>
+    
+    <div class="form-group">
+      <label for="manifest">Manifest URL:</label>
+      <input 
+        type="text" 
+        id="manifest" 
+        value="https://tpen-project-examples.habesoftware.app/Bzommar_pretty_pictures/manifest.json"
+        placeholder="Enter manifest URL">
+    </div>
+    
+    <div class="form-group">
+      <label for="canvas">Canvas ID:</label>
+      <input 
+        type="text" 
+        id="canvas" 
+        value="https://tpen-project-examples.habesoftware.app/Bzommar_pretty_pictures/canvas/p1"
+        placeholder="Enter canvas ID">
+    </div>
+    
+    <div class="form-group">
+      <label for="annotationPage">AnnotationPage URL:</label>
+      <input 
+        type="text" 
+        id="annotationPage" 
+        value="https://devstore.rerum.io/v1/id/68d4490c73ed8d0e76715dc3"
+        placeholder="Enter annotation page URL">
+    </div>
+    
+    <div class="form-group">
+      <label for="annotation">Annotation ID (optional):</label>
+      <input 
+        type="text" 
+        id="annotation" 
+        placeholder="Enter specific annotation ID (optional)">
+    </div>
+    
+    <button onclick="sendMessage()">Send Message to iframe</button>
+    
+    <div class="example-links">
+      <strong>Example Data (TPEN):</strong>
+      <a href="#" onclick="loadExample1(); return false;">Bzommar Pretty Pictures (single page)</a>
+      <a href="#" onclick="loadExample2(); return false;">Paginated Collection Example</a>
+      <small style="display: block; margin-top: 10px; color: #666;">
+        Note: The first example uses a collection with items array.
+        If your collection uses first/next pagination, it will be handled automatically.
+      </small>
+    </div>
+    
+    <div class="status" id="status">
+      Ready to send messages...
+    </div>
+  </div>
+  
+  <div class="iframe-container">
+    <iframe id="concordance" src="index.html"></iframe>
+  </div>
+  
+  <script>
+    function sendMessage() {
+      const iframe = document.getElementById('concordance')
+      const manifest = document.getElementById('manifest').value
+      const canvas = document.getElementById('canvas').value
+      const annotationPage = document.getElementById('annotationPage').value
+      const annotation = document.getElementById('annotation').value
+      
+      const message = {
+        type: 'MANIFEST_CANVAS_ANNOTATIONPAGE_ANNOTATION',
+        manifest: manifest,
+        canvas: canvas,
+        annotationPage: annotationPage,
+        annotation: annotation || null
+      }
+      
+      console.log('Sending message:', message)
+      iframe.contentWindow?.postMessage(message, '*')
+      
+      document.getElementById('status').innerHTML = 
+        `<strong>Message sent!</strong><br>` +
+        `Type: ${message.type}<br>` +
+        `Manifest: ${message.manifest}<br>` +
+        `AnnotationPage: ${message.annotationPage}<br>` +
+        `Time: ${new Date().toLocaleTimeString()}`
+    }
+    
+    function loadExample1() {
+      document.getElementById('manifest').value = 
+        'https://tpen-project-examples.habesoftware.app/Bzommar_pretty_pictures/manifest.json'
+      document.getElementById('canvas').value = 
+        'https://tpen-project-examples.habesoftware.app/Bzommar_pretty_pictures/canvas/p1'
+      document.getElementById('annotationPage').value = 
+        'https://devstore.rerum.io/v1/id/68d4490c73ed8d0e76715dc3'
+      document.getElementById('annotation').value = ''
+      
+      document.getElementById('status').innerHTML = 
+        '<strong>Example loaded!</strong><br>Click "Send Message" to test.'
+    }
+    
+    function loadExample2() {
+      // Example for a paginated collection
+      document.getElementById('manifest').value = 
+        'https://tpen-project-examples.habesoftware.app/Bzommar_pretty_pictures/manifest.json'
+      document.getElementById('canvas').value = 
+        'https://tpen-project-examples.habesoftware.app/Bzommar_pretty_pictures/canvas/p1'
+      document.getElementById('annotationPage').value = 
+        'https://devstore.rerum.io/v1/id/68d4490c73ed8d0e76715dc3'
+      document.getElementById('annotation').value = ''
+      
+      document.getElementById('status').innerHTML = 
+        '<strong>Paginated example loaded!</strong><br>' +
+        'This will test first/next pagination if the collection supports it.<br>' +
+        'Click "Send Message" to test.'
+    }
+    
+    // Listen for responses from the iframe (if any)
+    window.addEventListener('message', (event) => {
+      console.log('Received message from iframe:', event.data)
+    })
+    
+    // Auto-send on page load for quick testing
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        console.log('Auto-sending test message in 2 seconds...')
+        setTimeout(sendMessage, 2000)
+      }, 100)
+    })
+  </script>
+</body>
+</html>

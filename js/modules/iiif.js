@@ -11,22 +11,41 @@ export const extractLines = (sequence, annotationData, manifest) => {
   // Manifesto sequence/canvas API
   const canvases = sequence.getCanvases ? sequence.getCanvases() : []
   const promises = []
+  
   canvases.forEach((canvas) => {
     const texts = []
-    // IIIF Pres 2: otherContent (AnnotationList), Pres 3: annotations (AnnotationPage)
-    let annotationLists = canvas.__jsonld?.otherContent ?? []
-    if (canvas.getAnnotationLists && canvas.getAnnotationLists().length) {
-      annotationLists = canvas.getAnnotationLists()
-    } else if (canvas.getAnnotations && canvas.getAnnotations().length) {
-      annotationLists = canvas.getAnnotations()
+    
+    // Check if this canvas has injected annotations from postMessage
+    const hasInjected = canvas.__injectedAnnotations && Array.isArray(canvas.__injectedAnnotations)
+    
+    let annotationLists = []
+    
+    if (hasInjected) {
+      // Use injected annotations from postMessage
+      console.log('Using injected annotations for canvas:', canvas.id || canvas['@id'])
+      annotationLists = canvas.__injectedAnnotations.map(page => ({
+        __rawJson: page,
+        getItems: () => page.items || [],
+        type: page.type
+      }))
+    } else {
+      // IIIF Pres 2: otherContent (AnnotationList), Pres 3: annotations (AnnotationPage)
+      annotationLists = canvas.__jsonld?.otherContent ?? []
+      if (canvas.getAnnotationLists && canvas.getAnnotationLists().length) {
+        annotationLists = canvas.getAnnotationLists()
+      } else if (canvas.getAnnotations && canvas.getAnnotations().length) {
+        annotationLists = canvas.getAnnotations()
+      }
     }
+    
     annotationLists.forEach((annoList, i) => {
       // For P2: annoList.getAnnotations(); for P3: annoList.getItems()
       const annotations = annoList.getAnnotations
         ? annoList.getAnnotations() // P2: AnnotationList
         : annoList.getItems
           ? annoList.getItems() // P3: AnnotationPage
-          : annoList.resources ?? annoList.annotations ?? []
+          : annoList.resources ?? annoList.annotations ?? annoList.__rawJson?.items ?? []
+      
       annotations.forEach((annotation, index) => {
         // P2 via Manifesto: annotation is a Manifesto.Annotation with getBody()
         // P3 via AnnotationPage: annotation is a plain object with .body
@@ -41,11 +60,13 @@ export const extractLines = (sequence, annotationData, manifest) => {
           ? bodies.find((b) => typeof b.getValue === 'function' || b.value || b.chars) || bodies[0]
           : bodies
         if (!body) return
+        
         // Text extraction: Manifesto handles cnt:chars, chars, value, etc.
         const line =
           typeof body.getValue === 'function' ? body.getValue() : (body.value ?? body.chars ?? body['cnt:chars'] ?? '')
         if (!line) return
         texts.push(line)
+        
         // Target: Manifesto provides getTarget(); normalize to a selector URL string
         const rawTarget =
           typeof annotation.getTarget === 'function'
@@ -160,6 +181,26 @@ export const loadManifest = async (url) => {
     return manifest
   } catch (error) {
     console.error('Failed to load manifest:', error)
+    return null
+  }
+}
+
+/**
+ * Loads an AnnotationPage or AnnotationCollection from a URL.
+ * @param {string} url - AnnotationPage/Collection URL
+ * @returns {Promise<Object|null>} Raw JSON annotation data
+ */
+export const loadAnnotationPage = async (url) => {
+  try {
+    const response = await fetch(url)
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+    const data = await response.json()
+    console.log('Loaded AnnotationPage/Collection:', data.type, data.id || data['@id'])
+    return data
+  } catch (error) {
+    console.error('Failed to load AnnotationPage:', error)
     return null
   }
 }
