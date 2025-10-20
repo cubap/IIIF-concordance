@@ -1,10 +1,5 @@
 import { getCanvas } from './iiif.js'
 
-/**
- * Creates a modal window for viewing a single line with its image.
- * @param {HTMLElement} element - The element containing line data
- * @returns {string} HTML string for modal
- */
 export const createPeekWindow = (element) => {
   let lineNumber = element.getAttribute('data-index')
   lineNumber = lineNumber !== 'false' ? `line ${lineNumber}` : ''
@@ -21,11 +16,6 @@ export const createPeekWindow = (element) => {
   </div>`
 }
 
-/**
- * Creates a modal window for viewing multiple lines with images.
- * @param {HTMLElement} element - The element containing word data
- * @returns {string} HTML string for modal
- */
 export const createPeekLinesWindow = (element) => {
   const dd = element.getElementsByTagName('dd')
   const lines = Array.from(dd).reduce((a, el) => {
@@ -50,12 +40,6 @@ export const createPeekLinesWindow = (element) => {
     ${lines}`
 }
 
-/**
- * Loads an image from a IIIF canvas selector into an img element.
- * @param {HTMLImageElement} imgElement - Target image element
- * @param {string} selector - IIIF selector URL
- * @param {Object} manifest - IIIF manifest
- */
 export const imgFromSelector = (imgElement, selector, manifest) => {
   const note = '<div class="no-image">no image</div>'
 
@@ -68,7 +52,6 @@ export const imgFromSelector = (imgElement, selector, manifest) => {
     return false
   }
 
-  // Resolve selector URL and match canvas by its id (P2 or P3)
   const normalize = (s) => (s || '').replace(/^https?:/, '').replace(/\/$/, '')
   let selectURL
   try {
@@ -94,7 +77,6 @@ export const imgFromSelector = (imgElement, selector, manifest) => {
     }
     if (canvas) break
   }
-  // Fallback: looser match using existing helper
   if (!canvas) {
     canvas = getCanvas(selector, manifest)
   }
@@ -120,10 +102,8 @@ export const imgFromSelector = (imgElement, selector, manifest) => {
   const ctx = hiddenCanvas.getContext('2d')
   const img = new Image()
 
-  // Get image resource - Manifesto normalizes this
   const images = canvas.getImages ? canvas.getImages() : canvas.images || []
   let imageResource = images[0]?.getResource ? images[0].getResource() : images[0]?.resource
-  // P3 content: try getContent()[0].getBody()[0]
   if (!imageResource && typeof canvas.getContent === 'function') {
     const content = canvas.getContent()
     const firstAnno = Array.isArray(content) && content.length ? content[0] : null
@@ -156,7 +136,6 @@ export const imgFromSelector = (imgElement, selector, manifest) => {
       imgElement.setAttribute('src', hiddenCanvas.toDataURL())
       imgElement.onclick = () => window.open(src, '_blank')
     } catch {
-      // Doesn't serve CORS images, load canvas itself
       imgElement.insertAdjacentElement('afterend', hiddenCanvas)
       imgElement.style.display = 'none'
       hiddenCanvas.style.width = '100%'
@@ -181,7 +160,6 @@ export const imgFromSelector = (imgElement, selector, manifest) => {
 
   img.onload = loaded
   img.onerror = () => {
-    // CORS issue, load tainted canvas
     imgElement.onload = loaded
     imgElement.src = src
   }
@@ -189,11 +167,6 @@ export const imgFromSelector = (imgElement, selector, manifest) => {
   img.src = src
 }
 
-/**
- * Shows the modal with peek content.
- * @param {CustomEvent} event - Custom event with detail.target
- * @param {Object} manifest - IIIF manifest
- */
 export const handleLinePeek = (event, manifest) => {
   event.preventDefault()
   const modal = document.getElementById('modal')
@@ -203,11 +176,6 @@ export const handleLinePeek = (event, manifest) => {
   modal.style.display = 'block'
 }
 
-/**
- * Shows the modal with multiple lines peek content.
- * @param {CustomEvent} event - Custom event with detail.target
- * @param {Object} manifest - IIIF manifest
- */
 export const handleWordPeek = (event, manifest) => {
   event.preventDefault()
   const modal = document.getElementById('modal')
@@ -217,9 +185,6 @@ export const handleWordPeek = (event, manifest) => {
   modal.style.display = 'block'
 }
 
-/**
- * Closes the modal.
- */
 export const suppressModal = () => {
   const modal = document.getElementById('modal')
   modal.style.display = 'none'
