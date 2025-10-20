@@ -7,12 +7,11 @@ import { addWordsToData } from '../utils/wordUtils.js'
  * @param {Object} manifest - Full manifest for reference
  * @returns {Promise} Promise that resolves when all annotations are processed
  */
-export const extractLines = (sequence, annotationData, manifest) => {
+export const extractLines = async (sequence, annotationData, manifest) => {
   // Manifesto sequence/canvas API
   const canvases = sequence.getCanvases ? sequence.getCanvases() : []
-  const promises = []
   
-  canvases.forEach((canvas) => {
+  for (const canvas of canvases) {
     const texts = []
     
     // Check if this canvas has injected annotations from postMessage
@@ -38,7 +37,7 @@ export const extractLines = (sequence, annotationData, manifest) => {
       }
     }
     
-    annotationLists.forEach((annoList, i) => {
+    for (const [i, annoList] of annotationLists.entries()) {
       // For P2: annoList.getAnnotations(); for P3: annoList.getItems()
       const annotations = annoList.getAnnotations
         ? annoList.getAnnotations() // P2: AnnotationList
@@ -46,25 +45,45 @@ export const extractLines = (sequence, annotationData, manifest) => {
           ? annoList.getItems() // P3: AnnotationPage
           : annoList.resources ?? annoList.annotations ?? annoList.__rawJson?.items ?? []
       
-      annotations.forEach((annotation, index) => {
+      for (const [index, annotation] of annotations.entries()) {
         // P2 via Manifesto: annotation is a Manifesto.Annotation with getBody()
         // P3 via AnnotationPage: annotation is a plain object with .body
         let bodies
         if (typeof annotation.getBody === 'function') {
           bodies = annotation.getBody()
         } else {
-          const b = annotation.body ?? annotation.resource ?? null
+          let b = annotation.body ?? annotation.resource ?? null
+          // if there is no body, try resolving the annotation from its ID
+          if (!b) {
+            try {
+              const annoId = new URL(annotation.id ?? annotation['@id'] ?? annotation)
+              const response = await fetch(annoId.toString())
+              if (response.ok) {
+                const data = await response.json()
+                b = data.body ?? data.resource ?? null
+                console.log('Fetched annotation body from ID:', annoId.toString())
+              }
+            } catch (err) {
+              console.error('Error fetching annotation by ID:', err)
+            }
+          }
           bodies = Array.isArray(b) ? b : b ? [b] : []
         }
         const body = Array.isArray(bodies)
           ? bodies.find((b) => typeof b.getValue === 'function' || b.value || b.chars) || bodies[0]
           : bodies
-        if (!body) return
+        if (!body) {
+          console.warn('No body found for annotation:', annotation.id || annotation['@id'])
+          continue
+        }
         
         // Text extraction: Manifesto handles cnt:chars, chars, value, etc.
         const line =
           typeof body.getValue === 'function' ? body.getValue() : (body.value ?? body.chars ?? body['cnt:chars'] ?? '')
-        if (!line) return
+        if (!line) {
+          console.warn('No text content in annotation body')
+          continue
+        }
         texts.push(line)
         
         // Target: Manifesto provides getTarget(); normalize to a selector URL string
@@ -82,11 +101,12 @@ export const extractLines = (sequence, annotationData, manifest) => {
           annotationData.words,
           annotationData.index
         )
-      })
-    })
+      }
+    }
+    
+    console.log(`Canvas ${canvas.id || canvas['@id']}: extracted ${texts.length} text lines`)
     annotationData.pages.push(texts.join('\n'))
-  })
-  return Promise.all(promises)
+  }
 }
 
 // Normalize IIIF target (string or SpecificResource) to a selector URL string suitable for new URL()
