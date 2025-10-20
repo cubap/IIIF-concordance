@@ -1,6 +1,39 @@
 import { wordSort } from '../utils/wordUtils.js'
 import { suppressModal } from './imageViewer.js'
 
+const sortWords = (list, sortType, words) => {
+  const sorters = {
+    smallest: (a, b) => words[a].length - words[b].length,
+    largest: (a, b) => words[b].length - words[a].length,
+  }
+
+  return sorters[sortType] ? list.sort(sorters[sortType]) : list
+}
+
+const createWordListItem = (word, count, isOdd) => {
+  const oddClass = isOdd ? 'class="odd"' : ''
+  return `<li ${oddClass}><a data-word="${word}">${word} <badge>(${count})</badge></a></li>`
+}
+
+const setupWordClickHandler = (node, word) => {
+  node.onclick = () => {
+    document.querySelectorAll('[active]').forEach((elem) => elem.removeAttribute('active'))
+    node.setAttribute('active', true)
+
+    const term = document.querySelector(`[name="${word}"]`)
+    term.scrollIntoView({ behavior: 'smooth' })
+    term.children[0].setAttribute('active', true)
+  }
+}
+
+const updateConcordanceVisibility = (concordance, length, occurs) => {
+  for (const node of concordance.getElementsByTagName('a')) {
+    const wLength = parseInt(node.getAttribute('data-word-length'))
+    const wOccurs = parseInt(node.getAttribute('data-occurs'))
+    node.style.display = length > wLength || occurs > wOccurs ? 'none' : 'block'
+  }
+}
+
 export const renderWordList = (annotationData, form) => {
   suppressModal()
 
@@ -17,66 +50,57 @@ export const renderWordList = (annotationData, form) => {
   const length = parseInt(form.wordLength.value)
   const occurs = parseInt(form.occurs.value)
 
-  let list = Object.keys(annotationData.words)
-    .filter((x) => x)
-    .sort(wordSort)
-  if (list.length === 0) {
-    return
-  }
+  let list = Object.keys(annotationData.words).filter((x) => x).sort(wordSort)
 
-  form.wordLength.setAttribute(
-    'max',
-    list.reduce((a, b) => Math.max(a, b.length), 10)
-  )
-  form.occurs.setAttribute(
-    'max',
-    list.reduce((a, b) => Math.max(a, annotationData.words[b].length), 10)
-  )
+  if (!list.length) return
 
-  switch (sort) {
-    case 'smallest':
-      list = list.sort((a, b) => annotationData.words[a].length - annotationData.words[b].length)
-      break
-    case 'largest':
-      list = list.sort((a, b) => annotationData.words[b].length - annotationData.words[a].length)
-      break
-    default:
-      break
-  }
+  form.wordLength.setAttribute('max', list.reduce((a, b) => Math.max(a, b.length), 10))
+  form.occurs.setAttribute('max', list.reduce((a, b) => Math.max(a, annotationData.words[b].length), 10))
+
+  list = sortWords(list, sort, annotationData.words)
 
   let listUL = ''
   let odd = true
+
   for (const w of list) {
-    if (length > w.length || occurs > annotationData.words[w].length) {
-      continue
-    }
-    listUL += `<li ${(!(odd = !odd) && 'class="odd"') || ''}><a data-word="${w}">${w} <badge>(${annotationData.words[w].length})</badge></a></li>`
+    if (length > w.length || occurs > annotationData.words[w].length) continue
+
+    listUL += createWordListItem(w, annotationData.words[w].length, !(odd = !odd))
   }
 
-  if (listUL.indexOf('<li') > -1) {
-    occurrences.innerHTML = listUL
+  if (!listUL.includes('<li')) return
 
-    for (const node of occurrences.getElementsByTagName('a')) {
-      const word = node.getAttribute('data-word')
-      node.onclick = () => {
-        document.querySelectorAll('[active]').forEach((elem) => elem.removeAttribute('active'))
-        node.setAttribute('active', true)
+  occurrences.innerHTML = listUL
 
-        const term = document.querySelector('[name="' + word + '"]')
-        term.scrollIntoView({ behavior: 'smooth' })
-        term.children[0].setAttribute('active', true)
-      }
-    }
+  for (const node of occurrences.getElementsByTagName('a')) {
+    const word = node.getAttribute('data-word')
+    setupWordClickHandler(node, word)
+  }
 
-    for (const node of concordance.getElementsByTagName('a')) {
-      const wLength = parseInt(node.getAttribute('data-word-length'))
-      const wOccurs = parseInt(node.getAttribute('data-occurs'))
-      if (length > wLength || occurs > wOccurs) {
-        node.style.display = 'none'
-      } else {
-        node.style.display = 'block'
-      }
-    }
+  updateConcordanceVisibility(concordance, length, occurs)
+}
+
+const createSearchTest = (search, searchin) =>
+  searchin ? (val) => !val.includes(search) : (val) => !val.startsWith(search)
+
+const updateOccurrenceVisibility = (occurrences, test) => {
+  let odd = true
+
+  for (const node of occurrences.getElementsByTagName('a')) {
+    const shouldHide = test(node.firstChild.textContent.toLowerCase())
+    node.parentElement.style.display = shouldHide ? 'none' : 'block'
+
+    if (shouldHide) continue
+
+    node.parentElement.classList.toggle('odd', odd)
+    odd = !odd
+  }
+}
+
+const updateConcordanceFilter = (concordance, test) => {
+  for (const node of concordance.getElementsByTagName('a')) {
+    const shouldHide = test(node.getAttribute('name').toLowerCase())
+    node.style.display = shouldHide ? 'none' : 'block'
   }
 }
 
@@ -89,28 +113,8 @@ export const filterWordList = (annotationData, form) => {
 
   document.querySelector('[for="searchin"]').textContent = searchin ? 'Contains:' : 'Starts with:'
 
-  const test = (val) => (searchin ? val.indexOf(search) === -1 : val.indexOf(search) !== 0)
+  const test = createSearchTest(search, searchin)
 
-  let odd = true
-  for (const node of occurrences.getElementsByTagName('a')) {
-    if (test(node.firstChild.textContent.toLowerCase())) {
-      node.parentElement.style.display = 'none'
-    } else {
-      node.parentElement.style.display = 'block'
-      if (odd) {
-        node.parentElement.classList.add('odd')
-      } else {
-        node.parentElement.classList.remove('odd')
-      }
-      odd = !odd
-    }
-  }
-
-  for (const node of concordance.getElementsByTagName('a')) {
-    if (test(node.getAttribute('name').toLowerCase())) {
-      node.style.display = 'none'
-    } else {
-      node.style.display = 'block'
-    }
-  }
+  updateOccurrenceVisibility(occurrences, test)
+  updateConcordanceFilter(concordance, test)
 }

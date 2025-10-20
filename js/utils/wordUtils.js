@@ -1,19 +1,20 @@
 export const wordSort = (a, b) => {
   let i = 0
   let f = 0
+
   try {
     while (f === 0) {
       const comp =
         a.match(/\w+/g)[0].toLowerCase().charCodeAt(i) -
         b.match(/\w+/g)[0].toLowerCase().charCodeAt(i)
-      if (isNaN(comp)) {
-        return f
-      }
+
+      if (isNaN(comp)) return f
+
       f = comp
       i++
     }
-  } catch {
-  }
+  } catch {}
+
   return f
 }
 
@@ -33,7 +34,7 @@ export const addWordsToData = (line, source, lineNumber, label, wordsDict, index
 
   let pos = 0
   words.forEach((word) => {
-    const offset = line.substr(pos).search(new RegExp(word, 'i')) + pos
+  const offset = line.slice(pos).search(new RegExp(word, 'i')) + pos
 
     if (!wordsDict[word]) {
       wordsDict[word] = []
@@ -47,7 +48,7 @@ export const addWordsToData = (line, source, lineNumber, label, wordsDict, index
       label,
     })
 
-    indexDict[word.substr(0, 1).toUpperCase()] = true
+  indexDict[word.slice(0, 1).toUpperCase()] = true
     pos = offset + word.length
   })
 }

@@ -4,6 +4,22 @@ import { extractLines } from './iiif.js'
 import { renderWordList, filterWordList } from './wordList.js'
 import { handleLinePeek, handleWordPeek } from './imageViewer.js'
 
+const createSequenceFromCanvases = (canvases) => {
+  const canvasArray = Array.isArray(canvases) ? canvases : [canvases]
+  return { getCanvases: () => canvasArray }
+}
+
+const setupEventHandlers = (annotationData, form, sorting, manifest) => {
+  sorting.oninput = () => renderWordList(annotationData, form)
+  form.filter.oninput = debounce(() => filterWordList(annotationData, form), 300)
+  form.searchin.oninput = debounce(() => filterWordList(annotationData, form), 300)
+  form.wordLength.oninput = debounce(() => renderWordList(annotationData, form), 300)
+  form.occurs.oninput = debounce(() => renderWordList(annotationData, form), 300)
+
+  window.addEventListener('line:selected', (e) => handleLinePeek(e, manifest))
+  window.addEventListener('word:selected', (e) => handleWordPeek(e, manifest))
+}
+
 const buildConcordance = (annotationData) => {
   const dict = annotationData.words
   const words = Object.keys(dict)
@@ -36,63 +52,63 @@ const renderIndex = (annotationData, form) => {
     .map((char) => `<a class="indices" data-index="${char}">${char}</a>`)
     .join('')
 
-  if (tmpl.length > 0) {
-    indices.innerHTML = tmpl
+  if (!tmpl.length) return
 
-    Array.from(indices.getElementsByClassName('indices')).forEach((elem) => {
-      elem.onclick = (event) => {
-        form.filter.value = event.target.getAttribute('data-index')
-        filterWordList(annotationData, form)
-      }
-    })
-  }
+  indices.innerHTML = tmpl
+
+  Array.from(indices.getElementsByClassName('indices')).forEach((elem) => {
+    elem.onclick = (event) => {
+      form.filter.value = event.target.getAttribute('data-index')
+      filterWordList(annotationData, form)
+    }
+  })
 }
 
 const renderConcordance = (annotationData, form) => {
   const concordance = document.getElementById('concordance')
   const concordanceHTML = buildConcordance(annotationData)
 
-  if (concordanceHTML.length > 0) {
-    concordance.innerHTML = concordanceHTML
+  if (!concordanceHTML.length) return
 
-    const dds = concordance.getElementsByTagName('dd')
-    Array.from(dds).forEach((dd) => {
-      dd.onclick = (e) => {
-        const source = e.target.getAttribute('data-source')
-        const target = e.target.tagName === 'DD' ? e.target : e.target.closest('DD')
-        const ev = new CustomEvent('line:selected', {
-          detail: {
-            target,
-            source,
-            text: target.textContent,
-          },
-        })
-        window.top.dispatchEvent(ev)
+  concordance.innerHTML = concordanceHTML
+
+  const dds = concordance.getElementsByTagName('dd')
+  Array.from(dds).forEach((dd) => {
+    dd.onclick = (e) => {
+      const source = e.target.getAttribute('data-source')
+      const target = e.target.tagName === 'DD' ? e.target : e.target.closest('DD')
+      const ev = new CustomEvent('line:selected', {
+        detail: {
+          target,
+          source,
+          text: target.textContent,
+        },
+      })
+      window.top.dispatchEvent(ev)
+    }
+  })
+
+  const anchors = concordance.getElementsByTagName('a')
+  Array.from(anchors).forEach((a) => {
+    a.onclick = (e) => {
+      if (['DD', 'MARK'].includes(e.target.tagName)) {
+        e.preventDefault()
+        return false
       }
-    })
+      const source = e.target.getAttribute('data-source')
+      const target = e.target.tagName === 'A' ? e.target : e.target.closest('A')
+      const ev = new CustomEvent('word:selected', {
+        detail: {
+          target,
+          source,
+        },
+      })
+      window.top.dispatchEvent(ev)
+    }
+  })
 
-    const anchors = concordance.getElementsByTagName('a')
-    Array.from(anchors).forEach((a) => {
-      a.onclick = (e) => {
-        if (['DD', 'MARK'].includes(e.target.tagName)) {
-          e.preventDefault()
-          return false
-        }
-        const source = e.target.getAttribute('data-source')
-        const target = e.target.tagName === 'A' ? e.target : e.target.closest('A')
-        const ev = new CustomEvent('word:selected', {
-          detail: {
-            target,
-            source,
-          },
-        })
-        window.top.dispatchEvent(ev)
-      }
-    })
-
-    renderIndex(annotationData, form)
-    renderWordList(annotationData, form)
-  }
+  renderIndex(annotationData, form)
+  renderWordList(annotationData, form)
 }
 
 export const initializeConcordance = async (manifest, injectedCanvases = null) => {
@@ -105,42 +121,20 @@ export const initializeConcordance = async (manifest, injectedCanvases = null) =
     index: {},
   }
 
-  const sequences = manifest?.getSequences ? manifest.getSequences() : []
+  const sequences = manifest?.getSequences?.() ?? []
 
-  if (sequences.length === 0) {
+  if (!sequences.length) {
     document.getElementById('concordance').innerHTML =
       '<p style="text-align: center; padding: 2rem;">No sequences found in this manifest.</p>'
     return
   }
 
-  const promises = []
-  
-  if (injectedCanvases) {
-    const canvasArray = Array.isArray(injectedCanvases) ? injectedCanvases : [injectedCanvases]
-    
-    const tempSequence = {
-      getCanvases: () => canvasArray
-    }
-    
-    const promise = extractLines(tempSequence, annotationData, manifest)
-    promises.push(promise)
-  } else {
-    sequences.forEach((sequence) => {
-      const promise = extractLines(sequence, annotationData, manifest)
-      promises.push(promise)
-    })
-  }
+  const promises = injectedCanvases
+    ? [extractLines(createSequenceFromCanvases(injectedCanvases), annotationData, manifest)]
+    : sequences.map((sequence) => extractLines(sequence, annotationData, manifest))
 
   await Promise.all(promises)
 
+  setupEventHandlers(annotationData, form, sorting, manifest)
   renderConcordance(annotationData, form)
-
-  sorting.oninput = () => renderWordList(annotationData, form)
-  form.filter.oninput = debounce(() => filterWordList(annotationData, form), 300)
-  form.searchin.oninput = debounce(() => filterWordList(annotationData, form), 300)
-  form.wordLength.oninput = debounce(() => renderWordList(annotationData, form), 300)
-  form.occurs.oninput = debounce(() => renderWordList(annotationData, form), 300)
-
-  window.addEventListener('line:selected', (e) => handleLinePeek(e, manifest))
-  window.addEventListener('word:selected', (e) => handleWordPeek(e, manifest))
 }

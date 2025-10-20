@@ -33,164 +33,133 @@ const setupMessageListener = () => {
     const data = event.data
     
     if (!data || typeof data.type !== 'string') return
+    if (!data.type.includes('ANNOTATIONPAGE')) return
     
-    if (data.type.includes('ANNOTATIONPAGE')) {
-      try {
-        if (!currentManifest && data.manifest) {
-          currentManifest = await loadManifest(data.manifest)
-          if (!currentManifest) {
-            return
-          }
-        }
-        
-        if (data.annotationPage) {
-          await handleAnnotationPageMessage(data)
-        }
-      } catch (error) {
+    try {
+      if (!currentManifest && data.manifest) {
+        currentManifest = await loadManifest(data.manifest)
+        if (!currentManifest) return
       }
+      
+      data.annotationPage && await handleAnnotationPageMessage(data)
+    } catch (error) {
     }
   })
 }
 
-const handleAnnotationPageMessage = async (data) => {
-  const { annotationPage } = data
+const extractPageUri = (item) => 
+  typeof item === 'string' ? item : item?.id ?? item?.['@id']
+
+const isCollectionType = (p) => {
+  if (typeof p === 'string') return true
+  const t = p?.type
+  return Array.isArray(t) 
+    ? t.includes('AnnotationCollection') || t.includes('Collection') 
+    : t === 'AnnotationCollection' || t === 'Collection'
+}
+
+const loadPaginatedAnnotationPages = async (collection) => {
+  const annotationPages = []
+  const total = collection.total ?? 0
+  const maxPages = total || 100
   
-  const annoPageData = await loadAnnotationPage(annotationPage)
+  let currentPageUri = extractPageUri(collection.first)
+  let pageCount = 0
   
-  if (!annoPageData) {
-    return
+  while (currentPageUri && pageCount < maxPages) {
+    const page = await loadAnnotationPage(currentPageUri)
+    if (!page?.items) break
+    
+    annotationPages.push(page)
+    pageCount++
+    currentPageUri = page.next ? extractPageUri(page.next) : null
   }
   
-  if (!annoPageData.partOf) {
+  return annotationPages
+}
+
+const handleAnnotationPageMessage = async data => {
+  const annotationPageRef = data?.annotationPage
+  if (!annotationPageRef) return
+
+  const annoPageData = await loadAnnotationPage(annotationPageRef)
+  if (!annoPageData) return
+
+  if (!annoPageData?.partOf) {
     await rebuildConcordanceFromAnnotations([annoPageData])
     return
   }
-  
-  const candidates = Array.isArray(annoPageData.partOf) ? annoPageData.partOf : [annoPageData.partOf].filter(Boolean)
 
-  const chosen = candidates.find(p => {
-    if (typeof p === 'string') return true
-    const t = p?.type
-    return Array.isArray(t) ? t.includes('AnnotationCollection') || t.includes('Collection') : t === 'AnnotationCollection' || t === 'Collection'
-  }) ?? candidates[0]
+  const candidates = Array.isArray(annoPageData.partOf)
+    ? annoPageData.partOf
+    : [annoPageData.partOf].filter(Boolean)
+  if (!candidates.length) return
 
-  const collectionUri = typeof chosen === 'string' ? chosen : chosen?.id ?? chosen?.['@id']
-
-  if (!collectionUri) {
-    return
-  }
+  const chosen = candidates.find(isCollectionType) ?? candidates[0]
+  const collectionUri = extractPageUri(chosen)
+  if (!collectionUri) return
 
   const collection = await loadAnnotationPage(collectionUri)
-  
-  if (!collection) {
-    return
-  }
-  
-  let annotationPages = []
-  
-  if (collection.items && Array.isArray(collection.items)) {
-    annotationPages = await Promise.all(
-      collection.items.map(async (item) => {
-        const pageUri = typeof item === 'string' ? item : item.id || item['@id']
-        return await loadAnnotationPage(pageUri)
-      })
-    )
-  } else if (collection.first) {
-    const total = collection.total || 0
-    
-    let currentPageUri = typeof collection.first === 'string' 
-      ? collection.first 
-      : collection.first?.id || collection.first?.['@id']
-    
-    let pageCount = 0
-    const maxPages = total || 100
-    
-    while (currentPageUri && pageCount < maxPages) {
-      const page = await loadAnnotationPage(currentPageUri)
-      if (page && page.items) {
-        annotationPages.push(page)
-        pageCount++
-        
-        if (page.next) {
-          currentPageUri = typeof page.next === 'string' 
-            ? page.next 
-            : page.next?.id || page.next?.['@id']
-        } else {
-          currentPageUri = null
-        }
-      } else {
-        break
-      }
-    }
-  } else {
-    return
-  }
-  
-  const validPages = annotationPages.filter(p => p && p.items)
-  
-  if (validPages.length === 0) {
-    return
-  }
-  
+  if (!collection) return
+
+  const itemUris = Array.isArray(collection.items)
+    ? collection.items.map(item => extractPageUri(item)).filter(Boolean)
+    : []
+  if (!itemUris.length && !collection.first) return
+
+  const annotationPages = itemUris.length
+    ? await Promise.all(itemUris.map(loadAnnotationPage))
+    : await loadPaginatedAnnotationPages(collection)
+
+  const validPages = annotationPages.filter(p => p?.items)
+  if (!validPages.length) return
+
   await rebuildConcordanceFromAnnotations(validPages)
 }
 
-const rebuildConcordanceFromAnnotations = async (annotationPages) => {
-  if (!currentManifest) {
-    return
+const extractTargetCanvasId = (annotation) => {
+  let target = annotation.target
+  if (typeof target === 'object') {
+    target = target.source ?? target.id ?? target['@id']
   }
+  return typeof target === 'string' ? target.split('#')[0] : null
+}
+
+const normalizeUri = (uri) => uri.replace(/^https?:/, '')
+
+const rebuildConcordanceFromAnnotations = async (annotationPages) => {
+  if (!currentManifest) return
   
   const canvasIds = new Set()
-  
-  annotationPages.forEach(page => {
-    if (!page || !page.items) return
-    
-    page.items.forEach(annotation => {
-      let target = annotation.target
-      if (typeof target === 'object') {
-        target = target.source || target.id || target['@id']
-      }
-      
-      if (typeof target === 'string') {
-        const canvasId = target.split('#')[0]
-        canvasIds.add(canvasId)
-      }
-    })
-  })
-  
   const canvasAnnotations = new Map()
   
   annotationPages.forEach(page => {
-    if (!page || !page.items) return
+    if (!page?.items) return
     
     page.items.forEach(annotation => {
-      let target = annotation.target
-      if (typeof target === 'object') {
-        target = target.source || target.id || target['@id']
-      }
+      const canvasId = extractTargetCanvasId(annotation)
+      if (!canvasId) return
       
-      if (typeof target === 'string') {
-        const canvasId = target.split('#')[0]
-        
-        if (!canvasAnnotations.has(canvasId)) {
-          canvasAnnotations.set(canvasId, [])
-        }
-        canvasAnnotations.get(canvasId).push(page)
+      canvasIds.add(canvasId)
+      
+      if (!canvasAnnotations.has(canvasId)) {
+        canvasAnnotations.set(canvasId, [])
       }
+      canvasAnnotations.get(canvasId).push(page)
     })
   })
   
-  const sequences = currentManifest.getSequences ? currentManifest.getSequences() : []
+  const sequences = currentManifest.getSequences?.() ?? []
   const targetedCanvases = []
   
   for (const seq of sequences) {
-    const canvases = seq.getCanvases ? seq.getCanvases() : []
+    const canvases = seq.getCanvases?.() ?? []
     for (const c of canvases) {
-      const cId = c.id || c['@id'] || ''
-      const normalizedId = cId.replace(/^https?:/, '')
+      const cId = c.id ?? c['@id'] ?? ''
+      const normalizedId = normalizeUri(cId)
       
       for (const canvasId of canvasIds) {
-        const normalizedTargetId = canvasId.replace(/^https?:/, '')
+        const normalizedTargetId = normalizeUri(canvasId)
         if (normalizedId === normalizedTargetId || cId === canvasId) {
           const pages = Array.from(new Set(canvasAnnotations.get(canvasId)))
           targetedCanvases.push({
@@ -203,9 +172,7 @@ const rebuildConcordanceFromAnnotations = async (annotationPages) => {
     }
   }
   
-  if (targetedCanvases.length === 0) {
-    return
-  }
+  if (targetedCanvases.length === 0) return
   
   await initializeConcordance(currentManifest, targetedCanvases)
 }
