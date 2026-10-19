@@ -1,0 +1,469 @@
+/* cheap reset */
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  color: #001e3c;
+}
+
+body {
+  margin: 0;
+}
+
+.row {
+  display: flex;
+}
+
+.note {
+  position: relative;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  box-shadow: 0 1px 3px rgba(0, 30, 60, 0.12), 0 1px 2px rgba(0, 30, 60, 0.24);
+  margin-bottom: 1rem;
+}
+.note > .note-header {
+  color: #333;
+  background-color: #f5f5f5;
+  border-color: #ddd;
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid transparent;
+}
+.note > .note-block {
+  padding: 1rem;
+  font-family: monospace;
+}
+.note > .note-header:after,
+.note > .note-header:before {
+  position: absolute;
+  top: 11px;
+  left: -16px;
+  right: 100%;
+  width: 0;
+  height: 0;
+  display: block;
+  content: ' ';
+  border-color: transparent;
+  border-style: solid solid outset;
+  pointer-events: none;
+}
+.note > .note-header:after {
+  border-width: 7px;
+  border-right-color: #f7f7f7;
+  margin-top: 1px;
+  margin-left: 2px;
+}
+.note > .note-header:before {
+  border-right-color: #ddd;
+  border-width: 8px;
+}
+.note-footer {
+  background-color: #f5f5f5;
+  padding: 0.75rem 1.25rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.125);
+  width: 100%;
+}
+.u-see-thru {
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+code {
+  color: #001e3c;
+  background-color: #d6ebff;
+  border-color: #a3d1ff;
+}
+
+dt {
+  font-weight: 700;
+  clear: left;
+}
+dd {
+  margin-bottom: 0.5rem;
+  margin-left: 2rem;
+}
+
+.btn-group,
+.btn-group-vertical {
+  position: relative;
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  vertical-align: middle;
+}
+.btn-group > .btn:first-child:not(:last-child):not(.dropdown-toggle) {
+  border-bottom-right-radius: 0;
+  border-top-right-radius: 0;
+}
+.btn-group > .btn:first-child {
+  margin-left: 0;
+}
+.btn-group > .btn {
+  position: relative;
+  -webkit-box-flex: 0;
+  -webkit-flex: 0 1 auto;
+  -ms-flex: 0 1 auto;
+  flex: 0 1 auto;
+}
+.btn {
+  display: inline-block;
+  font-weight: 400;
+  line-height: 1.25;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  border: 1px solid transparent;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-radius: 0.25rem;
+  -webkit-transition: all 0.2s ease-in-out;
+  -o-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+}
+[data-toggle='buttons'] > .btn input[type='checkbox'],
+[data-toggle='buttons'] > .btn input[type='radio'],
+[data-toggle='buttons'] > .btn-group > .btn input[type='checkbox'],
+[data-toggle='buttons'] > .btn-group > .btn input[type='radio'] {
+  position: absolute;
+  clip: rect(0, 0, 0, 0);
+  pointer-events: none;
+}
+.btn-info.active,
+.btn-info:active,
+.show > .btn-info.dropdown-toggle {
+  color: #fff;
+  background-color: #31b0d5;
+  background-image: none;
+  border-color: #2aabd2;
+}
+.btn-info {
+  color: #fff;
+  background-color: #5bc0de;
+  border-color: #5bc0de;
+}
+.btn-info:hover {
+  color: #fff;
+  background-color: #31b0d5;
+  border-color: #2aabd2;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* LDN panel */
+.ldn-panel {
+  border-left: 4px solid #5bc0de;
+}
+.ldn-result {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.25rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+/* modals */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 30, 60, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal {
+  background: #fff;
+  border-radius: 0.25rem;
+  box-shadow: 0 1px 3px rgba(0, 30, 60, 0.12), 0 1px 2px rgba(0, 30, 60, 0.24);
+  padding: 1.5rem;
+  max-width: 40rem;
+  width: 90%;
+  max-height: 90vh;
+  overflow: auto;
+}
+.modal h3 {
+  margin-bottom: 1rem;
+}
+.modal h4 {
+  margin: 1rem 0 0.5rem;
+}
+.modal label {
+  display: block;
+  margin-bottom: 1rem;
+}
+.share-option {
+  margin-bottom: 1rem;
+}
+.share-option input {
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+.share-option small {
+  display: block;
+  margin-top: 0.25rem;
+}
+.inbox-list {
+  list-style: none;
+  margin-bottom: 1rem;
+}
+.inbox-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.25rem 0;
+}
+
+.region-view {
+  position: relative;
+}
+.region-canvas,
+.crop-canvas {
+  max-width: 100%;
+}
+
+/* concordance viewer */
+concordance-viewer {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+}
+concordance-viewer .container {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-height: 0;
+  max-width: 100%;
+  width: 100%;
+}
+concordance-viewer .concordance-toolbar {
+  background: #eee;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 0.5rem 1rem;
+}
+concordance-viewer .concordance-toolbar .form-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-grow: 1;
+}
+concordance-viewer .concordance-toolbar .form-group label {
+  margin: 0;
+}
+concordance-viewer .form-group {
+  flex-grow: 1;
+}
+concordance-viewer .form-group label:not(.button) {
+  text-align: center;
+  width: 100%;
+}
+concordance-viewer div#indices {
+  align-content: space-around;
+  display: flex;
+  flex-wrap: nowrap;
+}
+concordance-viewer a.indices {
+  background: #eee;
+  cursor: pointer;
+  flex-grow: 1;
+  padding: 0.125rem 0;
+  text-align: center;
+  text-shadow: #eee 0 1px 0;
+  transition: all 250ms;
+}
+concordance-viewer a.indices:hover,
+concordance-viewer ul#occurrences a:hover {
+  background: #ccc;
+}
+concordance-viewer row {
+  display: flex;
+  width: 100%;
+}
+concordance-viewer row#entries {
+  flex-grow: 1;
+  min-height: 0;
+}
+concordance-viewer #wordList {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 20%;
+  min-width: 10rem;
+  overflow: hidden;
+}
+concordance-viewer #wordList ul#occurrences {
+  flex-grow: 1;
+}
+concordance-viewer #lines {
+  border-left: medium solid #fff;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 2;
+  position: relative;
+  min-width: 0;
+}
+concordance-viewer #concordance {
+  flex-grow: 10;
+  height: 100%;
+  overflow: auto;
+  padding-left: 1rem;
+}
+concordance-viewer #modal {
+  background: #fff;
+  box-shadow: #000000bb 0 0 1em;
+  display: none;
+  left: 0;
+  margin: 1em;
+  max-height: calc(100% - 4em);
+  overflow: auto;
+  padding: 1em;
+  position: absolute;
+  top: 0;
+  z-index: 10;
+}
+concordance-viewer #modal header {
+  background-color: transparent;
+  box-shadow: none;
+  margin: 0;
+  padding: 0;
+  position: static;
+  text-align: left;
+  text-shadow: 1px 1px 1px #00000033;
+}
+concordance-viewer #modal header h4 {
+  color: #999;
+  font-size: 1.67em;
+  line-height: 1;
+  margin: 0;
+}
+concordance-viewer #modal img {
+  max-height: 10em;
+  max-width: 40vw;
+  width: auto;
+}
+concordance-viewer header {
+  background: #ccc;
+  box-shadow: none;
+  display: block;
+  line-height: 1.67;
+  margin: 0;
+  padding: 0;
+  position: static;
+  text-align: center;
+  text-shadow: #eee 0 1px 0;
+  text-transform: capitalize;
+}
+concordance-viewer dl {
+  margin: 0;
+}
+concordance-viewer dt {
+  clear: left;
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+concordance-viewer dd {
+  margin-bottom: 0.5rem;
+  margin-inline-start: 1.2rem;
+}
+concordance-viewer dd:nth-child(2n),
+concordance-viewer .odd {
+  background: #ddd;
+}
+concordance-viewer badge {
+  font-size: 0.82rem;
+  opacity: 0.5;
+}
+concordance-viewer card {
+  border-radius: 0.25em;
+  box-shadow: #00000066 0 1px 2px;
+  display: block;
+  margin: 1em 0;
+  padding: 0.5em;
+}
+concordance-viewer card div {
+  margin: 0 -0.5em;
+}
+concordance-viewer mark {
+  background: initial;
+  color: #488ac7;
+}
+concordance-viewer [active] {
+  background: #488ac7aa;
+}
+concordance-viewer [data-source],
+concordance-viewer [data-word],
+concordance-viewer [onclick] {
+  cursor: pointer;
+}
+concordance-viewer a[data-word] {
+  display: block;
+}
+concordance-viewer ul#occurrences {
+  list-style: none;
+  margin: 0;
+  overflow: auto;
+  padding: 0;
+}
+concordance-viewer ul#occurrences a {
+  background: initial;
+  display: block;
+  transition: background-color 250ms;
+}
+concordance-viewer ul#occurrences badge {
+  float: right;
+  opacity: 1;
+}
+concordance-viewer label {
+  display: block;
+  text-transform: capitalize;
+}
+concordance-viewer label.button {
+  -moz-appearance: button;
+  -webkit-appearance: button;
+  align-items: flex-start;
+  appearance: button;
+  background: buttonface;
+  border-color: buttonface;
+  border-image: initial;
+  border-style: outset;
+  border-width: 2px;
+  box-sizing: border-box;
+  color: buttontext;
+  cursor: default;
+  display: inline-block;
+  font: 400 13.3333px Arial;
+  letter-spacing: normal;
+  margin: 0;
+  padding: 1px 6px;
+  text-align: center;
+  text-indent: 0;
+  text-rendering: auto;
+  text-shadow: none;
+  text-transform: none;
+  word-spacing: normal;
+}
+concordance-viewer input[type='range'] {
+  width: calc(100% - 3em);
+}
+concordance-viewer input[type='range'] + output {
+  font-size: 1.2em;
+  position: relative;
+  top: -0.25em;
+}
+concordance-viewer .line-quote {
+  display: block;
+  margin-top: 0.5em;
+}

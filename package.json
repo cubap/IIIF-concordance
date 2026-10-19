@@ -1,0 +1,10 @@
+{
+  "name": "concordance",
+  "version": "2.0.0",
+  "description": "RERUM IIIF concordance as a Web Component with IIIF 2/3/4 support",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "test": "node --test"
+  }
+}
