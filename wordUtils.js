@@ -28,13 +28,43 @@ export const extractWordsFromLine = (line) => {
   return []
 }
 
-export const addWordsToData = (line, source, lineNumber, label, wordsDict, indexDict) => {
+const findWordOffset = (line, word, from) => {
+  const lower = line.toLowerCase()
+  let idx = lower.indexOf(word, from)
+  while (idx > -1) {
+    const before = line.slice(0, idx)
+    const lastOpen = before.lastIndexOf('<')
+    const lastClose = before.lastIndexOf('>')
+    if (lastOpen > lastClose) {
+      idx = lower.indexOf(word, idx + 1)
+      continue
+    }
+    return idx
+  }
+  return -1
+}
+
+export const addWordsToData = (
+  line,
+  source,
+  lineNumber,
+  label,
+  wordsDict,
+  indexDict,
+  meta = {}
+) => {
   const words = extractWordsFromLine(line)
   if (words.length === 0) return
 
   let pos = 0
   words.forEach((word) => {
-  const offset = line.slice(pos).search(new RegExp(word, 'i')) + pos
+    const offset = findWordOffset(line, word, pos)
+    if (offset < 0) return
+
+    if (line[offset - 1] === '&' && line[offset + word.length] === ';') {
+      pos = offset + word.length
+      return
+    }
 
     if (!wordsDict[word]) {
       wordsDict[word] = []
@@ -46,9 +76,10 @@ export const addWordsToData = (line, source, lineNumber, label, wordsDict, index
       source,
       lineNumber,
       label,
+      ...meta,
     })
 
-  indexDict[word.slice(0, 1).toUpperCase()] = true
+    indexDict[word.slice(0, 1).toUpperCase()] = true
     pos = offset + word.length
   })
 }
